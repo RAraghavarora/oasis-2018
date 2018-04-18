@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'oasis2018.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 try:
-    from config import *
+    from keyconfig import *
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
