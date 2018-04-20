@@ -9,7 +9,7 @@ class Category(models.Model):
     class Meta:
         verbose_name_plural = 'Categories'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -21,7 +21,7 @@ class IntroEvent(models.Model):
 	category = models.ForeignKey('Category', default=3)
 	contact = models.CharField(max_length=140, default='')
 
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 
 class Participation(models.Model):
@@ -31,5 +31,5 @@ class Participation(models.Model):
 	pcr_approved = models.BooleanField(default=False)
 	cr_approved = models.BooleanField(default=False)
 
-	def __unicode__(self):
+	def __str__(self):
 		return str(self.event.name)+'-'+str(self.participant.name)
