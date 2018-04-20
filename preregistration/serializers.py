@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from .models import Roctaves
+from .models import Participant
 
 
-class RoctaveSerializer(serializers.ModelSerializer):
+class ParticipantSerializer(serializers.ModelSerializer):
     class Meta:
-        model=Roctaves
+        model=Participant
         fields=('name','phone','email_address','city')
         

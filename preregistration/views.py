@@ -15,32 +15,28 @@ def index(request):
 
     if request.method=='POST':
         email=request.data['email_address'].replace('%40','@')
-        if Roctaves.objects.filter(email_address=email):
-            return Response({'message':'email exists'})
+        if Participant.objects.filter(email_address=email):
+            return Response({'message':'Email already exists! Please try another email'})
         mobile_number=str(request.data['phone'])
         if len (mobile_number)==10:
             try:
                 number=int(mobile_number)
-                roctaves=Roctaves()
-                roctaves.name=request.data['name']
-                roctaves.city=request.data['city']
+                participant = Participant()
+                participant.name=request.data['name']
+                participant.city=request.data['city']
                 if request.data['gender']=='M':
-                    roctaves.gender='Male'
+                    participant.gender='Male'
                 elif request.data['gender']=='F':
-                    roctaves.gender='Female'
-                roctaves.phone='91'+mobile_number
-                roctaves.email_address=email
-                serializer=RoctaveSerializer(data=request.data)
+                    participant.gender='Female'
+                participant.phone='91'+mobile_number
+                participant.email_address=email
+                serializer=ParticipantSerializer(data=request.data)
                 if serializer.is_valid():
                     serializer.save()
                     return Response(serializer.data)
                 else:
                     return Response(serializer.errors,status=400)
             except ValueError:
-                return Response({'message':'Invalid'})
+                return Response({'message':'Please input valid credentials.'})
         else:
-            return Response({'message':'Invalid'})
-
-
-
-    
+            return Response({'message':'Please input valid credentials.'})
