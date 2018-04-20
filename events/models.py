@@ -10,7 +10,8 @@ class Category(models.Model):
         verbose_name_plural = 'Categories'
 
     def __unicode__(self):
-		return self.name
+        return self.name
+
 
 class IntroEvent(models.Model):
 
