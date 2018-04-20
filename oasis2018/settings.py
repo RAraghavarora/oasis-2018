@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 try:
     from oasis2018.keyconfig import *    # Production
-    DEBUG = Debug              # Create debug variable in the keyconfig file, which can be changed whenever required
+    DEBUG = Debug              # Created debug variable in the keyconfig file, which can be changed whenever required
 except:
     DEBUG = True
 
