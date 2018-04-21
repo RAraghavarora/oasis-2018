@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
-from oasis2018.keyconfig import *
+#from oasis2018.keyconfig import *
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -20,10 +20,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'x$9i09gj=_tzh#j!pd9m!^mx5i)v%h-zm4g&1j9k$z(4*-9zoi'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+try:
+    from oasis2018.keyconfig import *    # Production
+    DEBUG = Debug              # Create debug variable in the keyconfig file, which can be changed whenever required
+except:
+    DEBUG = True   
+
 
 ALLOWED_HOSTS = ['*']
 
