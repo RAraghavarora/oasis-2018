@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Participant
+from .models import Roctaves
 
 
 class ParticipantSerializer(serializers.ModelSerializer):
