@@ -9,7 +9,12 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
-#from oasis2018.keyconfig import *
+try:
+    from oasis2018.keyconfig import *    # Production
+    DEBUG = Debug              # Created debug variable in the keyconfig file, which can be changed whenever required
+except:
+    DEBUG = True
+
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -18,17 +23,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-
-
-# SECURITY WARNING: don't run with debug turned on in production!
-try:
-    from oasis2018.keyconfig import *    # Production
-    DEBUG = Debug              # Create debug variable in the keyconfig file, which can be changed whenever required
-except:
-    DEBUG = True   
-
 
 ALLOWED_HOSTS = ['*']
 
@@ -43,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'preregistration',
-    #'events',
     'rest_framework',
     'multiselectfield',
 
@@ -84,7 +77,7 @@ WSGI_APPLICATION = 'oasis2018.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 try:
-    from keyconfig import *
+    from oasis2018.keyconfig import *
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -163,8 +156,3 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
     )
 }
-try:
-    from keyconfig import *
-    DEBUG=Debug
-except:
-    Debug=True
