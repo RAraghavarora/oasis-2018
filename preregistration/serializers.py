@@ -5,5 +5,5 @@ from .models import Roctaves
 class RoctaveSerializer(serializers.ModelSerializer):
     class Meta:
         model=Roctaves
-        fields=('name','phone','email_address','city')
+        fields=('name','email_address')
         

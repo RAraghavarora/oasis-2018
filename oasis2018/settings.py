@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'preregistration',
+    #'events',
     'rest_framework',
+    'multiselectfield',
+
 ]
 
 MIDDLEWARE = [
@@ -155,3 +158,8 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
     )
 }
+try:
+    from keyconfig import *
+    DEBUG=Debug
+except:
+    Debug=True
