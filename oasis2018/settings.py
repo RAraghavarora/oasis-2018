@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'preregistration',
     'rest_framework',
-    'multiselectfield',
+    'events',
 
 ]
 

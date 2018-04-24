@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.db import models
-from preregistration.models import Participant
+from preregistration.models import GenParticipant
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -27,7 +27,7 @@ class IntroEvent(models.Model):
 class Participation(models.Model):
 
 	event = models.ForeignKey(IntroEvent, on_delete=models.CASCADE)
-	participant = models.ForeignKey('preregistration.Participant', on_delete=models.CASCADE, null=True)
+	participant = models.ForeignKey('preregistration.GenParticipant', on_delete=models.CASCADE, null=True)
 	pcr_approved = models.BooleanField(default=False)
 	cr_approved = models.BooleanField(default=False)
 

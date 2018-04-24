@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import render
 from .models import *
+from .serializers import *
 from django.http import HttpResponse,JsonResponse
 from preregistration.serializers import *
 import sys
@@ -51,7 +52,37 @@ def index(request):
 
 
 
-    
+
 #blsb
 
 #w
+
+
+@api_view(['POST'])
+def gen_index(request):
+
+    if request.method=='POST':
+        print(request.data)
+        email=request.data['email_address'].replace('%40','@')
+        # if Participant.objects.filter(email_address=email):
+        #     return Response({'message':'Email already exists! Please try another email'})
+        mobile_number=str(request.data['phone'])
+        if len (mobile_number)==10:
+            try:
+                number=int(mobile_number)
+                participant = GenParticipant()
+                participant.name=request.data['name']
+                participant.city=request.data['city']
+                participant.gender='Male'
+                participant.phone='91'+mobile_number
+                participant.email_address=email
+                serializer=GenParticipantSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data)
+                else:
+                    return Response(serializer.errors,status=400)
+            except ValueError:
+                return Response({'message':'Please input valid credentials.'})
+        else:
+            return Response({'message':'Please input valid credentials.'})
