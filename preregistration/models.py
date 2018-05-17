@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 #from multiselectfield import MultiSelectField
 
-from events import *
+#from events.models import *
 
 class GenParticipant(models.Model):
 	name = models.CharField(max_length=100, null=False)

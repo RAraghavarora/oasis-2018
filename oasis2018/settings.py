@@ -36,8 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'preregistration',
     'rest_framework',
+    'preregistration',
     'events',
 
 ]
@@ -88,7 +88,8 @@ try:
             'PORT': '3306',
         }
     }
-except:
+except Exception as error_message:
+    print("DATABASE SETTINGS ERROR: {}".format(error_message))
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -98,7 +99,7 @@ except:
 
 
 #Keep sensitive info safe
-# Password validation 
+# Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [

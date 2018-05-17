@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title> bits-oasis.org -- IntroEventsData </title>
+</head>
+
+<body>
+  <form method="post" action="{% url 'events:ied' %}">
+  <table>
+      <tr>
+        <td><label for="username">username: </label></td>
+        <td><input type="text" name="username" maxlength=100 required/></td>
+      </tr>
+      <tr>
+        <td><label for="password">password: </label></td>
+        <td><input type="password" name="password" maxlength=100 required/></td>
+      </tr>
+      <tr>
+        <td><input type="submit" value="generate"/></td>
+      </tr>
+    </table>
+</body>
+
+</html>

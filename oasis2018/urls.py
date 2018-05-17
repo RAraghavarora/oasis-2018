@@ -24,6 +24,7 @@ from django.views.static import serve
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^preregistration/',include('preregistration.urls')),
+    url(r'^events/',include('events.urls')),
 ]
 
 
@@ -32,4 +33,3 @@ urlpatterns += staticfiles_urlpatterns()
 if settings.DEBUG:
         urlpatterns += static(settings.STATIC_URL, serve, document_root=settings.STATIC_ROOT)
         urlpatterns += static(settings.MEDIA_URL, serve, document_root=settings.MEDIA_ROOT)
-
