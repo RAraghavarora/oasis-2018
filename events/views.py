@@ -17,10 +17,10 @@ from events.models import *
 from preregistration.models import *
 
 @csrf_exempt
-def IntroEventsData(request):
+def Data(request):
 
     if request.method == "GET":
-        return render(request, "events/IntroEventsData.html")
+        return render(request, "events/data.html")
 
     if request.method == "POST":
 

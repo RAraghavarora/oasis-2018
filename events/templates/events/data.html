@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+  {% load static %}
+	<meta charset='utf-8'>
+	<title>Login Form</title>
+	<style type="text/css">
+    	html {
+        overflow-y: hidden;
+        overflow-x: hidden;
+    	}
+    	body{
+    		background-image:url("{% static 'events/aic.png'%}");
+        background-attachment: fixed;
+    		background-size: cover;
+    		background-repeat: no-repeat;
+    		font-family: 'Oswald', sans-serif;
+    	}
+    	.wrapper{
+  			display: flex;
+  			flex-direction: column;
+  			align-items: center;
+  			justify-content: center;
+    	}
+  		.login{
+  				margin: auto;
+  				width: 350px;
+  				height: 380px;
+  				box-shadow: 0px 16px 16px 16px rgba(0,0,0,0.3);
+  				padding: 80px 40px;
+  				margin-top: 20vh;
+  				margin-bottom: 20vh;
+  				background:linear-gradient( #867cf4 0%, #867cf9 0%);
+  				background:-webkit-linear-gradient(top, #867cf4 0%, #fff  0%);
+  		}
+  		h2{
+  			margin: 0 0 30px 0;
+  			padding: 10px;
+  			color: #867cf4;
+  			text-align: center;
+  			font-family: 'Oswald', sans-serif;
+  		}
+      form{
+        margin-top: 80px;
+      }
+      input[type=text], input[type=password]{
+    	  width: 100%;
+        border: none;
+      	outline: none;
+      	border: 2px #867cf4 groove;
+      	background:transparent;
+      	border-radius: 20px;
+      	box-sizing: border-box;
+      	color: #867cf4;
+      	font-size: 16px;
+      	padding: 10px;
+      	text-align: center;
+      	margin-bottom:30px;
+      }
+      footer{
+      	display: flex;
+      	flex-direction: row;
+      	justify-content: center;
+      	align-items: flex-end;
+        position:absolute;
+        color: #fff;
+        bottom:0;
+        width:100%;
+        // height:6px;   /* Height of the footer */
+        padding: 0px;
+      }
+      p{
+      	font-family:'Oswald', sans-serif ;
+      	color: #867cf4;
+      	font-size: 16px;
+      	padding: 0px;
+      }
+      input[type=submit]{
+      	font-family: 'Oswald', sans-serif;
+      	border: solid;
+      	outline: none;
+      	width: 100%;
+      	background:transparent;
+      	border-radius: 20px;
+      	box-sizing: border-box;
+      	color: #fff;
+      	font-size: 20px;
+      	padding: 10px;
+      	text-align: center;
+      	background:#867cf4;
+      	margin-bottom:30px;
+      	font-style: bold;
+      }
+      ::placeholder{
+      	color: #867cf4;
+      	text-align: center;
+      }
+      input[type=submit]:hover{
+      	background:#fff;
+      	color: #867cf4;
+      }
+  </style>
+  <script language="Javascript">
+  function FixBackgroundToScreen()
+  {
+      bgImg = new Image();
+      bgImg.src = document.body.background;
+      if ((bgImg.height / window.innerHeight) < (bgImg.width / window.innerWidth))
+          document.body.style.backgroundSize = "auto 100%";
+      else
+          document.body.style.backgroundSize = "100% auto";
+  };
+  </script>
+</head>
+
+<body>
+  <div class="wrapper">
+    <Div class ="login">
+	     <h2>Enter Event User Credentials:</h2>
+	     <form method="post" action="{% url 'events:data' %}">
+		       <input class="lol" type="text" name="username" placeholder="username" maxlength=100 required>
+		       <input class="loll" type="password" name="password" placeholder="password" maxlength=100 required>
+   		     <input type="submit" name="login" value="Generate">
+	     </form>
+    </Div>
+  </div>
+
+  <footer class="footer"><p>made with <i class="em em-heart"></i> by DVM</p></footer>
+</body>
+
+</html>
