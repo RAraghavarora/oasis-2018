@@ -21,6 +21,7 @@ class IntroEvent(models.Model):
     rules = models.CharField(blank=True,max_length=200)
     category = models.ForeignKey('Category', default=3)
     contact = models.CharField(max_length=140, default='')
+    trivial_field = models.CharField(max_length=10, null=True)
 
     def __str__(self):
         return self.name
