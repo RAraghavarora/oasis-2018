@@ -15,6 +15,7 @@ from django.core.exceptions import *
 
 from events.models import *
 from preregistration.models import *
+from events.extrafunctions.filling import RocktavesGeneration
 
 @csrf_exempt
 def Data(request):
@@ -49,37 +50,14 @@ def Data(request):
             # STEP 3: Excel Sheet Generation Step after Authentication
             databook = Workbook()
             datasheet = databook.active
-            datasheet.title = "{} Data".format(username)
+            datasheet.title = "{} Data".format(event.name)
 
-            datasheet["A1"] = "Name"
-            datasheet.column_dimensions["A"].width = 20
-            datasheet["B1"] = "PCR Approval"
-            datasheet.column_dimensions["B"].width = 15
-            datasheet["C1"] = "CR Approval"
-            datasheet.column_dimensions["C"].width = 15
-            datasheet["D1"] = "Email Address"
-            datasheet.column_dimensions["D"].width = 30
-            datasheet["E1"] = "Phone Number"
-            datasheet.column_dimensions["E"].width = 15
-
-            counter = 2
-            for participation in event.participation.all():
-                datasheet["A{}".format(counter)] = participation.participant.name
-                if participation.pcr_approved:
-                    datasheet["B{}".format(counter)] = "Approved"
-                else:
-                    datasheet["B{}".format(counter)] = "Not Approved"
-                if participation.cr_approved:
-                    datasheet["C{}".format(counter)] = "Approved"
-                else:
-                    datasheet["C{}".format(counter)] = "Not Approved"
-                datasheet["D{}".format(counter)] = participation.participant.email_address
-                datasheet["E{}".format(counter)] = participation.participant.phone
-                counter += 1
+            if event.name == "Rocktaves" or event.name == "Roctaves":
+                RocktavesGeneration(datasheet) # defined in ./extrafunctions/filling.py
 
             # STEP 4: prepare the response and return the document
             response = HttpResponse(content=save_virtual_workbook(databook), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            response['Content-Disposition'] = "attachment; filename={}".format("{}Data.xlsx".format(username))
+            response['Content-Disposition'] = "attachment; filename={}".format("{}Data.xlsx".format(event.name))
             return response
 
         except KeyError as missing_data:
