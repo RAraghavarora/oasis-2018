@@ -15,7 +15,7 @@ class Category(models.Model):
 
 
 class IntroEvent(models.Model):
-    #user = models.OneToOneField(User, related_name="eventmodel", null=True)
+    user = models.OneToOneField(User, related_name="eventmodel", null=True)
     name = models.CharField(max_length=100,unique=True)
     short_description = models.CharField(blank=True,max_length=140)
     rules = models.CharField(blank=True,max_length=200)
