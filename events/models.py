@@ -15,13 +15,12 @@ class Category(models.Model):
 
 
 class IntroEvent(models.Model):
-    user = models.OneToOneField(User, related_name="eventmodel", null=True)
+    #user = models.OneToOneField(User, related_name="eventmodel", null=True)
     name = models.CharField(max_length=100,unique=True)
     short_description = models.CharField(blank=True,max_length=140)
     rules = models.CharField(blank=True,max_length=200)
     category = models.ForeignKey('Category', default=3)
     contact = models.CharField(max_length=140, default='')
-    trivial_field = models.CharField(max_length=10, null=True)
 
     def __str__(self):
         return self.name
