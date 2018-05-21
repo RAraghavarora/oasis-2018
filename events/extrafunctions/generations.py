@@ -34,3 +34,20 @@ def RocktavesGeneration(datasheet):
         datasheet["H{}".format(counter)] = Rocktaves.entry2
         datasheet["I{}".format(counter)] = Rocktaves.enteries
         counter += 1
+
+"""
+def RapWarsGeneration(datasheet):
+    datasheet["A1"] = "Name"
+    datasheet.column_dimensions["A"].width = 20
+    datasheet["B1"] = "Rapper Name"
+    datasheet.column_dimensions["B"].width = 20
+    datasheet["C1"] = "Phone Number"
+    datasheet.column_dimensions["C"].width = 15
+    datasheet["D1"] = "City"
+    datasheet.column_dimensions["D"].width = 10
+
+    event = IntroEvent.objects.get(name="RapWars")
+
+    counter = 2
+    for Rapper in
+"""

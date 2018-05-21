@@ -2,105 +2,122 @@
 <html>
 
 <head>
-	<link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
-  	<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
-  	{% load static %}
-	<meta charset='utf-8'>
-	<title>Login Form</title>
-	<style type="text/css">
-    	html {
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    {% load static %}
+  <meta charset='utf-8'>
+  <title>Login Form</title>
+  <style type="text/css">
+      html {
         overflow-y: hidden;
         overflow-x: hidden;
-    	}
-    	body{
-    		background-image:url("{% static 'events/aic.png'%}");
-        background-attachment: fixed;
-    		background-size: cover;
-    		background-repeat: no-repeat;
-    		font-family: 'Oswald', sans-serif;
-    	}
-    	.wrapper{
-  			display: flex;
-  			flex-direction: column;
-  			align-items: center;
-  			justify-content: center;
-    	}
-  		.login{
-  				margin: auto;
-  				width: 350px;
-  				height: 380px;
-  				box-shadow: 0px 16px 16px 16px rgba(0,0,0,0.3);
-  				padding: 80px 40px;
-  				margin-top: 20vh;
-  				margin-bottom: 20vh;
-  				background:linear-gradient( #867cf4 0%, #867cf9 0%);
-  				background:-webkit-linear-gradient(top, #867cf4 0%, #fff  0%);
-  		}
-  		h2{
-  			margin: 0 0 30px 0;
-  			padding: 10px;
-  			color: #867cf4;
-  			text-align: center;
-  			font-family: 'Oswald', sans-serif;
-  		}
+      }
+     html, body {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: BebasNeue;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: url("{% static 'events/aic.png'%}");
+  background-size: cover;
+  background-position: 50% 50%;
+  
+}
+      .wrapper{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        
+      }
+      .login{
+          margin: auto;
+          width: 350px;
+          height: 330px;
+          box-shadow: 0px 16px 16px 16px rgba(0,0,0,0.3);
+          padding: 80px 40px;
+          margin-top: 20vh;
+          margin-bottom: 20vh;
+          background:linear-gradient( #867cf4 0%, #867cf9 0%);
+          background:-webkit-linear-gradient(top, #867cf4 0%, #fff  0%);
+          z-index: 2;
+      }
+      h2{
+        margin: 0 0 30px 0;
+        padding: 10px;
+        color: #867cf4;
+        text-align: center;
+        font-family: 'Oswald', sans-serif;
+      }
       form{
         margin-top: 80px;
       }
       input[type=text], input[type=password]{
-    	  width: 100%;
+        width: 100%;
         border: none;
-      	outline: none;
-      	border: 2px #867cf4 groove;
-      	background:transparent;
-      	border-radius: 20px;
-      	box-sizing: border-box;
-      	color: #867cf4;
-      	font-size: 16px;
-      	padding: 10px;
-      	text-align: center;
-      	margin-bottom:30px;
+        outline: none;
+        border: 2px #867cf4 groove;
+        background:transparent;
+        border-radius: 20px;
+        box-sizing: border-box;
+        color: #867cf4;
+        font-size: 16px;
+        padding: 10px;
+        text-align: center;
+        margin-bottom:30px;
+        z-index: 2;
       }
       footer{
-      	display: flex;
-      	flex-direction: row;
-      	justify-content: center;
-      	align-items: flex-end;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-end;
         position: absolute;
         color: #fff;
-        bottom:0;
+        bottom: 0;
         width:100%;
         // height:6px;   /* Height of the footer */
         padding: 0px;
+        z-index: 1;
       }
       p{
-      	font-family:'Oswald', sans-serif ;
-      	color: #fff;
-      	font-size: 16px;
-      	padding: 0px;
+        font-family:'Oswald', sans-serif ;
+        color: #fff;
+        font-size: 16px;
+        padding: 0px;
+        z-index: 1;
       }
       input[type=submit]{
-      	font-family: 'Oswald', sans-serif;
-      	border: solid;
-      	outline: none;
-      	width: 100%;
-      	background:transparent;
-      	border-radius: 20px;
-      	box-sizing: border-box;
-      	color: #fff;
-      	font-size: 20px;
-      	padding: 10px;
-      	text-align: center;
-      	background:#867cf4;
-      	margin-bottom:30px;
-      	font-style: bold;
+        font-family: 'Oswald', sans-serif;
+        border: solid;
+        outline: none;
+        width: 100%;
+        background:transparent;
+        border-radius: 20px;
+        box-sizing: border-box;
+        color: #fff;
+        font-size: 20px;
+        padding: 10px;
+        text-align: center;
+        background:#867cf4;
+        margin-bottom:30px;
+        font-style: bold;
+        z-index: 1;
       }
       ::placeholder{
-      	color: #867cf4;
-      	text-align: center;
+        color: #867cf4;
+        text-align: center;
       }
       input[type=submit]:hover{
-      	background:#fff;
-      	color: #867cf4;
+        background:#fff;
+        color: #867cf4;
       }
   </style>
   <script language="Javascript">
@@ -119,12 +136,13 @@
 <body>
   <div class="wrapper">
     <Div class ="login">
-	     <h2>Enter Event User Credentials:</h2>
-	     <form method="post" action="{% url 'events:data' %}">
-		       <input class="lol" type="text" name="username" placeholder="username" maxlength=100 required>
-		       <input class="loll" type="password" name="password" placeholder="password" maxlength=100 required>
-   		     <input type="submit" name="login" value="Generate">
-	     </form>
+       <h2>Enter Event User Credentials:</h2>
+		{% for message in messages %}{% if forloop.counter == 1 %}<p style="color: red">{{ message }}</p>{% endif %}{% endfor %}
+       <form method="post" action="{% url 'events:data' %}">
+           <input class="lol" type="text" name="username" placeholder="username" maxlength=100 required>
+           <input class="loll" type="password" name="password" placeholder="password" maxlength=100 required>
+           <input type="submit" name="login" value="Generate">
+       </form>
     </Div>
   </div>
 
