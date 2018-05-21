@@ -1,0 +1,810 @@
+[
+{
+  "model": "contenttypes.contenttype",
+  "pk": 1,
+  "fields": {
+    "app_label": "admin",
+    "model": "logentry"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 2,
+  "fields": {
+    "app_label": "auth",
+    "model": "group"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 3,
+  "fields": {
+    "app_label": "auth",
+    "model": "permission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 4,
+  "fields": {
+    "app_label": "auth",
+    "model": "user"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 5,
+  "fields": {
+    "app_label": "contenttypes",
+    "model": "contenttype"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 6,
+  "fields": {
+    "app_label": "sessions",
+    "model": "session"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 7,
+  "fields": {
+    "app_label": "preregistration",
+    "model": "roctaves"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 8,
+  "fields": {
+    "app_label": "preregistration",
+    "model": "genparticipant"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 9,
+  "fields": {
+    "app_label": "events",
+    "model": "category"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 10,
+  "fields": {
+    "app_label": "events",
+    "model": "introevent"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 11,
+  "fields": {
+    "app_label": "events",
+    "model": "participation"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "idq8zmh1dnkat4z3rqaosy453046v5k5",
+  "fields": {
+    "session_data": "ZjI4NjBkZWY2MTZhZTNiMmY5YWQ2YzFlODUwOGI2NjExNGIwNTRkNTp7Il9hdXRoX3VzZXJfaGFzaCI6IjY2NDg0MGRmMzNmOTc0ZGYxMzU5YzdlNjQzYzhkMDVjNjM4ODYzMDYiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=",
+    "expire_date": "2018-05-08T18:46:11.691Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "kivxt0pyx423qos5hn5gljs05alrpr3r",
+  "fields": {
+    "session_data": "ZjI4NjBkZWY2MTZhZTNiMmY5YWQ2YzFlODUwOGI2NjExNGIwNTRkNTp7Il9hdXRoX3VzZXJfaGFzaCI6IjY2NDg0MGRmMzNmOTc0ZGYxMzU5YzdlNjQzYzhkMDVjNjM4ODYzMDYiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=",
+    "expire_date": "2018-06-01T12:56:22.596Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "lmzgva8cv3zphaf622a4ftlydg0nd3hf",
+  "fields": {
+    "session_data": "ZjI4NjBkZWY2MTZhZTNiMmY5YWQ2YzFlODUwOGI2NjExNGIwNTRkNTp7Il9hdXRoX3VzZXJfaGFzaCI6IjY2NDg0MGRmMzNmOTc0ZGYxMzU5YzdlNjQzYzhkMDVjNjM4ODYzMDYiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=",
+    "expire_date": "2018-05-09T07:18:15.844Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "v8e3oij0c60ko1wf86wrmbi81sgjjyuj",
+  "fields": {
+    "session_data": "ZjI4NjBkZWY2MTZhZTNiMmY5YWQ2YzFlODUwOGI2NjExNGIwNTRkNTp7Il9hdXRoX3VzZXJfaGFzaCI6IjY2NDg0MGRmMzNmOTc0ZGYxMzU5YzdlNjQzYzhkMDVjNjM4ODYzMDYiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=",
+    "expire_date": "2018-06-03T09:21:27.527Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "xel2z68tliqe6ne61zlwp99b0q889zhl",
+  "fields": {
+    "session_data": "ZjI4NjBkZWY2MTZhZTNiMmY5YWQ2YzFlODUwOGI2NjExNGIwNTRkNTp7Il9hdXRoX3VzZXJfaGFzaCI6IjY2NDg0MGRmMzNmOTc0ZGYxMzU5YzdlNjQzYzhkMDVjNjM4ODYzMDYiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=",
+    "expire_date": "2018-05-08T18:54:49.631Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "xr6we4f886teeqcoz6b4m0wv24m499xu",
+  "fields": {
+    "session_data": "ZjI4NjBkZWY2MTZhZTNiMmY5YWQ2YzFlODUwOGI2NjExNGIwNTRkNTp7Il9hdXRoX3VzZXJfaGFzaCI6IjY2NDg0MGRmMzNmOTc0ZGYxMzU5YzdlNjQzYzhkMDVjNjM4ODYzMDYiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOiIxIn0=",
+    "expire_date": "2018-05-08T19:04:48.414Z"
+  }
+},
+{
+  "model": "preregistration.genparticipant",
+  "pk": 1,
+  "fields": {
+    "name": "jdwh g",
+    "city": "jnd nb",
+    "phone": "9999999999",
+    "gender": "Male",
+    "email_address": "nobita99@yahoo.in"
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 1,
+  "fields": {
+    "name": "ABCD_BAND",
+    "genre": "ROCK",
+    "email_address": "abcd123@gmail.com",
+    "phone": "919592400151",
+    "number_of_participants": 1,
+    "elimination_preference": "bangalore",
+    "entry1": "ENTRY1",
+    "entry2": "ENTRY2",
+    "enteries": "ENTRY3"
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 2,
+  "fields": {
+    "name": "nandid",
+    "genre": "dfrjfjd",
+    "email_address": "jsdjv@jdvfjdw.com",
+    "phone": "9999999999",
+    "number_of_participants": 1,
+    "elimination_preference": "Delhi",
+    "entry1": "soufuh g",
+    "entry2": "e ebgrui e2",
+    "enteries": "ej grfrjo2roji"
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 3,
+  "fields": {
+    "name": "adsad",
+    "genre": "fdfsf",
+    "email_address": "abhishek28069@gmail.com",
+    "phone": "917093444905",
+    "number_of_participants": 1,
+    "elimination_preference": "delhi",
+    "entry1": "adssd",
+    "entry2": "dfsf",
+    "enteries": "sdff"
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 4,
+  "fields": {
+    "name": "manana",
+    "genre": "nanna",
+    "email_address": "nayan1848@gmail.com",
+    "phone": "919595959595",
+    "number_of_participants": 2,
+    "elimination_preference": "bangalore",
+    "entry1": "111",
+    "entry2": "222",
+    "enteries": "3333"
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 5,
+  "fields": {
+    "name": "MishraM",
+    "genre": "Carnatic progressive fusion",
+    "email_address": "bnpranavswaroop@gmail.com",
+    "phone": "919481627197",
+    "number_of_participants": 7,
+    "elimination_preference": "bangalore",
+    "entry1": "https://youtu.be/abpJopIh8bo",
+    "entry2": "https://youtu.be/hQAL72iPaJs",
+    "enteries": ""
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 6,
+  "fields": {
+    "name": "reciprocal",
+    "genre": "progressive/metalcore",
+    "email_address": "virusconquest@gmail.com",
+    "phone": "916200028224",
+    "number_of_participants": 6,
+    "elimination_preference": "kolkata",
+    "entry1": "https://soundcloud.com/reciprocalranchi",
+    "entry2": "https://www.youtube.com/watch?v=zRXnqBkJPf8",
+    "enteries": ""
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 7,
+  "fields": {
+    "name": "Sounds Fishy",
+    "genre": "Rock",
+    "email_address": "soundsfishytheband@gmail.com",
+    "phone": "918147656717",
+    "number_of_participants": 6,
+    "elimination_preference": "bangalore",
+    "entry1": "https://youtu.be/cM8Qh2xv9zk",
+    "entry2": "https://youtu.be/_sMNfJ7NxyY",
+    "enteries": "https://youtu.be/9VNlHMpB3c8"
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 8,
+  "fields": {
+    "name": "Sounds Fishy",
+    "genre": "Rock",
+    "email_address": "soundsfishytheband@gmail.com",
+    "phone": "918147656717",
+    "number_of_participants": 6,
+    "elimination_preference": "bangalore",
+    "entry1": "https://youtu.be/cM8Qh2xv9zk",
+    "entry2": "https://youtu.be/_sMNfJ7NxyY",
+    "enteries": "https://youtu.be/9VNlHMpB3c8"
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 9,
+  "fields": {
+    "name": "S",
+    "genre": "A",
+    "email_address": "uja2@gmail.com",
+    "phone": "911234567890",
+    "number_of_participants": 4,
+    "elimination_preference": "bangalore",
+    "entry1": "D",
+    "entry2": "W",
+    "enteries": ""
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 10,
+  "fields": {
+    "name": "Giddy Hoo",
+    "genre": "classic rock",
+    "email_address": "giddyhoo@gmail.com",
+    "phone": "917558052882",
+    "number_of_participants": 4,
+    "elimination_preference": "bangalore",
+    "entry1": "https://www.youtube.com/watch?v=7X7p_gErE0Q",
+    "entry2": "https://soundcloud.com/user-883804176",
+    "enteries": "https://giddyhoo.bandcamp.com"
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 11,
+  "fields": {
+    "name": "Giddy Hoo",
+    "genre": "classic rock",
+    "email_address": "giddyhoo@gmail.com",
+    "phone": "917558052882",
+    "number_of_participants": 4,
+    "elimination_preference": "bangalore",
+    "entry1": "https://www.youtube.com/watch?v=7X7p_gErE0Q",
+    "entry2": "https://soundcloud.com/user-883804176",
+    "enteries": "https://giddyhoo.bandcamp.com"
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 12,
+  "fields": {
+    "name": "Astitva Ranchi ",
+    "genre": "Metalcore ",
+    "email_address": "avitirkey2011@gmail.com",
+    "phone": "917004912334",
+    "number_of_participants": 5,
+    "elimination_preference": "kolkata",
+    "entry1": "https://m.youtube.com/watch?v=nJQfPG6KxZU",
+    "entry2": "https://m.youtube.com/watch?v=yLD0g7wU_bs",
+    "enteries": "https://m.soundcloud.com/astitva-ranchi-official/astitva_fightthe-story-of-a-soldier"
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 13,
+  "fields": {
+    "name": "The juke radio ",
+    "genre": "Progressive carnatic metal",
+    "email_address": "thejukeradio@gmail.com",
+    "phone": "919591122323",
+    "number_of_participants": 6,
+    "elimination_preference": "bangalore",
+    "entry1": "Lokesh ",
+    "entry2": "Meghana ",
+    "enteries": ""
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 14,
+  "fields": {
+    "name": "The juke radio ",
+    "genre": "Progressive carnatic metal",
+    "email_address": "thejukeradio@gmail.com",
+    "phone": "919591122323",
+    "number_of_participants": 6,
+    "elimination_preference": "bangalore",
+    "entry1": "Lokesh ",
+    "entry2": "Meghana ",
+    "enteries": ""
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 15,
+  "fields": {
+    "name": "GreyFade",
+    "genre": "Punkcore",
+    "email_address": "greyfade6@gmail.com",
+    "phone": "919820325757",
+    "number_of_participants": 6,
+    "elimination_preference": "mumbai",
+    "entry1": "https://youtu.be/UsULgio4y5Y",
+    "entry2": "https://youtu.be/ahLqHvOxMMA",
+    "enteries": "https://youtu.be/gZYdX9HStX8"
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 16,
+  "fields": {
+    "name": "GreyFade",
+    "genre": "Punkcore",
+    "email_address": "greyfade6@gmail.com",
+    "phone": "919820325757",
+    "number_of_participants": 6,
+    "elimination_preference": "mumbai",
+    "entry1": "https://youtu.be/UsULgio4y5Y",
+    "entry2": "https://youtu.be/ahLqHvOxMMA",
+    "enteries": "https://youtu.be/gZYdX9HStX8"
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 17,
+  "fields": {
+    "name": "Unbound India",
+    "genre": "Melodic Metal",
+    "email_address": "uNBOUNDINDIA2015@GMAIL.COM",
+    "phone": "919742300253",
+    "number_of_participants": 4,
+    "elimination_preference": "bangalore",
+    "entry1": "https://www.youtube.com/channel/UCwn4mI2Ht7LVjUQsdRMwnQw",
+    "entry2": "https://www.youtube.com/channel/UCwn4mI2Ht7LVjUQsdRMwnQw",
+    "enteries": "https://www.youtube.com/channel/UCwn4mI2Ht7LVjUQsdRMwnQw"
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 18,
+  "fields": {
+    "name": "Unbound India",
+    "genre": "Melodic Metal",
+    "email_address": "uNBOUNDINDIA2015@GMAIL.COM",
+    "phone": "919742300253",
+    "number_of_participants": 4,
+    "elimination_preference": "bangalore",
+    "entry1": "https://www.youtube.com/channel/UCwn4mI2Ht7LVjUQsdRMwnQw",
+    "entry2": "https://www.youtube.com/channel/UCwn4mI2Ht7LVjUQsdRMwnQw",
+    "enteries": "https://www.youtube.com/channel/UCwn4mI2Ht7LVjUQsdRMwnQw"
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 19,
+  "fields": {
+    "name": "INQUILAB",
+    "genre": "Desi pop rock",
+    "email_address": "rahulkhatri219@gmail.com",
+    "phone": "919164084041",
+    "number_of_participants": 3,
+    "elimination_preference": "bangalore",
+    "entry1": "https://youtu.be/2bwNpjBQ890",
+    "entry2": "https://youtu.be/4qoqAs6zy_E",
+    "enteries": ""
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 20,
+  "fields": {
+    "name": "INQUILAB",
+    "genre": "Desi pop rock",
+    "email_address": "rahulkhatri219@gmail.com",
+    "phone": "919164084041",
+    "number_of_participants": 3,
+    "elimination_preference": "bangalore",
+    "entry1": "https://youtu.be/2bwNpjBQ890",
+    "entry2": "https://youtu.be/4qoqAs6zy_E",
+    "enteries": ""
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 21,
+  "fields": {
+    "name": "Sunshine",
+    "genre": "Indie",
+    "email_address": "sunshinem@gmail.com",
+    "phone": "919640580865",
+    "number_of_participants": 5,
+    "elimination_preference": "bangalore",
+    "entry1": "Shjks",
+    "entry2": "Sjjsk",
+    "enteries": "Djjjs"
+  }
+},
+{
+  "model": "preregistration.roctaves",
+  "pk": 22,
+  "fields": {
+    "name": "War Cry",
+    "genre": "Metal ",
+    "email_address": "warcryindia@gmail.com",
+    "phone": "919971056133",
+    "number_of_participants": 5,
+    "elimination_preference": "delhi",
+    "entry1": "https://youtu.be/gLL4dwCz3iw",
+    "entry2": "https://www.instagram.com/p/BielS9tAT12/",
+    "enteries": "https://www.instagram.com/p/BimqHRWAVkB/"
+  }
+},
+{
+  "model": "events.category",
+  "pk": 1,
+  "fields": {
+    "name": "CODING"
+  }
+},
+{
+  "model": "events.participation",
+  "pk": 1,
+  "fields": {
+    "event": 1,
+    "participant": 1,
+    "pcr_approved": true,
+    "cr_approved": true
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 1,
+  "fields": {
+    "name": "Can add log entry",
+    "content_type": 1,
+    "codename": "add_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 2,
+  "fields": {
+    "name": "Can change log entry",
+    "content_type": 1,
+    "codename": "change_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 3,
+  "fields": {
+    "name": "Can delete log entry",
+    "content_type": 1,
+    "codename": "delete_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 4,
+  "fields": {
+    "name": "Can add group",
+    "content_type": 2,
+    "codename": "add_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 5,
+  "fields": {
+    "name": "Can change group",
+    "content_type": 2,
+    "codename": "change_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 6,
+  "fields": {
+    "name": "Can delete group",
+    "content_type": 2,
+    "codename": "delete_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 7,
+  "fields": {
+    "name": "Can add permission",
+    "content_type": 3,
+    "codename": "add_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 8,
+  "fields": {
+    "name": "Can change permission",
+    "content_type": 3,
+    "codename": "change_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 9,
+  "fields": {
+    "name": "Can delete permission",
+    "content_type": 3,
+    "codename": "delete_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 10,
+  "fields": {
+    "name": "Can add user",
+    "content_type": 4,
+    "codename": "add_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 11,
+  "fields": {
+    "name": "Can change user",
+    "content_type": 4,
+    "codename": "change_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 12,
+  "fields": {
+    "name": "Can delete user",
+    "content_type": 4,
+    "codename": "delete_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 13,
+  "fields": {
+    "name": "Can add content type",
+    "content_type": 5,
+    "codename": "add_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 14,
+  "fields": {
+    "name": "Can change content type",
+    "content_type": 5,
+    "codename": "change_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 15,
+  "fields": {
+    "name": "Can delete content type",
+    "content_type": 5,
+    "codename": "delete_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 16,
+  "fields": {
+    "name": "Can add session",
+    "content_type": 6,
+    "codename": "add_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 17,
+  "fields": {
+    "name": "Can change session",
+    "content_type": 6,
+    "codename": "change_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 18,
+  "fields": {
+    "name": "Can delete session",
+    "content_type": 6,
+    "codename": "delete_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 19,
+  "fields": {
+    "name": "Can add roctaves",
+    "content_type": 7,
+    "codename": "add_roctaves"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 20,
+  "fields": {
+    "name": "Can change roctaves",
+    "content_type": 7,
+    "codename": "change_roctaves"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 21,
+  "fields": {
+    "name": "Can delete roctaves",
+    "content_type": 7,
+    "codename": "delete_roctaves"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 22,
+  "fields": {
+    "name": "Can add gen participant",
+    "content_type": 8,
+    "codename": "add_genparticipant"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 23,
+  "fields": {
+    "name": "Can change gen participant",
+    "content_type": 8,
+    "codename": "change_genparticipant"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 24,
+  "fields": {
+    "name": "Can delete gen participant",
+    "content_type": 8,
+    "codename": "delete_genparticipant"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 25,
+  "fields": {
+    "name": "Can add category",
+    "content_type": 9,
+    "codename": "add_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 26,
+  "fields": {
+    "name": "Can change category",
+    "content_type": 9,
+    "codename": "change_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 27,
+  "fields": {
+    "name": "Can delete category",
+    "content_type": 9,
+    "codename": "delete_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 28,
+  "fields": {
+    "name": "Can add intro event",
+    "content_type": 10,
+    "codename": "add_introevent"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 29,
+  "fields": {
+    "name": "Can change intro event",
+    "content_type": 10,
+    "codename": "change_introevent"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 30,
+  "fields": {
+    "name": "Can delete intro event",
+    "content_type": 10,
+    "codename": "delete_introevent"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 31,
+  "fields": {
+    "name": "Can add participation",
+    "content_type": 11,
+    "codename": "add_participation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 32,
+  "fields": {
+    "name": "Can change participation",
+    "content_type": 11,
+    "codename": "change_participation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 33,
+  "fields": {
+    "name": "Can delete participation",
+    "content_type": 11,
+    "codename": "delete_participation"
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$36000$whnMRU3kc1pI$OvQraMmG5mEXZPd6sOEv7OvqRn3uqPa0+hii8o3fibU=",
+    "last_login": "2018-05-20T09:21:27.518Z",
+    "is_superuser": true,
+    "username": "OASIS_2018",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2018-04-24T18:46:04.799Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}

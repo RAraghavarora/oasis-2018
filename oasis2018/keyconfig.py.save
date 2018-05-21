@@ -1,0 +1,3 @@
+DATABASE_NAME = 'oasis_2018'
+DATABASE_USER = 'root2018'
+DATABASE_PASSWORD = 'itsaSe@cret'
