@@ -100,7 +100,7 @@ def gen_index(request):
 
 @api_view(['POST'])
 def PoetrySlamRegistration(request):
-#ps is for poetryslam
+#ps here is for poetryslam
 
     if request.method=='POST':
         try:
@@ -131,7 +131,7 @@ def PoetrySlamRegistration(request):
 
         except KeyError as missing_data:
                 return Response({'message':'Data is Missing: {}'.format(missing_data)})
-                
+
 
 @api_view(['POST'])
 def RapWarsRegistration(request):

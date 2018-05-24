@@ -8,4 +8,4 @@ admin.site.register(GenParticipant)
 admin.site.register(PoetrySlamExtension)
 admin.site.register(RapWarsExtension)
 
-# Register your models here.
+# extension models registered.

@@ -60,3 +60,5 @@ class RapWarsExtension(models.Model):
 			except NameError:
 				IntroEvent.objects.create(name="RapWars")
 				return IntroEvent.objects.get(name="RapWars")
+
+#extension models added
