@@ -28,18 +28,35 @@ class Roctaves(models.Model):
 	def __str__(self):
 		return self.name
 
-class PoetrySlam(models.Model):
-	name = models.CharField(max_length = 50, default='')
-	phone = models.CharField(default = '', blank=False, max_length=13)
-	email_address = models.EmailField(null=False)
-	city = models.CharField(max_length=15)
-	poetryslam_participant= models.ForeignKey(GenParticipant, on_delete=models.CASCADE)
+# this one is just here for formality
+class PoetrySlamExtension(models.Model):
+	participant = models.OneToOneField(GenParticipant)
 
-class RapWars(models.Model):
-	name = models.CharField(max_length = 50, default = '')
-	rapper_name = models.CharField(max_length = 50, blank = True)
-	email_address = models.EmailField(null = False)
-	phone = models.CharField(default='', blank = False, max_length = 13)
-	city = models.CharField(max_length = 20)
-	city_of_participation = models.CharField(max_length = 20)
-	RapWars_participant = models.ForeignKey(GenParticipant, on_delete=models.CASCADE)
+	def __str__(self):
+		name = self.participant.name
+		name += " - Extension"
+		return name
+
+	def getEvent(self):
+		try:
+			return IntroEvent.objects.get(name="PoetrySlam")
+		except NameError:
+			IntroEvent.objects.create(name="PoetrySlam")
+			return IntroEvent.objects.get(name="PoetrySlam")
+
+class RapWarsExtension(models.Model):
+	participant = models.OneToOneField(GenParticipant)
+	rapper_name = models.CharField(max_length=100, default="")
+	city_of_participation = models.CharField(max_length=30, default="")
+
+	def __str__(self):
+		name = self.participant.name
+		name += " - Extension"
+		return name
+
+	def getEvent(self):
+			try:
+				return IntroEvent.objects.get(name="RapWars")
+			except NameError:
+				IntroEvent.objects.create(name="RapWars")
+				return IntroEvent.objects.get(name="RapWars")
