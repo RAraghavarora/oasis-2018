@@ -114,16 +114,9 @@ def PoetrySlamRegistration(request):
             if len (mobile_number)==10:
                 try:
                     number=int(mobile_number)
-                    poetryslam = PoetrySlam()
+                    poetryslam=PoetrySlam()
                     poetryslam.name=request.data['name']
-                    city_1 = request.data['city']
-                    flag = 0
-                    for key in PoetrySlamCities.keys():
-                        if (city.casefold() == key.casefold()):
-                            flag = 1
-                    if (flag==0):
-                        return Response({'message': 'Invalid City of Participation'})
-                    poetryslam.city = request.data['city']
+                    poetryslam.city=request.data['city']
                     poetryslam.phone='91'+mobile_number
                     try:
                         poetryslam.email_address=email
@@ -138,6 +131,7 @@ def PoetrySlamRegistration(request):
 
         except KeyError as missing_data:
                 return Response({'message':'Data is Missing: {}'.format(missing_data)})
+                
 
 @api_view(['POST'])
 def RapWarsRegistration(request):
