@@ -156,4 +156,4 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
     )
 }
-#settings.py updated
+#settings.py update
