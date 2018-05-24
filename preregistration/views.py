@@ -10,12 +10,13 @@ from rest_framework.response import Response
 
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
-
+import unicodedata
 from .models import *
 from .serializers import *
 from preregistration.serializers import *
 
-
+RapWarParticipationCities = {'Delhi': 'Delhi', 'Mumbai': 'Mumbai', 'Kolkata': 'Kolkata'}
+PoetrySlamCities = {'Delhi': 'Delhi', 'Mumbai': 'Mumbai', 'Jaipur': 'Jaipur', 'Lucknow':'Lucknow'}
 @api_view(['POST'])
 def index(request):
 
@@ -96,3 +97,90 @@ def gen_index(request):
 
     except KeyError as missing_data:
             return Response({'message':'Data is Missing: {}'.format(missing_data)})
+
+@api_view(['POST'])
+def PoetrySlamRegistration(request):
+#ps is for poetryslam
+
+    if request.method=='POST':
+        try:
+            email=request.data['email_address'].replace('%40','@')
+
+            if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
+                return Response({"message":"Invalid email"})
+
+            mobile_number=str(request.data['phone'])
+
+            if len (mobile_number)==10:
+                try:
+                    number=int(mobile_number)
+                    poetryslam = PoetrySlam()
+                    poetryslam.name=request.data['name']
+                    city_1 = request.data['city']
+                    flag = 0
+                    for key in PoetrySlamCities.keys():
+                        if (city.casefold() == key.casefold()):
+                            flag = 1
+                    if (flag==0):
+                        return Response({'message': 'Invalid City of Participation'})
+                    poetryslam.city = request.data['city']
+                    poetryslam.phone='91'+mobile_number
+                    try:
+                        poetryslam.email_address=email
+                    except:
+                        return Response({"message":"Invalid email address"})
+                    poetryslam.save()
+                    return Response({'message':'Your registration is complete'})
+                except ValueError:
+                    return Response({'message':'Data entered is not in proper format'})
+            else:
+                return Response({'message':'Mobile number is incorrect'})
+
+        except KeyError as missing_data:
+                return Response({'message':'Data is Missing: {}'.format(missing_data)})
+
+@api_view(['POST'])
+def RapWarsRegistration(request):
+#rw is for rapwars
+
+    if request.method=='POST':
+        try:
+            email=request.data['email_address'].replace('%40','@')
+
+            if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
+                return Response({"message":"Invalid email"})
+
+            mobile_number=str(request.data['phone'])
+
+            if len (mobile_number)==10:
+                try:
+                    number=int(mobile_number)
+                    rapwars = RapWars()
+                    rapwars.name=request.data['name']
+                    try:
+                        rapwars.rapper_name=request.data['rapper_name']
+                    except:
+                        pass
+                    rapwars.city = request.data['city']
+                    rapwars.phone='91'+mobile_number
+                    city_participation = request.data['city_of_participation']
+                    flag = 0
+                    for key in RapWarParticipationCities.keys():
+                        if (city_participation.casefold() == key.casefold()):
+                            flag = 1
+                    if (flag==0):
+                        return Response({'message': 'Invalid City of Participation'})
+                    rapwars.city_of_participation = request.data['city_of_participation']
+                    try:
+                        rapwars.email_address=email
+                    except:
+                        return Response({"message":"Invalid email address"})
+                    rapwars.save()
+                    return Response({'message':'Your registration is complete'})
+                except ValueError:
+                    return Response({'message':'Data entered is not in proper format'})
+            else:
+                return Response({'message':'Mobile number is incorrect'})
+
+        except KeyError as missing_data:
+                return Response({'message':'Data is Missing: {}'.format(missing_data)})
