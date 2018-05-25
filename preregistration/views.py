@@ -104,46 +104,46 @@ def PoetrySlamRegistration(request):
 #ps here is for poetryslam
 
 	if request.method=='POST':
+		# try:
 		try:
+			email=request.data['email_address'].replace('%40','@')
+			if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
+				return Response({"message":"Invalid email"})
+		except KeyError:
+			email=""
+
+		mobile_number=str(request.data['phone'])
+
+		if len (mobile_number)==10:
 			try:
-				email=request.data['email_address'].replace('%40','@')
-				if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
-					return Response({"message":"Invalid email"})
-			except KeyError:
-				email=""
-
-			mobile_number=str(request.data['phone'])
-
-			if len (mobile_number)==10:
+				number=int(mobile_number)
+				poetryslam=PoetrySlamExtension()
+				gp = GenParticipant()
+				gp.name=request.data['name']
+				flag = 0
+				city_1 = request.data['city']
+				for sity in PoetrySlamCities.keys():
+					if(city_1.lower() == sity.lower()):
+						flag = 1
+				if(flag == 0):
+					return Response({'message':'Invalid city. Please enter correct city'})
+				gp.city = request.data['city']
+				gp.phone='91'+mobile_number
 				try:
-					number=int(mobile_number)
-					poetryslam=PoetrySlamExtension()
-					gp = GenParticipant()
-					gp.name=request.data['name']
-					flag = 0
-					city_1 = request.data['city']
-					for sity in PoetrySlamCities.keys():
-						if(city_1.lower() == sity.lower()):
-							flag = 1
-					if(flag == 0):
-						return Response({'message':'Invalid city. Please enter correct city'})
-					gp.city = request.data['city']
-					gp.phone='91'+mobile_number
-					try:
-						gp.email_address=email
-					except:
-						return Response({"message":"Invalid email address"})
-					gp.save()
-					poetryslam.participant = gp
-					poetryslam.save()
-					return Response({'message':'Your registration is complete'})
-				except ValueError:
-					return Response({'message':'Data entered is not in proper format'})
-			else:
-				return Response({'message':'Mobile number is incorrect'})
+					gp.email_address=email
+				except:
+					return Response({"message":"Invalid email address"})
+				gp.save()
+				poetryslam.participant = gp
+				poetryslam.save()
+				return Response({'message':'Your registration is complete'})
+			except ValueError:
+				return Response({'message':'Data entered is not in proper format'})
+		else:
+			return Response({'message':'Mobile number is incorrect'})
 
-		except KeyError as missing_data:
-				return Response({'message':'Data is Missing: {}'.format(missing_data)})
+		# except KeyError as missing_data:
+				# return Response({'message':'Data is Missing: {}'.format(missing_data)})
 
 
 @api_view(['POST'])
