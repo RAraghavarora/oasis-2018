@@ -9,7 +9,7 @@ class GenParticipant(models.Model):
 	city = models.CharField(max_length=100)
 	phone = models.CharField(default='' , blank = False, max_length=13)
 	gender = models.CharField(max_length=6)
-	email_address = models.EmailField(null=False, unique=False)
+	email_address = models.EmailField(null=False, unique=False, default="")
 	def __str__(self):
 		return self.name
 
