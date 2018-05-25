@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'preregistration',
     'events',
-
 ]
 
 MIDDLEWARE = [
@@ -156,3 +155,4 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
     )
 }
+#settings.py update

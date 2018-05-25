@@ -8,3 +8,4 @@ urlpatterns=[
     url(r'^rapwars/$', views.RapWarsRegistration, name='RapWarsRegistration'),
     url(r'^$',views.index,name='index'),    # for Rocktaves teams/bands registration
 ]
+#urls to be reviewed

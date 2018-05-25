@@ -31,3 +31,5 @@ class RapWarsSerializer(serializers.ModelSerializer):
     class Meta:
         model = RapWarsExtension
         fields = ('name', 'rapper_name', 'phone','email_address', 'city', 'city_of_participation')
+
+#serializers changed
