@@ -151,50 +151,50 @@ def RapWarsRegistration(request):
 #rw is for rapwars
 
 	if request.method=='POST':
+		# try:
 		try:
+			email=request.data['email_address'].replace('%40','@')
+			if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
+				return Response({"message":"Invalid email"})
+		except KeyError:
+			email=""
+
+		mobile_number=str(request.data['phone'])
+
+		if len (mobile_number)==10:
 			try:
-				email=request.data['email_address'].replace('%40','@')
-				if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
-					return Response({"message":"Invalid email"})
-			except KeyError:
-				email=""
-
-			mobile_number=str(request.data['phone'])
-
-			if len (mobile_number)==10:
+				number=int(mobile_number)
+				rapwars = RapWarsExtension()
+				gp = GenParticipant()
+				gp.name=request.data['name']
 				try:
-					number=int(mobile_number)
-					rapwars = RapWarsExtension()
-					gp = GenParticipant()
-					gp.name=request.data['name']
-					try:
-						rapwars.rapper_name=request.data['rapper_name']
-					except:
-						pass
+					rapwars.rapper_name=request.data['rapper_name']
+				except:
+					pass
 
-					gp.city = request.data['city']
-					gp.phone='91'+mobile_number
-					city_of_participation = request.data['city_of_participation']
-					flag = 0
-					for sity in RapWarsParticipationCities.keys():
-						if(city_of_participation.lower() == sity.lower()):
-							flag = 1
-					if(flag == 0):
-						return Response({'message':'Invalid city. Please enter correct city'})
+				gp.city = request.data['city']
+				gp.phone='91'+mobile_number
+				city_of_participation = request.data['city_of_participation']
+				flag = 0
+				for sity in RapWarsParticipationCities.keys():
+					if(city_of_participation.lower() == sity.lower()):
+						flag = 1
+				if(flag == 0):
+					return Response({'message':'Invalid city. Please enter correct city'})
 
-					rapwars.city_of_participation = request.data['city_of_participation']
-					try:
-						gp.email_address=email
-					except:
-						return Response({"message":"Invalid email address"})
-					gp.save()
-					rapwars.participant = gp
-					rapwars.save()
-					return Response({'message':'Your registration is complete'})
-				except ValueError:
-					return Response({'message':'Data entered is not in proper format'})
-			else:
-				return Response({'message':'Mobile number is incorrect'})
+				rapwars.city_of_participation = request.data['city_of_participation']
+				try:
+					gp.email_address=email
+				except:
+					return Response({"message":"Invalid email address"})
+				gp.save()
+				rapwars.participant = gp
+				rapwars.save()
+				return Response({'message':'Your registration is complete'})
+			except ValueError:
+				return Response({'message':'Data entered is not in proper format'})
+		else:
+			return Response({'message':'Mobile number is incorrect'})
 
-		except KeyError as missing_data:
-				return Response({'message':'Data is Missing: {}'.format(missing_data)})
+		# except KeyError as missing_data:
+		# 	return Response({'message':'Data is Missing: {}'.format(missing_data)})
