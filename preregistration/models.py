@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.db import models
-#from multiselectfield import MultiSelectField
 
-#from events.models import *
+from events.models import *
 
 class GenParticipant(models.Model):
 	name = models.CharField(max_length=100, null=False)
@@ -40,9 +39,8 @@ class PoetrySlamExtension(models.Model):
 	def getEvent(self):
 		try:
 			return IntroEvent.objects.get(name="PoetrySlam")
-		except NameError:
-			IntroEvent.objects.create(name="PoetrySlam")
-			return IntroEvent.objects.get(name="PoetrySlam")
+		except:
+			return None
 
 class RapWarsExtension(models.Model):
 	participant = models.OneToOneField(GenParticipant)
@@ -55,8 +53,7 @@ class RapWarsExtension(models.Model):
 		return name
 
 	def getEvent(self):
-			try:
-				return IntroEvent.objects.get(name="RapWars")
-			except NameError:
-				IntroEvent.objects.create(name="RapWars")
-				return IntroEvent.objects.get(name="RapWars")
+		try:
+			return IntroEvent.objects.get(name="RapWars")
+		except:
+			return None

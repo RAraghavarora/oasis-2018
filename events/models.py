@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
-from preregistration.models import GenParticipant
+from preregistration.models import *
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -19,7 +19,7 @@ class IntroEvent(models.Model):
     name = models.CharField(max_length=100,unique=True)
     short_description = models.CharField(blank=True,max_length=140)
     rules = models.CharField(blank=True,max_length=200)
-    category = models.ForeignKey('Category', default=3)
+    category = models.ForeignKey('Category', default=3, null=True)
     contact = models.CharField(max_length=140, default='')
 
     def __str__(self):
