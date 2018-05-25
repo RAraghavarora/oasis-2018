@@ -1,0 +1,13 @@
+Username: Eminem
+Password: Rap1ikeyoumean!t
+Event: RapWars
+
+Username: Rocky
+Password: B@$kin101
+Event: "Roctaves"
+
+Username: Shaky
+Password: Thou$hallnotpass
+Event: PoetryProse
+
+
