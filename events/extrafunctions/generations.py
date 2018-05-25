@@ -2,6 +2,51 @@ from openpyxl import Workbook
 from events.models import *
 from preregistration.models import *
 
+def PoetrySlamGeneration(datasheet):
+    datasheet["A1"] = "Name"
+    datasheet.column_dimensions["A"].width = 20
+    datasheet["B1"] = "Phone Number"
+    datasheet.column_dimensions["B"].width = 15
+    datasheet["C1"] = "Email Address"
+    datasheet.column_dimensions["C"].width = 30
+    datasheet["D1"] = "City"
+    datasheet.column_dimensions["D"].width = 10
+
+    counter = 2
+    for poet in PoetrySlamExtension.objects.all():
+        datasheet["A{}".format(counter)] = poet.participant.name
+        datasheet["B{}".format(counter)] = poet.participant.phone
+        datasheet["C{}".format(counter)] = poet.participant.email_address
+        datasheet["D{}".format(counter)] = poet.participant.city
+        counter += 1
+
+def RapWarsGeneration(datasheet):
+    datasheet["A1"] = "Name"
+    datasheet.column_dimensions["A"].width = 20
+    datasheet["B1"] = "Rapper Name"
+    datasheet.column_dimensions["B"].width = 20
+    datasheet["C1"] = "Phone Number"
+    datasheet.column_dimensions["C"].width = 15
+    datasheet["D1"] = "Email Address"
+    datasheet.column_dimensions["D"].width = 30
+    datasheet["E1"] = "Gender"
+    datasheet.column_dimensions["E"].width = 10
+    datasheet["F1"] = "City"
+    datasheet.column_dimensions["F"].width = 10
+    datasheet["G1"] = "City of Participation"
+    datasheet.column_dimensions["G"].width = 20
+
+    counter = 2
+    for rapper in RapWarsExtension.objects.all():
+        datasheet["A{}".format(counter)] = rapper.participant.name
+        datasheet["B{}".format(counter)] = rapper.rapper_name
+        datasheet["C{}".format(counter)] = rapper.participant.phone
+        datasheet["D{}".format(counter)] = rapper.participant.email_address
+        datasheet["E{}".format(counter)] = rapper.participant.gender
+        datasheet["F{}".format(counter)] = rapper.participant.city
+        datasheet["G{}".format(counter)] = rapper.city_of_participation
+        counter += 1
+
 def RocktavesGeneration(datasheet):
     datasheet["A1"] = "Name"
     datasheet.column_dimensions["A"].width = 20
@@ -34,20 +79,3 @@ def RocktavesGeneration(datasheet):
         datasheet["H{}".format(counter)] = Rocktaves.entry2
         datasheet["I{}".format(counter)] = Rocktaves.enteries
         counter += 1
-
-"""
-def RapWarsGeneration(datasheet):
-    datasheet["A1"] = "Name"
-    datasheet.column_dimensions["A"].width = 20
-    datasheet["B1"] = "Rapper Name"
-    datasheet.column_dimensions["B"].width = 20
-    datasheet["C1"] = "Phone Number"
-    datasheet.column_dimensions["C"].width = 15
-    datasheet["D1"] = "City"
-    datasheet.column_dimensions["D"].width = 10
-
-    event = IntroEvent.objects.get(name="RapWars")
-
-    counter = 2
-    for Rapper in
-"""

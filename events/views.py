@@ -15,7 +15,7 @@ from django.core.exceptions import *
 
 from events.models import *
 from preregistration.models import *
-from events.extrafunctions.generations import RocktavesGeneration
+from events.extrafunctions.generations import *
 
 @csrf_exempt
 def Data(request):
@@ -52,14 +52,14 @@ def Data(request):
             datasheet = databook.active
             datasheet.title = "{} Data".format(event.name)
 
-            """
-            if event.name == "PoetryProse":
-                PoetryProseGeneration(datasheet)  # defined in ./extrafunctions/generations.py
+            if event.name == "PoetrySlam":
+                PoetrySlamGeneration(datasheet)  # defined in ./extrafunctions/generations.py
             elif event.name == "RapWars":
                 RapWarsGeneration(datasheet)
-            """
-            if event.name == "Rocktaves" or event.name == "Roctaves":
-                RocktavesGeneration(datasheet)  # change to elif soon
+            elif event.name == "Rocktaves" or event.name == "Roctaves":
+                RocktavesGeneration(datasheet)
+            else:
+                return JsonResponse({"error_message":"Event Invalid."})
 
             # STEP 4: prepare the response and return the document
             response = HttpResponse(content=save_virtual_workbook(databook), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
