@@ -79,3 +79,35 @@ def RocktavesGeneration(datasheet):
         datasheet["H{}".format(counter)] = Rocktaves.entry2
         datasheet["I{}".format(counter)] = Rocktaves.enteries
         counter += 1
+
+def PurpleProseGeneration(datasheet):
+    datasheet["A1"]="Name"
+    datasheet.column_dimensions["A"].width = 20
+    datasheet["B1"]="College"
+    datasheet.column_dimensions["B"].width = 25
+    datasheet["C1"]="Phone Number"
+    datasheet.column_dimensions["C"].width = 15
+    datasheet["D1"]="Email Address"
+    datasheet.column_dimensions["D"].width = 20
+    datasheet["E1"]="Year and Stream of Study"
+    datasheet.column_dimensions["E"].width = 50
+    datasheet["F1"]="City of Participation"
+    datasheet.column_dimensions["F"].width = 25
+    datasheet["G1"]="Entry"
+    datasheet.column_dimensions["G"].width = 50
+
+    counter=2
+    for prose in PurpleProseExtension.object.all():
+        datasheet["A{}".format(counter)] = prose.participant.name
+        datasheet["B{}".format(counter)] = prose.college
+        datasheet["C{}".format(counter)] = prose.participant.phone
+        datasheet["D{}".format(counter)] = prose.participant.email_address
+        datasheet["E{}".format(counter)] = prose.year_and_stream_of_study
+        datasheet["F{}".format(counter)] = prose.city_of_participation
+        datasheet["G{}".format(counter)] = prose.entry
+        counter+=1
+    
+
+    
+
+    

@@ -7,5 +7,6 @@ admin.site.register(Roctaves)
 admin.site.register(GenParticipant)
 admin.site.register(PoetrySlamExtension)
 admin.site.register(RapWarsExtension)
+admin.site.register(PurpleProseExtension)
 
 # extension models registered.

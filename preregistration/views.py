@@ -17,6 +17,8 @@ from preregistration.serializers import *
 
 RapWarsParticipationCities = {'Delhi': 'Delhi', 'Mumbai': 'Mumbai', 'Kolkata': 'Kolkata'}
 PoetrySlamCities = {'Delhi': 'Delhi', 'Mumbai': 'Mumbai', 'Jaipur': 'Jaipur', 'Lucknow':'Lucknow'}
+PurpleProseCities={'Delhi':'Delhi','Jaipur':'Jaipur','Lucknow':'Lucknow','Mumbai':'Mumbai'}
+
 
 @api_view(['POST'])
 def index(request):
@@ -190,6 +192,61 @@ def RapWarsRegistration(request):
 					gp.save()
 					rapwars.participant = gp
 					rapwars.save()
+					return Response({'message':'Your registration is complete'})
+				except ValueError:
+					return Response({'message':'Data entered is not in proper format'})
+			else:
+				return Response({'message':'Mobile number is incorrect'})
+
+		except KeyError as missing_data:
+			return Response({'message':'Data is Missing: {}'.format(missing_data)})
+
+
+
+@api_view(['POST'])
+def PurpleProseRegistration(request):
+	if request.method=='POST':
+		try:
+			try:
+				email=request.data['email_address'].replace('%40','@')
+				if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
+					return Response({"message":"Invalid email"})
+			except KeyError:
+				email=""
+
+			mobile_number=str(request.data['phone'])
+
+			if len (mobile_number)==10:
+				try:
+					number=int(mobile_number)
+					purpleprose = PurpleProseExtension()
+					gp = GenParticipant()
+					gp.name=request.data['name']
+					try:
+						purpleprose.entry=request.data['entry'] #Confirm about it
+						pass
+					except:
+						pass
+
+					gp.phone='91'+mobile_number
+					city_of_participation = request.data['city_of_participation']
+					purpleprose.college=request.data['college']
+					purpleprose.year_and_stream_of_study=request.data['year_and_stream_of_study']
+					flag = 0
+					for sity in PurpleProseCities.keys():
+						if(city_of_participation.lower() == sity.lower()):
+							flag = 1
+					if(flag == 0):
+						return Response({'message':'Invalid city. Please enter correct city'})
+
+					purpleprose.city_of_participation = request.data['city_of_participation']
+					try:
+						gp.email_address=email
+					except:
+						return Response({"message":"Invalid email address"})
+					gp.save()
+					purpleprose.participant = gp
+					purpleprose.save()
 					return Response({'message':'Your registration is complete'})
 				except ValueError:
 					return Response({'message':'Data entered is not in proper format'})

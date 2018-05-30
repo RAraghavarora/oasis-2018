@@ -6,7 +6,7 @@ from events.models import *
 
 class GenParticipant(models.Model):
 	name = models.CharField(max_length=100, null=False)
-	city = models.CharField(max_length=100)
+	city = models.CharField(max_length=100,null=True)
 	phone = models.CharField(default='' , blank = False, max_length=13)
 	gender = models.CharField(max_length=6)
 	email_address = models.EmailField(null=False, unique=False, default="")
@@ -55,5 +55,22 @@ class RapWarsExtension(models.Model):
 	def getEvent(self):
 		try:
 			return IntroEvent.objects.get(name="RapWars")
+		except:
+			return None
+
+class PurpleProseExtension(models.Model):
+	participant=models.OneToOneField(GenParticipant)
+	college=models.CharField(max_length=100,default="")
+	year_and_stream_of_study=models.CharField(max_length=100,default="")
+	city_of_participation = models.CharField(max_length=30, default="")
+	entry=models.CharField(max_length=100,null="")
+
+	def __str__(self):
+		name=self.participant.name
+		name+=" - Extension"
+		return name
+	def getEvent(self):
+		try:
+			return IntroEvent.orbject.get(name="PurpleProse")
 		except:
 			return None
