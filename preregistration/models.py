@@ -6,9 +6,9 @@ from events.models import *
 
 class GenParticipant(models.Model):
 	name = models.CharField(max_length=100, null=False)
-	city = models.CharField(max_length=100,null=True,default='')
+	city = models.CharField(max_length=100,null=True,default='',blank=True)
 	phone = models.CharField(default='' , blank = False, max_length=13)
-	gender = models.CharField(max_length=6,null=True,default='')
+	gender = models.CharField(max_length=6,null=True,default='',blank=True)
 	email_address = models.EmailField(null=False, unique=False, default="")
 	def __str__(self):
 		return self.name
