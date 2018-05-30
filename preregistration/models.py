@@ -74,3 +74,18 @@ class PurpleProseExtension(models.Model):
 			return IntroEvent.orbject.get(name="PurpleProse")
 		except:
 			return None
+
+class StandupSoapboxExtension(models.Model):
+	participant=models.OneToOneField(GenParticipant)
+	time_doing_standup=models.CharField(max_length=20,default="",null=False)
+	previous_competition=models.TextField(max_length=300,default="")
+	def __str__(self):
+		name=self.participant.name
+		name+=" -Extension"
+		return name
+
+	def getEvent(self):
+		try:
+			return IntroEvent.objects.get(name="StandupSoapbox")
+		except:
+			return None

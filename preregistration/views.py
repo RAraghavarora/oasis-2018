@@ -250,3 +250,42 @@ def PurpleProseRegistration(request):
 
 		except KeyError as missing_data:
 			return Response({'message':'Data is Missing: {}'.format(missing_data)})
+
+
+@api_view(['POST'])
+def StandupSoapboxRegistration(request):
+	if request.method=='POST':
+		try:
+			try:
+				email=request.data['email_address'].replace('%40','@')
+				if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
+					return Response({"message":"Invalid email"})
+			except KeyError:
+				email=""
+
+			mobile_number=str(request.data['phone'])
+
+			if len (mobile_number)==10:
+				try:
+					number=int(mobile_number)
+					soapbox = StandupSoapboxExtension()
+					gp = GenParticipant()
+					gp.name=request.data['name']
+					soapbox.time_doing_standup=request.data['time_doing_standup'] #Confirm about it
+					soapbox.previous_competition=request.data['previous_competition']
+					gp.phone='91'+mobile_number
+					try:
+						gp.email_address=email
+					except:
+						return Response({"message":"Invalid email address"})
+					gp.save()
+					soapbox.participant = gp
+					soapbox.save()
+					return Response({'message':'Your registration is complete'})
+				except ValueError:
+					return Response({'message':'Data entered is not in proper format'})
+			else:
+				return Response({'message':'Mobile number is incorrect'})
+
+		except KeyError as missing_data:
+			return Response({'message':'Data is Missing: {}'.format(missing_data)})

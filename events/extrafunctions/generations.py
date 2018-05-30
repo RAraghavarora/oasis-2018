@@ -108,6 +108,29 @@ def PurpleProseGeneration(datasheet):
         counter+=1
     
 
-    
+def StandupSoapboxGeneration(datasheet):
+    datasheet["A1"]="Name"
+    datasheet.column_dimensions["A"].width = 20
+    datasheet["B1"]="Phone Number"
+    datasheet.column_dimensions["B"].width = 15
+    datasheet["C1"]="Email Address"
+    datasheet.column_dimensions["C"].width = 20
+    datasheet["D1"]="Doing standup from last(in months)"
+    datasheet.column_dimensions["C"].width = 30
+    datasheet["E1"]="Previous competitions"
+    datasheet.column_dimensions["E"].width = 60
 
+    counter=2
+
+    for soapbox in StandupSoapboxExtension.objects.all():
+        datasheet["A{}".format(counter)] = soapbox.participant.name
+        datasheet["B{}".format(counter)] = soapbox.participant.phone
+        datasheet["C{}".format(counter)] = soapbox.participant.email_address
+        datasheet["D{}".format(counter)] = soapbox.time_doing_standup
+        datasheet["E{}".format(counter)] = soapbox.previous_competition
+        counter+=1
+        
+           
+    
+    
     
