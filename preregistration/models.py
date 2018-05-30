@@ -63,7 +63,7 @@ class PurpleProseExtension(models.Model):
 	college=models.CharField(max_length=100,default="")
 	year_and_stream_of_study=models.CharField(max_length=100,default="")
 	city_of_participation = models.CharField(max_length=30, default="")
-	entry=models.CharField(max_length=100,null="")
+	entry=models.CharField(max_length=100,null=False)
 
 	def __str__(self):
 		name=self.participant.name

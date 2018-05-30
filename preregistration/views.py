@@ -222,12 +222,7 @@ def PurpleProseRegistration(request):
 					purpleprose = PurpleProseExtension()
 					gp = GenParticipant()
 					gp.name=request.data['name']
-					try:
-						purpleprose.entry=request.data['entry'] #Confirm about it
-						pass
-					except:
-						pass
-
+					purpleprose.entry=request.data['entry'] #Confirm about it
 					gp.phone='91'+mobile_number
 					city_of_participation = request.data['city_of_participation']
 					purpleprose.college=request.data['college']
