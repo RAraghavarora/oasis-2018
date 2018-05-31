@@ -56,6 +56,10 @@ def Data(request):
                 PoetrySlamGeneration(datasheet)  # defined in ./extrafunctions/generations.py
             elif event.name == "RapWars":
                 RapWarsGeneration(datasheet)
+            elif event.name== "PurpleProse":
+                PurpleProseGeneration(datasheet)
+            elif event.name=="StandupSoapbox":
+                StandupSoapboxGeneration(datasheet)
             elif event.name == "Rocktaves" or event.name == "Roctaves":
                 RocktavesGeneration(datasheet)
             else:

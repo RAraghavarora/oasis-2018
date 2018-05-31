@@ -119,6 +119,8 @@ def StandupSoapboxGeneration(datasheet):
     datasheet.column_dimensions["C"].width = 30
     datasheet["E1"]="Previous competitions"
     datasheet.column_dimensions["E"].width = 60
+    datasheet["F1"]="City of Participation"
+    datasheet.column_dimensions["F"].width = 20
 
     counter=2
 
@@ -128,6 +130,7 @@ def StandupSoapboxGeneration(datasheet):
         datasheet["C{}".format(counter)] = soapbox.participant.email_address
         datasheet["D{}".format(counter)] = soapbox.time_doing_standup
         datasheet["E{}".format(counter)] = soapbox.previous_competition
+        datasheet["F{}".format(counter)] = soapbox.city_of_participation
         counter+=1
         
            

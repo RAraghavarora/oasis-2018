@@ -79,6 +79,7 @@ class StandupSoapboxExtension(models.Model):
 	participant=models.OneToOneField(GenParticipant)
 	time_doing_standup=models.CharField(max_length=20,default="",null=False)
 	previous_competition=models.TextField(max_length=300,default="")
+	city_of_participation = models.CharField(max_length=30, default="")
 	def __str__(self):
 		name=self.participant.name
 		name+=" -Extension"
