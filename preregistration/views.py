@@ -18,7 +18,7 @@ from preregistration.serializers import *
 RapWarsParticipationCities = {'Delhi': 'Delhi', 'Mumbai': 'Mumbai', 'Kolkata': 'Kolkata'}
 PoetrySlamCities = {'Delhi': 'Delhi', 'Mumbai': 'Mumbai', 'Jaipur': 'Jaipur', 'Lucknow':'Lucknow'}
 PurpleProseCities={'Delhi':'Delhi','Jaipur':'Jaipur','Lucknow':'Lucknow','Mumbai':'Mumbai'}
-StandupSoapboxCities={'Bengaluru':'Bengaluru','Delhi':'Delhi','Mumbai':'Mumbai'}
+StandupSoapboxCities={'Bengaluru 28 June':'Bengaluru 28 June','Delhi 5 July':'Delhi 5 July','Mumbai 14 July':'Mumbai 14 July','Mumbai 21 July':'Mumbai 21 July'}
 
 @api_view(['POST'])
 def index(request):
