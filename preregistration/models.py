@@ -27,21 +27,6 @@ class Roctaves(models.Model):
 	def __str__(self):
 		return self.name
 
-# this one is just here for formality
-class PoetrySlamExtension(models.Model):
-	participant = models.OneToOneField(GenParticipant)
-
-	def __str__(self):
-		name = self.participant.name
-		name += " - Extension"
-		return name
-
-	def getEvent(self):
-		try:
-			return IntroEvent.objects.get(name="PoetrySlam")
-		except:
-			return None
-
 class RapWarsExtension(models.Model):
 	participant = models.OneToOneField(GenParticipant)
 	rapper_name = models.CharField(max_length=100, default="")

@@ -2,23 +2,6 @@ from openpyxl import Workbook
 from events.models import *
 from preregistration.models import *
 
-def PoetrySlamGeneration(datasheet):
-    datasheet["A1"] = "Name"
-    datasheet.column_dimensions["A"].width = 20
-    datasheet["B1"] = "Phone Number"
-    datasheet.column_dimensions["B"].width = 15
-    datasheet["C1"] = "Email Address"
-    datasheet.column_dimensions["C"].width = 30
-    datasheet["D1"] = "City"
-    datasheet.column_dimensions["D"].width = 10
-
-    counter = 2
-    for poet in PoetrySlamExtension.objects.all():
-        datasheet["A{}".format(counter)] = poet.participant.name
-        datasheet["B{}".format(counter)] = poet.participant.phone
-        datasheet["C{}".format(counter)] = poet.participant.email_address
-        datasheet["D{}".format(counter)] = poet.participant.city
-        counter += 1
 
 def RapWarsGeneration(datasheet):
     datasheet["A1"] = "Name"
