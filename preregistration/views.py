@@ -21,8 +21,7 @@ PurpleProseCities={'Delhi':'Delhi','Jaipur':'Jaipur','Lucknow':'Lucknow','Mumbai
 
 @api_view(['POST'])
 def index(request):
-	request.delete_cookie('sessionid')
-	
+
 	""" Create new Roctaves Teams """
 
 	if request.method=='POST':
@@ -68,8 +67,7 @@ def index(request):
 def gen_index(request):
 
 	""" create new GenParticipant """
-	request.delete_cookie('sessionid')
-	
+
 	try:
 		if request.method=='POST':
 			print(request.data)
@@ -107,8 +105,6 @@ def gen_index(request):
 
 @api_view(['POST'])
 def RapWarsRegistration(request):
-	request.delete_cookie('sessionid')
-	
 #rw is for rapwars
 
 	if request.method=='POST':
@@ -164,8 +160,6 @@ def RapWarsRegistration(request):
 
 @api_view(['POST'])
 def PurpleProseRegistration(request):
-	request.delete_cookie('sessionid')
-	
 	if request.method=='POST':
 		try:
 			try:
@@ -215,14 +209,14 @@ def PurpleProseRegistration(request):
 
 @api_view(['POST'])
 def StandupSoapboxRegistration(request):
-	request.delete_cookie('sessionid')
-	
 	if request.method=='POST':
 		try:
 			try:
 				email=request.data['email_address'].replace('%40','@')
 				if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
-					return Response({"message":"Invalid email"})
+					response = Response({"message":"Invalid email"})
+					response.delete_cookie('sessionid')
+					return response
 			except KeyError:
 				email=""
 
@@ -241,15 +235,25 @@ def StandupSoapboxRegistration(request):
 					try:
 						gp.email_address=email
 					except:
-						return Response({"message":"Invalid email address"})
+						response = Response({"message":"Invalid email address"})
+						response.delete_cookie('sessionid')
+						return response 
 					gp.save()
 					soapbox.participant = gp
 					soapbox.save()
-					return Response({'message':'Your registration is complete'})
+					response = Response({'message':'Your registration is complete'})
+					response.delete_cookie('sessionid')
+					return response
 				except ValueError:
-					return Response({'message':'Data entered is not in proper format'})
+					response = Response({'message':'Data entered is not in proper format'})
+					response.delete_cookie('sessionid')
+					return response
 			else:
-				return Response({'message':'Mobile number is incorrect'})
+				response = Response({'message':'Mobile number is incorrect'})
+				response.delete_cookie('sessionid')
+				return response
 
 		except KeyError as missing_data:
-			return Response({'message':'Data is Missing: {}'.format(missing_data)})
+			response = Response({'message':'Data is Missing: {}'.format(missing_data)})
+			response.delete_cookie('sessionid')
+			return response
