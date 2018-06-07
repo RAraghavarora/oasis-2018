@@ -29,7 +29,9 @@ def index(request):
 			email=request.data['email_address'].replace('%40','@')
 
 			if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
-				return Response({"message":"Invalid email"})
+				response = Response({"message":"Invalid email"})
+				response.delete_cookie('sessionid')
+				return response
 
 			mobile_number=str(request.data['phone'])
 
@@ -51,16 +53,26 @@ def index(request):
 					try:
 						roctaves.email_address=email
 					except:
-						return Response({"message":"Invalid email address"})
+						response = Response({"message":"Invalid email address"})
+						response.delete_cookie('sessionid')
+						return response
 					roctaves.save()
-					return Response({'message':'Your registration is complete'})
+					response = Response({'message':'Your registration is complete'})
+					response.delete_cookie('sessionid')
+					return response
 				except ValueError:
-					return Response({'message':'Data entered is not in proper format'})
+					response = Response({'message':'Data entered is not in proper format'})
+					response.delete_cookie('sessionid')
+					return response
 			else:
-				return Response({'message':'Mobile number is incorrect'})
+				response = Response({'message':'Mobile number is incorrect'})
+				response.delete_cookie('sessionid')
+				return response
 
 		except KeyError as missing_data:
-			 return Response({'message':'Data is Missing: {}'.format(missing_data)})
+			response = Response({'message':'Data is Missing: {}'.format(missing_data)})
+			response.delete_cookie('sessionid')
+			return response
 
 
 @api_view(['POST'])
@@ -112,7 +124,9 @@ def RapWarsRegistration(request):
 			try:
 				email=request.data['email_address'].replace('%40','@')
 				if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
-					return Response({"message":"Invalid email"})
+					response = Response({"message":"Invalid email"})
+					response.delete_cookie('sessionid')
+					return response
 			except KeyError:
 				email=""
 
@@ -137,24 +151,36 @@ def RapWarsRegistration(request):
 						if(city_of_participation.lower() == sity.lower()):
 							flag = 1
 					if(flag == 0):
-						return Response({'message':'Invalid city. Please enter correct city'})
+						response = Response({'message':'Invalid city. Please enter correct city'})
+						response.delete_cookie('sessionid')
+						return response
 
 					rapwars.city_of_participation = request.data['city_of_participation']
 					try:
 						gp.email_address=email
 					except:
-						return Response({"message":"Invalid email address"})
+						response = Response({"message":"Invalid email address"})
+						response.delete_cookie('sessionid')
+						return response
 					gp.save()
 					rapwars.participant = gp
 					rapwars.save()
-					return Response({'message':'Your registration is complete'})
+					response = Response({'message':'Your registration is complete'})
+					response.delete_cookie('sessionid')
+					return response
 				except ValueError:
-					return Response({'message':'Data entered is not in proper format'})
+					response = Response({'message':'Data entered is not in proper format'})
+					response.delete_cookie('sessionid')
+					return response
 			else:
-				return Response({'message':'Mobile number is incorrect'})
+				response = Response({'message':'Mobile number is incorrect'})
+				response.delete_cookie('sessionid')
+				return response
 
 		except KeyError as missing_data:
-			return Response({'message':'Data is Missing: {}'.format(missing_data)})
+			response = Response({'message':'Data is Missing: {}'.format(missing_data)})
+			response.delete_cookie('sessionid')
+			return response
 
 
 
@@ -165,7 +191,9 @@ def PurpleProseRegistration(request):
 			try:
 				email=request.data['email_address'].replace('%40','@')
 				if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",email):
-					return Response({"message":"Invalid email"})
+					response = Response({"message":"Invalid email"})
+					response.delete_cookie('sessionid')
+					return response
 			except KeyError:
 				email=""
 
@@ -187,24 +215,35 @@ def PurpleProseRegistration(request):
 						if(city_of_participation.lower() == sity.lower()):
 							flag = 1
 					if(flag == 0):
-						return Response({'message':'Invalid city. Please enter correct city'})
+						response = Response({'message':'Invalid city. Please enter correct city'})
+						response.delete_cookie('sessionid')
+						return response
 
 					purpleprose.city_of_participation = request.data['city_of_participation']
 					try:
 						gp.email_address=email
 					except:
-						return Response({"message":"Invalid email address"})
+						response = Response({"message":"Invalid email address"})
+						response.delete_cookie('sessionid')
+						return response
 					gp.save()
 					purpleprose.participant = gp
 					purpleprose.save()
-					return Response({'message':'Your registration is complete'})
+					response = Response({'message':'Your registration is complete'})
+					response.delete_cookie('sessionid')
+					return response
 				except ValueError:
-					return Response({'message':'Data entered is not in proper format'})
+					response = Response({'message':'Data entered is not in proper format'})
+					response.delete_cookie('sessionid')
+					return response
 			else:
-				return Response({'message':'Mobile number is incorrect'})
-
+				response =  Response({'message':'Mobile number is incorrect'})
+				response.delete_cookie('sessionid')
+				return response
 		except KeyError as missing_data:
-			return Response({'message':'Data is Missing: {}'.format(missing_data)})
+			response = Response({'message':'Data is Missing: {}'.format(missing_data)})
+			response.delete_cookie('sessionid')
+			return response
 
 
 @api_view(['POST'])
