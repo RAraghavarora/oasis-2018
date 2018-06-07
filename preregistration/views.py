@@ -21,7 +21,8 @@ PurpleProseCities={'Delhi':'Delhi','Jaipur':'Jaipur','Lucknow':'Lucknow','Mumbai
 
 @api_view(['POST'])
 def index(request):
-
+	request.delete_cookie('sessionid')
+	request.delete_cookie('csrftoken')
 	""" Create new Roctaves Teams """
 
 	if request.method=='POST':
@@ -67,7 +68,8 @@ def index(request):
 def gen_index(request):
 
 	""" create new GenParticipant """
-
+	request.delete_cookie('sessionid')
+	request.delete_cookie('csrftoken')
 	try:
 		if request.method=='POST':
 			print(request.data)
@@ -105,6 +107,8 @@ def gen_index(request):
 
 @api_view(['POST'])
 def RapWarsRegistration(request):
+	request.delete_cookie('sessionid')
+	request.delete_cookie('csrftoken')
 #rw is for rapwars
 
 	if request.method=='POST':
@@ -160,6 +164,8 @@ def RapWarsRegistration(request):
 
 @api_view(['POST'])
 def PurpleProseRegistration(request):
+	request.delete_cookie('sessionid')
+	request.delete_cookie('csrftoken')
 	if request.method=='POST':
 		try:
 			try:
@@ -209,6 +215,8 @@ def PurpleProseRegistration(request):
 
 @api_view(['POST'])
 def StandupSoapboxRegistration(request):
+	request.delete_cookie('sessionid')
+	request.delete_cookie('csrftoken')
 	if request.method=='POST':
 		try:
 			try:
