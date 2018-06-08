@@ -80,7 +80,7 @@ def PurpleProseGeneration(datasheet):
     datasheet.column_dimensions["G"].width = 50
 
     counter=2
-    for prose in PurpleProseExtension.object.all():
+    for prose in PurpleProseExtension.objects.all():
         datasheet["A{}".format(counter)] = prose.participant.name
         datasheet["B{}".format(counter)] = prose.college
         datasheet["C{}".format(counter)] = prose.participant.phone

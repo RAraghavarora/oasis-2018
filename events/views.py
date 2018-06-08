@@ -51,10 +51,8 @@ def Data(request):
             databook = Workbook()
             datasheet = databook.active
             datasheet.title = "{} Data".format(event.name)
-
-            if event.name == "PoetrySlam":
-                PoetrySlamGeneration(datasheet)  # defined in ./extrafunctions/generations.py
-            elif event.name == "RapWars":
+  # defined in ./extrafunctions/generations.py
+            if event.name == "RapWars":
                 RapWarsGeneration(datasheet)
             elif event.name== "PurpleProse":
                 PurpleProseGeneration(datasheet)
