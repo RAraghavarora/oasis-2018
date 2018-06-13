@@ -57,7 +57,7 @@ def RocktavesGeneration(datasheet):
     counter = 2
     lst = list(Roctaves.objects.all())
     used = set()
-    res = [x.id for x in lst if x.participant.name.lower().replace(' ','')+x.participant.phone.lower().replace(' ','') not in used and (used.add(x.participant.name.lower().replace(' ','')+x.participant.phone.lower().replace(' ','')) or True)]
+    res = [x.id for x in lst if x.name.lower().replace(' ','')+x.phone.lower().replace(' ','') not in used and (used.add(x.name.lower().replace(' ','')+x.phone.lower().replace(' ','')) or True)]
     data = Roctaves.objects.filter(id__in=res)
     for Rocktaves in data:
         datasheet["A{}".format(counter)] = Rocktaves.name
