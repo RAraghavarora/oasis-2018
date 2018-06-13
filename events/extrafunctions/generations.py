@@ -20,7 +20,11 @@ def RapWarsGeneration(datasheet):
     datasheet.column_dimensions["G"].width = 20
 
     counter = 2
-    for rapper in RapWarsExtension.objects.all().distinct():
+    lst = list(RapWarsExtension.objects.all())
+    used = set()
+    res = [x.id for x in lst if x.participant.name.lower().replace(' ','')+x.participant.phone.lower().replace(' ','') not in used and (used.add(x.participant.name.lower().replace(' ','')+x.participant.phone.lower().replace(' ','')) or True)]
+    data = RapWarsExtension.objects.filter(id__in=res)
+    for rapper in data:
         datasheet["A{}".format(counter)] = rapper.participant.name
         datasheet["B{}".format(counter)] = rapper.rapper_name
         datasheet["C{}".format(counter)] = rapper.participant.phone
@@ -51,7 +55,11 @@ def RocktavesGeneration(datasheet):
     datasheet.column_dimensions["I"].width = 50
 
     counter = 2
-    for Rocktaves in Roctaves.objects.all().distinct():
+    lst = list(Roctaves.objects.all())
+    used = set()
+    res = [x.id for x in lst if x.participant.name.lower().replace(' ','')+x.participant.phone.lower().replace(' ','') not in used and (used.add(x.participant.name.lower().replace(' ','')+x.participant.phone.lower().replace(' ','')) or True)]
+    data = Roctaves.objects.filter(id__in=res)
+    for Rocktaves in data:
         datasheet["A{}".format(counter)] = Rocktaves.name
         datasheet["B{}".format(counter)] = Rocktaves.genre
         datasheet["C{}".format(counter)] = Rocktaves.email_address
@@ -82,7 +90,7 @@ def PurpleProseGeneration(datasheet):
     counter=2
     lst = list(PurpleProseExtension.objects.all())
     used = set()
-    res = [x.id for x in lst if x.participant.name.lower().replace(' ','')+x.college.lower().replace(' ','') not in used and (used.add(x.participant.name.lower().replace(' ','')+x.college.lower().replace(' ','')) or True)]
+    res = [x.id for x in lst if x.participant.name.lower().replace(' ','')+x.participant.phone.lower().replace(' ','') not in used and (used.add(x.participant.name.lower().replace(' ','')+x.participant.phone.lower().replace(' ','')) or True)]
     data = PurpleProseExtension.objects.filter(id__in=res)
 
     for prose in data:
@@ -111,8 +119,11 @@ def StandupSoapboxGeneration(datasheet):
     datasheet.column_dimensions["F"].width = 20
 
     counter=2
-
-    for soapbox in StandupSoapboxExtension.objects.all().distinct():
+    lst = list(StandupSoapboxExtension.objects.all())
+    used = set()
+    res = [x.id for x in lst if x.participant.name.lower().replace(' ','')+x.participant.phone.lower().replace(' ','') not in used and (used.add(x.participant.name.lower().replace(' ','')+x.participant.phone.lower().replace(' ','')) or True)]
+    data = StandupSoapboxExtension.objects.filter(id__in=res)
+    for soapbox in data:
         datasheet["A{}".format(counter)] = soapbox.participant.name
         datasheet["B{}".format(counter)] = soapbox.participant.phone
         datasheet["C{}".format(counter)] = soapbox.participant.email_address
