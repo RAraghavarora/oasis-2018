@@ -20,7 +20,7 @@ def RapWarsGeneration(datasheet):
     datasheet.column_dimensions["G"].width = 20
 
     counter = 2
-    for rapper in RapWarsExtension.objects.all().distinct():
+    for rapper in RapWarsExtension.objects.all().distinct('participant.name'):
         datasheet["A{}".format(counter)] = rapper.participant.name
         datasheet["B{}".format(counter)] = rapper.rapper_name
         datasheet["C{}".format(counter)] = rapper.participant.phone
@@ -51,7 +51,7 @@ def RocktavesGeneration(datasheet):
     datasheet.column_dimensions["I"].width = 50
 
     counter = 2
-    for Rocktaves in Roctaves.objects.all().distinct():
+    for Rocktaves in Roctaves.objects.all().distinct('name'):
         datasheet["A{}".format(counter)] = Rocktaves.name
         datasheet["B{}".format(counter)] = Rocktaves.genre
         datasheet["C{}".format(counter)] = Rocktaves.email_address
@@ -80,7 +80,7 @@ def PurpleProseGeneration(datasheet):
     datasheet.column_dimensions["G"].width = 50
 
     counter=2
-    for prose in PurpleProseExtension.objects.all().distinct():
+    for prose in PurpleProseExtension.objects.all().distinct('participant.name'):
         datasheet["A{}".format(counter)] = prose.participant.name
         datasheet["B{}".format(counter)] = prose.college
         datasheet["C{}".format(counter)] = prose.participant.phone
@@ -107,7 +107,7 @@ def StandupSoapboxGeneration(datasheet):
 
     counter=2
 
-    for soapbox in StandupSoapboxExtension.objects.all().distinct():
+    for soapbox in StandupSoapboxExtension.objects.all().distinct('participant.name'):
         datasheet["A{}".format(counter)] = soapbox.participant.name
         datasheet["B{}".format(counter)] = soapbox.participant.phone
         datasheet["C{}".format(counter)] = soapbox.participant.email_address
