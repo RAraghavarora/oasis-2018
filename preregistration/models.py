@@ -75,3 +75,5 @@ class StandupSoapboxExtension(models.Model):
 			return IntroEvent.objects.get(name="StandupSoapbox")
 		except:
 			return None
+
+
