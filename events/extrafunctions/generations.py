@@ -80,7 +80,12 @@ def PurpleProseGeneration(datasheet):
     datasheet.column_dimensions["G"].width = 50
 
     counter=2
-    for prose in PurpleProseExtension.objects.all().distinct():
+    lst = list(PurpleProseExtension.objects.all())
+    used = set()
+    res = [x.id for x in lst if x.participant.name.lower().replace(' ','')+x.college.lower().replace(' ','') not in used and (used.add(x.participant.name.lower().replace(' ','')+x.college.lower().replace(' ','')) or True)]
+    data = PurpleProseExtension.objects.filter(id__in=res)
+
+    for prose in data:
         datasheet["A{}".format(counter)] = prose.participant.name
         datasheet["B{}".format(counter)] = prose.college
         datasheet["C{}".format(counter)] = prose.participant.phone
@@ -117,6 +122,5 @@ def StandupSoapboxGeneration(datasheet):
         counter+=1
         
            
-    
     
     
