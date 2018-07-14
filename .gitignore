@@ -1,5 +1,10 @@
-*.pyc
-db.sqlite3
+# DIRECTORIES:
 media/
-keyconfig.py
-keyconfig.pyc
+ignore/
+
+# FILES:
+*.pyc
+*_secret
+*.sqlite3
+keyconfig.*
+
