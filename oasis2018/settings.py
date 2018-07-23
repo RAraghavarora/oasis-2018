@@ -86,6 +86,7 @@ try:
             'PASSWORD': DATABASE_PASSWORD,
             'HOST': 'localhost',
             'PORT': '3306',
+            'OPTIONS': {'charset': 'utf8mb4'},
         }
     }
 except Exception as error_message:
