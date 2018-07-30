@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'preregistration',
     'events',
+    'registrations'
 ]
 
 MIDDLEWARE = [
@@ -91,6 +92,7 @@ try:
     }
 except Exception as error_message:
     print("DATABASE SETTINGS ERROR: {}".format(error_message))
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
