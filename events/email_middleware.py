@@ -11,6 +11,7 @@ class AppException(MiddlewareMixin):
         request.META['PATH_INFO'] + request.META['QUERY_STRING'] + request.META['REMOTE_ADDR']
         email.con+='\n' + "Error message is :"
         email.con = email.con +  a +'\n' + traceback.format_exc()
-        email.send_email()
+        print email.con
+        #email.send_email()
         return None
         

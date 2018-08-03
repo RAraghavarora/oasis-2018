@@ -21,7 +21,7 @@ class IntroReg(models.Model):
 	college = models.ForeignKey(College, on_delete = models.CASCADE)
 	email_id = models.EmailField(unique=True)
 	name = models.CharField(max_length=200)
-	phone_no = models.BigIntegerField()
+	mobile_no = models.BigIntegerField()
 
 	def __unicode__(self):
 
