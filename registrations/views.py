@@ -31,20 +31,20 @@ def PreRegistration(request):
 	if request.method == 'POST':
 		try:
 			''' Begin reCAPTCHA validation '''
-            recaptcha_response = request.data['g-recaptcha-response']
-            url = 'https://www.google.com/recaptcha/api/siteverify'
-            values = {
-                'secret': settings.GOOGLE_RECAPTCHA_SECRET_KEY,
-                'response': recaptcha_response
-            }
-            data = urllib.urlencode(values)
-            req = urllib2.Request(url, data)
-            response = urllib2.urlopen(req)
-            result = json.load(response)
-            ''' End reCAPTCHA validation '''
+			recaptcha_response = request.data['g-recaptcha-response']
+			url = 'https://www.google.com/recaptcha/api/siteverify'
+			values = {
+			    'secret': settings.GOOGLE_RECAPTCHA_SECRET_KEY,
+			    'response': recaptcha_response
+			}
+			data = urllib.urlencode(values)
+			req = urllib2.Request(url, data)
+			response = urllib2.urlopen(req)
+			result = json.load(response)
+			''' End reCAPTCHA validation '''
 
-            if result['success']:
-               return Response({'message' : 'Invalid reCaptcha'})
+			if result['success']:
+			   return Response({'message' : 'Invalid reCaptcha'})
 
 			college_name = request.data['college']
 
