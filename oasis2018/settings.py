@@ -76,7 +76,6 @@ WSGI_APPLICATION = 'oasis2018.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-'''
 try:
     from oasis2018.keyconfig import *
     DATABASES = {
@@ -92,13 +91,12 @@ try:
     }
 except Exception as error_message:
     print("DATABASE SETTINGS ERROR: {}".format(error_message))
-'''
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
 
 
 #Keep sensitive info safe
@@ -128,14 +126,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ),
 }
 
 # Internationalization
@@ -161,7 +151,8 @@ STATIC_URL = '/2018/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/2018/media/'
-# GOOGLE_RECAPTCHA_SECRET_KEY = recaptcha_key
+
+GOOGLE_RECAPTCHA_SECRET_KEY = google_recaptcha_secret_key
 
 # LOGIN_URL = '/2018/register/login/'
 
