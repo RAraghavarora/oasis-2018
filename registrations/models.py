@@ -25,4 +25,4 @@ class IntroReg(models.Model):
 
 	def __unicode__(self):
 
-		return "Name: {}; College: {}".format(str(self.name) + ' ' + str(self.college))
+		return str(self.name)+' - '+str(self.college)
