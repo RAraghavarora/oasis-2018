@@ -1,11 +1,7 @@
-#---Imports---#
-#Django Imports
 from rest_framework import serializers
-#Self Imports
-from registrations.models import *
-#---End of Imports---#
 
-#---Serializers---#
+from registrations.models import *
+
 class CollegeSerializer(serializers.ModelSerializer):
     class Meta:
         model = College

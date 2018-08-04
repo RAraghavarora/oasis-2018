@@ -1,10 +1,8 @@
-#---Imports---#
-#Django Imports
 from django.conf.urls import url
+
 from rest_framework_jwt.views import obtain_jwt_token
-#Self Imports
-from . import views
-#---End of Imports---#
+
+from registrations import views
 
 app_name = 'registrations'
 
