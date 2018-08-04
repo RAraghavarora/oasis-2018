@@ -7,4 +7,4 @@ ignore/
 *_secret
 *.sqlite3
 keyconfig.*
-
+*.log
