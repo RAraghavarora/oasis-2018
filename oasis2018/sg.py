@@ -8,7 +8,7 @@ sg = sendgrid.SendGridAPIClient(apikey='SG.4tM-ZZEySDCzV5ITHvpQqg._D6YQJPUkFfF50
 from_email = Email("raghavarora2012.ra@gmail.com")
 email_list = [
     'f20171196@pilani.bits-pilani.ac.in',    
-    ]
+]
 '''
     'f20171016@pilani.bits-pilani.ac.in',
     'f20170216@pilani.bits-pilani.ac.in', 
