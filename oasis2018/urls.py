@@ -25,7 +25,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^preregistration/',include('preregistration.urls')),
     url(r'^events/',include('events.urls')),
-    url(r'^registrations/',include('registrations.urls')),
 ]
 
 

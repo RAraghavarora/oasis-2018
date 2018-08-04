@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'preregistration',
     'events',
-    'registrations'
 ]
 
 MIDDLEWARE = [
@@ -77,7 +76,7 @@ WSGI_APPLICATION = 'oasis2018.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-"""try:
+try:
     from oasis2018.keyconfig import *
     DATABASES = {
         'default': {
@@ -91,13 +90,7 @@ WSGI_APPLICATION = 'oasis2018.wsgi.application'
         }
     }
 except Exception as error_message:
-    print("DATABASE SETTINGS ERROR: {}".format(error_message))"""
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+    print("DATABASE SETTINGS ERROR: {}".format(error_message))
 
 
 #Keep sensitive info safe
@@ -147,11 +140,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = '/2018/static/'
+STATIC_URL = '/static/'
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/2018/media/'
+MEDIA_URL = '/media/'
 
 GOOGLE_RECAPTCHA_SECRET_KEY = google_recaptcha_secret_key
 
