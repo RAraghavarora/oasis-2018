@@ -1,5 +1,5 @@
 from openpyxl import Workbook
-from events.models import *
+#from events.models import *
 from preregistration.models import *
 from django.contrib.auth.models import User
 

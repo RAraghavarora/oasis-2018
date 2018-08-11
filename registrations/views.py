@@ -44,6 +44,7 @@ def PreRegistration(request):
 
 			if result['success']:
 			   return Response({'message' : 'Invalid reCaptcha'})
+			return response
 
 			college_name = request.data['college']
 
