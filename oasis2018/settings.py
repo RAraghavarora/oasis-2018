@@ -51,7 +51,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'oasis2018.middlewares.AppException',
-    'oasis2018.middlewares.RRLoggerMiddleWare',
 ]
 
 ROOT_URLCONF = 'oasis2018.urls'

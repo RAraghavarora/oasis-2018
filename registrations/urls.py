@@ -4,6 +4,6 @@ from registrations import views
 
 app_name = 'registrations'
 
-urlpatterns = [				
-				url(r'^intro/$', views.PreRegistration, name="PreRegistration"),
+urlpatterns = [
+				url(r'^intro/$', views.PreRegistration.as_view(), name="PreRegistration"),
 			]

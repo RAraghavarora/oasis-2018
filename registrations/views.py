@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import json
 import re
-import unicodedata
+import json
 import urllib
+import unicodedata
 
 from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 
 from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
@@ -19,15 +20,14 @@ from registrations.models import *
 from registrations.serializers import *
 
 
-@api_view(['GET', 'POST'])
-def PreRegistration(request):
+class PreRegistration(APIView):
 
-	if request.method == 'GET':
+	def get(self, request, format=None):
 		college_list = College.objects.all()
 		serializer = CollegeSerializer(college_list, many = True)
 		return Response(serializer.data)
 
-	if request.method == 'POST':
+	def post(self, request, format=None):
 		try:
 			''' Begin reCAPTCHA validation '''
 			recaptcha_response = request.data['g-recaptcha-response']
@@ -36,10 +36,10 @@ def PreRegistration(request):
 			    'secret': settings.GOOGLE_RECAPTCHA_SECRET_KEY,
 			    'response': recaptcha_response
 			}
-			data = urllib.request.urlencode(values)
-			req = urllib.request.Request(url, data)
-			response = urllib.urlopen(req)
-			result = json.load(response)
+			data = urllib.parse.urlencode(values).encode()
+			req =  urllib.request.Request(url, data=data)
+			response = urllib.request.urlopen(req)
+			result = json.loads(response.read().decode())
 			''' End reCAPTCHA validation '''
 
 			if result['success']:
