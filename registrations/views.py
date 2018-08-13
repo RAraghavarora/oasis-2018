@@ -43,31 +43,25 @@ class PreRegistration(APIView):
 			''' End reCAPTCHA validation '''
 
 			if result['success']:
-				return Response({'message' : 'Invalid reCaptcha'})
+				response = Response({'message' : 'Invalid reCaptcha', 'x_status': 0})
+				response.delete_cookie('sessionid')
 				return response
 
-			college_name = request.data['college']
-
-			if college_name.upper() == 'OTHERS':
-				college_name = request.data['other_college'].upper()
-				try:
-					if College.objects.get(name = college_name):
-						pass
-				except:
-					college = College()
-					college.name = request.data['other_college'].upper()
-					college.save()
-
-			college = College.objects.get(name = college_name)
+			try:
+				college = College.objects.get(name = request.data['college'])
+			except:
+				response = Response({'message' : 'Nice try.... stay away from dev tools kid.', 'x_status': 999})
+				response.delete_cookie('sessionid')
+				return response
 
 			email_id = request.data['email_id'].lower().strip()
 			if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email_id):
-				response = Response({"message":"Invalid email"})
+				response = Response({'message' : 'Nice try.... stay away from dev tools kid.', 'x_status': 999})
 				response.delete_cookie('sessionid')
 				return response
 			try:
 				if IntroReg.objects.get(email_id = email_id):
-					response = Response({'message' : 'Email already registered.'})
+					response = Response({'message' : 'Email already registered.', 'x_status': 2})
 					response.delete_cookie('session_id')
 					return response
 			except:
@@ -75,7 +69,7 @@ class PreRegistration(APIView):
 
 			mobile_no = str(request.data['mobile_no'])
 			if(len(mobile_no) is not int(10)):
-				response =  Response({'message' : 'Incorrect Mobile Number.'})
+				response =  Response({'message' : 'Incorrect Mobile Number.', 'x_status': 3})
 				response.delete_cookie('session_id')
 				return response
 
@@ -95,6 +89,6 @@ class PreRegistration(APIView):
 			return Response({"message":"Your registration is complete."})
 
 		except KeyError as missing_data:
-			response = Response({'message':'Data is Missing: {}'.format(missing_data)})
+			response = Response({'message':'Data is Missing: {}'.format(missing_data), 'x_status': 4})
 			response.delete_cookie('sessionid')
 			return response
