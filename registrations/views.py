@@ -42,7 +42,7 @@ class PreRegistration(APIView):
 			result = json.loads(response.read().decode())
 			''' End reCAPTCHA validation '''
 
-			if result['success']:
+			if not result['success']:
 				response = Response({'message' : 'Invalid reCaptcha', 'x_status': 0})
 				response.delete_cookie('sessionid')
 				return response
