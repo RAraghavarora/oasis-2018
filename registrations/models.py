@@ -25,3 +25,6 @@ class IntroReg(models.Model):
 
 	def __unicode__(self):
 		return str(self.name)+' - '+str(self.college)
+
+	def __str__(self):
+		return str(self.name)+' - '+str(self.college)

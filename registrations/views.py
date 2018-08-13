@@ -43,8 +43,8 @@ class PreRegistration(APIView):
 			''' End reCAPTCHA validation '''
 
 			if result['success']:
-			   return Response({'message' : 'Invalid reCaptcha'})
-			return response
+				return Response({'message' : 'Invalid reCaptcha'})
+				return response
 
 			college_name = request.data['college']
 
