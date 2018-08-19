@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'preregistration',
     'events',
     'registrations',
+    'analytics',
 ]
 
 MIDDLEWARE = [
@@ -50,8 +51,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'oasis2018.middlewares.AppException',
 ]
+
+try:
+    if SERVER:
+        MIDDLEWARE.append('oasis2018.middlewares.AppException')
+except:
+    print("STATUS 500 EMAIL MIDDLEWARE LOCALLY DISABLED")
 
 ROOT_URLCONF = 'oasis2018.urls'
 
@@ -147,6 +153,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/2018/media/'
 
 GOOGLE_RECAPTCHA_SECRET_KEY = google_recaptcha_secret_key
+
+APPEND_SLASH = False
 
 # LOGIN_URL = '/2018/register/login/'
 

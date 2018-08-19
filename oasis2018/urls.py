@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^preregistration/',include('preregistration.urls')),
     url(r'^events/',include('events.urls')),
     url(r'^registrations/',include('registrations.urls')),
+    url(r'^analytics/', include('analytics.urls')),
 ]
 
 
