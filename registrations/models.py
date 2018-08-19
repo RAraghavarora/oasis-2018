@@ -13,8 +13,8 @@ class College(models.Model):
 
 	name = models.CharField(max_length=200, unique=True)
 
-	def __unicode__(self):
-		return str(self.name)
+	def __str__(self):
+		return (self.name)
 
 class IntroReg(models.Model):
 
