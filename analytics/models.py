@@ -13,3 +13,8 @@ class Video(models.Model):
     def incrementViews(self):
         self.views += 1
         self.save()
+
+class ViewTimer(models.Model):
+    date = models.DateField(auto_now_add=True)
+    time = models.TimeField(auto_now_add=True)
+    seconds_viewed = models.IntegerField(default=0)
