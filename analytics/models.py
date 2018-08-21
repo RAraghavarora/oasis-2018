@@ -17,4 +17,10 @@ class Video(models.Model):
 class ViewTimer(models.Model):
     date = models.DateField(auto_now_add=True)
     time = models.TimeField(auto_now_add=True)
-    seconds_viewed = models.IntegerField(default=0)
+    seconds_viewed = models.FloatField(default=0)
+
+    def __str__(self):
+        return self.seconds_viewed
+
+    def __unicode__(self):
+        return self.seconds_viewed
