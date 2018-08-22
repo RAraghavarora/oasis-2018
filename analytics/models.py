@@ -20,7 +20,7 @@ class ViewTimer(models.Model):
     seconds_viewed = models.FloatField(default=0)
 
     def __str__(self):
-        return self.seconds_viewed
+        return str(self.seconds_viewed)
 
     def __unicode__(self):
-        return self.seconds_viewed
+        return str(self.seconds_viewed)
