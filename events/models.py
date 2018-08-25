@@ -42,7 +42,7 @@ class MainEvent(models.Model):
     """ All the main events for oasis """
     name = models.CharField(max_length = 100, unique=True)
     content = RichTextField()
-    appcontent = models.TexField(max_length = 3000, default='')
+    appcontent = models.TextField(max_length = 3000, default='')
     short_description = models.CharField(blank=True, max_length=140)
     rules = models.CharField(blank=True, max_length=200)
     detail_rules = models.TextField(max_length=300, default='', null=True, blank=True)
@@ -64,7 +64,7 @@ class MainEvent(models.Model):
 class MainParticipation(models.Model):
     """ Participation of a particular participant in a particular event """
     
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    event = models.ForeignKey(MainEvent, on_delete=models.CASCADE)
     participant = models.ForeignKey('registrations.Participant',on_delete = models.CASCADE, null=True)
     pcr_approved = models.BooleanField(default = False)
     cr_approved = models.BooleanField(default = False)
@@ -72,10 +72,10 @@ class MainParticipation(models.Model):
     def __str__(self):
         return str(self.event.name) + '-' + str(self.participant.name)
 
-class MainProfShow():
+class MainProfShow(models.Model):
     
     name = models.CharField(max_length=100, unique=True)
-    appcontent = models.TexField(max_length = 3000, default = '')
+    appcontent = models.TextField(max_length = 3000, default = '')
     short_description = models.CharField(blank=True, max_length=140)
     date = models.CharField(max_length=100, default='TBA')
     time = models.CharField(max_length=100, default='TBA')
