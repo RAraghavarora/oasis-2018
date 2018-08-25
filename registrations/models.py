@@ -28,3 +28,14 @@ class IntroReg(models.Model):
 
 	def __str__(self):
 		return str(self.name)+' - '+str(self.college)
+
+#####################      MAIN MODELS       #######################
+
+def user_directory_path(instance, filename):
+	return 'user_{0}/{1}'.format(instance_user_id, filename)
+
+class PaymentGroup(models.Model):
+	amount_paid = models.IntegerField(default=0)
+	created_time = models.DateTimeField(auto_now = True)
+
+class 
