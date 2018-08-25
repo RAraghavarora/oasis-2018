@@ -1,3 +1,5 @@
+#File to send an email to all the backend team in case of any exception in the website using SendGrid
+
 # using SendGrid's Python Library
 # https://github.com/sendgrid/sendgrid-python
 import sendgrid
@@ -6,6 +8,7 @@ from sendgrid.helpers.mail import *
 
 sg = sendgrid.SendGridAPIClient(apikey='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')
 from_email = Email("raghavarora2012.ra@gmail.com")
+
 email_list = [
     'f20171196@pilani.bits-pilani.ac.in',
     'f20171016@pilani.bits-pilani.ac.in',
@@ -16,7 +19,7 @@ email_list = [
     'f2016036@pilani.bits-pilani.ac.in',
     'f2016153@pilani.bits-pilani.ac.in',
     'f2015831@pilani.bits-pilani.ac.in',
-    'f2015129@pilani.bits-pilani.ac.in'
+    
 ]
 
 con = '''
