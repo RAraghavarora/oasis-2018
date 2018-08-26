@@ -148,11 +148,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = '/backend_static/'
+STATIC_URL = '/2018/backend-static/'
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_URL = '/2018/backend-media/'
 
 GOOGLE_RECAPTCHA_SECRET_KEY = google_recaptcha_secret_key
 
