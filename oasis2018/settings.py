@@ -41,11 +41,13 @@ INSTALLED_APPS = [
     'events',
     'registrations',
     'analytics',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -159,6 +161,6 @@ APPEND_SLASH = False
 # LOGIN_URL = '/2018/register/login/'
 
 
-# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
 
 #settings.py update
