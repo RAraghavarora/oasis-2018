@@ -49,15 +49,21 @@ class Participant(models.Model):
 		)
 
 	name = models.CharField(max_length=200)
-	barcode = models.CharField(max_length=50, null=True)
+	gender = models.CharField(max_length=10, choices=GENDERS)
+	city = models.CharField(max_length=100, null=True)
 	email = models.EmailField(unique=True)
 	college = models.ForeignKey(College, on_delete=None, null=True)
-	city = models.CharField(max_length=100, null=True)
-	state = models.CharField(max_length=50)
 	phone = models.BigIntegerField()
-	gender = models.CharField(max_length=10, choices=GENDERS)
-	year_of_study = models.CharField(max_length=3, null=True)
 	head_of_society = models.BooleanField(default=False)
+	barcode = models.CharField(max_length=50, null=True)
+	
+	
+	
+	state = models.CharField(max_length=50)
+	
+	
+	year_of_study = models.CharField(max_length=3, null=True)
+	
 	user = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
 	profile_pic = models.ImageField(upload_to=user_directory_path, null=True)
 	verify_docs = models.ImageField(upload_to=user_directory_path, null=True, default=None)

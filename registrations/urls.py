@@ -6,6 +6,6 @@ app_name = 'registrations'
 
 urlpatterns = [
 				url(r'^intro/$', intro.PreRegistration.as_view(), name="PreRegistration"),
-				url(r'^pa',participants.index,name='home'),
+				url(r'^$',participants.index,name='home'),
 				url(r'^hello',participants.abc,name='index')
 			]
