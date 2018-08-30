@@ -54,44 +54,40 @@ class Participant(models.Model):
 	email = models.EmailField(unique=True)
 	college = models.ForeignKey(College, on_delete=None, null=True)
 	phone = models.BigIntegerField()
-	head_of_society = models.BooleanField(default=False)
 	barcode = models.CharField(max_length=50, null=True)
-	
-	
-	
 	state = models.CharField(max_length=50)
-	
-	
 	year_of_study = models.CharField(max_length=3, null=True)
-	
 	user = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
 	profile_pic = models.ImageField(upload_to=user_directory_path, null=True)
 	verify_docs = models.ImageField(upload_to=user_directory_path, null=True, default=None)
-	email_verified = models.BooleanField(default=False)
 	email_token = models.CharField(max_length=32, null=True, blank=True)
+	payment_group = models.ForeignKey(PaymentGroup, on_delete=models.SET_NULL, null=True)
+	email_group = models.ForeignKey(EmailGroup, on_delete=models.SET_NULL, null=True)
+	group = models.ForeignKey('Group', on_delete=models.SET_NULL, null=True)
+	# room = models.ForeignKey('regsoft.Room', null=True, blank=True)
+	# bill = models.ForeignKey('regsoft.Bill' ,null=True, on_delete=models.SET_NULL)
+	recnacc_time = models.DateTimeField(null=True, auto_now=False)
+	events = models.ManyToManyField(MainEvent, through=MainParticipation)
+	checkout_group = models.ForeignKey('CheckoutGroup', on_delete=models.SET_NULL, null=True)
+	ems_code = models.CharField(max_length=10, default='', null=True)
+	bits_id = models.CharField(max_length=20, null=True, blank=True)
+	# Boolean fields
+	head_of_society = models.BooleanField(default=False)
+	email_verified = models.BooleanField(default=False)
 	is_cr = models.BooleanField(default=False)
 	pcr_approved = models.BooleanField(default=False)
 	paid = models.BooleanField(default=False)
-	payment_group = models.ForeignKey(PaymentGroup, on_delete=models.SET_NULL, null=True)
 	pcr_final = models.BooleanField(default=False)
-	email_group = models.ForeignKey(EmailGroup, on_delete=models.SET_NULL, null=True)
 	firewallz_passed = models.BooleanField(default=False)
-	group = models.ForeignKey('Group', on_delete=models.SET_NULL, null=True)
 	acco = models.BooleanField(default=False)
-	# room = models.ForeignKey('regsoft.Room', null=True, blank=True)
 	controlz = models.BooleanField('controlz passed', default=False)
 	controlz_paid = models.BooleanField(default=False)
 	curr_paid = models.BooleanField(default=False)
 	curr_controlz_paid = models.BooleanField(default=False)
-	# bill = models.ForeignKey('regsoft.Bill' ,null=True, on_delete=models.SET_NULL)
-	recnacc_time = models.DateTimeField(null=True, auto_now=False)
 	is_g_leader = models.BooleanField(default=False)
-	events = models.ManyToManyField(MainEvent, through=MainParticipation)
 	cr_approved = models.BooleanField(default=False)
-	checkout_group = models.ForeignKey('CheckoutGroup', on_delete=models.SET_NULL, null=True)
-	ems_code = models.CharField(max_length=10, default='', null=True)
 	is_guest = models.BooleanField(default=False)
-	bits_id = models.CharField(max_length=20, null=True, blank=True)
+
 
 	def __str__(self):
 		return (self.name) + ' - ' + str(self.college.name)

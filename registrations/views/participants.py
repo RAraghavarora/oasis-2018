@@ -9,6 +9,7 @@ import re
 from registrations.views import send_grid
 import sendgrid
 from sendgrid.helpers.mail import *
+from utils.registrations import *
 
 def index(request):
     if request.user.is_authenticated():
@@ -77,7 +78,7 @@ def index(request):
             generate_email_token(Participant.objects.get(email=send_to)) + '/'
             mail.body = mail.body%(name, verify_email_url)
             content = Content('text/html', mail.body)
-            # str(request.build_absolute_uri(reverse("registrations:index"))) 
+            # 
             
             try:
                 mail_1 = Mail(mail.from_email, mail.subject, to_email, content)
