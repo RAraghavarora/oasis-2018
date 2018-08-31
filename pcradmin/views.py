@@ -259,17 +259,6 @@ def edit_participant(request,part_id):
         participant.save()
         return redirect(reverse('pcradmin:select_college_rep', kwargs={'id':participant.college.id}))
     return render(request,'pcradmin/edit_part.html',{'particpant':participant})
-
-        
-
-
-
-
-
-            
-
-
-
 @login_required
 def user_logout(request):
 	logout(request)
