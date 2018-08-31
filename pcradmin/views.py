@@ -52,23 +52,9 @@ def select_college_rep(request,id):
             part_id=data['data']
         except:
             messages.warning(request,'Select a participant')
+        return redirect(request.META.get('HTTP_REFERER'))
 
-
-################      STATS       ####################            
-@staff_member_required
-def stats(request, order=None):
-    if order==None:
-        order='collegewise'
-    if order=='collegewise':
-        rows = []
-        for college in College.objects.all():
-            participants = college.participant_set.all()
-            try:
-                cr_participant = participants.filter(is_cr=True)[0]
-                cr = 'True (' + cr_participant.name + ')'
-            except:
-                cr = False
-            return redirect(request.META.get('HTTP_REFERER'))
+## review
         if data['submit']=='delete':
             part=Participant.objects.get(id=part_id)
             user=part.user
@@ -276,13 +262,23 @@ def edit_participant(request,part_id):
         return redirect(reverse('pcradmin:select_college_rep', kwargs={'id':participant.college.id}))
     return render(request,'pcradmin/edit_part.html',{'particpant':participant})
 
-        
 
 
 
-
-
-
+################      STATS       ####################            
+@staff_member_required
+def stats(request, order=None):
+    if order==None:
+        order='collegewise'
+    if order=='collegewise':
+        rows = []
+        for college in College.objects.all():
+            participants = college.participant_set.all()
+            try:
+                cr_participant = participants.filter(is_cr=True)[0]
+                cr = 'True (' + cr_participant.name + ')'
+            except:
+                cr = False
             
             male_participants = participants.filter(gender='M')
             female_participants = participants.filter(gender='F')
@@ -571,10 +567,6 @@ def participants_count(participants):
 
 def get_cr_name(participant):
     return MainParticipation.objects.get(college=participant.college, is_cr=True).name
-
-
-
-
 
 @login_required
 def user_logout(request):
