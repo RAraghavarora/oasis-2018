@@ -1,4 +1,4 @@
-from registrations.models import Participant
+'''from registrations.models import Participant
 def generate_email_token(participant):
 
 	import uuid
@@ -11,4 +11,4 @@ def generate_email_token(participant):
 	participant.email_token = token
 	participant.save()
 
-	return token
+	return token '''

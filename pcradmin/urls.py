@@ -7,5 +7,9 @@ urlpatterns = [
 	url(r'^college/$', views.college, name='college'),
     url(r'^college_rep/(?P<id>\d+)/$', views.select_college_rep, name='select_college_rep'),
     url(r'^approve_participations/(?P<id>\d+)/$', views.approve_participations, name='approve_participations'),
+    url(r'^add_college/$', views.add_college, name='add_college'),    
+    url(r'^logout/$', views.user_logout, name='user-logout'),
+    url(r'^edit_particpant/(?P<id>\d+)/$', views.edit_participant, name='edit_participant'),
+    url(r'^contacts/$', views.contacts, name='contacts'),
 
 ]

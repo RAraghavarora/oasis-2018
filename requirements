@@ -18,3 +18,5 @@ pytz==2018.4
 requests==2.19.1
 sendgrid==5.4.1
 urllib3==1.23
+xlsxwriter
+reportlab

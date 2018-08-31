@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'events',
     'registrations',
     'analytics',
-    'pcradmin'
+    'pcradmin',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
