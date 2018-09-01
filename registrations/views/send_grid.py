@@ -22,7 +22,7 @@ class sendmail(object):
 
 	Greetings from BITS Pilani!
 
-	It gives me immense pleasure in inviting your institute to the 47th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 31st to November 4th.
+	It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 31st to November 4th.
 
 	Please apply as soon as possible to enable us to confirm your participation at the earliest.
 
@@ -38,12 +38,11 @@ class sendmail(object):
 	StuCCAn (Head)
 	Dept. of Publications & Correspondence, OASIS 2017
 	BITS Pilani
-	+91-9828529994
+	+91-80033 05723
 	pcr@bits-oasis.org
 	</pre>
 	'''
 
 	from_email = Email('register@bits-oasis.org')
-	to_email = Email('raghav@raraghavarora.me')
 	subject = "Registration for OASIS '18"
 	
