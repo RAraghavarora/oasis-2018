@@ -1,8 +1,9 @@
 from events.models import MainParticipation, MainEvent
 from registrations.models import Participant,College,MainEvent
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 import requests
 from oasis2018 import keyconfig
+from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse,JsonResponse
 from django.urls import reverse
 import re
@@ -10,6 +11,7 @@ from registrations.views import send_grid
 import sendgrid
 from sendgrid.helpers.mail import *
 from utils.registrations import *
+from django.contrib import messages
 
 def index(request):
     '''
@@ -19,7 +21,10 @@ def index(request):
         user = request.user
         participant = Participant.objects.get(user=user)
         participation_set = MainParticipation.objects.filter(participant=participant)
-        cr = Participant.objects.get(college=participant.college, is_cr=True)
+        try:
+            cr = Participant.objects.get(college=participant.college, is_cr=True)
+        except:
+            return JsonResponse({'status':0, 'message':'Sorry, you can\'t access this page.'})
         return render(request,'registrations/home.html',{'participant':participant,\
         'participations':participation_set,'cr':cr})
     
@@ -98,9 +103,37 @@ def index(request):
             return JsonResponse({'status':1,'message':message})
         return HttpResponse('Redirect')
 
-def abc(request):
-    print(" ABC ")
-    return HttpResponse(str(request.build_absolute_uri(reverse("registrations:index"))))
+def home(request):
+    '''
+    Login page
+    '''
+    if request.method == 'POST':
+        print(request.POST)
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username = username, password = password)
+        
+        if user is not None:
+            if user.is_active:
+                if not user.participant.email_verified:
+                    message = "It seems you haven\'t verified your email yet. Please verify it as soon as possible to proceed. \
+                    For any query, call the following members of the Department of Publications and Correspondence. Aditi Pandey: %s - pcr@bits-oasis.org .'%(get_pcr_number()), 'url':request.build_absolute_uri(reverse('registrations:home'))"
+                    context = {'error_heading':'Email not verified','message' : message}
+                login(request,user)
+                return redirect('registrations:index')
+            else:
+                message="Your account is currently INACTIVE. To activate it, call the following members of the \
+                Department of Publications and Correspondence. Aditi Pandey: %s - pcr@bits-bosm.org .'%(get_pcr_number()), 'url':request.build_absolute_uri(reverse('registrations:home'))"
+                context = {'error_heading':'Email not verified','message':message}
+                return render(request,'registrations/message.html',context)
+        else:
+            messages.warning(request,'Invalid login credentials')
+            return redirect(request.META.get('HTTP_REFERER'))
+    
+    elif request.method == 'GET':
+        return render(request,'registrations/login.html')
+        
+
 
 def email_confirm(request,token):
     member = authenticate_email_token(token)

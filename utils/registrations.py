@@ -27,3 +27,8 @@ def authenticate_email_token(token):
 		return participant
 	except :
 		return False
+
+def get_pcr_number():
+	number_list = [0000000000]
+	from random import randint
+	return number_list[randint(0,0)]
