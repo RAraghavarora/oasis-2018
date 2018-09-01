@@ -1,0 +1,100 @@
+{% extends "registrations/base.html" %}
+{% block body %}
+{% if added_list %}
+<div class="card">
+    <div class="header">
+        <h2>
+            Already added events
+        </h2>
+    </div>
+	<div class="body">
+	<form action="" method="post">
+	{% csrf_token %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover dataTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Approved</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Name</th>
+                        <th>Approved</th>
+                        <th>Select</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                	{% for i in added_list %}
+                    <tr>
+                        <td>{{i.event.name}}</td>
+                        {% if i.pcr_approved %}
+                        <td>Yes</td>
+                        <td></td>
+                        {% else %}
+                        <td>No</td>
+                        <td>
+                        	<input type="checkbox" name="events_id" id="{{i.event.id}}" value="{{i.event.id}}">
+                        	<label for="{{i.event.id}}"></label>
+						</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <input type="hidden" value="remove" name="action">
+            <button type="submit" class="btn btn-primary btn-lg m-l-15 waves-effect">Remove</button>
+        </div>
+	</form>
+    </div>
+</div>
+{% endif %}
+
+
+
+{% if not_added_list %}
+<div class="card">
+    <div class="header">
+        <h2>
+            Unlisted Events
+        </h2>
+    </div>
+	<div class="body">
+	<form action="" method="post">
+	{% csrf_token %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover dataTable">
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Event</th>
+                        <th>Select</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                	{% for i in not_added_list %}
+                    <tr>
+                        <td>{{i.name}}</td>
+                        <td>
+                        	<input type="checkbox" name="events_id" id="{{i.id}}" value="{{i.id}}">
+                        	<label for="{{i.id}}"></label>
+						</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <input type="hidden" value="add" name="action">
+            <button type="submit" class="btn btn-primary btn-lg m-l-15 waves-effect">Add</button>
+        </div>
+	</form>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

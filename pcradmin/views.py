@@ -229,15 +229,15 @@ def add_college(request):
             college.delete()
             messages.warning(request, 'College succesfully deleted')
             return redirect('pcradmin:add_college')
-    	rows = [{'data':[college.name, college.participant_set.all().count(),  college.participant_set.filter(pcr_approved=True).count()], 'id':college.id, 'link':[{'title':'Select College Representative', 'url':reverse('pcradmin:select_college_rep', kwargs={'id':college.id})}]} for college in College.objects.all()]
+        rows = [{'data':[college.name, college.participant_set.all().count(),  college.participant_set.filter(pcr_approved=True).count()], 'id':college.id, 'link':[{'title':'Select College Representative', 'url':reverse('pcradmin:select_college_rep', kwargs={'id':college.id})}]} for college in College.objects.all()]
         headings = ['Name', 'Registered Participants' , 'PCr approved Participants', 'Select/Modify CR']
         title="College List"
         table = {
-		'rows':rows,
-		'headings':headings,
-		'title':title,
-	}
-	return render(request, 'pcradmin/add_college.html', {'table':table})
+        'rows':rows,
+        'headings':headings,
+        'title':title,
+    }
+    return render(request, 'pcradmin/add_college.html', {'table':table})
 
 @staff_member_required
 def edit_participant(request,part_id):

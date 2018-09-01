@@ -12,6 +12,9 @@ from sendgrid.helpers.mail import *
 from utils.registrations import *
 
 def index(request):
+    '''
+    To register a new participant and send him a verification link
+    '''
     if request.user.is_authenticated():
         user = request.user
         participant = Participant.objects.get(user=user)
@@ -76,6 +79,7 @@ def index(request):
             to_email = Email(send_to)
             verify_email_url = str(request.build_absolute_uri(reverse("registrations:index"))) + 'email_confirm/' + \
             generate_email_token(Participant.objects.get(email=send_to)) + '/'
+            print('Email url \t',verify_email_url)
             mail.body = mail.body%(name, verify_email_url)
             content = Content('text/html', mail.body)
             # 
@@ -95,4 +99,22 @@ def index(request):
         return HttpResponse('Redirect')
 
 def abc(request):
-    return HttpResponseRedirect('<h1>HELLO </h1>')
+    print(" ABC ")
+    return HttpResponse(str(request.build_absolute_uri(reverse("registrations:index"))))
+
+def email_confirm(request,token):
+    member = authenticate_email_token(token)
+    print("EMAIL CONFIRM")
+    if member:
+        context = {
+        'error_heading': 'Email verified',
+        'message': 'Your email has been verified. Please wait for further correspondence from the Department of PCr, BITS, Pilani',
+        'url':'https://bits-oasis.org'
+        }
+    else:
+        context = {
+        'error_heading': "Invalid Token",
+        'message': "Sorry!  Email couldn't be verified. Please try again.",
+        'url':'https://bits-oasis.org'
+        }
+    return render(request, 'registrations/message.html', context)

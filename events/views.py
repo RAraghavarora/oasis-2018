@@ -1,7 +1,7 @@
 import io
 import json
 
-from util.errors import ContentTypeError, InvalidCredentialsError, InvalidPermissionsError
+from utils.errors import ContentTypeError, InvalidCredentialsError, InvalidPermissionsError
 
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
