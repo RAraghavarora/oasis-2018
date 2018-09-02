@@ -19,6 +19,7 @@ def index(request):
     '''
     if request.user.is_authenticated():
         user = request.user
+        print(user)
         participant = Participant.objects.get(user=user)
         participation_set = MainParticipation.objects.filter(participant=participant)
         try:
@@ -78,14 +79,14 @@ def index(request):
                 event = MainEvent.objects.get(id = int(key))
                 MainParticipation.objects.create(event = event, participant = participant)
             participant.save()
-            mail = send_grid.sendmail()
+            mail = send_grid.register()
             send_to = str(request.POST["email"])
             name = str(request.POST['name'])
             to_email = Email(send_to)
             verify_email_url = str(request.build_absolute_uri(reverse("registrations:index"))) + 'email_confirm/' + \
             generate_email_token(Participant.objects.get(email=send_to)) + '/'
             print('Email url \t',verify_email_url)
-            mail.body = mail.body%(name, verify_email_url)
+            mail.body = mail.body%(name.title(), verify_email_url)
             content = Content('text/html', mail.body)
             # 
             
@@ -108,7 +109,7 @@ def home(request):
     Login page
     '''
     if request.method == 'POST':
-        print(request.POST)
+        # print(request.POST)
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username = username, password = password)

@@ -29,6 +29,6 @@ def authenticate_email_token(token):
 		return False
 
 def get_pcr_number():
-	number_list = [0000000000]
+	number_list = [8003305723,7972812406,8108259735,8412970942]
 	from random import randint
-	return number_list[randint(0,0)]
+	return number_list[randint(0,3)]
