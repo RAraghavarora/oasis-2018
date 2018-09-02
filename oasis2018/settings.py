@@ -41,12 +41,13 @@ INSTALLED_APPS = [
     'events',
     'registrations',
     'analytics',
-    'pcradmin'
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -147,11 +148,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = '/2018/backend-static/'
+STATIC_URL = '/backend_static/'
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/2018/backend-media/'
+MEDIA_URL = '/backend_media/'
 
 GOOGLE_RECAPTCHA_SECRET_KEY = google_recaptcha_secret_key
 
@@ -160,6 +161,6 @@ APPEND_SLASH = False
 # LOGIN_URL = '/2018/register/login/'
 
 
-# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
 
 #settings.py update
