@@ -138,14 +138,14 @@ pcr@bits-oasis.org
                 part.save()
                 messages.warning(request,'Email not sent. Please select College Representative again.')
             return redirect(request.META.get('HTTP_REFERER'))
-        participants=college.participant_set.filter(email_verified=True)
-        try:
-            cr = Participant.objects.get(college=college, is_cr=True)
-            participants = participants.exclude(id=cr.id)
-        except:
-            cr=[]
-        parts = [{'data':[part.name, part.phone, part.email, part.gender, part.pcr_approved, part.head_of_society, part.year_of_study, event_list(part),is_profile_complete(part), how_much_paid(part)], "id":part.id,} for part in participants]
-        return render(request, 'pcradmin/college_rep.html',{'college':college, 'parts':parts, 'cr':cr})
+    participants=college.participant_set.filter(email_verified=True)
+    try:
+        cr = Participant.objects.get(college=college, is_cr=True)
+        participants = participants.exclude(id=cr.id)
+    except:
+        cr=[]
+    parts = [{'data':[part.name, part.phone, part.email, part.gender, part.pcr_approved, part.head_of_society, part.year_of_study, event_list(part),is_profile_complete(part), how_much_paid(part)], "id":part.id,} for part in participants]
+    return render(request, 'pcradmin/college_rep.html',{'college':college, 'parts':parts, 'cr':cr})
 
 ###HELPER FUNCTIONS WRT TO THE ABOVE VIEW###
 def event_list(part):
@@ -210,6 +210,43 @@ def approve_participations(request,id):
         return render(request, 'pcradmin/approve_participations.html', {'approved':approved, 'disapproved':disapproved, 'cr':cr})
 
 @staff_member_required
+def verify_profile(request,part_id):
+    part=Participant.objects.get(id=part_id)
+    if request.method=='POST':
+        try:
+            data=request.POST
+        except:
+            messages.warning(request,'Please select an event')
+            return redirect(request.META.get('HTTP_REFERER'))
+        if data['submit']=='confirm':
+            MainParticipation.objects.filter(id__in=data,cr_approved=True).update(pcr_approved=True)
+            part.pcr_approved=True
+            message = part.name + '\'s Profile Verified'
+        elif data['submit']=='unconfirm':
+            MainParticipation.objects.filter(id__in=data,cr_approved=True).update(pcr_approved=True)
+            message='Events succesfully unconfirmed'
+            not_pcr_approved_particpants=[not participant.pcr_approved for participant in MainParticipation.objects.filter(particpant=part)]
+            if all(not_pcr_approved_particpants):       
+                part.pcr_approved=False
+                message += ' and ' + part.name + '\'sprofile is uncofirmed'
+                #Look into the above functionality
+        part.save()
+        messages.success(request, message)
+        return redirect(reverse('pcradmin:select_college_rep', kwargs={'id':part.college.id}))
+        '''try:
+		profile_url = part.profile_pic.url
+		docs_url = part.verify_docs.url
+	except:
+		message = part.name + '\'s Profile not complete yet.'
+		messages.warning(request, message)
+		return redirect(request.META.get('HTTP_REFERER'))'''
+    participations=part.participatiion_set.all()
+    events_confirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=True)]
+    events_unconfirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=False)]
+    return render(request, 'pcradmin/verify_profile.html',
+	{'profile_url':profile_url, 'docs_url':docs_url, 'part':part, 'confirmed':events_confirmed, 'unconfirmed':events_unconfirmed})
+        
+@staff_member_required
 def add_college(request):
     if request.method=='POST':
         data=request.POST
@@ -229,14 +266,16 @@ def add_college(request):
             college.delete()
             messages.warning(request, 'College succesfully deleted')
             return redirect('pcradmin:add_college')
-        rows = [{'data':[college.name, college.participant_set.all().count(),  college.participant_set.filter(pcr_approved=True).count()], 'id':college.id, 'link':[{'title':'Select College Representative', 'url':reverse('pcradmin:select_college_rep', kwargs={'id':college.id})}]} for college in College.objects.all()]
-        headings = ['Name', 'Registered Participants' , 'PCr approved Participants', 'Select/Modify CR']
-        title="College List"
-        table = {
-        'rows':rows,
-        'headings':headings,
-        'title':title,
-    }
+
+    rows = [{'data':[college.name, college.participant_set.all().count(),  college.participant_set.filter(pcr_approved=True).count()], 'id':college.id, 'link':[{'title':'Select College Representative', 'url':reverse('pcradmin:select_college_rep', kwargs={'id':college.id})}]} for college in College.objects.all()]
+    headings = ['Name', 'Registered Participants' , 'PCr approved Participants', 'Select/Modify CR']
+    title="College List"
+    table = {
+    'rows':rows,
+    'headings':headings,
+    'title':title,
+}
+
     return render(request, 'pcradmin/add_college.html', {'table':table})
 
 @staff_member_required
@@ -553,6 +592,10 @@ def master_stats(request):
         'colleges': colleges, 'events': events
     }
     return render(request, 'pcradmin/master_stats.html', context)
+
+@staff_member_required
+def view_final(request):
+    pass
 
 ########      HELPER FUNCTIONS     #######
 def participants_count(participants):
