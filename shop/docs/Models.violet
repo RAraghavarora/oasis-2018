@@ -142,8 +142,7 @@ timestamp: DateTimeField
 
 # transferred_in: Transactions
 # transferred_out: Transactions
-# orders: Orders
-# cart: Cart</string>
+# orders: Orders</string>
      </void>
     </void>
     <void property="methods">
@@ -217,12 +216,12 @@ timestamp: DateTimeField
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>640.0</double>
+      <double>630.0</double>
      </void>
     </void>
     <void method="setLocation">
      <double>1180.0</double>
-     <double>640.0</double>
+     <double>630.0</double>
     </void>
    </object>
   </void>
@@ -238,7 +237,6 @@ cancelled: BooleanField
 paid: BooleanField
 received: BooleanField
 
-cart: Cart
 order: OrderFragment
 </string>
      </void>
@@ -280,7 +278,6 @@ order: OrderFragment
     <void property="attributes">
      <void property="text">
       <string>customer: Wallet
-total: PositiveIntegerField
 timestamp: DateTimeField
 
 # fragments: OrderFragments
@@ -324,7 +321,6 @@ timestamp: DateTimeField
     <void property="attributes">
      <void property="text">
       <string>stall: Stall
-subtotal: PositiveIntegerField
 transaction: Transaction
 
 # items: ItemInstances</string>

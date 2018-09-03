@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from shop.models.stall import Stall
 from shop.models.wallet import Wallet
 from shop.models.transaction import Transaction
@@ -10,7 +11,6 @@ class Order(models.Model):
 	facilitate the "many stalls, many items" ordering feature. """
 	customer = models.ForeignKey("Wallet", related_name="orders", null=True,
 									on_delete=models.SET_NULL)
-	total = models.PositiveIntegerField(default=self.calculateTotal)
 	timestamp = models.DateTimeField(default=timezone.now)
 	# fragments: OrderFragments
 
@@ -32,7 +32,6 @@ class OrderFragment(models.Model):
 	many items" ordering feature. """
 	stall = models.ForeignKey("Stall", related_name="orders", null=True,
 								on_delete=models.SET_NULL)
-	subtotal = PositiveIntegerField(default=self.calculateSubTotal)
 	transaction = models.OneToOneField("Transaction", null=True,
 										on_delete=models.SET_NULL)
 	# items: ItemInstances

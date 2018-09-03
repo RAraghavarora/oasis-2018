@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'events',
     'registrations',
     'analytics',
+    'shop',
     'corsheaders',
 ]
 
@@ -59,7 +60,7 @@ try:
     if SERVER:
         MIDDLEWARE.append('oasis2018.middlewares.AppException')
 except:
-    print("STATUS 500 EMAIL MIDDLEWARE LOCALLY DISABLED")
+    pass
 
 ROOT_URLCONF = 'oasis2018.urls'
 
