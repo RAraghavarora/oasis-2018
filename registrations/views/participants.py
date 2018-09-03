@@ -22,10 +22,7 @@ def index(request):
         print(user)
         participant = Participant.objects.get(user=user)
         participation_set = MainParticipation.objects.filter(participant=participant)
-        try:
-            cr = Participant.objects.get(college=participant.college, is_cr=True)
-        except:
-            return JsonResponse({'status':0, 'message':'Sorry, you can\'t access this page.'})
+        cr = Participant.objects.get(college=participant.college, is_cr=True)
         return render(request,'registrations/home.html',{'participant':participant,\
         'participations':participation_set,'cr':cr})
     

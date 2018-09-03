@@ -114,4 +114,27 @@ def approve(request):
         disapproved_list = MainParticipation.objects.filter(participant__college = participant.college, cr_approved=False)
         return render(request, 'registrations/cr_approval.html', {'approved_list':approved_list, 'disapproved_list':disapproved_list, 'participant':participant})
 
-    # return render(request, 'registrations/message.html')
+@login_required
+def participant_details(request,p_id):
+    '''
+    For the cr to see the details of any participant from his college
+    '''
+    user = request.user
+    participant = Participant.objects.get(user=user)
+    if not participant.is_cr:
+        context = {
+        'error_heading': "Invalid Access",
+        'message': "Sorry! You are not an approved college representative.",
+        'url':request.build_absolute_uri(reverse('registrations:index'))
+        }
+        return render(request, 'registrations/message.html', context)
+    get_part = Participant.objects.get(id=p_id)
+    if not get_part.college == participant.college:
+        context = {
+        'error_heading': "Invalid Access",
+        'message': "Sorry! You do not have access to these details.",
+        'url':request.build_absolute_uri(reverse('registrations:index'))
+        }
+        return render(request, 'registrations/message.html', context)
+    participation_list = MainParticipation.objects.filter(participant=get_part)
+    return render(request, 'registrations/profile.html', {'get_part':get_part, 'participations':participation_list, 'participant':participant})

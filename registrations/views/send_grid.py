@@ -58,7 +58,7 @@ class cr_approved(object):
 
 	Greetings from BITS Pilani!
 
-	It gives me immense pleasure in inviting your institute to the 47th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 31st to November 4th.
+	It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 27th to October 31st.
 
 	This is to inform you that your college representative has selected your participation.
 	You can now login <a href="%s">here</a> using the following credentials:
@@ -68,9 +68,9 @@ class cr_approved(object):
 
 	Please make sure to upload your <b>Picture</b> as well as <b>verification documents(Eg Bonafide)</b> once you login to complete your registration.
 
-	We look forward to seeing you at OASIS 2017.
+	We look forward to seeing you at OASIS 2018.
 
-	P.S: THIS EMAIL DOES NOT CONFIRM YOUR PRESENCE AT OASIS 2017. YOU WILL BE RECEIVING ANOTHER EMAIL FOR THE CONFIRMATION OF YOUR PARTICIPATION.
+	P.S: THIS EMAIL DOES NOT CONFIRM YOUR PRESENCE AT OASIS 2018. YOU WILL BE RECEIVING ANOTHER EMAIL FOR THE CONFIRMATION OF YOUR PARTICIPATION.
 
 	Regards,
 	StuCCAn (Head)
