@@ -304,7 +304,9 @@ def edit_participant(request,part_id):
 
 
 
-################      STATS       ####################            
+####################################      STATS (Maths vala nahi)   ##########################################     
+
+
 @staff_member_required
 def stats(request, order=None):
     if order==None:
@@ -380,6 +382,7 @@ def stats(request, order=None):
         return render(request, 'pcradmin/tables.html', context) 
 
     if order == 'paidwise':
+        rows = []
         for participant in Participant.objects.filter(Q(pcr_approved=True), Q(paid=True)|Q(curr_paid=True)):
             display_data = {
                 'data': [
@@ -389,14 +392,15 @@ def stats(request, order=None):
                 ],
                 'link' : []
             }
-            headings = ['Name', 'College', 'Gender', 'Phone', 'Email', 'Payment Made', 'Events']
-            title = "Participant's Payment Status"
-            context = {
-                'tables': [
-                    {'rows': rows, 'headings': headings, 'title': title},   
-                ]
-            }
-            return render(request, 'pcradmin/tables.html', context)
+            rows.append(display_data)
+        headings = ['Name', 'College', 'Gender', 'Phone', 'Email', 'Payment Made', 'Events']
+        title = "Participant's Payment Status"
+        context = {
+            'tables': [
+                {'rows': rows, 'headings': headings, 'title': title},   
+            ]
+        }
+        return render(request, 'pcradmin/tables.html', context)
 
 @staff_member_required
 def stats_event(request, e_id):
@@ -464,7 +468,9 @@ def stats_event_college(request, e_id, c_id):
     participants = Participant.objects.filter(id__in=[
         participant.id for participant in Participant.objects.filter(email_verified=True) if MainParticipation.objects.filter(participant = participant, event = event)
     ])
+    rows=[]
     for participant in participants:
+        
         display_data = {
             'data': [
                 participant.name, participant.college.name, get_cr_name(participant),
@@ -473,7 +479,8 @@ def stats_event_college(request, e_id, c_id):
             ],
             'link' : []
         }
-    rows = [display_data]
+        rows.append(display_data)
+        
     headings = ['Name', 'College', 'CR', 'Gender', 'Phone', 'Email', 'PCr Approval', 'Payment Status']
     title = "Participant's Stats for " + event.name + " from " + college.name
     context = {
@@ -497,6 +504,7 @@ def master_stats(request):
             pass
         if not colleges and not events:
             return redirect(request.META.get('HTTP_REFERRER'))
+        rows = []
         if colleges[0]!='' and events[0]!='':
             participants = []
             for college_name in colleges:
@@ -513,6 +521,7 @@ def master_stats(request):
                     participants+= Participant.objects.filter(id__in=[
                         participation.participant.id for participation in participations
                     ], college = college)
+            
             for participant in participants:
                 display_data = {
                 'data': [
@@ -522,7 +531,7 @@ def master_stats(request):
                 ],
                 'link' : []
                 }
-            rows = [display_data]
+                rows.append(display_data)
             headings = ['Name', 'College','Gender', 'Phone', 'Email', 'PCr Approval', 'Payment Status']
             event_names = ''
             for event_name in events:
@@ -555,7 +564,7 @@ def master_stats(request):
                     ],
                     'link' : []
                 }
-            rows = [display_data]
+                rows.append(display_data)
             headings = ['Name', 'College','Gender', 'Phone', 'Email', 'PCr Approval', 'Payment Status']
             title = "Participants registered for %s event." %(event_name)
 
@@ -576,7 +585,7 @@ def master_stats(request):
                     ],
                     'link' : []
                 }
-            rows = [display_data]
+                rows.append(display_data)
             headings = ['Name', 'College','Gender', 'Phone', 'Email', 'PCr Approval', 'Payment Status']
             title = "Participants registered from %s college." %(college_name)
         table = {
@@ -599,6 +608,7 @@ def master_stats(request):
 
 @staff_member_required
 def view_final(request):
+    rows = []
     for college in College.objects.all():
         display_data={
             'data': [
@@ -611,13 +621,13 @@ def view_final(request):
                 'url' : reverse('pcradmin:select_college_rep', kwargs ={'id': college.id})
             }]
         }
-        rows = [display_data]
-        headings = [
-            'Name', 'Registered Participants ', 'PCr Approved Participants ', 'Select/Modify CR' 
-        ]
-        title = "College List"
-        table = { 'rows':rows, 'headings':headings, 'title':title,}
-        return render(request, 'pcradmin/add_college.html', {'table': table})
+        rows.append(display_data)
+    headings = [
+        'Name', 'Registered Participants ', 'PCr Approved Participants ', 'Select/Modify CR' 
+    ]
+    title = "College List"
+    table = { 'rows':rows, 'headings':headings, 'title':title,}
+    return render(request, 'pcradmin/add_college.html', {'table': table})
 
 @staff_member_required
 def final_confirmation(request, c_id):
