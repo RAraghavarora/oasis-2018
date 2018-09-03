@@ -26,11 +26,16 @@ class Order(models.Model):
 		self.total = total
 		return total
 
+	def getStatus(self):
+		pass
+
 
 class OrderFragment(models.Model):
 	""" Each constituent part of a larger order, part of the the "many stalls,
 	many items" ordering feature. """
 	stall = models.ForeignKey("Stall", related_name="orders", null=True,
+								on_delete=models.SET_NULL)
+	order = models.ForeignKey("Order", related_name="fragments", null=True,
 								on_delete=models.SET_NULL)
 	transaction = models.OneToOneField("Transaction", null=True,
 										on_delete=models.SET_NULL)
@@ -45,3 +50,6 @@ class OrderFragment(models.Model):
 			subtotal += item.calculatePrice()
 		self.subtotal = subtotal
 		return subtotal
+
+	def getStatus(self):
+		pass
