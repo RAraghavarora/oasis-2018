@@ -69,7 +69,7 @@ class Participant(models.Model):
 	recnacc_time = models.DateTimeField(null=True, auto_now=False)
 	events = models.ManyToManyField(MainEvent, through=MainParticipation)
 	checkout_group = models.ForeignKey('CheckoutGroup', on_delete=models.SET_NULL, null=True)
-	ems_code = models.CharField(max_length=10, default='', null=True)
+	# ems_code = models.CharField(max_length=10, default='', null=True)
 	bits_id = models.CharField(max_length=20, null=True, blank=True)
 	
 	# Boolean fields

@@ -11,7 +11,7 @@
 {% endfor %}
 </div>
 {% endif %}
-<form method="POST" action="{% url 'pcradmin:edit_part' part.id %}">
+<form method="POST" action="{% url 'pcradmin:edit_participant' part.id %}">
     {% csrf_token %}
 <div class="row clearfix">
 <div class="card">
