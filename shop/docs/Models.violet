@@ -149,8 +149,6 @@ timestamp: DateTimeField
     <void property="methods">
      <void property="text">
       <string>getProfile()
-transfer()
-receive()
 </string>
      </void>
     </void>
@@ -212,19 +210,19 @@ timestamp: DateTimeField
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>850.0</double>
+      <double>1180.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>750.0</double>
+      <double>640.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>850.0</double>
-     <double>750.0</double>
+     <double>1180.0</double>
+     <double>640.0</double>
     </void>
    </object>
   </void>
@@ -305,19 +303,19 @@ timestamp: DateTimeField
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double7"/>
-      <double>1080.0</double>
+      <double>760.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double7"/>
-      <double>660.0</double>
+      <double>430.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1080.0</double>
-     <double>660.0</double>
+     <double>760.0</double>
+     <double>430.0</double>
     </void>
    </object>
   </void>
@@ -334,8 +332,7 @@ transaction: Transaction
     </void>
     <void property="methods">
      <void property="text">
-      <string>calculateSubTotal()
-generateTransaction()</string>
+      <string>calculateSubTotal()</string>
      </void>
     </void>
     <void property="name">
@@ -364,48 +361,6 @@ generateTransaction()</string>
     <void method="setLocation">
      <double>600.0</double>
      <double>660.0</double>
-    </void>
-   </object>
-  </void>
-  <void method="addNode">
-   <object class="com.horstmann.violet.ClassNode" id="ClassNode9">
-    <void property="attributes">
-     <void property="text">
-      <string>wallet: Wallet
-# items: ItemInstances</string>
-     </void>
-    </void>
-    <void property="methods">
-     <void property="text">
-      <string>add()
-remove()
-checkout()</string>
-     </void>
-    </void>
-    <void property="name">
-     <void property="text">
-      <string>Cart</string>
-     </void>
-    </void>
-   </object>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double9">
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>x</string>
-     <void method="set">
-      <object idref="Point2D$Double9"/>
-      <double>730.0</double>
-     </void>
-    </void>
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>y</string>
-     <void method="set">
-      <object idref="Point2D$Double9"/>
-      <double>410.0</double>
-     </void>
-    </void>
-    <void method="setLocation">
-     <double>730.0</double>
-     <double>410.0</double>
     </void>
    </object>
   </void>
@@ -463,18 +418,18 @@ is a sign of something having gone wrong.</string>
      </void>
     </void>
    </object>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double10">
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double9">
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>x</string>
      <void method="set">
-      <object idref="Point2D$Double10"/>
+      <object idref="Point2D$Double9"/>
       <double>140.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
-      <object idref="Point2D$Double10"/>
+      <object idref="Point2D$Double9"/>
       <double>620.0</double>
      </void>
     </void>
@@ -485,7 +440,7 @@ is a sign of something having gone wrong.</string>
    </object>
   </void>
   <void method="addNode">
-   <object class="com.horstmann.violet.ClassNode" id="ClassNode10">
+   <object class="com.horstmann.violet.ClassNode" id="ClassNode9">
     <void property="attributes">
      <void property="text">
       <string>name: CharField
@@ -513,18 +468,18 @@ timestamp: DateTimeField
      </void>
     </void>
    </object>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double11">
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double10">
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>x</string>
      <void method="set">
-      <object idref="Point2D$Double11"/>
+      <object idref="Point2D$Double10"/>
       <double>140.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
-      <object idref="Point2D$Double11"/>
+      <object idref="Point2D$Double10"/>
       <double>330.0</double>
      </void>
     </void>
@@ -541,14 +496,14 @@ timestamp: DateTimeField
       <string>x</string>
       <void method="set">
        <object idref="Rectangle2D$Double1"/>
-       <double>420.0</double>
+       <double>940.0</double>
       </void>
      </void>
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
       <string>y</string>
       <void method="set">
        <object idref="Rectangle2D$Double1"/>
-       <double>820.0</double>
+       <double>610.0</double>
       </void>
      </void>
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
@@ -585,24 +540,24 @@ all of the possible choices.</string>
      </void>
     </void>
    </object>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double12">
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double11">
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>x</string>
      <void method="set">
-      <object idref="Point2D$Double12"/>
-      <double>420.0</double>
+      <object idref="Point2D$Double11"/>
+      <double>940.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
-      <object idref="Point2D$Double12"/>
-      <double>820.0</double>
+      <object idref="Point2D$Double11"/>
+      <double>610.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>420.0</double>
-     <double>820.0</double>
+     <double>940.0</double>
+     <double>610.0</double>
     </void>
    </object>
   </void>
@@ -613,21 +568,28 @@ all of the possible choices.</string>
       <string>x</string>
       <void method="set">
        <object idref="Rectangle2D$Double2"/>
-       <double>1130.0</double>
+       <double>860.0</double>
       </void>
      </void>
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
       <string>y</string>
       <void method="set">
        <object idref="Rectangle2D$Double2"/>
-       <double>830.0</double>
+       <double>170.0</double>
       </void>
      </void>
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
       <string>width</string>
       <void method="set">
        <object idref="Rectangle2D$Double2"/>
-       <double>300.0</double>
+       <double>120.0</double>
+      </void>
+     </void>
+     <void class="java.awt.geom.Rectangle2D$Double" method="getField">
+      <string>height</string>
+      <void method="set">
+       <object idref="Rectangle2D$Double2"/>
+       <double>100.0</double>
       </void>
      </void>
     </void>
@@ -637,147 +599,10 @@ all of the possible choices.</string>
     <void property="color">
      <object class="java.awt.Color">
       <int>255</int>
-      <int>239</int>
-      <int>213</int>
-      <int>255</int>
-     </object>
-    </void>
-    <void property="text">
-     <void property="text">
-      <string>Every class has an implicit __str__() method.</string>
-     </void>
-    </void>
-   </object>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double13">
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>x</string>
-     <void method="set">
-      <object idref="Point2D$Double13"/>
-      <double>1130.0</double>
-     </void>
-    </void>
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>y</string>
-     <void method="set">
-      <object idref="Point2D$Double13"/>
-      <double>830.0</double>
-     </void>
-    </void>
-    <void method="setLocation">
-     <double>1130.0</double>
-     <double>830.0</double>
-    </void>
-   </object>
-  </void>
-  <void method="addNode">
-   <object class="com.horstmann.violet.NoteNode" id="NoteNode3">
-    <void id="Rectangle2D$Double3" property="bounds">
-     <void class="java.awt.geom.Rectangle2D$Double" method="getField">
-      <string>x</string>
-      <void method="set">
-       <object idref="Rectangle2D$Double3"/>
-       <double>980.0</double>
-      </void>
-     </void>
-     <void class="java.awt.geom.Rectangle2D$Double" method="getField">
-      <string>y</string>
-      <void method="set">
-       <object idref="Rectangle2D$Double3"/>
-       <double>600.0</double>
-      </void>
-     </void>
-     <void class="java.awt.geom.Rectangle2D$Double" method="getField">
-      <string>width</string>
-      <void method="set">
-       <object idref="Rectangle2D$Double3"/>
-       <double>80.0</double>
-      </void>
-     </void>
-     <void class="java.awt.geom.Rectangle2D$Double" method="getField">
-      <string>height</string>
-      <void method="set">
-       <object idref="Rectangle2D$Double3"/>
-       <double>60.0</double>
-      </void>
-     </void>
-    </void>
-    <void property="bounds">
-     <object idref="Rectangle2D$Double3"/>
-    </void>
-    <void property="color">
-     <object class="java.awt.Color" id="Color0">
-      <int>255</int>
       <int>255</int>
       <int>240</int>
       <int>255</int>
      </object>
-    </void>
-    <void property="text">
-     <void property="text">
-      <string>Orders are
-generated
-by a Cart.</string>
-     </void>
-    </void>
-   </object>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double14">
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>x</string>
-     <void method="set">
-      <object idref="Point2D$Double14"/>
-      <double>980.0</double>
-     </void>
-    </void>
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>y</string>
-     <void method="set">
-      <object idref="Point2D$Double14"/>
-      <double>600.0</double>
-     </void>
-    </void>
-    <void method="setLocation">
-     <double>980.0</double>
-     <double>600.0</double>
-    </void>
-   </object>
-  </void>
-  <void method="addNode">
-   <object class="com.horstmann.violet.NoteNode" id="NoteNode4">
-    <void id="Rectangle2D$Double4" property="bounds">
-     <void class="java.awt.geom.Rectangle2D$Double" method="getField">
-      <string>x</string>
-      <void method="set">
-       <object idref="Rectangle2D$Double4"/>
-       <double>880.0</double>
-      </void>
-     </void>
-     <void class="java.awt.geom.Rectangle2D$Double" method="getField">
-      <string>y</string>
-      <void method="set">
-       <object idref="Rectangle2D$Double4"/>
-       <double>170.0</double>
-      </void>
-     </void>
-     <void class="java.awt.geom.Rectangle2D$Double" method="getField">
-      <string>width</string>
-      <void method="set">
-       <object idref="Rectangle2D$Double4"/>
-       <double>120.0</double>
-      </void>
-     </void>
-     <void class="java.awt.geom.Rectangle2D$Double" method="getField">
-      <string>height</string>
-      <void method="set">
-       <object idref="Rectangle2D$Double4"/>
-       <double>100.0</double>
-      </void>
-     </void>
-    </void>
-    <void property="bounds">
-     <object idref="Rectangle2D$Double4"/>
-    </void>
-    <void property="color">
-     <object idref="Color0"/>
     </void>
     <void property="text">
      <void property="text">
@@ -790,29 +615,29 @@ due to them.</string>
      </void>
     </void>
    </object>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double15">
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double12">
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>x</string>
      <void method="set">
-      <object idref="Point2D$Double15"/>
-      <double>880.0</double>
+      <object idref="Point2D$Double12"/>
+      <double>860.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
-      <object idref="Point2D$Double15"/>
+      <object idref="Point2D$Double12"/>
       <double>170.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>880.0</double>
+     <double>860.0</double>
      <double>170.0</double>
     </void>
    </object>
   </void>
   <void method="addNode">
-   <object class="com.horstmann.violet.ClassNode" id="ClassNode11">
+   <object class="com.horstmann.violet.ClassNode" id="ClassNode10">
     <void property="attributes">
      <void property="text">
       <string>swd: PositiveIntegerField
@@ -821,30 +646,24 @@ instamojo: PositiveIntegerField
 transfers: PositiveIntegerField</string>
      </void>
     </void>
-    <void property="methods">
-     <void property="text">
-      <string>add()
-deduct()</string>
-     </void>
-    </void>
     <void property="name">
      <void property="text">
       <string>Balance</string>
      </void>
     </void>
    </object>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double16">
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double13">
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>x</string>
      <void method="set">
-      <object idref="Point2D$Double16"/>
+      <object idref="Point2D$Double13"/>
       <double>1330.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
-      <object idref="Point2D$Double16"/>
+      <object idref="Point2D$Double13"/>
       <double>330.0</double>
      </void>
     </void>
@@ -923,7 +742,7 @@ deduct()</string>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
     <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
+     <object class="com.horstmann.violet.BentStyle" field="VH"/>
     </void>
     <void property="endLabel">
      <string>1..*</string>
@@ -959,25 +778,7 @@ deduct()</string>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
     <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="HV"/>
-    </void>
-    <void property="endLabel">
-     <string>*</string>
-    </void>
-    <void property="startArrowHead">
-     <object class="com.horstmann.violet.ArrowHead" field="DIAMOND"/>
-    </void>
-    <void property="startLabel">
-     <string>1</string>
-    </void>
-   </object>
-   <object idref="ClassNode9"/>
-   <object idref="ClassNode6"/>
-  </void>
-  <void method="connect">
-   <object class="com.horstmann.violet.ClassRelationshipEdge">
-    <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
+     <object class="com.horstmann.violet.BentStyle" field="VH"/>
     </void>
     <void property="endLabel">
      <string>*</string>
@@ -1001,24 +802,6 @@ deduct()</string>
      <string>1</string>
     </void>
     <void property="startLabel">
-     <string>1</string>
-    </void>
-   </object>
-   <object idref="ClassNode9"/>
-   <object idref="ClassNode4"/>
-  </void>
-  <void method="connect">
-   <object class="com.horstmann.violet.ClassRelationshipEdge">
-    <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
-    </void>
-    <void property="endArrowHead">
-     <object class="com.horstmann.violet.ArrowHead" field="V"/>
-    </void>
-    <void property="endLabel">
-     <string>1</string>
-    </void>
-    <void property="startLabel">
      <string>*</string>
     </void>
    </object>
@@ -1059,7 +842,7 @@ deduct()</string>
     </void>
    </object>
    <object idref="ClassNode3"/>
-   <object idref="ClassNode10"/>
+   <object idref="ClassNode9"/>
   </void>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
@@ -1076,28 +859,13 @@ deduct()</string>
      <string>1</string>
     </void>
    </object>
-   <object idref="ClassNode10"/>
+   <object idref="ClassNode9"/>
    <object idref="ClassNode6"/>
   </void>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
     <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
-    </void>
-    <void property="endArrowHead">
-     <object class="com.horstmann.violet.ArrowHead" field="V"/>
-    </void>
-    <void property="lineStyle">
-     <object class="com.horstmann.violet.LineStyle" field="DOTTED"/>
-    </void>
-   </object>
-   <object idref="ClassNode7"/>
-   <object idref="ClassNode9"/>
-  </void>
-  <void method="connect">
-   <object class="com.horstmann.violet.ClassRelationshipEdge">
-    <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="VH"/>
+     <object class="com.horstmann.violet.BentStyle" field="HV"/>
     </void>
     <void property="endArrowHead">
      <object class="com.horstmann.violet.ArrowHead" field="V"/>
@@ -1127,7 +895,7 @@ deduct()</string>
      <string>1</string>
     </void>
    </object>
-   <object idref="ClassNode11"/>
+   <object idref="ClassNode10"/>
    <object idref="ClassNode4"/>
   </void>
  </object>

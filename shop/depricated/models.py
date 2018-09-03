@@ -55,18 +55,6 @@ class Wallet(models.Model):
 		except:
 			return None
 
-	def add(self):
-		# COMING SOON
-		pass
-
-	def transfer(self):
-		# COMING SOON
-		pass
-
-	def receive(self):
-		# COMING SOON
-		pass
-
 
 class Balance(models.Models):
 	""" There are 4 sources of money for each wallet, and it is essential that
@@ -77,11 +65,8 @@ class Balance(models.Models):
 		instamojo = models.PositiveIntegerField(default=0)
 		transfers = models.PositiveIntegerField(default=0)
 
-		def add():
-			pass
-
-		def deduct():
-			pass
+		def __str__(self):
+			return("{}/{}/{}/{}".format(swd, cash, instamojo, transfers))
 
 
 class Transaction(models.Model):
@@ -124,6 +109,8 @@ class Order(models.Model):
 		return "{} - {}".format(self.customer, self.calculateTotal())
 
 	def calculateTotal(self):
+		""" This function is kind of a recursive ladder. Calling this would
+			also update all subtotals """
 		total = 0
 		for fragment in self.fragements.all():
 			total += fragment.calculateSubTotal()
