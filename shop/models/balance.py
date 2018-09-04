@@ -12,3 +12,6 @@ class Balance(models.Model):
 
 	def __str__(self):
 		return("{}/{}/{}/{}".format(swd, cash, instamojo, transfers))
+
+	def _getTotal(self):
+		return self.swd + self.cash + self.instamojo + self.transfers

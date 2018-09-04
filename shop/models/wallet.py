@@ -2,6 +2,8 @@ import uuid as uuid_pylib
 from django.db import models
 from django.contrib.auth.models import User
 
+from shop.models.balance import Balance
+
 
 class Wallet(models.Model):
 	""" The main model where each (bitsian/participant/stall)'s money for the
@@ -20,7 +22,7 @@ class Wallet(models.Model):
 	user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
 	uuid = models.UUIDField(default=uuid_pylib.uuid4, editable=False)
 	phone = models.BigIntegerField(default=0)
-	balance = models.PositiveIntegerField(default=0)
+	balance = models.OneToOneField("Balance")
 	profile = models.CharField(max_length=16, choices=PROFILES)
 	timestamp = models.DateTimeField(auto_now_add=True)
 	# transferred_in: Transactions
@@ -49,3 +51,6 @@ class Wallet(models.Model):
 			raise
 		except:
 			return None
+
+	def getTotalBalance(self):
+		return self.balance._getTotal()

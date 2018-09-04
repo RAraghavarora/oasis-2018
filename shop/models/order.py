@@ -10,7 +10,7 @@ class Order(models.Model):
 	OrderFragments which comprise the Order as a whole. Mainly created to
 	facilitate the "many stalls, many items" ordering feature. """
 	customer = models.ForeignKey("Wallet", related_name="orders", null=True,
-									on_delete=models.SET_NULL)
+									on_delete=models.CASCADE)
 	timestamp = models.DateTimeField(default=timezone.now)
 	# fragments: OrderFragments
 
@@ -27,18 +27,39 @@ class Order(models.Model):
 		return total
 
 	def getStatus(self):
-		pass
+		status = {}
+		for fragment in self.fragments.all():
+			status[fragment.stall] = fragment.status
+		return status
+
+	def generateTransactions(self):
+		""" Also, in some ways a recursive ladder of generating Transactions.
+			Each OrderFragment will have to generate its own Transaction, which
+			in turn involves calling the Transaction model's method(s). """
+		for fragment in self.fragments.all():
+			pass
 
 
 class OrderFragment(models.Model):
 	""" Each constituent part of a larger order, part of the the "many stalls,
-	many items" ordering feature. """
+	many items" ordering feature. The order for each stall """
+
+	STATUS = (
+		("in-review", "in-review"),
+		("accepted", "accepted"),
+		("declined", "declined"),
+		("finished", "finished"), # order is ready for pick-up
+		("completed", "completed"), # order has been paid for and picked up
+		("cancelled", "cancelled") # to cancel certain parts
+	)
+
 	stall = models.ForeignKey("Stall", related_name="orders", null=True,
-								on_delete=models.SET_NULL)
+								on_delete=models.CASCADE)
 	order = models.ForeignKey("Order", related_name="fragments", null=True,
-								on_delete=models.SET_NULL)
+								on_delete=models.CASCADE)
 	transaction = models.OneToOneField("Transaction", null=True,
-										on_delete=models.SET_NULL)
+										on_delete=models.CASCADE)
+	status = models.CharField(max_length=20, choices=STATUS, default="in-review")
 	# items: ItemInstances
 
 	def __str__(self):
@@ -51,5 +72,6 @@ class OrderFragment(models.Model):
 		self.subtotal = subtotal
 		return subtotal
 
-	def getStatus(self):
+	def generateTransaction(self):
+		""" To be called by Order's getTransactions method. """
 		pass

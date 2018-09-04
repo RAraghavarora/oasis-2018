@@ -148,7 +148,7 @@ timestamp: DateTimeField
     <void property="methods">
      <void property="text">
       <string>getProfile()
-</string>
+getTotalBalance()</string>
      </void>
     </void>
     <void property="name">
@@ -216,12 +216,12 @@ timestamp: DateTimeField
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>630.0</double>
+      <double>550.0</double>
      </void>
     </void>
     <void method="setLocation">
      <double>1170.0</double>
-     <double>630.0</double>
+     <double>550.0</double>
     </void>
    </object>
   </void>
@@ -232,10 +232,6 @@ timestamp: DateTimeField
       <string>itemclass: ItemClass
 uuid: UUIDField
 quantity: PositiveIntegerField
-confirmed: BooleanField
-cancelled: BooleanField
-paid: BooleanField
-received: BooleanField
 
 order: OrderFragment
 </string>
@@ -324,6 +320,7 @@ getStatus()</string>
       <string>stall: Stall
 order: Order
 transaction: Transaction
+status: ChoiceField
 
 # items: ItemInstances</string>
      </void>
@@ -331,7 +328,7 @@ transaction: Transaction
     <void property="methods">
      <void property="text">
       <string>calculateSubTotal()
-getStatus()</string>
+generateTransaction()</string>
      </void>
     </void>
     <void property="name">
@@ -495,14 +492,14 @@ timestamp: DateTimeField
       <string>x</string>
       <void method="set">
        <object idref="Rectangle2D$Double1"/>
-       <double>890.0</double>
+       <double>910.0</double>
       </void>
      </void>
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
       <string>y</string>
       <void method="set">
        <object idref="Rectangle2D$Double1"/>
-       <double>610.0</double>
+       <double>550.0</double>
       </void>
      </void>
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
@@ -544,19 +541,19 @@ all of the possible choices.</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double11"/>
-      <double>890.0</double>
+      <double>910.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double11"/>
-      <double>610.0</double>
+      <double>550.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>890.0</double>
-     <double>610.0</double>
+     <double>910.0</double>
+     <double>550.0</double>
     </void>
    </object>
   </void>
@@ -643,6 +640,11 @@ due to them.</string>
 cash: PositiveIntegerField
 instamojo: PositiveIntegerField
 transfers: PositiveIntegerField</string>
+     </void>
+    </void>
+    <void property="methods">
+     <void property="text">
+      <string>_getTotal()</string>
      </void>
     </void>
     <void property="name">
