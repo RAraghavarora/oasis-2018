@@ -1,10 +1,10 @@
 from events.models import MainParticipation, MainEvent
-from registrations.models import Participant,College,MainEvent
+from registrations.models import Participant,College
 from django.shortcuts import render,redirect
 import requests
 from oasis2018 import keyconfig
 from django.contrib.auth import login, logout, authenticate
-from django.http import HttpResponse,JsonResponse
+from django.http import HttpResponse,JsonResponse,HttpResponseRedirect
 from django.urls import reverse
 import re
 from registrations.views import send_grid
@@ -12,6 +12,16 @@ import sendgrid
 from sendgrid.helpers.mail import *
 from utils.registrations import *
 from django.contrib import messages
+from instamojo_wrapper import Instamojo
+from django.contrib.auth.decorators import login_required
+
+# Getting the instamojo key
+
+try:
+	api = Instamojo(api_key=keyconfig.INSTA_API_KEY, auth_token=keyconfig.AUTH_TOKEN)
+except:
+	api = Instamojo(api_key=keyconfig.INSTA_API_KEY_test, auth_token=keyconfig.AUTH_TOKEN_test, endpoint='https://test.instamojo.com/api/1.1/') #when in development
+
 
 def index(request):
     '''
@@ -130,7 +140,6 @@ def home(request):
     
     elif request.method == 'GET':
         return render(request,'registrations/login.html')
-        
 
 
 def email_confirm(request,token):
@@ -149,3 +158,229 @@ def email_confirm(request,token):
         'url':'https://bits-oasis.org'
         }
     return render(request, 'registrations/message.html', context)
+
+@login_required
+def manage_events(request):
+    participant = Participant.objects.get(user=request.user)
+    if request.method == 'POST':
+        data = request.POST
+        if data['action'] == 'add':
+            try:
+                events_id = data.getlist('events_id')
+            except:
+                return redirect(request.META.get('HTTP_REFERER'))
+            for event_id in events_id:
+                event = MainEvent.objects.get(id=event_id)
+                p, created  = MainParticipation.objects.get_or_create(participant=participant, event=event)
+
+        if data['action'] == 'remove':
+            not_removed = []
+            try:
+                events_id = data.getlist('events_id')
+            except:
+                return redirect(request.META.get('HTTP_REFERER'))
+            print(events_id)
+            for event_id in events_id:
+                try:
+                    event = MainEvent.objects.get(id=event_id)
+                    participation = MainParticipation.objects.get(participant=participant, event=event)
+                    if not participation.pcr_approved:
+                        participation.delete()
+                    else:
+                        not_removed.append(participation)
+                except Exception as e:
+                    print(e)
+                    pass
+                print(not_removed)
+            if len(not_removed) != 0:
+                return render(request, 'remove.html', {'events':not_removed})
+    added_list = [participation for participation in MainParticipation.objects.filter(participant=participant)]
+    added_events = [p.event for p in added_list]
+    not_added_list = [event for event in MainEvent.objects.all() if event not in added_events]
+    return render(request, 'registrations/manage_events.html', {'added_list':added_list, 'not_added_list':not_added_list, 'participant':participant})
+
+# @login_required
+# def upload_docs(request):
+# 	participant = Participant.objects.get(user=request.user)
+# 	if request.method == 'POST':
+# 		from django.core.files import File
+# 		if participant.pcr_approved:
+# 			context = {
+# 					'error_heading': "Permission Denied",
+# 					'message': "You have already been approved by PCr, BITS Pilani as a partcipant. Contact pcr@bits-oasis.org to change your uploads.",
+# 					'url':request.build_absolute_uri(reverse('registrations:index'))
+# 					}
+# 			return render(request, 'registrations/message.html', context)
+# 		try:
+# 			image = request.FILES['profile_pic']
+# 			image = participant.profile_pic
+# 			if image is not None:
+# 				image.delete(save=True)
+# 			up_img = request.FILES['profile_pic']
+# 			img_file = resize_uploaded_image(up_img, 240, 240)
+# 			new_img = File(img_file)
+# 			participant.pcr_approved = False
+# 			participant.profile_pic.save('profile_pic', new_img)
+# 		except:
+# 		 	pass
+# 		try:
+# 			verify_docs = request.FILES['verify_docs']
+# 			docs = participant.verify_docs
+# 			if docs is not None:
+# 				docs.delete(save=True)
+# 			up_docs = request.FILES['verify_docs']
+# 			doc_file = resize_uploaded_image(up_docs, 400, 400)
+# 			new_docs = File(doc_file)
+# 			participant.pcr_approved = False
+# 			participant.verify_docs.save('verify_docs', new_docs)
+# 		except:
+# 			pass
+# 	try:
+# 		image_url = request.build_absolute_uri('/')[:-1] + participant.profile_pic.url
+# 		image = True
+# 	except:
+# 		image_url = '#'
+# 		image = False
+# 		pass
+# 	try:
+# 		docs_url = request.build_absolute_uri('/')[:-1] + participant.verify_docs.url
+# 		docs = True
+# 	except:
+# 		docs_url = '#'
+# 		docs = False
+# 		pass
+# 	return render(request, 'registrations/upload_docs.html', {'participant':participant, 'image_url':image_url, 'image':image, 'docs_url':docs_url, 'docs':docs})
+
+# @login_required
+# def payment(request):
+#     participant = Participant.objects.get(user=request.user)
+#     # print(participant)
+#     if not participant.pcr_approved:
+#         context = {
+#         'error_heading': "Invalid Access",
+#         'message': "You are yet not approved by Department of PCr, Bits Pilani.",
+#         'url':request.build_absolute_uri(reverse('registrations:index'))
+#         }
+#         return render(request, 'registrations/message.html', context)
+#     if request.method=='GET':
+#         return render(request, 'registrations/participant_payment.html', {'participant':participant})
+#     if request.method == 'POST':
+#         print("***********")
+#         try:
+#             key = request.POST['key']
+#             # print(key)
+#         except:
+#             return redirect(request.META.get('HTTP_REFERER'))
+#         if int(request.POST['key']) == 1:
+#             amount = 300
+#         elif int(request.POST['key']) == 2:
+#             amount = 950
+#         elif int(request.POST['key']) == 3:
+#             amount = 650
+#         else:
+#             return redirect(request.META.get('HTTP_REFERER'))
+#         name = participant.name
+#         email = participant.email
+#         phone = participant.phone
+#         purpose = 'Payment for OASIS \'18'
+#         response = api.payment_request_create(
+#             amount = amount,
+#             purpose = purpose,
+#             # send_email = False,
+#             buyer_name = name,
+#             email = email,
+#             phone = phone,
+#             redirect_url = request.build_absolute_uri(reverse("registrations:hello"))
+#         )
+#         print(response)
+#         # print(response['payment_request']['status'])
+#         # print(email)
+#         # print(response['payment_request']['longurl'])
+        
+#         try:
+#             url = response['payment_request']['longurl']
+#             return HttpResponseRedirect(url)
+#         except Exception as e:
+#             print(e)
+#             context = {
+#             'error_heading': "Payment error",
+#             'message': "An error was encountered while processing the request. Please contact PCr, BITS, Pilani.",
+#             'url':request.build_absolute_uri(reverse('registrations:make_payment'))
+#             }
+#             return render(request, 'registrations/message.html')
+
+# # def hello(request):
+# #     return HttpResponse('hello')
+# def payment_response(request):
+#     import requests
+#     payid=str(request.GET['payment_request_id'])
+#     print(keyconfig.INSTA_API_KEY_test)
+#     headers = {'X-Api-Key': keyconfig.INSTA_API_KEY_test,
+#     'X-Auth-Token': keyconfig.AUTH_TOKEN_test}
+#     print(headers)
+#     try:
+#         r = requests.get('https://www.instamojo.com/api/1.1/payment-requests/'+str(payid),headers=headers)
+#     except:
+#         r = requests.get('https://test.instamojo.com/api/1.1/payment-requests/'+str(payid), headers=headers)    ### when in development
+#     json_ob = r.json()
+#     print(json_ob)
+#     if (json_ob['success']):
+#         payment_request = json_ob['payment_request']
+#         purpose = payment_request['purpose']
+#         print("purpose\t",purpose)
+#         amount = payment_request['amount']
+#         amount = int(float(amount)) 
+#         try:
+#             group_id = int(purpose.split(' ')[1])
+#             print('group id\t',group_id)
+#             return HttpResponse('ajsp')
+#         except Exception as e:
+#             return HttpResponse(e)
+#         # payment_group = PaymentGroup.objects.get(id=group_id)
+#         # count = payment_group.participant_set.all().count()
+#         # if (amount/count) == 950:
+#         # for part in payment_group.participant_set.all():
+#         # part.controlz_paid = True
+#         # part.paid = True
+#         # part.save()
+#         # elif (amount/count) == 650:
+#         # for part in payment_group.participant_set.all():
+#         # if part.paid:
+#         # part.controlz_paid = True
+#         # part.save()
+
+#         # elif (amount/count) == 300:
+#         # for part in payment_group.participant_set.all():
+#         # part.paid = True
+#         # part.save()
+
+#         # except:
+#         # email = payment_request['email']
+#         # print amount
+#         # print type(amount)
+#         # participant = Participant.objects.get(email=email)
+#         # if amount == 950:
+#         # participant.controlz_paid = True
+#         # elif amount == 650.00 and participant.paid:
+#         # participant.controlz_paid = True
+#         # participant.paid = True
+#         # participant.save()
+#         # context = {
+#         # 'error_heading' : "Payment successful",
+#         # 'message':'Thank you for paying.',
+#         # 'url':request.build_absolute_uri(reverse('registrations:index'))
+#         # }
+#         # return render(request, 'registrations/message.html', context)
+
+#         # else:
+
+#         # payment_request = json_ob['payment_request']
+#         # purpose = payment_request['purpose']
+#         # email = payment_request['email']
+#         context = {
+#         'error_heading': "Payment error",
+#         'message': "An error was encountered while processing the payment. Please contact PCr, BITS, Pilani.",
+#         'url':request.build_absolute_uri(reverse('registrations:index'))
+#         }
+#         return render(request, 'registrations/message.html', context)
+#     return HttpResponse('testing da')

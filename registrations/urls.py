@@ -10,5 +10,8 @@ urlpatterns = [
 				url(r'^login',participants.home,name='home'),
 				url(r'^email_confirm/(?P<token>\w+)',participants.email_confirm,name = 'email_confirm'),
 				url(r'cr_approve',cr.approve,name='cr_approve'),
-				url(r'^details/(?P<p_id>\d+)',cr.participant_details,name='participant_details')
+				url(r'^details/(?P<p_id>\d+)',cr.participant_details,name='participant_details'),
+				url(r'^manage_events$',participants.manage_events,name='manage_events')
+				# url(r'^payment$',participants.payment,name='make_payment'),
+				# url(r'^hello$',participants.payment_response,name='hello')
 			]

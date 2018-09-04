@@ -32,3 +32,22 @@ def get_pcr_number():
 	number_list = [8003305723,7972812406,8108259735,8412970942]
 	from random import randint
 	return number_list[randint(0,3)]
+
+def resize_uploaded_image(buf, height, width):
+	'''
+	To resize the uploaded image
+	'''
+	
+	import StringIO
+	from PIL import Image
+	image = Image.open(buf)
+	width = width
+	height = height
+	resizedImage = image.resize((width, height))
+
+	# Turn back into file-like object
+	resizedImageFile = StringIO.StringIO()
+	resizedImage.save(resizedImageFile , 'JPEG', optimize = True)
+	resizedImageFile.seek(0)    # So that the next read starts at the beginning
+
+	return resizedImageFile
