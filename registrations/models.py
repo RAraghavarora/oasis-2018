@@ -32,7 +32,7 @@ class IntroReg(models.Model):
 #####################      MAIN MODELS       #######################
 
 def user_directory_path(instance, filename):
-	return 'user_{0}/{1}'.format(instance_user_id, filename)
+	return 'user_{0}/{1}'.format(instance, filename) #instance_user_id
 
 class PaymentGroup(models.Model):
 	amount_paid = models.IntegerField(default=0)
@@ -58,8 +58,8 @@ class Participant(models.Model):
 	state = models.CharField(max_length=50)
 	year_of_study = models.CharField(max_length=3, null=True)
 	user = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
-	profile_pic = models.ImageField(upload_to=user_directory_path, null=True)
-	verify_docs = models.ImageField(upload_to=user_directory_path, null=True, default=None)
+	#profile_pic = models.ImageField(upload_to=user_directory_path, null=True)
+	#verify_docs = models.ImageField(upload_to=user_directory_path, null=True, default=None)
 	email_token = models.CharField(max_length=32, null=True, blank=True)
 	payment_group = models.ForeignKey(PaymentGroup, on_delete=models.SET_NULL, null=True)
 	email_group = models.ForeignKey(EmailGroup, on_delete=models.SET_NULL, null=True)

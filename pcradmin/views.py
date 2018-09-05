@@ -28,8 +28,9 @@ from PyPDF2 import PdfFileWriter, PdfFileReader
 from oasis2018.keyconfig import *
 import string
 from django.contrib import messages
-
 from random import choice
+from utils.registrations import *
+API_KEY='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'
 
 @staff_member_required
 def index(request):
@@ -48,16 +49,18 @@ def select_college_rep(request,id):
     college=get_object_or_404(College,id=id)
     if request.method=='POST':
         data=request.POST
+        #print(data)
         try:
             part_id=data['data']
         except:
             messages.warning(request,'Select a participant')
-        return redirect(request.META.get('HTTP_REFERER'))
+            return redirect(request.META.get('HTTP_REFERER'))
+        
 
         if data['submit']=='delete':
             part=Participant.objects.get(id=part_id)
             user=part.user
-            user.delete()
+            #user.delete()
             part.user=None
             part.is_cr=False
             part.cr_approved=False
@@ -72,6 +75,8 @@ def select_college_rep(request,id):
             part=Participant.objects.get(id=part_id)
             part.is_cr=True
             part.cr_approved=True
+            encoded = gen_barcode(part)
+            print("dsd")
 
             #Barcode generation here left for now. To be discussed if only QR or not
             part.save()
@@ -82,8 +87,8 @@ def select_college_rep(request,id):
             if user==None:
                 username=part.name.split()[0]+str(part_id)
                 length=8
-                chars = string.letters + string.digits
-                password = ''.join(choice(chars) for _ in xrange(length))
+                chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+                password = ''.join(choice(chars) for _ in range(length))
                 user=User.objects.create(username=username,password='')
                 user.set_password(password)
                 user.save()
@@ -125,10 +130,10 @@ pcr@bits-oasis.org
             from_email = Email('register@bits-oasis.org')
             to_email = Email(part.email)
             content = Content('text/html', body)
-            #sg = sendgrid.SendGridAPIClient(apikey=API_KEY) Email validation not done
+            sg = sendgrid.SendGridAPIClient(apikey=API_KEY) #Email validation with my email for now
             try:
                 mail = Mail(from_email, subject, to_email, content)
-               # response = sg.client.mail.send.post(request_body=mail.get())
+                response = sg.client.mail.send.post(request_body=mail.get())
                 messages.warning(request,'Email sent to ' + part.name)
             except :
                 part.user = None
@@ -144,7 +149,9 @@ pcr@bits-oasis.org
     except:
         cr=[]
     parts = [{'data':[part.name, part.phone, part.email, part.gender, part.pcr_approved, part.head_of_society, part.year_of_study, event_list(part),is_profile_complete(part), how_much_paid(part)], "id":part.id,} for part in participants]
+    
     return render(request, 'pcradmin/college_rep.html',{'college':college, 'parts':parts, 'cr':cr})
+
 
 ###HELPER FUNCTIONS WRT TO THE ABOVE VIEW###
 def event_list(part):
@@ -153,14 +160,14 @@ def event_list(part):
         events+=participation.event.name +','
     events=events[:-2]
     return events
-def is_profile_complete(part):
+'''def is_profile_complete(part):
     ''' profile completion is when docs and profile pic uploaded '''
     try:
         profile_url=part.profile_pic.url
         docs_url=part.verify_docs.url
         return True
     except:
-        return False
+        return False'''
 def how_much_paid(part):
     if part.controlz_paid or part.curr_controlz_paid:
         return 950
@@ -748,6 +755,9 @@ pcr@bits-oasis.org
 
             #finally
             participant.save()
+            if not participant.is_cr:
+                encoded=gen_barcode(participant)
+                participant.save()
 
         # except Exception, e: does not work in py3
         except Exception as e:

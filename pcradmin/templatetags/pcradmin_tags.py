@@ -10,7 +10,7 @@ def show_tags():
     email_verified = Participant.objects.filter(email_verified=True).count()
     cr_approved = 0
     for participant in Participant.objects.filter(email_verified=True):
-        if Participation.objects.filter(participant=participant, cr_approved=True):
+        if MainParticipation.objects.filter(participant=participant, cr_approved=True):
             cr_approved += 1
             continue
     pcr_approved = Participant.objects.filter(pcr_approved=True).count()
@@ -20,11 +20,11 @@ def show_tags():
     return {'email_verified':email_verified, 'cr_approved':cr_approved, 'pcr_approved':pcr_approved, 'paid':paid, 'full_paid':full_paid, 'pcr_final':pcr_final}
 
 
-@register.simple_tag
+'''@register.simple_tag
 def is_profile_complete(part):
     try:
         profile_url = part.profile_pic.url
         docs_url = part.verify_docs.url
         return True
     except:
-        return False
+        return False'''
