@@ -8,3 +8,4 @@ ignore/
 *.sqlite3
 keyconfig.*
 *.log
+*_creds.json

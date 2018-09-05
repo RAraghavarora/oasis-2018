@@ -27,3 +27,6 @@ class Transaction(models.Model):
 
 	def __str__(self):
 		return "{} from {} to {}".format(value, transfer_from, transfer_to)
+
+	def newTransaction(self):
+		""" Set up a new transaction and """

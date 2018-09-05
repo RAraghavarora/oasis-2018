@@ -36,6 +36,9 @@ class PlaceOrder(APIView):
                                             stall=Stall.objects.get(id=stall),
                                             order=order, transaction=None
                                         )
+
+            # TODO: ADD CONSIDERATIONS TO IS AVAILABLE AND QUANTITY
+
             for item in stall[items]:
                 item = ItemInstance.objects.create(
                                 itemclass=ItemClass.objects.get(id=item[id]),
@@ -51,4 +54,5 @@ class PlaceOrder(APIView):
                             data={"message": "Insufficient Funds"},
                             status=status.HTTP_412_PRECONDITION_FAILED
                         )
+        # if sufficient funds
         order.generateTransactions()

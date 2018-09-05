@@ -37,7 +37,7 @@ class Order(models.Model):
 			Each OrderFragment will have to generate its own Transaction, which
 			in turn involves calling the Transaction model's method(s). """
 		for fragment in self.fragments.all():
-			pass
+			fragment.generateTransaction()
 
 
 class OrderFragment(models.Model):
@@ -74,4 +74,4 @@ class OrderFragment(models.Model):
 
 	def generateTransaction(self):
 		""" To be called by Order's getTransactions method. """
-		pass
+		self.transaction = Transaction.newTransaction("")

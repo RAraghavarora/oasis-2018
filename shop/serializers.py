@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from shop.models import *
 
 from shop.models.balance import Balance
 from shop.models.item import ItemClass, ItemInstance
@@ -42,3 +41,9 @@ class TransactionSerializer(serializers.ModelSerializer):
 		model = Transaction
 		fields = '__all__'
 
+
+class BalanceSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = Balance
+		fields = '__all__'
