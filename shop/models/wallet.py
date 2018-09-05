@@ -38,7 +38,7 @@ class Wallet(models.Model):
 			else:
 				return text.format(profile.name)
 		except:
-			return (str(self.uid))
+			return (str(self.uuid))
 
 	def getProfile(self):
 		try:

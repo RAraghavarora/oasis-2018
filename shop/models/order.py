@@ -15,7 +15,7 @@ class Order(models.Model):
 	# fragments: OrderFragments
 
 	def __str__(self):
-		return "{} - {}".format(self.customer, self.calculateTotal())
+		return "{} - {}".format(self.customer, self.timestamp)
 
 	def calculateTotal(self):
 		""" This function is kind of a recursive ladder. Calling this would
@@ -57,13 +57,13 @@ class OrderFragment(models.Model):
 								on_delete=models.CASCADE)
 	order = models.ForeignKey("Order", related_name="fragments", null=True,
 								on_delete=models.CASCADE)
-	transaction = models.OneToOneField("Transaction", null=True,
+	transaction = models.OneToOneField("Transaction", null=True, blank=True,
 										on_delete=models.CASCADE)
 	status = models.CharField(max_length=20, choices=STATUS, default="in-review")
 	# items: ItemInstances
 
 	def __str__(self):
-		return "order: #{} - {}".format(self.calculateSubTotal())
+		return "order: #{} - {}".format(self.order.id, self.status)
 
 	def calculateSubTotal(self):
 		subtotal = 0

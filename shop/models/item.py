@@ -21,9 +21,10 @@ class ItemClass(models.Model):
 	stall = models.ForeignKey("Stall", related_name="menu", null=True,
 								on_delete=models.CASCADE)
 	is_veg = models.BooleanField(default=False)
-	size = models.CharField(max_length=10, choices=SIZES, null=True)
-	color = models.CharField(max_length=10, choices=COLORS, null=True)
-	type = models.CharField(max_length=20, choices=TYPES, null=True)
+	size = models.CharField(max_length=10, choices=SIZES, null=True, blank=True)
+	color = models.CharField(max_length=10, choices=COLORS, null=True,
+																	blank=True)
+	type = models.CharField(max_length=20, choices=TYPES, null=True, blank=True)
 	timestamp = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):
@@ -43,7 +44,7 @@ class ItemInstance(models.Model):
 								on_delete=models.CASCADE)
 
 	def __str__(self):
-		return self.class_.name
+		return self.itemclass.name
 
 	def calculatePrice(self):
-		return self.class_.price*quantity
+		return self.class_.price*self.quantity

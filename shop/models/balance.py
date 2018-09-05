@@ -11,7 +11,8 @@ class Balance(models.Model):
 	transfers = models.PositiveIntegerField(default=0)
 
 	def __str__(self):
-		return("{}/{}/{}/{}".format(swd, cash, instamojo, transfers))
+		return("{}/{}/{}/{}".format(self.swd, self.cash, self.instamojo,
+											self.transfers))
 
 	def _getTotal(self):
 		return self.swd + self.cash + self.instamojo + self.transfers
