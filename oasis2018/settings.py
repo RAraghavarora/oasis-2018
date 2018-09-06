@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'events',
     'registrations',
     'analytics',
-    'shop',
+    'shop.apps.ShopConfig',
     'corsheaders',
 ]
 

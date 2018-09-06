@@ -10,6 +10,8 @@ class Balance(models.Model):
 	instamojo = models.PositiveIntegerField(default=0)
 	transfers = models.PositiveIntegerField(default=0)
 
+	# wallet: Wallet
+
 	def __str__(self):
 		return("{}/{}/{}/{}".format(self.swd, self.cash, self.instamojo,
 											self.transfers))

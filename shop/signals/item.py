@@ -4,24 +4,22 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_delete
 from rest_framework.renderers import JSONRenderer
 
-from shop.models.item import ItemClass, ItemInstance
+from firebase_admin import firestore
+
+from shop.models.item import ItemClass
+from shop.serializers import ItemClassSerializer
 
 
 @receiver(post_save, sender=ItemClass)
 def itemClassFirebaseUpdate(sender, **kwargs):
-    pass
+    db = firestore.client()
+    data = ItemClassSerializer(kwargs["instance"]).data
+    collection = db.collection("Stall #{}".format(kwargs["instance"].stall.id))
+    collection.document("ItemClass #{}".format(kwargs["instance"].id)).set(data)
 
 
 @receiver(pre_delete, sender=ItemClass)
 def itemClassFirebaseDelete(sender, **kwargs):
-    pass
-
-
-@receiver(post_save, sender=ItemInstance)
-def itemInstanceFirebaseUpdate(sender, **kwargs):
-    pass
-
-
-@receiver(pre_delete, sender=ItemInstance)
-def itemInstanceFirebaseDelete(sender, **kwargs):
-    pass
+    db = firestore.client()
+    collection = db.collection("Stall #{}".format(kwargs["instance"].stall.id))
+    collection.document("ItemClass #{}".format(kwargs["instance"].id)).delete()

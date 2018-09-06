@@ -4,23 +4,24 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_delete
 from rest_framework.renderers import JSONRenderer
 
+from firebase_admin import firestore
+
 from shop.models.balance import Balance
 from shop.serializers import BalanceSerializer
-from signals.firebase_init import getFirestoreDatabase
 
 
 @receiver(post_save, sender=Balance)
 def balanceFirebaseUpdate(sender, **kwargs):
-    db = getFirestoreDatabase()
-    user = instance.wallet.user
-    data = BalanceSerializer(instance).data
-    print(data)
-    db.collection(user.id).document("Balance").set(data)
+    db = firestore.client()
+    data = BalanceSerializer(kwargs["instance"]).data
+    id_str = "User #{}".format(kwargs["instance"].wallet.user.id)
+    collection = db.collection(id_str)
+    collection.document("Balance").set(data)
 
 
 @receiver(pre_delete, sender=Balance)
 def balanceFirebaseDelete(sender, **kwargs):
-    db = getFirestoreDatabase()
-    user = instance.wallet.user
-    db.collection(user.id).document("Balance").delete()
-    pass
+    db = firestore.client()
+    id_str = "User #{}".format(kwargs["instance"].wallet.user.id)
+    collection = db.collection(id_str)
+    collection.document("Wallet").delete()

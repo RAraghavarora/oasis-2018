@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from shop.models.wallet import Wallet
 from shop.models.balance import Balance
 from shop.models.item import ItemClass, ItemInstance
 from shop.models.order import Order, OrderFragment
@@ -46,4 +47,11 @@ class BalanceSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Balance
+		fields = '__all__'
+
+
+class WalletSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = Wallet
 		fields = '__all__'

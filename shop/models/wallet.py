@@ -22,7 +22,8 @@ class Wallet(models.Model):
 	user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
 	uuid = models.UUIDField(default=uuid_pylib.uuid4, editable=False)
 	phone = models.BigIntegerField(default=0)
-	balance = models.OneToOneField("Balance")
+	balance = models.OneToOneField("Balance", on_delete=models.CASCADE,
+										blank=True, null=True)
 	profile = models.CharField(max_length=16, choices=PROFILES)
 	timestamp = models.DateTimeField(auto_now_add=True)
 	# transferred_in: Transactions

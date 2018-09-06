@@ -35,7 +35,7 @@ Firestore (DB)</string>
    <object class="com.horstmann.violet.ClassNode" id="ClassNode1">
     <void property="name">
      <void property="text">
-      <string>User ID
+      <string>User #&lt;ID&gt;
 (Collection)</string>
      </void>
     </void>
@@ -65,8 +65,8 @@ Firestore (DB)</string>
    <object class="com.horstmann.violet.ClassNode" id="ClassNode2">
     <void property="name">
      <void property="text">
-      <string>Orders
-(Collection)</string>
+      <string>Order #&lt;ID&gt;
+(document)</string>
      </void>
     </void>
    </object>
@@ -82,12 +82,12 @@ Firestore (DB)</string>
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>460.0</double>
+      <double>500.0</double>
      </void>
     </void>
     <void method="setLocation">
      <double>1210.0</double>
-     <double>460.0</double>
+     <double>500.0</double>
     </void>
    </object>
   </void>
@@ -95,8 +95,8 @@ Firestore (DB)</string>
    <object class="com.horstmann.violet.ClassNode" id="ClassNode3">
     <void property="name">
      <void property="text">
-      <string>Order ID
-(Collection)</string>
+      <string>Wallet
+(Document)</string>
      </void>
     </void>
    </object>
@@ -105,19 +105,19 @@ Firestore (DB)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double3"/>
-      <double>1390.0</double>
+      <double>1210.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double3"/>
-      <double>460.0</double>
+      <double>210.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1390.0</double>
-     <double>460.0</double>
+     <double>1210.0</double>
+     <double>210.0</double>
     </void>
    </object>
   </void>
@@ -125,8 +125,8 @@ Firestore (DB)</string>
    <object class="com.horstmann.violet.ClassNode" id="ClassNode4">
     <void property="name">
      <void property="text">
-      <string>Wallet
-(Collection)</string>
+      <string>Balance
+(Document)</string>
      </void>
     </void>
    </object>
@@ -142,12 +142,12 @@ Firestore (DB)</string>
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>220.0</double>
+      <double>300.0</double>
      </void>
     </void>
     <void method="setLocation">
      <double>1210.0</double>
-     <double>220.0</double>
+     <double>300.0</double>
     </void>
    </object>
   </void>
@@ -155,7 +155,7 @@ Firestore (DB)</string>
    <object class="com.horstmann.violet.ClassNode" id="ClassNode5">
     <void property="name">
      <void property="text">
-      <string>Balance
+      <string>Transaction #&lt;ID&gt;
 (Document)</string>
      </void>
     </void>
@@ -165,19 +165,19 @@ Firestore (DB)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>1390.0</double>
+      <double>1210.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>300.0</double>
+      <double>410.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1390.0</double>
-     <double>300.0</double>
+     <double>1210.0</double>
+     <double>410.0</double>
     </void>
    </object>
   </void>
@@ -185,7 +185,7 @@ Firestore (DB)</string>
    <object class="com.horstmann.violet.ClassNode" id="ClassNode6">
     <void property="name">
      <void property="text">
-      <string>Transactions
+      <string>Stall #&lt;ID&gt;
 (Collection)</string>
      </void>
     </void>
@@ -195,73 +195,13 @@ Firestore (DB)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>1390.0</double>
-     </void>
-    </void>
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>y</string>
-     <void method="set">
-      <object idref="Point2D$Double6"/>
-      <double>170.0</double>
-     </void>
-    </void>
-    <void method="setLocation">
-     <double>1390.0</double>
-     <double>170.0</double>
-    </void>
-   </object>
-  </void>
-  <void method="addNode">
-   <object class="com.horstmann.violet.ClassNode" id="ClassNode7">
-    <void property="name">
-     <void property="text">
-      <string>Transaction ID
-(Document)</string>
-     </void>
-    </void>
-   </object>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double7">
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>x</string>
-     <void method="set">
-      <object idref="Point2D$Double7"/>
-      <double>1550.0</double>
-     </void>
-    </void>
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>y</string>
-     <void method="set">
-      <object idref="Point2D$Double7"/>
-      <double>170.0</double>
-     </void>
-    </void>
-    <void method="setLocation">
-     <double>1550.0</double>
-     <double>170.0</double>
-    </void>
-   </object>
-  </void>
-  <void method="addNode">
-   <object class="com.horstmann.violet.ClassNode" id="ClassNode8">
-    <void property="name">
-     <void property="text">
-      <string>Stall ID
-(Collection)</string>
-     </void>
-    </void>
-   </object>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double8">
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>x</string>
-     <void method="set">
-      <object idref="Point2D$Double8"/>
       <double>570.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
-      <object idref="Point2D$Double8"/>
+      <object idref="Point2D$Double6"/>
       <double>350.0</double>
      </void>
     </void>
@@ -278,21 +218,21 @@ Firestore (DB)</string>
       <string>x</string>
       <void method="set">
        <object idref="Rectangle2D$Double0"/>
-       <double>760.0</double>
+       <double>550.0</double>
       </void>
      </void>
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
       <string>y</string>
       <void method="set">
        <object idref="Rectangle2D$Double0"/>
-       <double>560.0</double>
+       <double>470.0</double>
       </void>
      </void>
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
       <string>width</string>
       <void method="set">
        <object idref="Rectangle2D$Double0"/>
-       <double>200.0</double>
+       <double>540.0</double>
       </void>
      </void>
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
@@ -316,10 +256,69 @@ Firestore (DB)</string>
     </void>
     <void property="text">
      <void property="text">
-      <string>ABSTRACTION:
-Each stall is also a user and
-each stall also has a wallet,
-balance and transaction.</string>
+      <string>From: https://firebase.google.com/docs/firestore/data-model#collections
+&quot;Note: Querying across subcollections is not currently supported in Cloud Firestore. 
+If you need to query data across collections, use root-level collections.&quot;</string>
+     </void>
+    </void>
+   </object>
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double7">
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>x</string>
+     <void method="set">
+      <object idref="Point2D$Double7"/>
+      <double>550.0</double>
+     </void>
+    </void>
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>y</string>
+     <void method="set">
+      <object idref="Point2D$Double7"/>
+      <double>470.0</double>
+     </void>
+    </void>
+    <void method="setLocation">
+     <double>550.0</double>
+     <double>470.0</double>
+    </void>
+   </object>
+  </void>
+  <void method="addNode">
+   <object class="com.horstmann.violet.ClassNode" id="ClassNode7">
+    <void property="name">
+     <void property="text">
+      <string>ItemClass #&lt;ID&gt;
+(Document)</string>
+     </void>
+    </void>
+   </object>
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double8">
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>x</string>
+     <void method="set">
+      <object idref="Point2D$Double8"/>
+      <double>280.0</double>
+     </void>
+    </void>
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>y</string>
+     <void method="set">
+      <object idref="Point2D$Double8"/>
+      <double>270.0</double>
+     </void>
+    </void>
+    <void method="setLocation">
+     <double>280.0</double>
+     <double>270.0</double>
+    </void>
+   </object>
+  </void>
+  <void method="addNode">
+   <object class="com.horstmann.violet.ClassNode" id="ClassNode8">
+    <void property="name">
+     <void property="text">
+      <string>Wallet
+(Document)</string>
      </void>
     </void>
    </object>
@@ -328,49 +327,19 @@ balance and transaction.</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double9"/>
-      <double>760.0</double>
-     </void>
-    </void>
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>y</string>
-     <void method="set">
-      <object idref="Point2D$Double9"/>
-      <double>560.0</double>
-     </void>
-    </void>
-    <void method="setLocation">
-     <double>760.0</double>
-     <double>560.0</double>
-    </void>
-   </object>
-  </void>
-  <void method="addNode">
-   <object class="com.horstmann.violet.ClassNode" id="ClassNode9">
-    <void property="name">
-     <void property="text">
-      <string>ItemClass ID
-(Document)</string>
-     </void>
-    </void>
-   </object>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double10">
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>x</string>
-     <void method="set">
-      <object idref="Point2D$Double10"/>
       <double>340.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
-      <object idref="Point2D$Double10"/>
-      <double>350.0</double>
+      <object idref="Point2D$Double9"/>
+      <double>410.0</double>
      </void>
     </void>
     <void method="setLocation">
      <double>340.0</double>
-     <double>350.0</double>
+     <double>410.0</double>
     </void>
    </object>
   </void>
@@ -408,88 +377,7 @@ balance and transaction.</string>
     </void>
    </object>
    <object idref="ClassNode1"/>
-   <object idref="ClassNode4"/>
-  </void>
-  <void method="connect">
-   <object class="com.horstmann.violet.ClassRelationshipEdge">
-    <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
-    </void>
-    <void property="endArrowHead">
-     <object class="com.horstmann.violet.ArrowHead" field="V"/>
-    </void>
-    <void property="endLabel">
-     <string>1</string>
-    </void>
-   </object>
-   <object idref="ClassNode1"/>
-   <object idref="ClassNode2"/>
-  </void>
-  <void method="connect">
-   <object class="com.horstmann.violet.ClassRelationshipEdge">
-    <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
-    </void>
-    <void property="endArrowHead">
-     <object class="com.horstmann.violet.ArrowHead" field="V"/>
-    </void>
-    <void property="endLabel">
-     <string>*</string>
-    </void>
-    <void property="startLabel">
-     <string>1</string>
-    </void>
-   </object>
-   <object idref="ClassNode2"/>
    <object idref="ClassNode3"/>
-  </void>
-  <void method="connect">
-   <object class="com.horstmann.violet.ClassRelationshipEdge">
-    <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
-    </void>
-    <void property="endArrowHead">
-     <object class="com.horstmann.violet.ArrowHead" field="V"/>
-    </void>
-    <void property="endLabel">
-     <string>1</string>
-    </void>
-    <void property="startLabel">
-     <string>1</string>
-    </void>
-   </object>
-   <object idref="ClassNode4"/>
-   <object idref="ClassNode5"/>
-  </void>
-  <void method="connect">
-   <object class="com.horstmann.violet.ClassRelationshipEdge">
-    <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
-    </void>
-    <void property="endArrowHead">
-     <object class="com.horstmann.violet.ArrowHead" field="V"/>
-    </void>
-    <void property="endLabel">
-     <string>1</string>
-    </void>
-   </object>
-   <object idref="ClassNode4"/>
-   <object idref="ClassNode6"/>
-  </void>
-  <void method="connect">
-   <object class="com.horstmann.violet.ClassRelationshipEdge">
-    <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
-    </void>
-    <void property="endArrowHead">
-     <object class="com.horstmann.violet.ArrowHead" field="V"/>
-    </void>
-    <void property="endLabel">
-     <string>*</string>
-    </void>
-   </object>
-   <object idref="ClassNode6"/>
-   <object idref="ClassNode7"/>
   </void>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
@@ -507,7 +395,7 @@ balance and transaction.</string>
     </void>
    </object>
    <object idref="ClassNode0"/>
-   <object idref="ClassNode8"/>
+   <object idref="ClassNode6"/>
   </void>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
@@ -524,8 +412,68 @@ balance and transaction.</string>
      <string>1</string>
     </void>
    </object>
+   <object idref="ClassNode6"/>
+   <object idref="ClassNode7"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
+    </void>
+    <void property="endArrowHead">
+     <object class="com.horstmann.violet.ArrowHead" field="V"/>
+    </void>
+    <void property="endLabel">
+     <string>1</string>
+    </void>
+   </object>
+   <object idref="ClassNode6"/>
    <object idref="ClassNode8"/>
-   <object idref="ClassNode9"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
+    </void>
+    <void property="endArrowHead">
+     <object class="com.horstmann.violet.ArrowHead" field="V"/>
+    </void>
+    <void property="endLabel">
+     <string>1</string>
+    </void>
+   </object>
+   <object idref="ClassNode1"/>
+   <object idref="ClassNode4"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
+    </void>
+    <void property="endArrowHead">
+     <object class="com.horstmann.violet.ArrowHead" field="V"/>
+    </void>
+    <void property="endLabel">
+     <string>*</string>
+    </void>
+   </object>
+   <object idref="ClassNode1"/>
+   <object idref="ClassNode5"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
+    </void>
+    <void property="endArrowHead">
+     <object class="com.horstmann.violet.ArrowHead" field="V"/>
+    </void>
+    <void property="endLabel">
+     <string>*</string>
+    </void>
+   </object>
+   <object idref="ClassNode1"/>
+   <object idref="ClassNode2"/>
   </void>
  </object>
 </java>

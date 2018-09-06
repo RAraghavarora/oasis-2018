@@ -26,8 +26,17 @@ class ItemClassAdmin(admin.ModelAdmin):
     inlines = [ItemInstanceInLine]
 
 
+class WalletInLine(admin.TabularInline):
+    model = Wallet
+    extra = 1
+
+
+class BalanceAdmin(admin.ModelAdmin):
+    inlines = [WalletInLine]
+
+
 admin.site.register(Wallet)
-admin.site.register(Balance)
+admin.site.register(Balance, BalanceAdmin)
 admin.site.register(Transaction)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderFragment)

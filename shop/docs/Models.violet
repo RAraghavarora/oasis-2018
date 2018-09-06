@@ -208,7 +208,7 @@ timestamp: DateTimeField
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>1180.0</double>
+      <double>1150.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -219,7 +219,7 @@ timestamp: DateTimeField
      </void>
     </void>
     <void method="setLocation">
-     <double>1180.0</double>
+     <double>1150.0</double>
      <double>560.0</double>
     </void>
    </object>
@@ -381,7 +381,7 @@ generateTransaction()</string>
       <string>width</string>
       <void method="set">
        <object idref="Rectangle2D$Double0"/>
-       <double>400.0</double>
+       <double>360.0</double>
       </void>
      </void>
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
@@ -506,7 +506,7 @@ timestamp: DateTimeField
       <string>width</string>
       <void method="set">
        <object idref="Rectangle2D$Double1"/>
-       <double>240.0</double>
+       <double>200.0</double>
       </void>
      </void>
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
@@ -639,7 +639,9 @@ due to them.</string>
       <string>swd: PositiveIntegerField
 cash: PositiveIntegerField
 instamojo: PositiveIntegerField
-transfers: PositiveIntegerField</string>
+transfers: PositiveIntegerField
+
+#wallet: Wallet</string>
      </void>
     </void>
     <void property="methods">
