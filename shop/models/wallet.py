@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from shop.models.balance import Balance
+from shop.models.transaction import Transaction
 
 
 class Wallet(models.Model):
@@ -55,3 +56,15 @@ class Wallet(models.Model):
 
 	def getTotalBalance(self):
 		return self.balance._getTotal()
+
+	def transferTo(self, target_wallet, amount):
+		self.balance.deduct(amount)
+		target_wallet.balance.transfers += amount
+		target_wallet.balance.save()
+		Transaction.objects.create(
+									amount = amount,
+									transfer_to = target_wallet,
+									transfer_from = self,
+									transfer_type = 'transfer',
+									refund_id = ""
+								)

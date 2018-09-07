@@ -1,0 +1,17 @@
+Hemanth:
+  - models (design, documentation and implemenation)
+  - firebase
+  - signals
+  - admin panel
+  - models methods
+  - ewallet views
+
+Yet to decide:
+  - orders views
+  - stall views
+
+Divyam:
+  - serializers
+  - logging
+  - auth system
+  - auth views

@@ -17,8 +17,6 @@ class ShopConfig(AppConfig):
         from shop.signals.balance import balanceFirebaseDelete
         from shop.signals.item import itemClassFirebaseUpdate
         from shop.signals.item import itemClassFirebaseDelete
-        from shop.signals.order import orderFirebaseUpdate
-        from shop.signals.order import orderFirebaseDelete
         from shop.signals.order import orderFragmentFirebaseUpdate
         from shop.signals.order import orderFragmentFirebaseDelete
         from shop.signals.transaction import transactionFirebaseDelete

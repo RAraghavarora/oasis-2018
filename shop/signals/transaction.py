@@ -14,14 +14,27 @@ from shop.serializers import TransactionSerializer
 def transactionFirebaseUpdate(sender, **kwargs):
     db = firestore.client()
     data = TransactionSerializer(kwargs["instance"]).data
-    id_str = "User #{}".format(kwargs["instance"].wallet.user.id)
-    collection = db.collection(id_str)
-    collection.document("Transcation #{}".format(instance.id)).set(data)
 
+    id_str = "User #{}".format(kwargs["instance"].transfer_to.user.id)
+    collection = db.collection(id_str)
+    doc_string = "Transcation #{}".format(kwargs["instance"].id)
+    collection.document(doc_string).set(data)
+
+    id_str = "User #{}".format(kwargs["instance"].transfer_from.user.id)
+    collection = db.collection(id_str)
+    doc_string = "Transcation #{}".format(kwargs["instance"].id)
+    collection.document(doc_string).set(data)
 
 @receiver(pre_delete, sender=Transaction)
 def transactionFirebaseDelete(sender, **kwargs):
     db = firestore.client()
-    id_str = "User #{}".format(kwargs["instance"].wallet.user.id)
+
+    id_str = "User #{}".format(kwargs["instance"].transfer_to.user.id)
     collection = db.collection(id_str)
-    collection.document("Transcation #{}".format(instance.id)).delete()
+    doc_string = "Transcation #{}".format(kwargs["instance"].id)
+    collection.document().delete()
+
+    id_str = "User #{}".format(kwargs["instance"].transfer_from.user.id)
+    collection = db.collection(id_str)
+    doc_string = "Transcation #{}".format(kwargs["instance"].id)
+    collection.document().delete()

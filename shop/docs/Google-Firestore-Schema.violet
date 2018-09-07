@@ -65,7 +65,7 @@ Firestore (DB)</string>
    <object class="com.horstmann.violet.ClassNode" id="ClassNode2">
     <void property="name">
      <void property="text">
-      <string>Order #&lt;ID&gt;
+      <string>OrderFragment #&lt;ID&gt;
 (document)</string>
      </void>
     </void>
