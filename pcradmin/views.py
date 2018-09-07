@@ -125,7 +125,7 @@ BITS Pilani
 %s
 pcr@bits-oasis.org
 </pre>
-			""" %(part.name,str(request.build_absolute_uri(reverse('registrations:home'))),username, password,1234567890 ) #get_pcr_number()
+			""" %(part.name,str(request.build_absolute_uri(reverse('registrations:home'))),username, password,get_pcr_number() ) #get_pcr_number()
             subject = 'College Representative for Oasis'
             from_email = Email('register@bits-oasis.org')
             to_email = Email(part.email)
@@ -148,7 +148,7 @@ pcr@bits-oasis.org
         participants = participants.exclude(id=cr.id)
     except:
         cr=[]
-    parts = [{'data':[part.name, part.phone, part.email, part.gender, part.pcr_approved, part.head_of_society, part.year_of_study, event_list(part),is_profile_complete(part), how_much_paid(part)], "id":part.id,} for part in participants]
+    parts = [{'data':[part.name, part.phone, part.email, part.gender, part.pcr_approved, part.head_of_society, part.year_of_study, event_list(part), how_much_paid(part)], "id":part.id,} for part in participants]
     
     return render(request, 'pcradmin/college_rep.html',{'college':college, 'parts':parts, 'cr':cr})
 
@@ -160,14 +160,14 @@ def event_list(part):
         events+=participation.event.name +','
     events=events[:-2]
     return events
-'''def is_profile_complete(part):
-    ''' profile completion is when docs and profile pic uploaded '''
+def is_profile_complete(part):
+     #profile completion is when docs and profile pic uploaded 
     try:
         profile_url=part.profile_pic.url
         docs_url=part.verify_docs.url
         return True
     except:
-        return False'''
+        return False
 def how_much_paid(part):
     if part.controlz_paid or part.curr_controlz_paid:
         return 950
@@ -193,7 +193,7 @@ def approve_participations(request,id):
         if data['submit']=='approve':
             for participation in MainParticipation.objects.filter(id__in=part_list):
                 participation.pcr_approved=True
-                participant=particpation.participant
+                participant=participation.participant
                 participant.pcr_approved=True
                 participant.save()
                 participation.save()
@@ -212,9 +212,9 @@ def approve_participations(request,id):
                     participant.save()
             message="Events successfully unconfirmed"
         messages.success(request,message)
-        approved=MainParticipation.objects.filter(pcr_approved=True,participant__college=college,cr_approved=True)
-        disapproved=MainParticipation.objects.filter(pcr_approved=False,participant__college=college,cr_approved=True)
-        return render(request, 'pcradmin/approve_participations.html', {'approved':approved, 'disapproved':disapproved, 'cr':cr})
+    approved=MainParticipation.objects.filter(pcr_approved=True,participant__college=college,cr_approved=True)
+    disapproved=MainParticipation.objects.filter(pcr_approved=False,participant__college=college,cr_approved=True)
+    return render(request, 'pcradmin/approve_participations.html', {'approved':approved, 'disapproved':disapproved, 'cr':cr})
 
 @staff_member_required
 def verify_profile(request,part_id):
@@ -634,7 +634,7 @@ def view_final(request):
     ]
     title = "College List"
     table = { 'rows':rows, 'headings':headings, 'title':title,}
-    return render(request, 'pcradmin/add_college.html', {'table': table})
+    return render(request, 'pcradmin/final_confirmation.html', {'table': table})
 
 @staff_member_required
 def final_confirmation(request, c_id):

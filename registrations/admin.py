@@ -13,3 +13,4 @@ admin.site.register(CheckoutGroup)
 admin.site.register(Bitsian)
 admin.site.register(PaymentGroup)
 
+
