@@ -32,13 +32,6 @@ class Order(models.Model):
 			status[fragment.stall] = fragment.status
 		return status
 
-	def generateTransactions(self):
-		""" Also, in some ways a recursive ladder of generating Transactions.
-			Each OrderFragment will have to generate its own Transaction, which
-			in turn involves calling the Transaction model's method(s). """
-		for fragment in self.fragments.all():
-			fragment.generateTransaction()
-
 
 class OrderFragment(models.Model):
 	""" Each constituent part of a larger order, part of the the "many stalls,
@@ -71,7 +64,3 @@ class OrderFragment(models.Model):
 			subtotal += item.calculatePrice()
 		self.subtotal = subtotal
 		return subtotal
-
-	def generateTransaction(self):
-		""" To be called by Order's getTransactions method. """
-		self.transaction = Transaction.newTransaction("")

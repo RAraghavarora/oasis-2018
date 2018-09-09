@@ -5,6 +5,8 @@ Hemanth:
   - admin panel
   - models methods
   - ewallet views
+  - orders views
+  - serializers
 
 Yet to decide:
   - orders views

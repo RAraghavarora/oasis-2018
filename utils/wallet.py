@@ -14,7 +14,7 @@ def transferHelper(data, type='transfer'):
         if amount < 0:
             raise ValueError("amount transfered cannot be negative.")
             # log and handle accordingly - value error
-        source.transferTo(target, amount)
+        source.transferTo(target, amount, type=type)
         msg = {"message": "successful!"}
         return Response(msg, status=status.HTTP_200_OK)
     except KeyError as missing:

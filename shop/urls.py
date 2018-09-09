@@ -12,7 +12,7 @@ from shop.views import orders_views
 app_name="shop"
 urlpatterns = [
     url('transfer', ewallet_views.Transfer.as_view(), name="transfer"),
-    url('place-order', orders_views.PlaceOrder.as_view(), name="place-order"),
+    url('place-order', orders_views.PlaceOrder, name="place-order"),
 
     #JWT Authentication
     url(r'^api-token-auth/', obtain_jwt_token),
