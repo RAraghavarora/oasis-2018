@@ -4,7 +4,7 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify
 
 #from shop.views import auth_views
 from shop.views import ewallet_views
-#from shop.views import orders_views
+from shop.views import orders_views
 #from shop.views import stalls_views
 #from shop.views import test_views
 
@@ -12,8 +12,7 @@ from shop.views import ewallet_views
 app_name="shop"
 urlpatterns = [
     url('transfer', ewallet_views.Transfer.as_view(), name="transfer"),
-    
-    #url('test', test_views.test(), name="test"),
+    url('place-order', orders_views.PlaceOrder.as_view(), name="place-order"),
 
     #JWT Authentication
     url(r'^api-token-auth/', obtain_jwt_token),
