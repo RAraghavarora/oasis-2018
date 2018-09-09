@@ -1,4 +1,5 @@
 from registrations.models import Participant
+
 def generate_email_token(participant):
 
 	import uuid

@@ -26,8 +26,8 @@ class ShopConfig(AppConfig):
         from shop.signals.wallet import walletFirebaseUpdate
         from shop.signals.wallet import walletFirebaseDelete
 
-        # Then use Google's API to get setup for communtication with
-        # Google Cloud Firestore from the server end.
+        #Then use Google's API to get setup for communtication with
+        #Google Cloud Firestore from the server end.
         creds = credentials.Certificate(os.path.join(
                                                 settings.BASE_DIR,
                                                 "oasis2018/firebase_creds.json"
