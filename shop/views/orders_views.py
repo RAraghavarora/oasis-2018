@@ -26,6 +26,20 @@ class PlaceOrder(APIView):
 
         """
 
+        try:
+            data = request.data["order"]
+        except KeyError as missing:
+            msg = {"message": "missing the following field: {}".format(missing)}
+            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+        customer = request.user.wallet
+        order = Order.objects.create(customer=customer)
+
+
+
+
+
+
+"""
         data = request.data["order"]
 
         # Part 1: popluate an order
@@ -56,3 +70,4 @@ class PlaceOrder(APIView):
                         )
         # if sufficient funds
         order.generateTransactions()
+"""

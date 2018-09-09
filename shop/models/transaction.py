@@ -1,6 +1,9 @@
 from django.db import models
 from django.utils import timezone
-from shop.models.wallet import Wallet
+
+# Import the Wallet class, for some weird reason saying "Wallet" doesn't work
+# here, might be due to circular imports or something weird like that.
+from shop.models.wallet import *
 
 
 class Transaction(models.Model):
@@ -28,6 +31,3 @@ class Transaction(models.Model):
 	def __str__(self):
 		return "{} from {} to {}".format(self.value, self.transfer_from,
 											self.transfer_to)
-
-	def newTransaction(self):
-		""" Set up a new transaction and """
