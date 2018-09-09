@@ -1,16 +1,10 @@
-try:
-    from oasis2018.keyconfig import *    # Production
-    DEBUG = Debug              # Created debug variable in the keyconfig file, which can be changed whenever required
-except:
-    DEBUG = True
-
 import os
+from oasis2018.settings_config.keyconfig import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -23,6 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_jwt',
     'preregistration',
     'events',
     'registrations',
@@ -68,7 +63,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'oasis2018.wsgi.application'
 
-try:
+"""try:
     from oasis2018.keyconfig import *
     DATABASES = {
         'default': {
@@ -82,13 +77,13 @@ try:
         }
     }
 except Exception as error_message:
-    print("DATABASE SETTINGS ERROR: {}".format(error_message))
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
+    print("DATABASE SETTINGS ERROR: {}".format(error_message))"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -107,6 +102,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     ),
@@ -114,7 +117,6 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
     ),
 }
-
 
 LANGUAGE_CODE = 'en-us'
 
@@ -154,8 +156,7 @@ so this import can only occur after it has been declared.
 
 Use logging_tree module to visualize logging structure.
 '''
-
-from oasis2018 import loggers
+from oasis2018.settings_config.loggers import *
 import raven
 
 RAVEN_CONFIG = {
@@ -163,3 +164,7 @@ RAVEN_CONFIG = {
 }
 #from raven.contrib.django.raven_compat.models import client
 #client.captureException()
+
+
+#JWT Authentication
+from oasis2018.settings_config.jwt import *

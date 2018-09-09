@@ -2,7 +2,7 @@ from events.models import MainParticipation, MainEvent
 from registrations.models import Participant,College,MainEvent
 from django.shortcuts import render
 import requests
-from oasis2018 import keyconfig
+from oasis2018.settings_config import keyconfig
 from django.http import HttpResponse,JsonResponse
 from django.urls import reverse
 import re
