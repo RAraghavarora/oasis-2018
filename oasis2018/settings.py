@@ -63,8 +63,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'oasis2018.wsgi.application'
 
-"""try:
-    from oasis2018.keyconfig import *
+try:
+    from oasis2018.settings_config.keyconfig import *
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -77,13 +77,13 @@ WSGI_APPLICATION = 'oasis2018.wsgi.application'
         }
     }
 except Exception as error_message:
-    print("DATABASE SETTINGS ERROR: {}".format(error_message))"""
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    print("DATABASE SETTINGS ERROR: {}".format(error_message))
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -162,9 +162,4 @@ import raven
 RAVEN_CONFIG = {
     'dsn': 'https://0830bb2a73324f2f8d8082acf42fb52c:1b167f754ba54602825fe60a5e87bffa@sentry.io/1276415',
 }
-#from raven.contrib.django.raven_compat.models import client
-#client.captureException()
 
-
-#JWT Authentication
-from oasis2018.settings_config.jwt import *
