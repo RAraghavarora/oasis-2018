@@ -22,6 +22,7 @@ logging.config.dictConfig({
             'level': 'DEBUG',
             'formatter': 'file',
             'filename': BASE_DIR + '/shop/log/wallet_debug.log',
+            'mode': "w+",
             'maxBytes': 1024000,
             'backupCount': 3,
         },
@@ -29,12 +30,14 @@ logging.config.dictConfig({
             'class': 'logging.FileHandler',
             'level': 'INFO',
             'formatter': 'file',
+            'mode': "w+",
             'filename': BASE_DIR + '/shop/log/wallet_info.log',
         },
         'wallet_warning': {
             'class': 'logging.FileHandler',
             'level': 'WARNING',
             'formatter': 'file',
+            'mode': "w+",
             'filename': BASE_DIR + '/shop/log/wallet_warning.log',
         }
     },
