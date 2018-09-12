@@ -15,13 +15,6 @@ from django.contrib import messages
 from instamojo_wrapper import Instamojo
 from django.contrib.auth.decorators import login_required
 
-# Getting the instamojo key
-
-try:
-	api = Instamojo(api_key=keyconfig.INSTA_API_KEY, auth_token=keyconfig.AUTH_TOKEN)
-except:
-	api = Instamojo(api_key=keyconfig.INSTA_API_KEY_test, auth_token=keyconfig.AUTH_TOKEN_test, endpoint='https://test.instamojo.com/api/1.1/') #when in development
-
 
 def index(request):
     '''
@@ -199,6 +192,33 @@ def manage_events(request):
     not_added_list = [event for event in MainEvent.objects.all() if event not in added_events]
     return render(request, 'registrations/manage_events.html', {'added_list':added_list, 'not_added_list':not_added_list, 'participant':participant})
 
+@login_required
+def get_profile_card(request):
+    participant = Participant.objects.get(user=request.user)
+    if not participant.firewallz_passed:
+        if not participant.is_guest:
+            context = {
+                    'error_heading': "Invalid Access",
+                    'message': "Please pass firewallz booth at BITS to access this page.",
+                    'url':request.build_absolute_uri(reverse('registrations:index'))
+                    }
+            return render(request, 'registrations/message.html', context)
+    participant = Participant.objects.get(user=request.user)
+    participation_set = MainParticipation.objects.filter(participant=participant, pcr_approved=True)
+    events = ''
+    for participation in participation_set:
+        events += participation.event.name + ', '
+    events = events[:-2]
+    return render(request, 'registrations/profile_card.html', {'participant':participant, 'events':events,})
+
+
+
+
+
+
+
+
+
 # @login_required
 # def upload_docs(request):
 # 	participant = Participant.objects.get(user=request.user)
@@ -309,8 +329,7 @@ def manage_events(request):
 #             }
 #             return render(request, 'registrations/message.html')
 
-# # def hello(request):
-# #     return HttpResponse('hello')
+
 # def payment_response(request):
 #     import requests
 #     payid=str(request.GET['payment_request_id'])
