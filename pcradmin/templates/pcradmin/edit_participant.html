@@ -11,7 +11,7 @@
 {% endfor %}
 </div>
 {% endif %}
-<form method="POST" action="{% url 'pcradmin:edit_participant' part.id %}">
+<form method="POST" action="{% url 'pcradmin:edit_participant' participant.id %}">
     {% csrf_token %}
 <div class="row clearfix">
 <div class="card">
@@ -25,14 +25,14 @@
             <label for="name">Name</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="text" id="name" class="form-control" placeholder="Name" name="name" value="{{part.name}}">
+                    <input type="text" id="name" class="form-control" placeholder="Name" name="name" value="{{participant.name}}">
                 </div>
             </div>
 
             <label for="gender">Gender</label>
             <div class="form-group">
                 <select class="form-control show-tick" name="gender" data-live-search="true">
-                    {% if part.gender == 'M' %}
+                    {% if participant.gender == 'M' %}
                     <option value="M" selected="true">Male</option>
                     <option value="F">Female</option>
                     {% else %}
@@ -45,14 +45,14 @@
             <label for="email">Email</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="email" id="email" class="form-control" placeholder="Email" name="email" value="{{part.email}}">
+                    <input type="email" id="email" class="form-control" placeholder="Email" name="email" value="{{participant.email}}">
                 </div>
             </div>
 
             <label for="phone">Phone number</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min="1000000000" max="9999999999" id="phone" class="form-control" placeholder="Phone number" name="phone" value="{{part.phone}}">
+                    <input type="number" min="1000000000" max="9999999999" id="phone" class="form-control" placeholder="Phone number" name="phone" value="{{participant.phone}}">
                 </div>
             </div>
 

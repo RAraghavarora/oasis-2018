@@ -30,7 +30,7 @@ import string
 from django.contrib import messages
 from random import choice
 from utils.registrations import *
-API_KEY='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'
+API_KEY='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' #my api 
 
 @staff_member_required
 def index(request):
@@ -160,14 +160,7 @@ def event_list(part):
         events+=participation.event.name +','
     events=events[:-2]
     return events
-def is_profile_complete(part):
-     #profile completion is when docs and profile pic uploaded 
-    try:
-        profile_url=part.profile_pic.url
-        docs_url=part.verify_docs.url
-        return True
-    except:
-        return False
+
 def how_much_paid(part):
     if part.controlz_paid or part.curr_controlz_paid:
         return 950
@@ -251,7 +244,7 @@ def verify_profile(request,part_id):
     events_confirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=True)]
     events_unconfirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=False)]
     return render(request, 'pcradmin/verify_profile.html',
-	{'profile_url':profile_url, 'docs_url':docs_url, 'part':part, 'confirmed':events_confirmed, 'unconfirmed':events_unconfirmed})
+	{ 'part':part, 'confirmed':events_confirmed, 'unconfirmed':events_unconfirmed})
         
 @staff_member_required
 def add_college(request):
@@ -306,12 +299,12 @@ def edit_participant(request,part_id):
         participant.gender=gender
         participant.save()
         return redirect(reverse('pcradmin:select_college_rep', kwargs={'id':participant.college.id}))
-    return render(request,'pcradmin/edit_participant.html',{'particpant':participant})
+    return render(request,'pcradmin/edit_participant.html',{'participant':participant})
 
 
 
 
-####################################      STATS (Maths vala nahi)   ##########################################     
+#################################### STATS ##########################################     
 
 
 @staff_member_required
@@ -395,7 +388,7 @@ def stats(request, order=None):
                 'data': [
                     participant.name, participant.college.name, participant.gender,
                     participant.phone, participant.email, get_payment_status(participant),
-                    get_event_status(participant)
+                    get_event_string(participant)
                 ],
                 'link' : []
             }
@@ -408,6 +401,21 @@ def stats(request, order=None):
             ]
         }
         return render(request, 'pcradmin/tables.html', context)
+def get_payment_status(part):
+	if part.paid or part.curr_paid:
+		if part.controlz_paid or part.curr_controlz_paid:
+			return 950
+		else:
+			return 300
+	else:
+		return 0
+def get_event_string(participant):
+    participation_set = MainParticipation.objects.filter(participant=participant, pcr_approved=True)
+    events = ''
+    for participation in participation_set:
+        events += participation.event.name + ', '
+    events = events[:-2]
+    return events
 
 @staff_member_required
 def stats_event(request, e_id):
@@ -528,7 +536,6 @@ def master_stats(request):
                     participants+= Participant.objects.filter(id__in=[
                         participation.participant.id for participation in participations
                     ], college = college)
-            
             for participant in participants:
                 display_data = {
                 'data': [
@@ -549,7 +556,7 @@ def master_stats(request):
             for college_name in colleges:
                 college_names += college_name + ', '
             college_names = college_names[:-2]
-            #same logic as up
+           
             title = "Participants registered for %s event from %s college." %(event_names, college_names)
 
         elif events[0]!='':
@@ -615,73 +622,45 @@ def master_stats(request):
 
 @staff_member_required
 def view_final(request):
-    rows = []
-    for college in College.objects.all():
-        display_data={
-            'data': [
-                college.name, college.participant_set.all().count(), 
-                college.participant_set.filter(pcr_approved=True).count() 
-            ], 
-            'id' : college.id,
-            'link' : [{
-                'title': 'Select College Representative',
-                'url' : reverse('pcradmin:select_college_rep', kwargs ={'id': college.id})
-            }]
-        }
-        rows.append(display_data)
-    headings = [
-        'Name', 'Registered Participants ', 'PCr Approved Participants ', 'Select/Modify CR' 
-    ]
-    title = "College List"
-    table = { 'rows':rows, 'headings':headings, 'title':title,}
-    return render(request, 'pcradmin/final_confirmation.html', {'table': table})
+	rows = [{'data':[college.name,college.participant_set.filter(pcr_approved=True, pcr_final=True).count(),college.participant_set.filter(pcr_approved=True).count()],'link':[{'title':'Select', 'url':reverse('pcradmin:final_confirmation', kwargs={'c_id':college.id})}] } for college in College.objects.all()]
+	tables = [{'title':'List of Colleges', 'rows':rows, 'headings':['College', 'Finalised','Total Approved', 'Select']}]
+	return render(request, 'pcradmin/tables.html', {'tables':tables})
 
 @staff_member_required
 def final_confirmation(request, c_id):
-    college = College.objects.get(id = c_id)
-    if request.method == 'POST':
-        data = request.POST
-        try:
-            id_list = data.getlist('data')
-        except:
-            messages.warning(request, 'Select a Participant ')
-            return redirect(request.META.get('HTTP_REFERER'))
-        if not id_list:
-            messages.warning(request, 'Select a Participant ')
-            return redirect(request.META.get('HTTP_REFERER'))
-        participants = Participant.objects.filter(id__in=id_list)
-        if data['action'] == 'approve':
-            emailgroup = EmailGroup.objects.create()
-            for participant in participants:
-                participant.email_group = emailgroup
-                participant.save()
-            
-            return redirect(reverse('pcradmin:final_email', kwargs={'eg_id': emailgroup.id}))
-        
-        elif data['action'] =='disaprove':
-            for participant in participants:
-                participant.email_group = None
-                participant.pcr_final=False
-                participant.save()
-
-    participants = college.participant_set.filter(pcr_approved=True, pcr_final=False)
-    participants_final = college.participant_set.filter(pcr_approved=True, pcr_final=True)
-    context = {
-        'parts': participants, 'college': college, 'parts_final': participants_final
-    }
-    return render(request, 'pcradmin/final_confirmation.html', context)
-
+	college = College.objects.get(id=c_id)
+	if request.method == 'POST':
+		data = request.POST
+		try:
+			id_list = data.getlist('data')
+		except:
+			messages.warning(request,'Select a Participant')
+			return redirect(request.META.get('HTTP_REFERER'))
+		if not id_list:
+			messages.warning(request,'Select a Participant')
+			return redirect(request.META.get('HTTP_REFERER'))
+		parts = Participant.objects.filter(id__in=id_list)
+		if data['action'] == 'approve':
+			emailgroup = EmailGroup.objects.create()
+			for part in parts:
+				part.email_group = emailgroup
+				part.save()
+			return redirect(reverse('pcradmin:final_email', kwargs = {'eg_id':emailgroup.id}))
+		elif data['action'] == 'disapprove':
+			for part in parts:
+				part.email_group = None
+				part.pcr_final = False
+				part.save()
+	parts = college.participant_set.filter(pcr_approved=True, pcr_final=False)
+	parts_final = college.participant_set.filter(pcr_approved=True,pcr_final=True)
+	return render(request, 'pcradmin/final_confirmation.html', {'parts':parts, 'college':college, 'parts_final':parts_final})
+   
 @staff_member_required
 def final_email(request, eg_id):
-    email_group = EmailGroup.objects.get(id=eg_id)
-    participants = email_group.participant_set.all()
-    college = participants[0].college
-    context = {
-        'parts': participants,
-        'group': email_group,
-        'college': college
-    }
-    return render(request, 'pcradmin/final_mail.html', )
+	email_group = EmailGroup.objects.get(id=eg_id)
+	parts = email_group.participant_set.all()
+	college = parts[0].college
+	return render(request, 'pcradmin/final_email.html', {'parts':parts, 'group':email_group, 'college':college})
 
 @staff_member_required
 def final_email_send(request, eg_id):
@@ -693,7 +672,7 @@ def final_email_send(request, eg_id):
         doc_name = _dir + 'final_list.pdf'
         pdf = create_final_pdf(eg_id, doc_name, _dir)
     except:
-        _dir = '/home/tushar/Downloads/'
+        _dir = '/home/sanchit/Desktop/'
         doc_name = _dir + 'final_list.pdf'
         pdf = create_final_pdf(eg_id, doc_name, _dir)
     
@@ -706,11 +685,11 @@ def final_email_send(request, eg_id):
     attachment.content = encoded_string1
     attachment.filename = 'Confirmed_Participants.pdf'
 
-    with open(_dir+'Instructions to Participants', "rb") as output_doc:
-        encoded_string2 = base64.b64encode(output_doc.read())
+    # with open(_dir+'Instructions to Participants', "rb") as output_doc:
+    #     encoded_string2 = base64.b64encode(output_doc.read()) Instruction to participants
     attachment_1 = Attachment()
-    attachment_1.content = encoded_string2
-    attachment_1.filename = 'Instructions to Participants.docx'
+    #attachment_1.content = encoded_string2
+    #attachment_1.filename = 'Instructions to Participants.docx'
     subject = 'Final Confirmation for Oasis'
     from_email = Email('register@bits-oasis.org')
     sg = sendgrid.SendGridAPIClient(apikey=API_KEY)
@@ -742,7 +721,7 @@ pcr@bits-oasis.org
 <b>Please reply to this email with number of people, if you require conveyance to or from Loharu and the timings for it.</b>
 </pre>
 			""" %(participant.name,get_pcr_number()) 
-        content = Content('text/html', body)
+        content = Content('text/html', body.decode('utf-8'))
         try:
             mail = Mail(from_email, subject, to_email, content)
             mail.add_attachment(attachment)
@@ -773,7 +752,7 @@ def download_pdf(request, eg_id):
         pdf_1 = create_final_pdf(eg_id, doc_name, _dir)
 
     except:
-        _dir = '/home/auto-reload/Downloads/'
+        _dir = '/home/sanchit/Desktop/'
         doc_name = _dir + 'final_list.pdf'
         pdf_1 = create_final_pdf(eg_id, doc_name, _dir)
     pdf = open(pdf_1, 'rb')
@@ -812,15 +791,15 @@ def create_final_pdf(eg_id, response, _dir):
 
 	
 	doc.build([Spacer(1, 0.5 * inch),table_with_style])
-	watermark_name = _dir + 'Capture.pdf'
+	#watermark_name = _dir + 'keyboard-shortcuts-windows.pdf'#Capture.pdf for watermark
 	output_file = PdfFileWriter()
 	input_file = PdfFileReader(open(response, "rb"))
 	page_count = input_file.getNumPages()
-	for page_number in range(page_count):
-		watermark = PdfFileReader(open(watermark_name, "rb"))
-		input_page = watermark.getPage(0)
-		input_page.mergePage(input_file.getPage(page_number))
-		output_file.addPage(input_page)
+	# for page_number in range(page_count):
+	# 	watermark = PdfFileReader(open(watermark_name, "rb"))
+	# 	input_page = watermark.getPage(0)
+	# 	input_page.mergePage(input_file.getPage(page_number))
+	# 	output_file.addPage(input_page)
 	output_name = _dir +'final_pdf.pdf'
 	with open(output_name, "wb") as outputStream:
 		output_file.write(outputStream)
@@ -828,7 +807,7 @@ def create_final_pdf(eg_id, response, _dir):
 
 
 ########      HELPER FUNCTIONS     #######
-# some helper fns are there along with the view code bcz they are limited only to that view
+# some helper fns are there along with the view code  they are limited only to that view
 def participants_count(participants):
 	x1 = participants.count()
 	if x1 == 0:
@@ -856,10 +835,10 @@ def profile_stats(parts):
     # its input is a list of participants and this function returns 
     # number of profiles fully completed and number of participants approved by pcr
     x = parts.filter(pcr_approved = True).count()
-    y = 0
+    # y = 0
 
-    for part in parts:
-        if is_profile_complete(part):
-            y+= 1
+    # for part in parts:
+    #     if is_profile_complete(part):
+    #         y+= 1
 
-    return str(x) + ' | ' + str(y)
+    return str(x)
