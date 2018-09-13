@@ -47,6 +47,7 @@ def index(request):
         
         result=r.json()
         if not result['success']:
+            print(result)
             return JsonResponse({'status':0, 'message':'Invalid Recaptcha. Try Again'})
         email = data['email']
         if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
@@ -211,12 +212,12 @@ def get_profile_card(request):
     events = events[:-2]
     return render(request, 'registrations/profile_card.html', {'participant':participant, 'events':events,})
 
-
-
-
-
-
-
+def return_qr(request):
+    text = request.GET.get('text')
+    qr = generate_qr_code(text)
+    response = HttpResponse(content_type="image/jpeg")
+    qr.save(response, "JPEG")
+    return response
 
 
 # @login_required

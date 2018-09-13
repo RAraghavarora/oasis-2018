@@ -1,3 +1,4 @@
+{% extends 'registrations/base.html' %}
 {% load static %}
 
 {% block body %}
@@ -41,17 +42,19 @@
                         </tfoot>
                         <tbody>
                             <tr>
-                        
                                 <td>
-                                   <!-- {% if participant.profile_pic and participant.verify_docs %}
+                                    Documents Upload
+                                </td>
+                                <td>
+                                    {% if participant.profile_pic and participant.verify_docs %}
                                     Complete
                                     {% else %}
                                     Incomplete
-                                    {% endif %} -->
-                                    Complete
+                                    {% endif %}
                                 </td>
                                 <td>
-                                    
+                                    <a>
+                                        upload docs
                                         Update
                                     </a>
                                 </td>
@@ -70,6 +73,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
+                                    <a>Manage payments</a>
                                 </td>
                             </tr>
                         </tbody>

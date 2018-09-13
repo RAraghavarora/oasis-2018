@@ -92,14 +92,14 @@
   <body>
     <div id="card">
       <span><div id="logo">Oasis '17</div></span>
-      <!--{% if participant.profile_pic %}
+      {% if participant.profile_pic %}
       <div id="dp" style="background-image:url({{participant.profile_pic.url}})"></div>
-      {% endif %}-->
+      {% endif %}
       <div id="name">{{participant.name}}</div>
       <div id="college">{{participant.college.name}}</div>
       <div id="events">Event(s): {{events}}</div>
       {% comment %} <div id="qr" style="background-image:url(qrcode.svg)"></div> {% endcomment %}
-      
+      {% get_qrcode_image participant.barcode %}
       <span><div id="bar">{{participant.barcode}} | {{participant.ems_code}}</div></span>
     </div>
   </body>

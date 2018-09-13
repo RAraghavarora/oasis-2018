@@ -76,3 +76,11 @@ def gen_barcode(part):
 		image = '/home/sanchit/Desktop/%04s.png' % int(part_id)
 		part_code.save(image, 'PNG')
 	return encoded
+
+def generate_qr_code(data):
+	import qrcode
+	import qrcode.image.svg
+	from PIL import Image
+	part_code = qrcode.make(data)
+	# part_code = 
+	return part_code
