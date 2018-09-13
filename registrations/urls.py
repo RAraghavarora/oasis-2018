@@ -14,6 +14,7 @@ urlpatterns = [
 				url(r'^details/(?P<p_id>\d+)',cr.participant_details,name='participant_details'),
 				url(r'^manage_events$',participants.manage_events,name='manage_events'),
 				url(r'^participant_profile_card',participants.get_profile_card,name='participant_profilecard'),
+				url(r'^profilecard/(?P<p_id>\d+)/$',cr.get_profile_card_cr,name='cr_profilecard'),
 				url(r'^logout$',logout,name='logout'),
 				# url(r'^cr_profile_card',cr.get_profile_card,name='cr_profilecard'),
 				# url(r'^payment$',participants.payment,name='make_payment'),
