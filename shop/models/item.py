@@ -8,32 +8,35 @@ from shop.models.order import OrderFragment
 class ItemClass(models.Model):
 	""" A sort of template for each unique item. """
 
-	SIZES = ()
-	COLORS = ()
-	TYPES = ()
-
 	name = models.CharField(max_length=20, blank=True)
-	price = models.PositiveIntegerField(default=0)
 	description = models.TextField(default='', blank=True)
-	is_combo = models.BooleanField(default=False)
-	is_available = models.BooleanField(default=True)
-	stock = models.PositiveIntegerField(default=500)
-	stall = models.ForeignKey("Stall", related_name="menu", null=True,
-								on_delete=models.CASCADE)
-	is_veg = models.BooleanField(default=False)
-	size = models.CharField(max_length=10, choices=SIZES, null=True, blank=True)
-	color = models.CharField(max_length=10, choices=COLORS, null=True,
-																	blank=True)
-	type = models.CharField(max_length=20, choices=TYPES, null=True, blank=True)
+	stall = models.ForeignKey("Stall", related_name="menu", null=True, on_delete=models.CASCADE)
 	timestamp = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):
 		return "{}-{}-{}-{}".format(self.name, self.size, self.color, self.type)
 
-	# instances: ItemInstances
+	# instances: Item
 
 
-class ItemInstance(models.Model):
+class ItemFood(models.Model):
+	
+	SIZES = ()
+	
+	itemclass = models.ForeignKey(ItemClass, on_delete=models.CASCADE)
+
+	size = models.CharField(max_length=10, choices=SIZES, null=True, blank=True)
+	is_combo = models.BooleanField(default=False)
+	is_veg = models.BooleanField(default=False)
+	
+	price = models.PositiveIntegerField(default=0)
+	is_available = models.BooleanField(default=True)
+
+	def __str__(self):
+		return "{}-{}".format(self.itemclass.name, self.size)
+
+
+class ItemFoodInstance(models.Model):
 	""" This model represents each physical item (each instance)."""
 
 	itemclass = models.ForeignKey("ItemClass", related_name="instances", null=True,
@@ -42,6 +45,7 @@ class ItemInstance(models.Model):
 	quantity = models.PositiveIntegerField(default=1)
 	order = models.ForeignKey("OrderFragment", related_name="items", null=True,
 								on_delete=models.CASCADE)
+	timestamp = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):
 		return self.itemclass.name
