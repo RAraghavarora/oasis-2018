@@ -163,8 +163,8 @@ GOOGLE_RECAPTCHA_SECRET_KEY = google_recaptcha_secret_key
 
 APPEND_SLASH = False
 
-LOGIN_URL = '/registrations/login/'
-LOGOUT_REDIRECT_URL = '/registrations/'
+LOGIN_URL = '/2018/registrations/login/'
+LOGOUT_REDIRECT_URL = '/2018/registrations/'
 
 # CORS_ORIGIN_ALLOW_ALL = True
 

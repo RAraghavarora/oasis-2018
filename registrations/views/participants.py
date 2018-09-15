@@ -47,7 +47,7 @@ def index(request):
         # return render(request, 'registrations/signup.html', {'college_list':colleges, 'event_list':events})
     
     if request.method=='POST':
-        # print("post request")
+        print("post request")
         data = request.POST
         # print(request.body)
         # print(type(request.body))
@@ -116,7 +116,6 @@ def index(request):
             content = Content('text/html', mail.body)
             # 
             print(data['events'][0])
-            print(data['events'][1])
             try:
                 mail_1 = Mail(mail.from_email, mail.subject, to_email, content)
                 # response = send_grid.sg.client.mail.send.post(request_body = mail_1.get())
