@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^events/',include('events.urls')),
     url(r'^registrations/',include('registrations.urls')),
     url(r'^analytics/', include('analytics.urls')),
+    url(r'^pcradmin/', include('pcradmin.urls')),
 ]
 
 

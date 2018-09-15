@@ -1,0 +1,23 @@
+<!Doctype <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Sorry</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="main.js"></script>
+</head>
+<body>
+    <h1> Sorry </h1>
+    <p>
+        The following events could not be added as they have already been approved by PCr, BITS Pilani.
+        Please contact PCr, BITS, Pilani. pcr@bits-oasis.org
+        <ol>
+            {% for event in events %}
+            <li>{{event.event}}</li>
+            {% endfor %}
+        </ol>
+    </p>
+</body>
+</html>
