@@ -41,16 +41,23 @@ INSTALLED_APPS = [
     'events',
     'registrations',
     'analytics',
+    'pcradmin',
+    'ckeditor', 
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # middlewares in created apps
+    'pcradmin.middleware.PCrAdminMiddleware',
 ]
 
 try:
@@ -156,8 +163,8 @@ GOOGLE_RECAPTCHA_SECRET_KEY = google_recaptcha_secret_key
 
 APPEND_SLASH = False
 
-# LOGIN_URL = '/2018/register/login/'
-
+LOGIN_URL = '/registrations/login/'
+LOGOUT_REDIRECT_URL = '/registrations/'
 
 # CORS_ORIGIN_ALLOW_ALL = True
 
