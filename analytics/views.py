@@ -1,7 +1,7 @@
 import json
 
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from analytics.models import Video, ViewTimer
@@ -10,7 +10,10 @@ from analytics.models import Video, ViewTimer
 def views(request, name=None):
     if request.method == "GET":
         if(name):
-            video = get_object_or_404(Video, name=name.replace("+", " "))
+            try:
+                video = Video.objects.get(name=name.replace("+", " "))
+            except Exception as error:
+                return JsonResponse({"message": "no such video exists. {}.".format(error)}, status=400)
             return JsonResponse({
                 "name":video.name,
                 "views":video.views
@@ -33,7 +36,10 @@ def views(request, name=None):
                 name = data["name"]
             except KeyError as field:
                 return JsonResponse({"message": "missing value for key: {}.".format(field)}, status=400)
-            video = get_object_or_404(Video, name=name.replace("+", " "))
+            try:
+                video = Video.objects.get(name=name.replace("+", " "))
+            except Exception as error:
+                return JsonResponse({"message": "no such video exists. {}.".format(error)}, status=400)
             video.incrementViews()
             return JsonResponse({"name":video.name ,"views":video.views})
         else:
