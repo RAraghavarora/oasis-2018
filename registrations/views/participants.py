@@ -14,8 +14,12 @@ from utils.registrations import *
 from django.contrib import messages
 from instamojo_wrapper import Instamojo
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.core import serializers
+import json
+from django.views.decorators.csrf import csrf_exempt
 
-
+@csrf_exempt
 def index(request):
     '''
     To register a new participant and send him a verification link
@@ -33,32 +37,52 @@ def index(request):
         print("get request")
         colleges = College.objects.all()
         events = MainEvent.objects.all()
-        return render(request, 'registrations/signup.html', {'college_list':colleges, 'event_list':events})
+        c_names = [college.name for college in colleges]
+        e_names = [event.name for event in events]
+        # data = serializers.serialize('json', c_names)
+        # data1 = serializers.serialize('json', e_names)
+        data={'colleges':c_names,'events':e_names}
+        return HttpResponse(json.dumps(data))
+        # return HttpResponse(x, content_type="application/json")
+        # return render(request, 'registrations/signup.html', {'college_list':colleges, 'event_list':events})
     
     if request.method=='POST':
+        # print("post request")
         data = request.POST
-        print(type(data.get('events[]')))
-        recaptcha_response = data['g-recaptcha-response']
-        data_1={
-            'secret' : keyconfig.google_recaptcha_secret_key,
-            'response' : recaptcha_response
-        }
-        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data_1)
+        # print(request.body)
+        # print(type(request.body))
+        data = request.body.decode('utf8').replace("'", '"')
+        print (data)
+        # data = json.loads(data['POST'])
+        data = json.loads(data)
+        # print(type(data.get('events[]')))
+        # recaptcha_response = data['g-recaptcha-response']
+        # data_1={
+        #     'secret' : keyconfig.google_recaptcha_secret_key,
+        #     'response' : recaptcha_response
+        # }
+        # r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data_1)
         
-        result=r.json()
-        if not result['success']:
-            print(result)
-            return JsonResponse({'status':0, 'message':'Invalid Recaptcha. Try Again'})
+        # result=r.json()
+        # if not result['success']:
+        #     print(result)
+        #     return JsonResponse({'status':0, 'message':'Invalid Recaptcha. Try Again'})
         email = data['email']
+        print (email)
         if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
+            print("1")
             return JsonResponse({'status':0, 'message':'Please enter a valid email address.'})
+        
         try:
             Participant.objects.get(email=email)
-            return JsonResponse({'status':0, 'message':'Email already registered.'})
+            print("try")
+            # return JsonResponse({'status':0, 'message':'Email already registered.'})
         except:
-            pass
-        print("THIS:\t",data.getlist('events[]'))
-        if len(data.getlist('events[]')) == 0:
+            print("except")
+            # pass
+        print("THIS:\t",data["events"])
+        if len(data['events']) == 0:
+            print("YES")
             return JsonResponse({'status':0,'message':'Please select at least one event'})
         else:
             print("IN ELSE\n")
@@ -75,14 +99,15 @@ def index(request):
                 participant.head_of_society = False
             participant.year_of_study = int(data['year_of_study'])
             participant.save()
-            print(data.getlist('events[]'))
-            for key in data.getlist('events[]'):
-                event = MainEvent.objects.get(id = int(key))
+
+            
+            for key in data["events"]:
+                event = MainEvent.objects.get(name=str(key))
                 MainParticipation.objects.create(event = event, participant = participant)
             participant.save()
             mail = send_grid.register()
-            send_to = str(request.POST["email"])
-            name = str(request.POST['name'])
+            send_to = str(data["email"])
+            name = str(data['name'])
             to_email = Email(send_to)
             verify_email_url = str(request.build_absolute_uri(reverse("registrations:index"))) + 'email_confirm/' + \
             generate_email_token(Participant.objects.get(email=send_to)) + '/'
@@ -90,10 +115,11 @@ def index(request):
             mail.body = mail.body%(name.title(), verify_email_url)
             content = Content('text/html', mail.body)
             # 
-            
+            print(data['events'][0])
+            print(data['events'][1])
             try:
                 mail_1 = Mail(mail.from_email, mail.subject, to_email, content)
-                response = send_grid.sg.client.mail.send.post(request_body = mail_1.get())
+                # response = send_grid.sg.client.mail.send.post(request_body = mail_1.get())
                 # print(response)
             except Exception as e:
                 print("\t",e)
