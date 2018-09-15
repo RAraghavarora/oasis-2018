@@ -48,8 +48,13 @@ def college(request):
 def select_college_rep(request,id):
     college=get_object_or_404(College,id=id)
     if request.method=='POST':
-        data=request.POST
-        #print(data)
+        try:
+            if request.META["CONTENT_TYPE"] == "application/json":
+                data = json.loads(request.body.decode('utf-8'))
+            else:
+                data = request.POST
+        except:
+            data = request.POST
         try:
             part_id=data['data']
         except:
@@ -240,7 +245,7 @@ def verify_profile(request,part_id):
 		message = part.name + '\'s Profile not complete yet.'
 		messages.warning(request, message)
 		return redirect(request.META.get('HTTP_REFERER'))'''
-    participations=part.participatiion_set.all()
+    participations=part.mainparticipation_set.all()
     events_confirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=True)]
     events_unconfirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=False)]
     return render(request, 'pcradmin/verify_profile.html',
@@ -672,7 +677,7 @@ def final_email_send(request, eg_id):
         doc_name = _dir + 'final_list.pdf'
         pdf = create_final_pdf(eg_id, doc_name, _dir)
     except:
-        _dir = '/home/sanchit/Desktop/'
+        _dir = '/home/sanchit/Downloads/'
         doc_name = _dir + 'final_list.pdf'
         pdf = create_final_pdf(eg_id, doc_name, _dir)
     
@@ -682,12 +687,12 @@ def final_email_send(request, eg_id):
     with open(pdf, "rb") as output_pdf:
         encoded_string1 = base64.b64encode(output_pdf.read())
     attachment = Attachment()
-    attachment.content = encoded_string1
+    attachment.content = encoded_string1.decode()
     attachment.filename = 'Confirmed_Participants.pdf'
 
     # with open(_dir+'Instructions to Participants', "rb") as output_doc:
     #     encoded_string2 = base64.b64encode(output_doc.read()) Instruction to participants
-    attachment_1 = Attachment()
+    #attachment_1 = Attachment()
     #attachment_1.content = encoded_string2
     #attachment_1.filename = 'Instructions to Participants.docx'
     subject = 'Final Confirmation for Oasis'
@@ -721,12 +726,13 @@ pcr@bits-oasis.org
 <b>Please reply to this email with number of people, if you require conveyance to or from Loharu and the timings for it.</b>
 </pre>
 			""" %(participant.name,get_pcr_number()) 
-        content = Content('text/html', body.decode('utf-8'))
+        content = Content('text/html', body)
         try:
             mail = Mail(from_email, subject, to_email, content)
             mail.add_attachment(attachment)
-            mail.add_attachment(attachment_1)
+            #mail.add_attachment(attachment_1)
             response = sg.client.mail.send.post(request_body=mail.get())
+            print('done')
             messages.warning(request, 'Email sent to ', participant.name)
             participant.pcr_final = True
             # ems_code = str(participant.college.id).rjust(3, '0')+str(participant.id).rjust(4,'0')
@@ -752,7 +758,7 @@ def download_pdf(request, eg_id):
         pdf_1 = create_final_pdf(eg_id, doc_name, _dir)
 
     except:
-        _dir = '/home/sanchit/Desktop/'
+        _dir = '/home/sanchit/Downloads/'
         doc_name = _dir + 'final_list.pdf'
         pdf_1 = create_final_pdf(eg_id, doc_name, _dir)
     pdf = open(pdf_1, 'rb')
@@ -791,15 +797,15 @@ def create_final_pdf(eg_id, response, _dir):
 
 	
 	doc.build([Spacer(1, 0.5 * inch),table_with_style])
-	#watermark_name = _dir + 'keyboard-shortcuts-windows.pdf'#Capture.pdf for watermark
+	watermark_name = _dir + '51058453_acknowledgement.pdf' #Change the watermark
 	output_file = PdfFileWriter()
 	input_file = PdfFileReader(open(response, "rb"))
 	page_count = input_file.getNumPages()
-	# for page_number in range(page_count):
-	# 	watermark = PdfFileReader(open(watermark_name, "rb"))
-	# 	input_page = watermark.getPage(0)
-	# 	input_page.mergePage(input_file.getPage(page_number))
-	# 	output_file.addPage(input_page)
+	for page_number in range(page_count):
+		watermark = PdfFileReader(open(watermark_name, "rb"))
+		input_page = watermark.getPage(0)
+		input_page.mergePage(input_file.getPage(page_number))
+		output_file.addPage(input_page)
 	output_name = _dir +'final_pdf.pdf'
 	with open(output_name, "wb") as outputStream:
 		output_file.write(outputStream)
