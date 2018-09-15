@@ -16,4 +16,5 @@ urlpatterns = [
 
     url(r'^stalls/$', stalls_views.StallsInfo.as_view(), name = 'stalls'),
     url(r'^stalls/(?P<stall_id>\d+)/$', stalls_views.ProductsInfo.as_view(), name = 'products'),
+    url(r'^stall/order-status/$', stalls_views.StallOrderStatus.as_view(), name = 'stall-order-status'),
 ]

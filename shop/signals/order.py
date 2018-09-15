@@ -29,9 +29,9 @@ def orderFirebaseDelete(sender, **kwargs):
 """
 
 @receiver(post_save, sender=OrderFragment)
-def orderFragmentFirebaseUpdate(sender, **kwargs):
+def orderFragmentFoodFirebaseUpdate(sender, **kwargs):
     db = firestore.client()
-    data = OrderFragmentSerializer(kwargs["instance"]).data
+    data = OrderFragmentFoodSerializer(kwargs["instance"]).data
     col_str = "User #{}".format(kwargs["instance"].stall.id)
     collection = db.collection(col_str)
     doc_string = "OrderFragment #{}".format(kwargs["instance"].id)
@@ -39,7 +39,7 @@ def orderFragmentFirebaseUpdate(sender, **kwargs):
 
 
 @receiver(pre_delete, sender=OrderFragment)
-def orderFragmentFirebaseDelete(sender, **kwargs):
+def orderFragmentFoodFirebaseDelete(sender, **kwargs):
     db = firestore.client()
     col_str = "User #{}".format(kwargs["instance"].stall.id)
     collection = db.collection(col_str)

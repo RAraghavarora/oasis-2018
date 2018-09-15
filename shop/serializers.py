@@ -50,11 +50,29 @@ class OrderSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 
 
-class OrderFragmentSerializer(serializers.ModelSerializer):
+class OrderFragmentFoodSerializer(serializers.ModelSerializer):
+
+	customer = serializers.SerializerMethodField()
+	quantity = serializers.SerializerMethodField()
+	timestamp = serializers.SerializerMethodField()
+	
+	def get_customer(self, obj):
+		name = obj.order.customer.wallet.user.name				
+		return name
+
+	def get_quantity(self, obj):
+		quantity = {}
+		for item_instance in obj.fooditems:
+			quantity[item_instance.item.id] = item_instance.quantity
+		return quantity
+
+	def get_timestamp(self, obj):
+		timestamp = obj.order.timestamp
+		return timestamp
 
 	class Meta:
 		model = OrderFragment
-		fields = '__all__'
+		fields = ('stall', 'item_id', 'quantity', 'timestamp')
 
 
 class NestedOrderSerializer(serializers.ModelSerializer):

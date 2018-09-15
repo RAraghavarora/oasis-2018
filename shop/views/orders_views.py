@@ -5,15 +5,20 @@ from django.contrib.auth.decorators import login_required
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from utils.wallet import transferHelper
 from shop.models.order import Order, OrderFragment
+from shop.permissions import TokenVerification
+
 
 @csrf_exempt # maybe find a way to remove this?
 @login_required
 class PlaceOrder(APIView):
     """ The main view to handle orders. For the structure expected from the
         app/front-end teams, see the below """
+
+    permission_classes = (IsAuthenticated, TokenVerification,)
 
     def post(self, request, format=None):
         """
