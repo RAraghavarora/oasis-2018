@@ -24,30 +24,7 @@ def index(request):
     '''
     To register a new participant and send him a verification link
     '''
-    if request.user.is_authenticated():
-        user = request.user
-        print(user)
-        participant = Participant.objects.get(user=user)
-        participation_set = MainParticipation.objects.filter(participant=participant)
-        cr = Participant.objects.get(college=participant.college, is_cr=True)
-        return render(request,'registrations/home.html',{'participant':participant,\
-        'participations':participation_set,'cr':cr})
-    
-    if request.method=='GET':
-        print("get request")
-        print("****** PRINTING *******")
-#	print("just printed :)")
-        colleges = College.objects.all()
-        c_names = [college.name for college in colleges]
-        events = [{'name':event.name,'id':event.id} for event in MainEvent.objects.all() ]
-	# e_names = [event.name for event in events]
-        # data = serializers.serialize('json', c_names)
-        # data1 = serializers.serialize('json', e_names)
-        data={'colleges':c_names,'events':events}
-        return HttpResponse(json.dumps(data))
-        # return HttpResponse(x, content_type="application/json")
-        # return render(request, 'registrations/signup.html', {'college_list':colleges, 'event_list':events})
-    
+
     if request.method=='POST':
         print("post request")
         print("******** POST ***********")
@@ -83,27 +60,33 @@ def index(request):
         if len(data.get('events')) == 0:
             return JsonResponse({'status':0,'message':'Please select at least one event'})
         else:
-            participant = Participant()
-            participant.name = str(data['name'])
-            participant.gender = str(data['gender'])
-            participant.city = str(data['city'])
-            participant.email = str(data['email'])
             try:
-                participant.college = College.objects.get(name = data['college'])
-            except:
-                return JsonResponse({'status':0,'message':'Invalid College'})
-            participant.phone = int(data['phone'])
-            if data['head_of_society']:
-                participant.head_of_society = True
-            else:
-                participant.head_of_society = False
-            try:
-                year = int(data['year_of_study'])
-                if year not in range(6):
-                    return JsonResponse({'message':'Invalid year', 'status':0})
-                participant.year_of_study = year
-            except:
-                 return JsonResponse({'status':0,'message':'Invalid year of study'})
+                participant = Participant()
+                participant.name = str(data['name'])
+                participant.gender = str(data['gender'])
+                participant.city = str(data['city'])
+                participant.email = str(data['email'])
+                try:
+                    participant.college = College.objects.get(name = data['college'])
+                except:
+                    return JsonResponse({'status':0,'message':'Invalid College'})
+                participant.phone = int(data['phone'])
+                if data['head_of_society']:
+                    participant.head_of_society = True
+                else:
+                    participant.head_of_society = False
+                try:
+                    year = int(data['year_of_study'])
+                    if year not in range(6):
+                        return JsonResponse({'message':'Invalid year', 'status':0})
+                    participant.year_of_study = year
+                except:
+                     return JsonResponse({'status':0,'message':'Invalid year of study'})
+
+            except KeyError as missing_data:
+                response = JsonResponse({'message':'Data is Missing: {}'.format(missing_data), 'x_status': 4})
+                # response.delete_cookie('sessionid')
+                return response
             participant.save()
 
             
@@ -134,7 +117,32 @@ def index(request):
             message ="A confirmation link has been sent to {email}. Kindly click on it to verify your email address.".format(email=send_to)
 
             return JsonResponse({'status':1,'message':message})
-        return HttpResponse('Redirect')
+    
+    if request.user.is_authenticated():
+        user = request.user
+        print(user)
+        participant = Participant.objects.get(user=user)
+        participation_set = MainParticipation.objects.filter(participant=participant)
+        cr = Participant.objects.get(college=participant.college, is_cr=True)
+        return render(request,'registrations/home.html',{'participant':participant,\
+        'participations':participation_set,'cr':cr})
+
+
+    print("get request")
+    print("****** PRINTING *******")
+#   print("just printed :)")
+    colleges = College.objects.all()
+    c_names = [college.name for college in colleges]
+    events = [{'name':event.name,'id':event.id} for event in MainEvent.objects.all() ]
+# e_names = [event.name for event in events]
+    # data = serializers.serialize('json', c_names)
+    # data1 = serializers.serialize('json', e_names)
+    data={'colleges':c_names,'events':events}
+    return HttpResponse(json.dumps(data))
+    # return HttpResponse(x, content_type="application/json")
+    # return render(request, 'registrations/signup.html', {'college_list':colleges, 'event_list':events})
+
+        # return HttpResponse('Redirect')
 
 def home(request):
     '''
