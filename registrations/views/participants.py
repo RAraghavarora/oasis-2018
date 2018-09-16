@@ -52,14 +52,8 @@ def index(request):
         print("post request")
         print("******** POST ***********")
         data = json.loads(request.body.decode('utf8').replace("'", '"'))
-        # data = json.loads(request.body)
         print(request.body)
-        # print(request.body)
-        # print(type(request.body))
         print (data)
-        # data = json.loads(data['POST'])
-        #data = json.loads(data)
-        # print(type(data.get('events[]')))
         # recaptcha_response = data['g-recaptcha-response']
         # data_1={
         #     'secret' : keyconfig.google_recaptcha_secret_key,
@@ -73,41 +67,43 @@ def index(request):
         #     return JsonResponse({'status':0, 'message':'Invalid Recaptcha. Try Again'})
         if len(data['phone'])!=10:
             return JsonResponse({'status':0,'message':'Please enter a valid contact number.'})
-
+        try:
+            int(data['phone'])
+        except:
+            return JsonResponse({'status':0,'message':'Please enter a valid contact number.'})            
         email = data['email']
-        print (email)
         if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
-            print("1")
             return JsonResponse({'status':0, 'message':'Please enter a valid email address.'})
         
         try:
             Participant.objects.get(email=email)
-            print("try")
             return JsonResponse({'status':0, 'message':'Email already registered.'})
         except:
-            print("except")
             pass
-        print("THIS:\t",data.get("events"))
         if len(data.get('events')) == 0:
-            print("YES")
             return JsonResponse({'status':0,'message':'Please select at least one event'})
         else:
-            print("IN ELSE\n")
             participant = Participant()
             participant.name = str(data['name'])
             participant.gender = str(data['gender'])
             participant.city = str(data['city'])
             participant.email = str(data['email'])
-            participant.college = College.objects.get(name = data['college'])
-            print(data['college'])
-            print(type(data['college']))
-            print(type(str(data['college'])))
+            try:
+                participant.college = College.objects.get(name = data['college'])
+            except:
+                return JsonResponse({'status':0,'message':'Invalid College'})
             participant.phone = int(data['phone'])
-            if str(data['head_of_society']) == 'True':
+            if data['head_of_society']:
                 participant.head_of_society = True
             else:
                 participant.head_of_society = False
-            participant.year_of_study = int(data['year_of_study'])
+            try:
+                year = int(data['year_of_study'])
+                if year not in range(6):
+                    return JsonResponse({'message':'Invalid year', 'status':0})
+                participant.year_of_study = year
+            except:
+                 return JsonResponse({'status':0,'message':'Invalid year of study'})
             participant.save()
 
             
