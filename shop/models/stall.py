@@ -12,6 +12,3 @@ class Stall(models.Model):
 
     def __str__(self):
         return self.name
-
-    def order_status(self):
-    	pass

@@ -9,7 +9,8 @@ class Order(models.Model):
 	""" Each order placed by a user. It's basically a composition of
 	OrderFragments which comprise the Order as a whole. Mainly created to
 	facilitate the "many stalls, many items" ordering feature. """
-	customer = models.ForeignKey("Wallet", related_name="orders", null=True, on_delete=models.CASCADE)
+	customer = models.ForeignKey("Wallet", related_name="orders", null=True,
+									on_delete=models.CASCADE)
 	timestamp = models.DateTimeField(default=timezone.now)
 	# fragments: OrderFragments
 
@@ -45,11 +46,14 @@ class OrderFragment(models.Model):
 		("cancelled", "cancelled") # to cancel certain parts
 	)
 
-	stall = models.ForeignKey("Stall", related_name="orders", null=True, on_delete=models.CASCADE)
-	order = models.ForeignKey("Order", related_name="fragments", null=True, on_delete=models.CASCADE)
-	transaction = models.OneToOneField("Transaction", null=True, blank=True, on_delete=models.CASCADE)
+	stall = models.ForeignKey("Stall", related_name="orders", null=True,
+								on_delete=models.CASCADE)
+	order = models.ForeignKey("Order", related_name="fragments", null=True,
+								on_delete=models.CASCADE)
+	transaction = models.OneToOneField("Transaction", null=True, blank=True,
+										on_delete=models.CASCADE)
 	status = models.CharField(max_length=20, choices=STATUS, default="in-review")
-	# fooditems: ItemFoodInstances
+	# items: ItemInstances
 
 	def __str__(self):
 		return "order: #{} - {}".format(self.order.id, self.status)

@@ -38,16 +38,14 @@ class Authentication(APIView):
 	def post(self, request, format=None):
 		try:
 			is_bitsian = request.data['is_bitsian']
-		except KeyError as missing:
-			msg = {"message": "The following field is missing: {}".format(missing)}
-            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+		except:
+			return Response({'message' : 'is_bitsian field is missing!'})
 
 		if is_bitsian:
 			try:
 				token = request.data['id_token']
-			except KeyError as missing:
-	            msg = {"message": "The following field is missing: {}".format(missing)}
-	            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+			except:
+				return Response({'message' : 'Google Auth token not found.'})
 
 			try:
 				idinfo = id_token.verify_oauth2_token(token, requests1.Request(), OAUTH_CLIENT_ID_app)
