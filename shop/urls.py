@@ -1,6 +1,8 @@
 from django.conf.urls import url
 
-from shop.views import auth_views
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
+
+#from shop.views import auth_views
 from shop.views import ewallet_views
 from shop.views import orders_views
 from shop.views import stalls_views

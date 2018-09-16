@@ -63,7 +63,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'oasis2018.wsgi.application'
 
-"""try:
+try:
     from oasis2018.settings_config.keyconfig import *
     DATABASES = {
         'default': {
@@ -77,13 +77,13 @@ WSGI_APPLICATION = 'oasis2018.wsgi.application'
         }
     }
 except Exception as error_message:
-    print("DATABASE SETTINGS ERROR: {}".format(error_message))"""
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    print("DATABASE SETTINGS ERROR: {}".format(error_message))
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
