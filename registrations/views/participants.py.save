@@ -109,6 +109,7 @@ def index(request):
             
             for key in data["events"]:
                 event = MainEvent.objects.get(id=int(key))
+                print(event
                 MainParticipation.objects.create(event = event, participant = participant)
             participant.save()
             mail = send_grid.register()
