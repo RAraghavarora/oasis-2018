@@ -15,17 +15,16 @@ class Wallet(models.Model):
 		sources of money seperate. """
 
 	PROFILES = (
-			('bitsian', 'bitsian'),
-			('participant', 'participant'),
-			('stall', 'stall')
+			('B', 'bitsian'),
+			('P', 'participant'),
+			('S', 'stall')
 	)
 
-	user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
+	user = models.OneToOneField(User, related_name = 'wallet', on_delete=models.SET_NULL, null=True)
 	uuid = models.UUIDField(default=uuid_pylib.uuid4, editable=False)
 	phone = models.BigIntegerField(default=0)
-	balance = models.OneToOneField("Balance", on_delete=models.CASCADE,
-										blank=True, null=True)
-	profile = models.CharField(max_length=16, choices=PROFILES)
+	balance = models.OneToOneField("Balance", on_delete=models.CASCADE, blank=True, null=True)
+	profile = models.CharField(max_length=1, choices=PROFILES)
 	timestamp = models.DateTimeField(auto_now_add=True)
 	# transferred_in: Transactions
 	# transferred_out: Transactions

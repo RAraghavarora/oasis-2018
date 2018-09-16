@@ -7,6 +7,7 @@ class Stall(models.Model):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=20, blank=True)
     description = models.TextField(default="", blank=True)
+    phone = models.BigIntegerField(default=0)
 	# menu: ItemClasses
 	# orders: OrderFragments
 

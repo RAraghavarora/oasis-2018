@@ -6,8 +6,8 @@ from shop.views import orders_views
 from shop.views import stalls_views
 #from shop.views import test_views
 
-
 app_name="shop"
+
 urlpatterns = [
     url('transfer', ewallet_views.Transfer.as_view(), name="transfer"),
     url('place-order', orders_views.PlaceOrder, name="place-order"),
@@ -16,5 +16,7 @@ urlpatterns = [
 
     url(r'^stalls/$', stalls_views.StallsInfo.as_view(), name = 'stalls'),
     url(r'^stalls/(?P<stall_id>\d+)/$', stalls_views.ProductsInfo.as_view(), name = 'products'),
-    url(r'^/stall/client/order-response', stalls_views.StallOrderStatus.as_view(), name = 'stall-order-status'),
+    
+    url(r'^/stalls/client/order-response', stalls_views.StallOrderStatus.as_view(), name = 'stall-order-status'),
+    url(r'^/stalls/client/orders', stalls_views.StallOrdersList.as_view(), name = 'stall-orders'),
 ]

@@ -7,28 +7,6 @@ from shop.models.order import Order, OrderFragment
 from shop.models.stall import Stall
 from shop.models.transaction import Transaction
 
-'''
-class ItemInstanceSerializer(serializers.ModelSerializer):
-
-	name = serializers.SerializerMethodField()
-	description = serializers.SerializerMethodField()
-
-	def get_name(self, obj):
-		name = obj.itemclass.name
-
-		if not obj.size.name == 'NA':
-		       name += (' ' + obj.size.name)
-		               
-		return name
-
-	def get_description(self, obj):
-		return obj.itemclass.description
-
-	class Meta:
-		model = Item
-		fields = ('id', 'name', 'size', 'color', 'itemtype', 'price', 'is_available', 'is_veg')         
-'''
-
 class ItemClassSerializer(serializers.ModelSerializer):
 
 	class Meta:
@@ -103,3 +81,9 @@ class WalletSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Wallet
 		fields = '__all__'
+
+class StallSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = Stall
+		field = ('name', 'description',)
