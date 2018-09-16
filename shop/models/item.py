@@ -13,18 +13,19 @@ class ItemClass(models.Model):
 	TYPES = ()
 
 	name = models.CharField(max_length=20, blank=True)
-	price = models.PositiveIntegerField(default=0)
+	stall = models.ForeignKey("Stall", related_name="menu", null=True, on_delete=models.CASCADE)
 	description = models.TextField(default='', blank=True)
 	is_combo = models.BooleanField(default=False)
+	is_veg = models.BooleanField(default=False)
+
+	price = models.PositiveIntegerField(default=0)
 	is_available = models.BooleanField(default=True)
 	stock = models.PositiveIntegerField(default=500)
-	stall = models.ForeignKey("Stall", related_name="menu", null=True,
-								on_delete=models.CASCADE)
-	is_veg = models.BooleanField(default=False)
+
 	size = models.CharField(max_length=10, choices=SIZES, null=True, blank=True)
-	color = models.CharField(max_length=10, choices=COLORS, null=True,
-																	blank=True)
-	type = models.CharField(max_length=20, choices=TYPES, null=True, blank=True)
+	color = models.CharField(max_length=10, choices=COLORS, null=True, blank=True)
+	itemtype = models.CharField(max_length=20, choices=TYPES, null=True, blank=True)
+	
 	timestamp = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):

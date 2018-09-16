@@ -1,13 +1,15 @@
 from django.shortcuts import render
+from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_jwt.settings import api_settings
 
 from registrations.models import Bitsian
+from shop.models.wallet import Wallet
 
-from rest_framework_jwt.settings import api_settings
 
 from random import choice
 import string
@@ -20,13 +22,15 @@ class Authentication(APIView):
 
 	permission_classes = (AllowAny,)
 
+	'''
 	PASS_CHARS = string.ascii_letters + string.digits
 	for i in '0oO1QlLiI':
 		PASS_CHARS = PASS_CHARS.replace(i,'')
 
 	def generate_random_password(self):
 		return ''.join(choice(self.PASS_CHARS) for _ in xrange(8))
-
+	'''
+	
 	def get_jwt(self, user):
 		jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 		jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
@@ -36,19 +40,29 @@ class Authentication(APIView):
 		return token
 
 	def post(self, request, format=None):
+		#Checks if Authentication requester if bitsian, participant or stall.
 		try:
 			is_bitsian = request.data['is_bitsian']
-		except KeyError as missing:
-			msg = {"message": "The following field is missing: {}".format(missing)}
-			return Response(msg, status=status.HTTP_400_BAD_REQUEST)
-		
-		if is_bitsian:
+		except KeyError:
 			try:
-			        token = request.data['id_token']
+				is_stall = request.data['is_stall']
+				is_bitsian = False
+			except KeyError:
+				msg = {"message": "Missing the identity field."}
+				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+
+		#Bitsian Authentication is done through Google OAuth
+		if is_bitsian:
+			#Checks if Google OAuth token has been provided
+			#The frontend gets this token when the user logs in using Google OAuth
+			try:
+			   token = request.data['id_token']
 			except KeyError as missing:
 				msg = {"message": "The following field is missing: {}".format(missing)}
-				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+				status=status.HTTP_400_BAD_REQUEST
+				return Response(msg, status = status)
 			
+			#Verifies bitsian using Google Client-Side API
 			try:
 				idinfo = id_token.verify_oauth2_token(token, requests1.Request(), OAUTH_CLIENT_ID_app)
 			except Exception as e:
@@ -57,45 +71,87 @@ class Authentication(APIView):
 			if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
 				return Response({'message': 'Invalid user'})
 
+			#Checks if Bitsian exists, return 404 if doesn't.
 			email = idinfo['email']
 			try:
 				bitsian = Bitsian.objects.get(email=email)
 			except:
-				return Response({'message':'Bitsian not found.'})
+				status = status.HTTP_404_NOT_FOUND
+				return Response(status)
 
-			password = self.generate_random_password()
+			#Checks if user exist creates if doesn't.
 			username = email.split('@')[0]
 			try:
 				user = User.objects.get(username=username)
-				user.email = email
-				user.set_password(password)
-				user.save()
-			except:
-				user = User.objects.create_user(username=username, password=password, email=email)
+			except User.DoesNotExist:
+				user = User.objects.create(username=username, password=password, email=email)
 				bitsian.user = user
 				bitsian.save()
 
+			#Checks if wallet exists, creates if doesn't
+			try:
+				wallet = Wallet.objects.get(user = request.user)
+				if not wallet:
+					raise Exception
+			except:
+				wallet = Wallet.objects.create(user = request.user, profile = 'B')
+
+			#Generates JWT token.
 			token = self.get_jwt(user)
 
 			return Response({'token' : token})
 
+		#Stall and Participant Authentication is done using django authentication
 		else:
+			#Checks for fields username and password
 			try:
 				username = request.data['username']
 				password = request.data['password']
 			except:
 				return Response({'message' : "Authentication credentials weren't provided"})
 
+			#Authenticates the user
 			try:
-				print("Trying to authenticate user")
 				user = authenticate(username = username, password = password)
-				print(user)
 			except Exception as e:
-				print(e)
+				return Response(status = status.HTTP_400_BAD_REQUEST)
 			
+			#Checks if user exists
 			if user is None:
-				return Response({'message' : 'Incorrect Authentication credentials.'})
+				msg = {'message' : 'Incorrect Authentication credentials.'}
+				status = status.HTTP_400_BAD_REQUEST
+				return Response(msg, status)
 			
+			#Creates wallet if it doesn't exist
+			try:
+				wallet = user.wallet
+			
+			except Wallet.DoesNotExist:
+				#Create wallet for stall, if stall exists
+				if is_stall:
+					try:
+						stall = user.stall
+					except ObjectDoesNotExist:
+						msg = {'message' : 'Contact the administrators.'}
+						status = status.HTTP_400_BAD_REQUEST
+						return Response(msg, status = status)					
+					wallet = Wallet.objects.create(user = user, profile = 'S', phone = stall.phone)
+				
+				#Create wallet for participant, if participant exists
+				#Add a check for pcr-approved participant
+				else:
+					try:
+						participant = user.participant
+					except ObjectDoesNotExist:
+						msg = {'message' : 'Contact the administrators.'}
+						status = status.HTTP_400_BAD_REQUEST
+						return Response(msg, status = status)					
+					wallet = Wallet.objects.create(user = user, profile = 'P', phone = participant.phone)
+			
+
+			#Generates the JWT Token
 			token = self.get_jwt(user)
 
-			return Response({'token' : token})
+			msg = {'token' : token}
+			status = status.HTTP_200_OK
+			return Response(msg, status = status)
