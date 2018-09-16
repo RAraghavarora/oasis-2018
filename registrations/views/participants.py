@@ -54,10 +54,10 @@ def index(request):
         data = request.POST
         # print(request.body)
         # print(type(request.body))
-        data = request.body.decode('utf8').replace("'", '"')
+        #data = request.body.decode('utf8').replace("'", '"')
         print (data)
         # data = json.loads(data['POST'])
-        data = json.loads(data)
+        #data = json.loads(data)
         # print(type(data.get('events[]')))
         # recaptcha_response = data['g-recaptcha-response']
         # data_1={
@@ -86,8 +86,8 @@ def index(request):
         except:
             print("except")
             pass
-        print("THIS:\t",data["events"])
-        if len(data['events']) == 0:
+        print("THIS:\t",data.getlist("events[]"))
+        if len(data.getlist('events')) == 0:
             print("YES")
             return JsonResponse({'status':0,'message':'Please select at least one event'})
         else:
@@ -97,7 +97,10 @@ def index(request):
             participant.gender = str(data['gender'])
             participant.city = str(data['city'])
             participant.email = str(data['email'])
-            participant.college = College.objects.get(name = str(data['college']))
+            participant.college = College.objects.get(name = data['college'])
+            print(data['college'])
+            print(type(data['college']))
+            print(type(str(data['college'])))
             participant.phone = int(data['phone'])
             if str(data['head_of_society']) == 'True':
                 participant.head_of_society = True
@@ -107,8 +110,8 @@ def index(request):
             participant.save()
 
             
-            for key in data["events"]:
-                event = MainEvent.objects.get(id=int(key))
+            for key in data.getlist("events[]"):
+                event = MainEvent.objects.get(name=str(key))
                 MainParticipation.objects.create(event = event, participant = participant)
             participant.save()
             mail = send_grid.register()
