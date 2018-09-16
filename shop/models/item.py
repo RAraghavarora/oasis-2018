@@ -24,7 +24,7 @@ class ItemClass(models.Model):
 	size = models.CharField(max_length=10, choices=SIZES, null=True, blank=True)
 	color = models.CharField(max_length=10, choices=COLORS, null=True,
 																	blank=True)
-	type = models.CharField(max_length=20, choices=TYPES, null=True, blank=True)
+	item_type = models.CharField(max_length=20, choices=TYPES, null=True, blank=True)
 	timestamp = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):

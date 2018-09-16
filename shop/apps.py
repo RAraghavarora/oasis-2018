@@ -13,16 +13,12 @@ class ShopConfig(AppConfig):
     def ready(self):
         """ Get the application ready. """
         # First, import all signals.
-        from shop.signals.balance import balanceFirebaseUpdate
+        from shop.signals.balance import balanceFirebaseUpdate # obviously realtime is required
         from shop.signals.balance import balanceFirebaseDelete
-        from shop.signals.item import itemClassFirebaseUpdate
+        from shop.signals.item import itemClassFirebaseUpdate # for availability, realtime on firebase
         from shop.signals.item import itemClassFirebaseDelete
-        from shop.signals.order import orderFragmentFirebaseUpdate
+        from shop.signals.order import orderFragmentFirebaseUpdate # for status, realtime on firebase
         from shop.signals.order import orderFragmentFirebaseDelete
-        from shop.signals.transaction import transactionFirebaseDelete
-        from shop.signals.transaction import transactionFirebaseUpdate
-        from shop.signals.wallet import walletFirebaseUpdate
-        from shop.signals.wallet import walletFirebaseDelete
 
         #Then use Google's API to get setup for communtication with
         #Google Cloud Firestore from the server end.

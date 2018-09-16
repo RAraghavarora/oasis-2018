@@ -13,7 +13,6 @@ class Transaction(models.Model):
 	TYPES = (
 		('buy', 'buy'),
 		('add', 'add'),
-		('recieve','recieve'),
 		('transfer','transfer')
 	)
 

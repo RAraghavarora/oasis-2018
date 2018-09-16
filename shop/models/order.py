@@ -38,12 +38,9 @@ class OrderFragment(models.Model):
 	many items" ordering feature. The order for each stall """
 
 	STATUS = (
-		("in-review", "in-review"),
-		("accepted", "accepted"),
+		("received", "received"),
 		("declined", "declined"),
 		("finished", "finished"), # order is ready for pick-up
-		("completed", "completed"), # order has been paid for and picked up
-		("cancelled", "cancelled") # to cancel certain parts
 	)
 
 	stall = models.ForeignKey("Stall", related_name="orders", null=True,

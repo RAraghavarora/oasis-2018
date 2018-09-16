@@ -5,15 +5,17 @@ from django.contrib.auth.decorators import login_required
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from utils.wallet import transferHelper
 from shop.models.order import Order, OrderFragment
 
-@csrf_exempt # maybe find a way to remove this?
-@login_required
+
 class PlaceOrder(APIView):
     """ The main view to handle orders. For the structure expected from the
         app/front-end teams, see the below """
+
+    permission_classes = (IsAuthenticated, TokenVerification,)
 
     def post(self, request, format=None):
         """
@@ -66,11 +68,14 @@ class PlaceOrder(APIView):
             stat = status.HTTP_412_PRECONDITION_FAILED
             return Response(msg, stat)
         for fragment in order.fragments.all():
-            transferHelper({
-                        "source-id": request.user.wallet.id,
-                        "target-id": fragment.stall.user.wallet.id,
-                        "amount": fragment.calculateSubTotal,
-                    })
+            # Create transaction instances and deduct money from the user right
+            # away. Then later, once the order has been complete, the stall
+            # will receive its money.
+            Transaction.objects.create(
+                                        amount=net_cost,
+                                        transfer_to=fragment.stall.user.wallet,
+                                        transfer_type="buy",
+                                        transfer_from=request.user.wallet.
+                                    )
         fragments = [fragment.id for fragment in order.fragments.all()]
         return Response({"order_id": order.id, "fragments": fragments})
-        # NOW NOTIFY THE STALL?
