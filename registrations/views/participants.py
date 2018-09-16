@@ -51,10 +51,11 @@ def index(request):
     if request.method=='POST':
         print("post request")
         print("******** POST ***********")
-        data = request.POST
+        data = json.loads(request.body.decode('utf8').replace("'", '"'))
+        # data = json.loads(request.body)
+        print(request.body)
         # print(request.body)
         # print(type(request.body))
-        #data = request.body.decode('utf8').replace("'", '"')
         print (data)
         # data = json.loads(data['POST'])
         #data = json.loads(data)
@@ -86,8 +87,8 @@ def index(request):
         except:
             print("except")
             pass
-        print("THIS:\t",data.getlist("events[]"))
-        if len(data.getlist('events')) == 0:
+        print("THIS:\t",data.get("events"))
+        if len(data.get('events')) == 0:
             print("YES")
             return JsonResponse({'status':0,'message':'Please select at least one event'})
         else:
@@ -110,7 +111,7 @@ def index(request):
             participant.save()
 
             
-            for key in data.getlist("events[]"):
+            for key in data.get("events"):
                 event = MainEvent.objects.get(name=str(key))
                 MainParticipation.objects.create(event = event, participant = participant)
             participant.save()
