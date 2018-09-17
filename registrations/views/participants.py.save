@@ -24,13 +24,41 @@ def index(request):
     '''
     To register a new participant and send him a verification link
     '''
-
+    if request.user.is_authenticated():
+        user = request.user
+        print(user)
+        participant = Participant.objects.get(user=user)
+        participation_set = MainParticipation.objects.filter(participant=participant)
+        cr = Participant.objects.get(college=participant.college, is_cr=True)
+        return render(request,'registrations/home.html',{'participant':participant,\
+        'participations':participation_set,'cr':cr})
+    
+    if request.method=='GET':
+        print("get request")
+        print("****** PRINTING *******")
+#	print("just printed :)")
+        colleges = College.objects.all()
+        c_names = [college.name for college in colleges]
+        events = [{'name':event.name,'id':event.id} for event in MainEvent.objects.all() ]
+	# e_names = [event.name for event in events]
+        # data = serializers.serialize('json', c_names)
+        # data1 = serializers.serialize('json', e_names)
+        data={'colleges':c_names,'events':events}
+        return HttpResponse(json.dumps(data))
+        # return HttpResponse(x, content_type="application/json")
+        # return render(request, 'registrations/signup.html', {'college_list':colleges, 'event_list':events})
+    
     if request.method=='POST':
         print("post request")
         print("******** POST ***********")
-        data = json.loads(request.body.decode('utf8').replace("'", '"'))
-        print(request.body)
+        data = request.POST
+        # print(request.body)
+        # print(type(request.body))
+        data = request.body.decode('utf8').replace("'", '"')
         print (data)
+        # data = json.loads(data['POST'])
+        data = json.loads(data)
+        # print(type(data.get('events[]')))
         # recaptcha_response = data['g-recaptcha-response']
         # data_1={
         #     'secret' : keyconfig.google_recaptcha_secret_key,
@@ -44,54 +72,44 @@ def index(request):
         #     return JsonResponse({'status':0, 'message':'Invalid Recaptcha. Try Again'})
         if len(data['phone'])!=10:
             return JsonResponse({'status':0,'message':'Please enter a valid contact number.'})
-        try:
-            int(data['phone'])
-        except:
-            return JsonResponse({'status':0,'message':'Please enter a valid contact number.'})            
+
         email = data['email']
+        print (email)
         if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
+            print("1")
             return JsonResponse({'status':0, 'message':'Please enter a valid email address.'})
         
         try:
             Participant.objects.get(email=email)
+            print("try")
             return JsonResponse({'status':0, 'message':'Email already registered.'})
         except:
+            print("except")
             pass
-        if len(data.get('events')) == 0:
+        print("THIS:\t",data["events"])
+        if len(data['events']) == 0:
+            print("YES")
             return JsonResponse({'status':0,'message':'Please select at least one event'})
         else:
-            try:
-                participant = Participant()
-                participant.name = str(data['name'])
-                participant.gender = str(data['gender'])
-                participant.city = str(data['city'])
-                participant.email = str(data['email'])
-                try:
-                    participant.college = College.objects.get(name = data['college'])
-                except:
-                    return JsonResponse({'status':0,'message':'Invalid College'})
-                participant.phone = int(data['phone'])
-                if data['head_of_society']:
-                    participant.head_of_society = True
-                else:
-                    participant.head_of_society = False
-                try:
-                    year = int(data['year_of_study'])
-                    if year not in range(6):
-                        return JsonResponse({'message':'Invalid year', 'status':0})
-                    participant.year_of_study = year
-                except:
-                     return JsonResponse({'status':0,'message':'Invalid year of study'})
-
-            except KeyError as missing_data:
-                response = JsonResponse({'message':'Data is Missing: {}'.format(missing_data), 'x_status': 4})
-                # response.delete_cookie('sessionid')
-                return response
+            print("IN ELSE\n")
+            participant = Participant()
+            participant.name = str(data['name'])
+            participant.gender = str(data['gender'])
+            participant.city = str(data['city'])
+            participant.email = str(data['email'])
+            participant.college = College.objects.get(name = str(data['college']))
+            participant.phone = int(data['phone'])
+            if str(data['head_of_society']) == 'True':
+                participant.head_of_society = True
+            else:
+                participant.head_of_society = False
+            participant.year_of_study = int(data['year_of_study'])
             participant.save()
 
             
-            for key in data.get("events"):
-                event = MainEvent.objects.get(name=str(key))
+            for key in data["events"]:
+                event = MainEvent.objects.get(id=int(key))
+                print(event
                 MainParticipation.objects.create(event = event, participant = participant)
             participant.save()
             mail = send_grid.register()
@@ -117,32 +135,7 @@ def index(request):
             message ="A confirmation link has been sent to {email}. Kindly click on it to verify your email address.".format(email=send_to)
 
             return JsonResponse({'status':1,'message':message})
-    
-    if request.user.is_authenticated():
-        user = request.user
-        print(user)
-        participant = Participant.objects.get(user=user)
-        participation_set = MainParticipation.objects.filter(participant=participant)
-        cr = Participant.objects.get(college=participant.college, is_cr=True)
-        return render(request,'registrations/home.html',{'participant':participant,\
-        'participations':participation_set,'cr':cr})
-
-
-    print("get request")
-    print("****** PRINTING *******")
-#   print("just printed :)")
-    colleges = College.objects.all()
-    c_names = [college.name for college in colleges]
-    events = [{'name':event.name,'id':event.id} for event in MainEvent.objects.all() ]
-# e_names = [event.name for event in events]
-    # data = serializers.serialize('json', c_names)
-    # data1 = serializers.serialize('json', e_names)
-    data={'colleges':c_names,'events':events}
-    return HttpResponse(json.dumps(data))
-    # return HttpResponse(x, content_type="application/json")
-    # return render(request, 'registrations/signup.html', {'college_list':colleges, 'event_list':events})
-
-        # return HttpResponse('Redirect')
+        return HttpResponse('Redirect')
 
 def home(request):
     '''

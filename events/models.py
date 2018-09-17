@@ -41,8 +41,8 @@ class Participation(models.Model):
 class MainEvent(models.Model): 
     """ All the main events for oasis """
     name = models.CharField(max_length = 100, unique=True)
-    content = RichTextField()
-    appcontent = models.TextField(max_length = 3000, default='')
+    content = RichTextField(default='NA')
+    appcontent = models.TextField(max_length = 3000, default='NA')
     short_description = models.CharField(blank=True, max_length=140)
     rules = models.CharField(blank=True, max_length=200)
     detail_rules = models.TextField(max_length=300, default='', null=True, blank=True)
@@ -56,7 +56,7 @@ class MainEvent(models.Model):
     max_team_size = models.IntegerField(default = 0)
     min_teams = models.IntegerField(default=0)
     max_teams = models.IntegerField(default=0)
-    contact = models.CharField(max_length=140, default='')
+    contact = models.CharField(max_length=140, default='NA')
 
     def __str__(self):
         return self.name
