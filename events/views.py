@@ -13,7 +13,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.core.exceptions import *
 
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.response import Response
+
 from events.models import *
+from events.serializers import CategorySerializer
 from preregistration.models import *
 from events.extrafunctions.generations import *
 
@@ -79,3 +84,16 @@ def Data(request):
 
         except InvalidPermissionsError:
             return JsonResponse({"error_message":"Invalid Permissions"})
+
+
+class Info(APIView):
+
+    def get(self, request):
+        print("Request Received")
+        categories = Category.objects.all()
+        print("CATEGORIES")
+        print(categories)
+        serializer = CategorySerializer(categories, many = True)
+        print("SERIALIZER")
+        print(serializer.data)
+        return Response(serializer.data, status = status.HTTP_200_OK)
