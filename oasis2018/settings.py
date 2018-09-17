@@ -104,6 +104,12 @@ try:
     }
 except Exception as error_message:
     print("DATABASE SETTINGS ERROR: {}".format(error_message))
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 
 #Keep sensitive info safe
