@@ -46,6 +46,7 @@ class Participant(models.Model):
 	GENDERS = (
 		('M','Male'),
 		('F','Female'),
+		('O','Others')
 		)
 
 	name = models.CharField(max_length=200)
