@@ -1,6 +1,7 @@
 # DIRECTORIES:
 media/
 ignore/
+.vscode/
 
 # FILES:
 *.pyc
