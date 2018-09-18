@@ -14,7 +14,7 @@ from shop.serializers import BalanceSerializer
 def balanceFirebaseUpdate(sender, **kwargs):
     db = firestore.client()
     data = BalanceSerializer(kwargs["instance"]).data
-    if user.wallet.profile == "stall":
+    if kwargs["instance"].wallet.profile == "S":
         id_str = "Stall #{}".format(kwargs["instance"].wallet.user.stall.id)
     else:
         id_str = "User #{}".format(kwargs["instance"].wallet.user.id)
@@ -25,7 +25,7 @@ def balanceFirebaseUpdate(sender, **kwargs):
 @receiver(pre_delete, sender=Balance)
 def balanceFirebaseDelete(sender, **kwargs):
     db = firestore.client()
-    if user.wallet.profile == "stall":
+    if kwargs["instance"].wallet.profile == "S":
         id_str = "Stall #{}".format(kwargs["instance"].wallet.user.stall.id)
     else:
         id_str = "User #{}".format(kwargs["instance"].wallet.user.id)

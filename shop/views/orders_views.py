@@ -46,9 +46,7 @@ class PlaceOrder(APIView):
             return Response(msg, status=status.HTTP_400_BAD_REQUEST)
         customer = request.user.wallet
         order = Order.objects.create(customer=customer)
-        print(data)
         for stall_id, stall in data.items():
-            print(stall)
             stall_instance = Stall.objects.get(id=stall_id)
             fragment = OrderFragment.objects.create(
                                                     stall=stall_instance,
@@ -62,7 +60,7 @@ class PlaceOrder(APIView):
                     order.delete()
                     return Response(msg, status=stat)
                 print(item["qty"])
-                ItemInstance.objects.create(
+                it = ItemInstance.objects.create(
                                         itemclass=itemclass,
                                         quantity=item["qty"],
                                         order=fragment

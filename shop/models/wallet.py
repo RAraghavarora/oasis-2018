@@ -38,15 +38,16 @@ class Wallet(models.Model):
 			else:
 				return text.format(profile.name)
 		except:
+			print(self.profile)
 			return (str(self.uuid))
 
 	def getProfile(self):
 		try:
-			if self.profile == "bitsian":
+			if self.profile == "B":
 				return self.user.bitsian
-			elif self.profile == "participant":
+			elif self.profile == "P":
 				return self.user.participant
-			elif self.profile == "stall":
+			elif self.profile == "S":
 				return self.user.stall
 			raise
 		except:

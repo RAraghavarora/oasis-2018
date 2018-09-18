@@ -15,7 +15,6 @@ class ItemClassSerializer(serializers.ModelSerializer):
 
 
 class ItemInstanceSerializer(serializers.ModelSerializer):
-
 	class Meta:
 		model = ItemInstance
 		fields = '__all__'
@@ -28,12 +27,12 @@ class OrderSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 
 
-
 class OrderFragmentSerializer(serializers.ModelSerializer):
 
 	customer = serializers.SerializerMethodField()
 	quantity = serializers.SerializerMethodField()
 	timestamp = serializers.SerializerMethodField()
+	items = serializers.ReadOnlyField(source="ItemInstanceSerializer")
 
 	def get_customer(self, obj):
 		name = obj.order.customer.user.username
