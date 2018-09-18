@@ -21,7 +21,7 @@ class Order(models.Model):
 		""" This function is kind of a recursive ladder. Calling this would
 			also update all subtotals. """
 		total = 0
-		for fragment in self.fragements.all():
+		for fragment in self.fragments.all():
 			total += fragment.calculateSubTotal()
 		self.total = total
 		return total

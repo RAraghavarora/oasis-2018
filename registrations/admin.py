@@ -6,3 +6,4 @@ from .models import *
 # Register your models here.
 admin.site.register(IntroReg)
 admin.site.register(College)
+admin.site.register(Participant)

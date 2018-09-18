@@ -29,7 +29,7 @@ class ItemClass(models.Model):
 	timestamp = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):
-		return "{}-{}-{}-{}".format(self.name, self.size, self.color, self.type)
+		return "{}-{}-{}-{}".format(self.name, self.size, self.color, self.itemtype)
 
 	# instances: ItemInstances
 
@@ -48,4 +48,4 @@ class ItemInstance(models.Model):
 		return self.itemclass.name
 
 	def calculatePrice(self):
-		return self.class_.price*self.quantity
+		return self.itemclass.price*self.quantity

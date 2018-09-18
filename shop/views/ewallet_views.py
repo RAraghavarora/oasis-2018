@@ -3,8 +3,8 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
-from utils.wallet import transferHelper
 from shop.models.wallet import Wallet
 from shop.permissions import TokenVerification
 
@@ -28,7 +28,7 @@ class Transfer(APIView):
                 if amount < 0:
                     raise ValueError("amount transfered cannot be negative.")
                     # log and handle accordingly - value error
-                source.transferTo(target, amount, type="transfer")
+                source.transferTo(target, amount, transfertype="transfer")
                 msg = {"message": "successful!"}
                 return Response(msg, status=status.HTTP_200_OK)
             except KeyError as missing:

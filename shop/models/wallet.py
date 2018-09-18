@@ -1,7 +1,6 @@
 import uuid as uuid_pylib
 from django.db import models
 from django.contrib.auth.models import User
-
 from shop.models.balance import Balance
 from shop.models.transaction import Transaction
 
@@ -56,7 +55,7 @@ class Wallet(models.Model):
 	def getTotalBalance(self):
 		return self.balance._getTotal()
 
-	def transferTo(self, target_wallet, amount, type):
+	def transferTo(self, target_wallet, amount, transfertype):
 		self.balance.deduct(amount)
 		target_wallet.balance.transfers += amount
 		target_wallet.balance.save()
@@ -64,6 +63,6 @@ class Wallet(models.Model):
 									amount = amount,
 									transfer_to = target_wallet,
 									transfer_from = self,
-									transfer_type = type,
+									transfer_type = transfertype,
 									refund_id = ""
 								)

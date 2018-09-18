@@ -1,4 +1,5 @@
 import os
+import datetime
 from oasis2018.settings_config.keyconfig import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -148,10 +149,13 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 #settings.py update
 
+JWT_AUTH = {
+    "JWT_EXPIRATION_DELTA": datetime.timedelta(days=365)
+}
 
 #Logging
 '''
-BASE_DIR is being used in oasis2018.loggers, 
+BASE_DIR is being used in oasis2018.loggers,
 so this import can only occur after it has been declared.
 
 Use logging_tree module to visualize logging structure.
@@ -162,4 +166,3 @@ import raven
 RAVEN_CONFIG = {
     'dsn': 'https://0830bb2a73324f2f8d8082acf42fb52c:1b167f754ba54602825fe60a5e87bffa@sentry.io/1276415',
 }
-

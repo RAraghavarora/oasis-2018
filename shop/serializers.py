@@ -36,12 +36,12 @@ class OrderFragmentSerializer(serializers.ModelSerializer):
 	timestamp = serializers.SerializerMethodField()
 
 	def get_customer(self, obj):
-		name = obj.order.customer.wallet.user.name                              
+		name = obj.order.customer.user.username
 		return name
 
 	def get_quantity(self, obj):
 		quantity = {}
-		for item_instance in obj.items:
+		for item_instance in obj.items.all():
 		       quantity[item_instance.itemclass.id] = item_instance.quantity
 		return quantity
 

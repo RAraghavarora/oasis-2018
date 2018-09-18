@@ -28,5 +28,5 @@ class Transaction(models.Model):
 	# order: OrderFragment
 
 	def __str__(self):
-		return "{} from {} to {}".format(self.value, self.transfer_from,
+		return "{} from {} to {}".format(self.amount, self.transfer_from,
 											self.transfer_to)

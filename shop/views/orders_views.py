@@ -7,8 +7,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from utils.wallet import transferHelper
 from shop.models.order import Order, OrderFragment
+from shop.models.stall import Stall
+from shop.models.item import ItemClass, ItemInstance
+from shop.models.transaction import Transaction
+from shop.permissions import TokenVerification
 
 
 class PlaceOrder(APIView):
@@ -17,6 +20,7 @@ class PlaceOrder(APIView):
 
     permission_classes = (IsAuthenticated, TokenVerification,)
 
+    @csrf_exempt ### REMOVE THIS SOON
     def post(self, request, format=None):
         """
             Part 1:
@@ -42,10 +46,12 @@ class PlaceOrder(APIView):
             return Response(msg, status=status.HTTP_400_BAD_REQUEST)
         customer = request.user.wallet
         order = Order.objects.create(customer=customer)
-        for stall in data:
-            stall_id = Stall.objects.get(id=stall.key())
+        print(data)
+        for stall_id, stall in data.items():
+            print(stall)
+            stall_instance = Stall.objects.get(id=stall_id)
             fragment = OrderFragment.objects.create(
-                                                    stall=stall_id,
+                                                    stall=stall_instance,
                                                     order=order,
                                                 )
             for item in stall["items"]:
@@ -55,9 +61,10 @@ class PlaceOrder(APIView):
                     stat = status.HTTP_417_EXPECTATION_FAILED
                     order.delete()
                     return Response(msg, status=stat)
+                print(item["qty"])
                 ItemInstance.objects.create(
                                         itemclass=itemclass,
-                                        quantity=item["quantity"],
+                                        quantity=item["qty"],
                                         order=fragment
                                     )
 
@@ -75,7 +82,8 @@ class PlaceOrder(APIView):
                                         amount=net_cost,
                                         transfer_to=fragment.stall.user.wallet,
                                         transfer_type="buy",
-                                        transfer_from=request.user.wallet.
+                                        transfer_from=request.user.wallet
                                     )
+            request.user.wallet.balance.deduct(net_cost)
         fragments = [fragment.id for fragment in order.fragments.all()]
-        return Response({"order_id": order.id, "fragments": fragments})
+        return Response({"order_id": order.id, "fragments_ids": fragments})
