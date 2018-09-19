@@ -13,7 +13,7 @@ from shop.permissions import TokenVerification
 from shop.serializers import ItemClassSerializer, StallSerializer, OrderFragmentSerializer 
 
 
-class StallsInfo(APIView):
+class StallsList(APIView):
 
 	permission_classes = (IsAuthenticated, TokenVerification,)
 
@@ -22,11 +22,10 @@ class StallsInfo(APIView):
 		stalls = Stall.objects.all()
 		serializer = StallSerializer(stalls, many=True)
 
-		status = status.HTTP_200_OK
-		return Response(serializer.data, status = status)
+		return Response(serializer.data, status = status.HTTP_200_OK)
 
 
-class ProductsInfo(APIView):
+class ProductsList(APIView):
 
 	permission_classes = (IsAuthenticated, TokenVerification,)
 
@@ -35,14 +34,13 @@ class ProductsInfo(APIView):
 		try:
 			stall = Stall.objects.get(id = stall_id)
 		except Stall.DoesNotExist:
-			status = status.HTTP_404_NOT_FOUND
-			return Response(status = status)
+			msg = {'message' : 'Stall does not exist.'}
+			return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
 		products = stall.menu.all()
 		serializer = ItemClassSerializer(products, many=True)
 
-		status = status.HTTP_200_OK
-		return Response(serializer.data, status = status)
+		return Response(serializer.data, status = status.HTTP_200_OK)
 
 
 class StallOrdersList(APIView):
@@ -63,8 +61,7 @@ class StallOrdersList(APIView):
 		orders = stall.orders.all().order_by('orders__order__timestamp')
 		serializer = OrderFragmentSerializer(orders, many = True)
 
-		status = status.HTTP_200_OK
-		return Response(serializer.data, status = status)
+		return Response(serializer.data, status = status.HTTP_200_OK)
 
 
 class StallOrderStatus(APIView):
@@ -78,24 +75,20 @@ class StallOrderStatus(APIView):
 			order_status = request.data['order_status']
 		except KeyError as missing:
 			msg = {"message": "The following field is missing: {}".format(missing)}
-			status = status.HTTP_400_BAD_REQUEST
-			return Response(msg, status=status)
+			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
 		try:
 			order_fragment = OrderFragment.objects.get(id = order_fragment_id)
 		except OrderFragment.DoesNotExist:
-			status = status.HTTP_404_NOT_FOUND
-			return Response(status = status)
+			return Response(status = status.HTTP_404_NOT_FOUND)
 
 		if not order_fragment.stall.user is request.user:
 			msg = {"message": "Permission Denied!"}
-			status = status.HTTP_403_FORBIDDEN
-			return Response(msg, status)
+			return Response(msg, status = status.HTTP_403_FORBIDDEN)
 
 		if not(status == "accepted" or status == "declined"):
 			msg = {"message": "order_status response not recognized."}
-			status = status.HTTP_400_BAD_REQUEST
-			return Response(msg, status=status)
+			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
 		#Stalls transfer money
 
