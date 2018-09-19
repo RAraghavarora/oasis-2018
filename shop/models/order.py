@@ -9,13 +9,12 @@ class Order(models.Model):
 	""" Each order placed by a user. It's basically a composition of
 	OrderFragments which comprise the Order as a whole. Mainly created to
 	facilitate the "many stalls, many items" ordering feature. """
-	customer = models.ForeignKey("Wallet", related_name="orders", null=True,
-									on_delete=models.CASCADE)
+	customer = models.ForeignKey("Wallet", related_name="orders", null=True, on_delete=models.CASCADE)
 	timestamp = models.DateTimeField(default=timezone.now)
 	# fragments: OrderFragments
 
 	def __str__(self):
-		return "{} - {}".format(self.customer, self.timestamp)
+		return "Order : #{} - Customer : {}".format(self.id, self.customer)
 
 	def calculateTotal(self):
 		""" This function is kind of a recursive ladder. Calling this would
@@ -38,22 +37,19 @@ class OrderFragment(models.Model):
 	many items" ordering feature. The order for each stall """
 
 	STATUS = (
-		("received", "received"),
-		("declined", "declined"),
-		("finished", "finished"), # order is ready for pick-up
+		('P', 'pending'),
+		('F', 'finished'), # order is ready for pick-up
+		('D', 'declined'), 
 	)
 
-	stall = models.ForeignKey("Stall", related_name="orders", null=True,
-								on_delete=models.CASCADE)
-	order = models.ForeignKey("Order", related_name="fragments", null=True,
-								on_delete=models.CASCADE)
-	transaction = models.OneToOneField("Transaction", null=True, blank=True,
-										on_delete=models.CASCADE)
-	status = models.CharField(max_length=20, choices=STATUS, default="received")
+	stall = models.ForeignKey("Stall", related_name="orders", null=True, on_delete=models.CASCADE)
+	order = models.ForeignKey("Order", related_name="fragments", null=True, on_delete=models.CASCADE)
+	transaction = models.OneToOneField("Transaction", null=True, blank=True, on_delete=models.CASCADE)
+	status = models.CharField(max_length=1, choices=STATUS, default='P')
 	# items: ItemInstances
 
 	def __str__(self):
-		return "order: #{} - {}".format(self.order.id, self.status)
+		return "Order : #{} - Stall : {} - Status : {}".format(self.order.id, self.stall.name, self.status)
 
 	def calculateSubTotal(self):
 		subtotal = 0

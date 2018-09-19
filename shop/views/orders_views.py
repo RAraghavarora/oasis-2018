@@ -49,7 +49,13 @@ class PlaceOrder(APIView):
         order = Order.objects.create(customer=customer)
 
         for stall_id, stall in data.items():
-            stall_instance = Stall.objects.get(id=stall_id)
+            try:
+                stall_instance = Stall.objects.get(id=stall_id)
+            except Stall.DoesNotExist:
+                order.delete()
+                msg = {"message" : "Stall doesn't exist"}
+                return Response(msg, status = status.HTTP_404_NOT_FOUND)
+
             fragment = order.fragments.create(stall=stall_instance, order=order)
 
             for item in stall["items"]:
@@ -67,6 +73,12 @@ class PlaceOrder(APIView):
                     order.delete()
                     return Response(msg, status=stat)
 
+                try:
+                    qty = item["qty"]
+                except KeyError:
+                    msg = {"message" : "Quantity of {} wasn't specified.".format(item["id"])}
+                    return Response(msg, status = status.HTTP_404_NOT_FOUND)
+                    
                 fragment.items.create(itemclass=itemclass, quantity=item["qty"], order=fragment)
 
         # Part 2:

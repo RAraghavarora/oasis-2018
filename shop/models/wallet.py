@@ -30,7 +30,7 @@ class Wallet(models.Model):
 	# orders: Orders
 
 	def __str__(self):
-		text = "{}'s wallet"
+		text = "{}'s Wallet"
 		try:
 			profile = self.getProfile()
 			if not profile:
@@ -38,7 +38,6 @@ class Wallet(models.Model):
 			else:
 				return text.format(profile.name)
 		except:
-			print(self.profile)
 			return (str(self.uuid))
 
 	def getProfile(self):

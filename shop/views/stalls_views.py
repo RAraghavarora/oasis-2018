@@ -55,10 +55,9 @@ class StallOrdersList(APIView):
 			if stall is None:
 				raise Exception
 		except:
-			status = status.HTTP_401_UNAUTHORIZED
-			return Response(status = status)
+			return Response(status = status.HTTP_401_UNAUTHORIZED)
 
-		orders = stall.orders.all().order_by('orders__order__timestamp')
+		orders = OrderFragment.objects.filter(stall = stall, status = 'P').order_by('order__timestamp')
 		serializer = OrderFragmentSerializer(orders, many = True)
 
 		return Response(serializer.data, status = status.HTTP_200_OK)
@@ -80,13 +79,14 @@ class StallOrderStatus(APIView):
 		try:
 			order_fragment = OrderFragment.objects.get(id = order_fragment_id)
 		except OrderFragment.DoesNotExist:
+			msg = {"message" : "Order Fragment doesn't exist."}
 			return Response(status = status.HTTP_404_NOT_FOUND)
 
 		if not order_fragment.stall.user is request.user:
 			msg = {"message": "Permission Denied!"}
 			return Response(msg, status = status.HTTP_403_FORBIDDEN)
 
-		if not(status == "accepted" or status == "declined"):
+		if not(status == 'D' or status == 'D'):
 			msg = {"message": "order_status response not recognized."}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 

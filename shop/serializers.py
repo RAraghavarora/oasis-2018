@@ -32,7 +32,7 @@ class OrderFragmentSerializer(serializers.ModelSerializer):
 	customer = serializers.SerializerMethodField()
 	quantity = serializers.SerializerMethodField()
 	timestamp = serializers.SerializerMethodField()
-	items = serializers.ReadOnlyField(source="ItemInstanceSerializer")
+	#items = serializers.ReadOnlyField(source="ItemInstanceSerializer")
 
 	def get_customer(self, obj):
 		name = obj.order.customer.user.username
@@ -50,7 +50,7 @@ class OrderFragmentSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = OrderFragment
-		fields = '__all__'
+		fields = ('id', 'order', 'customer', 'quantity', 'timestamp')
 
 
 class NestedOrderSerializer(serializers.ModelSerializer):
