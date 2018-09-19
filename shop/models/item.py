@@ -29,7 +29,16 @@ class ItemClass(models.Model):
 	timestamp = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):
-		return "{}-{}-{}-{}".format(self.name, self.size, self.color, self.itemtype)
+		ret_string = "Stall : {} - Name : {}".format(self.stall, self.name)
+
+		if self.size:
+			ret_string += " - Size : {}".format(self.size)
+		elif self.color:
+			ret_string += " - Color : {}".format(self.color)
+		elif self.itemtype:
+			ret_string += " - Itemtype : {}".format(self.itemtype)
+
+		return ret_string
 
 	# instances: ItemInstances
 
@@ -37,15 +46,13 @@ class ItemClass(models.Model):
 class ItemInstance(models.Model):
 	""" This model represents each physical item (each instance)."""
 
-	itemclass = models.ForeignKey("ItemClass", related_name="instances", null=True,
-								on_delete=models.CASCADE)
+	itemclass = models.ForeignKey("ItemClass", related_name="instances", null=True, on_delete=models.CASCADE)
 	uuid = models.UUIDField(default=uuid_pylib.uuid4, editable=False)
 	quantity = models.PositiveIntegerField(default=1)
-	order = models.ForeignKey("OrderFragment", related_name="items", null=True,
-								on_delete=models.CASCADE)
+	order = models.ForeignKey("OrderFragment", related_name="items", null=True, on_delete=models.CASCADE)
 
 	def __str__(self):
-		return self.itemclass.name
+		return "Order : #{} - ItemName : {}".format(self.order.order.id, self.itemclass.name)
 
 	def calculatePrice(self):
 		return self.itemclass.price*self.quantity
