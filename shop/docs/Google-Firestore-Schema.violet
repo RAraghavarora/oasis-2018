@@ -15,19 +15,19 @@ Firestore (DB)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double0"/>
-      <double>790.0</double>
+      <double>770.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double0"/>
-      <double>350.0</double>
+      <double>110.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>790.0</double>
-     <double>350.0</double>
+     <double>770.0</double>
+     <double>110.0</double>
     </void>
    </object>
   </void>
@@ -45,19 +45,19 @@ Firestore (DB)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>1030.0</double>
+      <double>860.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>350.0</double>
+      <double>270.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1030.0</double>
-     <double>350.0</double>
+     <double>860.0</double>
+     <double>270.0</double>
     </void>
    </object>
   </void>
@@ -75,19 +75,19 @@ Firestore (DB)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>1200.0</double>
+      <double>1070.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>430.0</double>
+      <double>480.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1200.0</double>
-     <double>430.0</double>
+     <double>1070.0</double>
+     <double>480.0</double>
     </void>
    </object>
   </void>
@@ -105,19 +105,19 @@ Firestore (DB)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double3"/>
-      <double>1200.0</double>
+      <double>900.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double3"/>
-      <double>270.0</double>
+      <double>480.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1200.0</double>
-     <double>270.0</double>
+     <double>900.0</double>
+     <double>480.0</double>
     </void>
    </object>
   </void>
@@ -135,19 +135,19 @@ Firestore (DB)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>570.0</double>
+      <double>700.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>350.0</double>
+      <double>270.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>570.0</double>
-     <double>350.0</double>
+     <double>700.0</double>
+     <double>270.0</double>
     </void>
    </object>
   </void>
@@ -158,14 +158,14 @@ Firestore (DB)</string>
       <string>x</string>
       <void method="set">
        <object idref="Rectangle2D$Double0"/>
-       <double>600.0</double>
+       <double>590.0</double>
       </void>
      </void>
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
       <string>y</string>
       <void method="set">
        <object idref="Rectangle2D$Double0"/>
-       <double>460.0</double>
+       <double>30.0</double>
       </void>
      </void>
      <void class="java.awt.geom.Rectangle2D$Double" method="getField">
@@ -207,19 +207,19 @@ If you need to query data across collections, use root-level collections.&quot;<
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>600.0</double>
+      <double>590.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>460.0</double>
+      <double>30.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>600.0</double>
-     <double>460.0</double>
+     <double>590.0</double>
+     <double>30.0</double>
     </void>
    </object>
   </void>
@@ -237,19 +237,19 @@ If you need to query data across collections, use root-level collections.&quot;<
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>340.0</double>
+      <double>620.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>430.0</double>
+      <double>480.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>340.0</double>
-     <double>430.0</double>
+     <double>620.0</double>
+     <double>480.0</double>
     </void>
    </object>
   </void>
@@ -267,19 +267,19 @@ If you need to query data across collections, use root-level collections.&quot;<
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double7"/>
-      <double>400.0</double>
+      <double>450.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double7"/>
-      <double>270.0</double>
+      <double>480.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>400.0</double>
-     <double>270.0</double>
+     <double>450.0</double>
+     <double>480.0</double>
     </void>
    </object>
   </void>
@@ -304,7 +304,7 @@ If you need to query data across collections, use root-level collections.&quot;<
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
     <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
     </void>
     <void property="endArrowHead">
      <object class="com.horstmann.violet.ArrowHead" field="V"/>
@@ -340,7 +340,7 @@ If you need to query data across collections, use root-level collections.&quot;<
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
     <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
     </void>
     <void property="endArrowHead">
      <object class="com.horstmann.violet.ArrowHead" field="V"/>
@@ -355,7 +355,7 @@ If you need to query data across collections, use root-level collections.&quot;<
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
     <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
     </void>
     <void property="endArrowHead">
      <object class="com.horstmann.violet.ArrowHead" field="V"/>
@@ -370,7 +370,7 @@ If you need to query data across collections, use root-level collections.&quot;<
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
     <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
     </void>
     <void property="endArrowHead">
      <object class="com.horstmann.violet.ArrowHead" field="V"/>
