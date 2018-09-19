@@ -24,6 +24,11 @@ from sendgrid.helpers.mail import *
 import xlsxwriter
 from time import gmtime, strftime
 from reportlab.pdfgen import canvas
+from reportlab.platypus.tables import Table
+from reportlab.lib import colors
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle,Image
 from PyPDF2 import PdfFileWriter, PdfFileReader
 from oasis2018.keyconfig import *
 import string
@@ -80,7 +85,7 @@ def select_college_rep(request,id):
             part=Participant.objects.get(id=part_id)
             part.is_cr=True
             part.cr_approved=True
-            encoded = gen_barcode(part)
+            #encoded = gen_barcode(part)
             print("dsd")
 
             #Barcode generation here left for now. To be discussed if only QR or not
@@ -219,16 +224,18 @@ def verify_profile(request,part_id):
     part=Participant.objects.get(id=part_id)
     if request.method=='POST':
         try:
-            data=request.POST
+            data=(request.POST)
+            data1 = dict(data)
+            print(data)
         except:
             messages.warning(request,'Please select an event')
             return redirect(request.META.get('HTTP_REFERER'))
         if data['submit']=='confirm':
-            MainParticipation.objects.filter(id__in=data,cr_approved=True).update(pcr_approved=True)
+            MainParticipation.objects.filter(id__in=data1['data'],cr_approved=True).update(pcr_approved=True)
             part.pcr_approved=True
             message = part.name + '\'s Profile Verified'
         elif data['submit']=='unconfirm':
-            MainParticipation.objects.filter(id__in=data,cr_approved=True).update(pcr_approved=True)
+            MainParticipation.objects.filter(id__in=data1['data'],cr_approved=True).update(pcr_approved=True)
             message='Events succesfully unconfirmed'
             not_pcr_approved_particpants=[not participant.pcr_approved for participant in MainParticipation.objects.filter(particpant=part)]
             if all(not_pcr_approved_particpants):       
@@ -236,7 +243,7 @@ def verify_profile(request,part_id):
                 message += ' and ' + part.name + '\'sprofile is uncofirmed'
                 #Look into the above functionality
         part.save()
-        messages.success(request, message)
+        messages.success(request, "Done")
         return redirect(reverse('pcradmin:select_college_rep', kwargs={'id':part.college.id}))
         '''try:
 		profile_url = part.profile_pic.url
@@ -512,6 +519,9 @@ def stats_event_college(request, e_id, c_id):
 
 @staff_member_required
 def master_stats(request):
+    events = MainEvent.objects.all()
+    colleges = College.objects.all()
+    context = {'events':events, 'colleges':colleges}
     if request.method == 'POST':
         data = request.POST
         try:
@@ -612,17 +622,18 @@ def master_stats(request):
             'headings': headings,
             'title': title,
         }
-        context = {
-            'tables': [table, ], 'colleges': colleges, 'events': events
-        }
-        events = MainEvent.objects.all()
-        colleges = College.objects.all()
+        context['tables'] = [table, ]
+
+        # context = {
+        #     'tables': [table, ], 'colleges': colleges, 'events': events
+        # }
+        
         return render(request, 'pcradmin/master_stats.html', context)
-    events = MainEvent.objects.all()
-    colleges = College.objects.all()
-    context = {
-        'colleges': colleges, 'events': events
-    }
+    # events = MainEvent.objects.all()
+    # colleges = College.objects.all()
+    # context = {
+    #     'colleges': colleges, 'events': events
+    # }
     return render(request, 'pcradmin/master_stats.html', context)
 
 @staff_member_required
@@ -677,7 +688,7 @@ def final_email_send(request, eg_id):
         doc_name = _dir + 'final_list.pdf'
         pdf = create_final_pdf(eg_id, doc_name, _dir)
     except:
-        _dir = '/home/sanchit/Downloads/'
+        _dir = '/home/raghav/Downloads/'
         doc_name = _dir + 'final_list.pdf'
         pdf = create_final_pdf(eg_id, doc_name, _dir)
     
@@ -740,9 +751,9 @@ pcr@bits-oasis.org
 
             #finally
             participant.save()
-            if not participant.is_cr:
-                encoded=gen_barcode(participant)
-                participant.save()
+            # if not participant.is_cr:
+            #     encoded=gen_barcode(participant)
+            #     participant.save()
 
         # except Exception, e: does not work in py3
         except Exception as e:
@@ -758,7 +769,7 @@ def download_pdf(request, eg_id):
         pdf_1 = create_final_pdf(eg_id, doc_name, _dir)
 
     except:
-        _dir = '/home/sanchit/Downloads/'
+        _dir = '/home/raghav/Downloads/'
         doc_name = _dir + 'final_list.pdf'
         pdf_1 = create_final_pdf(eg_id, doc_name, _dir)
     pdf = open(pdf_1, 'rb')
@@ -768,48 +779,46 @@ def download_pdf(request, eg_id):
 
 #not much idea of the functions of reportlab... 
 def create_final_pdf(eg_id, response, _dir):
-	email_group = EmailGroup.objects.get(id=eg_id)
-	from reportlab.platypus.tables import Table
-	from reportlab.lib import colors
-	from reportlab.lib.units import inch
-	from reportlab.lib.pagesizes import letter
-	from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle
-	elements = []
-	doc = SimpleDocTemplate(response, pagesize=letter)
-	data = [('Name', 'Events', 'Payment')]
-	for part in email_group.participant_set.all():
-		events = ''
-		for participation in MainParticipation.objects.filter(participant=part, pcr_approved=True):
-			events += participation.event.name + ', '
-		events = events[:-2]
-		amount = how_much_paid(part)
-		data.append((part.name, events, amount))
-	table_with_style = Table(data, [3 * inch, 1.5 * inch, inch])
+    logo="/home/raghav/dvm/oasis-2018/pcradmin/static/pcradmin/images/Oasis-Logo.png"
+    im=Image(logo,1*inch,1*inch)
+    email_group = EmailGroup.objects.get(id=eg_id)
+    elements = []
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    data = [('Name', 'Events', 'Payment')]
+    for part in email_group.participant_set.all():
+        events = ''
+        for participation in MainParticipation.objects.filter(participant=part, pcr_approved=True):
+            events += participation.event.name + ', '
+        events = events[:-2]
+        amount = how_much_paid(part)
+        data.append((part.name, events, amount))
+    
+    table_with_style = Table(data, [3 * inch, 1.5 * inch, inch])
 
-	table_with_style.setStyle(TableStyle([
-	    ('FONT', (0, 0), (-1, -1), 'Helvetica'),
-	    ('FONT', (0, 0), (-1, 0), 'Helvetica-Bold'),
-	    ('FONTSIZE', (0, 0), (-1, -1), 8),
-	    ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-	    ('BOX', (0, 0), (-1, 0), 0.25, colors.green),
-	    ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
-	]))
+    table_with_style.setStyle(TableStyle([
+        ('FONT', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONT', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 8),
+        ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+        ('BOX', (0, 0), (-1, 0), 0.25, colors.green),
+        ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+    ]))
 
-	
-	doc.build([Spacer(1, 0.5 * inch),table_with_style])
-	watermark_name = _dir + '51058453_acknowledgement.pdf' #Change the watermark
-	output_file = PdfFileWriter()
-	input_file = PdfFileReader(open(response, "rb"))
-	page_count = input_file.getNumPages()
-	for page_number in range(page_count):
-		watermark = PdfFileReader(open(watermark_name, "rb"))
-		input_page = watermark.getPage(0)
-		input_page.mergePage(input_file.getPage(page_number))
-		output_file.addPage(input_page)
-	output_name = _dir +'final_pdf.pdf'
-	with open(output_name, "wb") as outputStream:
-		output_file.write(outputStream)
-	return output_name
+
+    doc.build([Spacer(1, 0.5 * inch),table_with_style,im])
+    watermark_name = _dir + 'Unused.pdf' #Change the watermark
+    output_file = PdfFileWriter()
+    input_file = PdfFileReader(open(response, "rb"))
+    page_count = input_file.getNumPages()
+    for page_number in range(page_count):
+        watermark = PdfFileReader(open(watermark_name, "rb"))
+        input_page = watermark.getPage(0)
+        input_page.mergePage(input_file.getPage(page_number))
+        output_file.addPage(input_page)
+    output_name = _dir +'final_pdf.pdf'
+    with open(output_name, "wb") as outputStream:
+        output_file.write(outputStream)
+    return output_name
 
 
 ########      HELPER FUNCTIONS     #######

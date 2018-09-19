@@ -54,28 +54,28 @@ def resize_uploaded_image(buf, height, width):
 
 	return resizedImageFile
 
-def gen_barcode(part):
-	chars='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-	part_id=part.id
-	encoded=part.barcode
-	if encoded=='':
-		raise ValueError
-	while 1:
-		encoded = ''.join(choice(chars) for _ in xrange(8))
-		barcode = 'oasis17' + encoded
-		if not Participant.objects.filter(barcode=barcode):
-			break
-	part.barcode = barcode
-	part.save()
+# def gen_barcode(part):
+# 	chars='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+# 	part_id=part.id
+# 	encoded=part.barcode
+# 	if encoded=='':
+# 		raise ValueError
+# 	while 1:
+# 		encoded = ''.join(choice(chars) for _ in range(8))
+# 		barcode = 'oasis17' + encoded
+# 		if not Participant.objects.filter(barcode=barcode):
+# 			break
+# 	part.barcode = barcode
+# 	part.save()
 
-	part_code = qrcode.make(part.barcode)
-	try:
-		image='/root/live/oasis/backend/resources/oasis2017/qrcodes/%04s.png' % int(part_id)
-		part_code.save(image, 'PNG')
-	except:
-		image = '/home/sanchit/Desktop/%04s.png' % int(part_id)
-		part_code.save(image, 'PNG')
-	return encoded
+# 	part_code = qrcode.make(part.barcode)
+# 	try:
+# 		image='/root/live/oasis/backend/resources/oasis2017/qrcodes/%04s.png' % int(part_id)
+# 		part_code.save(image, 'PNG')
+# 	except:
+# 		image = '/home/sanchit/Desktop/%04s.png' % int(part_id)
+# 		part_code.save(image, 'PNG')
+# 	return encoded
 
 def generate_qr_code(data):
 	import qrcode
