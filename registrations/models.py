@@ -31,15 +31,19 @@ class IntroReg(models.Model):
 
 #####################      MAIN MODELS       #######################
 
+
 def user_directory_path(instance, filename):
 	return 'user_{0}/{1}'.format(instance_user_id, filename)
+
 
 class PaymentGroup(models.Model):
 	amount_paid = models.IntegerField(default=0)
 	created_time = models.DateTimeField(auto_now = True)
 
+
 class EmailGroup(models.Model):
 	created_time = models.DateTimeField(auto_now=True)
+
 
 class Participant(models.Model):
 
@@ -92,11 +96,13 @@ class Participant(models.Model):
 	def __str__(self):
 		return (self.name) + ' - ' + str(self.college.name)
 
+
 class Group(models.Model):
 
 	amount_deduct = models.IntegerField(default=0)
 	created_time = models.DateTimeField(auto_now=True)
 	group_code = models.CharField(max_length=100, null=True, blank=True)
+
 
 class CheckoutGroup(models.Model):
 
