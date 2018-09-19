@@ -25,10 +25,9 @@ class PlaceOrder(APIView):
         """
             Part 1:
             Create a new Order (it acts as a shell), then create all of the
-            OrderFragments with a status of in-review by default while
-            populating each fragment with Item Instances. If any item is
-            unavailable, bounce back the entire order, the frontend team
-            shouldn't let it get this far.
+            OrderFragments while populating each fragment with Item Instances.
+            If any item is unavailable, bounce back the entire order, the
+            frontend team shouldn't let it get this far.
 
             Part 2:
             Figure out how much the Order costs, test to see if the customer
@@ -44,34 +43,41 @@ class PlaceOrder(APIView):
         except KeyError as missing:
             msg = {"message": "missing the following field: {}".format(missing)}
             return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+
         customer = request.user.wallet
+
         order = Order.objects.create(customer=customer)
+
         for stall_id, stall in data.items():
             stall_instance = Stall.objects.get(id=stall_id)
-            fragment = OrderFragment.objects.create(
-                                                    stall=stall_instance,
-                                                    order=order,
-                                                )
+            fragment = order.fragments.create(stall=stall_instance, order=order)
+
             for item in stall["items"]:
-                itemclass = ItemClass.objects.get(id=item["id"])
+                try:
+                    itemclass = ItemClass.objects.get(id=item["id"])
+                except:
+                    msg = "invalid item id {}".format(item["id"])
+                    stat = status.HTTP_404_NOT_FOUND
+                    order.delete()
+                    return Response({"message": msg}, status=stat)
+
                 if not itemclass.is_available:
-                    msg = {"message":"{} is not available".format(itemclass)}
-                    stat = status.HTTP_417_EXPECTATION_FAILED
+                    msg = {"message":"{} is not currently available".format(itemclass)}
+                    stat = status.HTTP_404_NOT_FOUND
                     order.delete()
                     return Response(msg, status=stat)
-                print(item["qty"])
-                it = ItemInstance.objects.create(
-                                        itemclass=itemclass,
-                                        quantity=item["qty"],
-                                        order=fragment
-                                    )
+
+                fragment.items.create(itemclass=itemclass, quantity=item["qty"], order=fragment)
 
         # Part 2:
         net_cost = order.calculateTotal()
+
         if request.user.wallet.getTotalBalance() < net_cost:
             msg = {"message": "Insufficient balance."},
-            stat = status.HTTP_412_PRECONDITION_FAILED
+            stat = status.HTTP_400_BAD_REQUEST
+            order.delete()
             return Response(msg, stat)
+
         for fragment in order.fragments.all():
             # Create transaction instances and deduct money from the user right
             # away. Then later, once the order has been complete, the stall
@@ -84,4 +90,5 @@ class PlaceOrder(APIView):
                                     )
             request.user.wallet.balance.deduct(net_cost)
         fragments = [fragment.id for fragment in order.fragments.all()]
-        return Response({"order_id": order.id, "fragments_ids": fragments})
+
+        return Response({"order_id": order.id, "fragments_ids": fragments, "cost": net_cost})

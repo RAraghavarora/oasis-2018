@@ -10,7 +10,7 @@ from shop.models.stall import Stall
 from shop.models.item import ItemClass
 from shop.models.order import OrderFragment
 from shop.permissions import TokenVerification
-from shop.serializers import ItemClassSerializer, StallSerializer, OrderFragmentSerializer 
+from shop.serializers import ItemClassSerializer, StallSerializer, OrderFragmentSerializer
 
 
 class StallsList(APIView):
@@ -95,4 +95,3 @@ class StallOrderStatus(APIView):
 		order_fragment.status = order_status
 		order_fragment.save()
 		return Response(status.HTTP_200_OK)
-

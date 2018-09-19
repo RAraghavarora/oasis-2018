@@ -34,9 +34,10 @@ def autoAddWalletBitsian(sender, **kwargs):
         wallet.balance = balance
         wallet.save()
 
+
 @receiver(post_save, sender=Participant)
 def autoAddWalletParticipant(sender, **kwargs):
-    if kwargs["created"]:
+    if participant.firewallz_passed:
         participant = kwargs["instance"]
         wallet = Wallet.objects.create(user=participant.user, profile="P")
         balance = Balance(wallet=wallet)
