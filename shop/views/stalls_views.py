@@ -59,7 +59,8 @@ class StallOrdersList(APIView):
 
 		orders = OrderFragment.objects.filter(stall = stall, status = 'P').order_by('order__timestamp')
 		serializer = OrderFragmentSerializer(orders, many = True)
-
+		print(request.user)
+		print(serializer.data)
 		return Response(serializer.data, status = status.HTTP_200_OK)
 
 
