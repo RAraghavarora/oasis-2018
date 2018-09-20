@@ -23,7 +23,8 @@ def genString(_id, email, key=KEY):
         _id = int(_id)
     except:
         raise ValueError("id must be a number, {} was inputted.".format(_id))
-    if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
+    print("EMAIL !!!!!!!!!!!!!!!!!!!: " + email)
+    if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
         raise ValueError("email must be of a valid format, {} was inputted.".format(email))
 
     # now generate the key using the python Cryptography library

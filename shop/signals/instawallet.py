@@ -30,7 +30,7 @@ def autoAddWalletBitsian(sender, **kwargs):
     if kwargs["created"]:
         bitsian = kwargs["instance"]
         wallet = Wallet.objects.create(user=bitsian.user, profile="B")
-        bitsian.barcode = genString(bitsian.user.id, bitsian.user.email)
+        bitsian.barcode = genString(bitsian.user.id, bitsian.email)
         bitsian.save()
         # Now give the wallet a balance. This has to be done seperately because
         # of a the BalanceFirebaseUpdate signal which uses self.wallet.user.id
@@ -57,8 +57,8 @@ def autoAddWalletParticipant(sender, **kwargs):
             # these next two steps are needed... tested and proved.
             wallet.balance = balance
             wallet.save()
-            
+
     if participant.firewallz_passed:
         if not participant.barcode:
-            participant.barcode = genString(participant.user.id, participant.user.email)
+            participant.barcode = genString(participant.user.id, participant.email)
             participant.save()
