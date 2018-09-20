@@ -82,16 +82,20 @@ class StallOrderStatus(APIView):
 			msg = {"message" : "Order Fragment doesn't exist."}
 			return Response(status = status.HTTP_404_NOT_FOUND)
 
-		if not order_fragment.stall.user is request.user:
+		if not order_fragment.stall.user == request.user:
+			print(order_fragment.stall.user, request.user)
 			msg = {"message": "Permission Denied!"}
 			return Response(msg, status = status.HTTP_403_FORBIDDEN)
 
-		if not(status == 'D' or status == 'D'):
+		if not(order_status == 'accepted' or order_status == 'declined' or order_status == 'finished'):
 			msg = {"message": "order_status response not recognized."}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
 		#Stalls transfer money
+		if order_status == 'finished':
+			request.user.wallet.balance.add(transfers = order_fragment.calculateSubTotal())
 
 		order_fragment.status = order_status
 		order_fragment.save()
-		return Response(status.HTTP_200_OK)
+		msg = {"message" : "Request Successful"}
+		return Response(msg, status = status.HTTP_200_OK)

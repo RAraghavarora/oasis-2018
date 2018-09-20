@@ -39,9 +39,13 @@ class OrderFragmentSerializer(serializers.ModelSerializer):
 		return name
 
 	def get_quantity(self, obj):
-		quantity = {}
+		quantity = []
 		for item_instance in obj.items.all():
-		       quantity[item_instance.itemclass.id] = item_instance.quantity
+		       item = {
+		       "id" : item_instance.itemclass.id,
+		       "qty" : item_instance.quantity
+		       }
+		       quantity.append(item)
 		return quantity
 
 	def get_timestamp(self, obj):

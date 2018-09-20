@@ -38,8 +38,9 @@ class OrderFragment(models.Model):
 
 	STATUS = (
 		('P', 'pending'),
-		('F', 'finished'), # order is ready for pick-up
+		('A', "accepted"),
 		('D', 'declined'), 
+		('F', 'finished') # order is ready for pick-up
 	)
 
 	stall = models.ForeignKey("Stall", related_name="orders", null=True, on_delete=models.CASCADE)
