@@ -50,7 +50,7 @@ class PlaceOrder(APIView):
 
         for stall_id, stall in data.items():
             try:
-                stall_instance = Stall.objects.get(id=stall_id)
+                stall_instance = Stall.objects.get(id = stall_id)
             except Stall.DoesNotExist:
                 order.delete()
                 msg = {"message" : "Stall doesn't exist"}
@@ -76,7 +76,7 @@ class PlaceOrder(APIView):
                 try:
                     qty = item["qty"]
                 except KeyError:
-                    msg = {"message" : "Quantity of {} wasn't specified.".format(item["id"])}
+                    msg = {"message" : "Quantity of item: #{} wasn't specified.".format(item["id"])}
                     return Response(msg, status = status.HTTP_404_NOT_FOUND)
                     
                 fragment.items.create(itemclass=itemclass, quantity=item["qty"], order=fragment)
@@ -96,12 +96,12 @@ class PlaceOrder(APIView):
             # away. Then later, once the order has been complete, the stall
             # will receive its money.
             Transaction.objects.create(
-                                        amount=net_cost,
+                                        amount=fragment.calculateSubTotal(),
                                         transfer_to=fragment.stall.user.wallet,
                                         transfer_type="buy",
                                         transfer_from=request.user.wallet
                                     )
-            request.user.wallet.balance.deduct(net_cost)
+        request.user.wallet.balance.deduct(net_cost)
         fragments = [fragment.id for fragment in order.fragments.all()]
 
         return Response({"order_id": order.id, "fragments_ids": fragments, "cost": net_cost})
