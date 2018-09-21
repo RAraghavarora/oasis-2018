@@ -95,4 +95,13 @@ def allocate_participants(request,g_id):
                 part.acco = False
                 part.room = None
                 part.save()
-        return redirect()                
+        return redirect(reverse('regsoft:recnacc_group_list',kwargs={'c_id':get_group_leader(group).college.id})) 
+    else:
+        room_list=Room.objects.all()
+        unalloted_participants=group.participant_set.filter(acco=False,checkout_group=None,controlz=True)
+        alloted_participants=group.participant_set.filter(acco=True,checkout_group=None,controlz=True)
+        checked_out=group.participant_set.filter(checkout_group__isnull=False)
+        return render(request,'regsoft/allot.html',{'unalloted':unalloted_participants,'alloted':alloted_participants,'rooms':room_list,'group':group,'checked_out':checked_out
+    })
+    
+                    
