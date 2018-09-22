@@ -57,11 +57,25 @@ class StallOrdersList(APIView):
 		except:
 			return Response(status = status.HTTP_401_UNAUTHORIZED)
 
-		orders = OrderFragment.objects.filter(stall = stall, status = 'P').order_by('order__timestamp')
-		serializer = OrderFragmentSerializer(orders, many = True)
-		print(request.user)
-		print(serializer.data)
-		return Response(serializer.data, status = status.HTTP_200_OK)
+		
+		orderfrag = OrderFragment.objects.filter(stall = stall)
+		print(orderfrag)
+		orders_pending = OrderFragment.objects.filter(stall = stall, status = 'pending').order_by('order__timestamp')
+		orders_accepted = OrderFragment.objects.filter(stall = stall, status = 'accepted').order_by('order__timestamp')
+		orders_finished = OrderFragment.objects.filter(stall = stall, status = 'finished').order_by('order__timestamp')
+		
+		serializer_pending = OrderFragmentSerializer(orders_pending, many = True)
+		print(serializer_pending.data)
+		serializer_accepted = OrderFragmentSerializer(orders_accepted, many = True)
+		serializer_finished = OrderFragmentSerializer(orders_finished, many = True)
+
+		serializer_data = {
+			"pending" : serializer_pending.data,
+			"accepted" : serializer_accepted.data,
+			"finished" : serializer_finished.data
+		}
+
+		return Response(serializer_data, status = status.HTTP_200_OK)
 
 
 class StallOrderStatus(APIView):

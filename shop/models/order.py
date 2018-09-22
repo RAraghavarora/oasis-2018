@@ -37,10 +37,10 @@ class OrderFragment(models.Model):
 	many items" ordering feature. The order for each stall """
 
 	STATUS = (
-		('P', 'pending'),
+		('P', "pending"),
 		('A', "accepted"),
-		('D', 'declined'), 
-		('F', 'finished') # order is ready for pick-up
+		('D', "declined"), 
+		('F', "finished") # order is ready for pick-up
 	)
 
 	stall = models.ForeignKey("Stall", related_name="orders", null=True, on_delete=models.CASCADE)
