@@ -310,7 +310,7 @@ def checkout_groups(request, c_id):
 
 ##Helper function to get event strings##
 def get_event_string(participant):
-    participation_set = Participation.objects.filter(participant=participant, pcr_approved=True)
+    participation_set = MainParticipation.objects.filter(participant=participant, pcr_approved=True)
     events = ''
     for participation in participation_set:
         events += participation.event.name + ', '
@@ -329,6 +329,3 @@ def ck_group_details(request, ck_id):
         'title':title,
     }
     return render(request, 'regsoft/tables.html', {'tables':[table,],})
-
-
-
