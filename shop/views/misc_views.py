@@ -15,7 +15,7 @@ class getProfile():
 
     @csrf_exempt
     def post():
-
+    	pass
         # name
         # profile pic url
         # qr code string
