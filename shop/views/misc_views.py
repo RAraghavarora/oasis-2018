@@ -14,9 +14,8 @@ class getProfile():
     permission_classes = (IsAuthenticated, TokenVerification)
 
     @csrf_exempt
-    def post(request):
-        user = request.user
-        return Response({"message": "comming soon"})
+    def post():
+    	pass
         # name
         # profile pic url
         # qr code string

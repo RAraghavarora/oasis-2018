@@ -11,7 +11,7 @@ class CategorySerializer(serializers.ModelSerializer):
 		print(events)
 		data = {}
 		for event in events:
-			data[event.name] = event.short_description
+			data[event.name] = event.content
 		print(data)
 		return data
 
