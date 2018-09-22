@@ -1,0 +1,4 @@
+adium-theme-ubuntu==0.3.4
+redis==2.10.6
+unity-lens-photos==1.0
+vboxapi==1.0

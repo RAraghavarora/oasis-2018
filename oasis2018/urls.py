@@ -12,11 +12,8 @@ urlpatterns = [
     url(r'^events/',include('events.urls')),
     url(r'^registrations/',include('registrations.urls')),
     url(r'^analytics/', include('analytics.urls')),
-<<<<<<< HEAD
     url(r'^pcradmin/', include('pcradmin.urls')),
-=======
-    url(r'^shop/', include('shop.urls')),    
->>>>>>> wallet
+    url(r'^shop/', include('shop.urls')),
 ]
 
 
