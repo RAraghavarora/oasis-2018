@@ -15,8 +15,8 @@ class getProfile():
 
     @csrf_exempt
     def post(request):
-
-
+        user = request.user
+        return Response({"message": "comming soon"})
         # name
         # profile pic url
         # qr code string
