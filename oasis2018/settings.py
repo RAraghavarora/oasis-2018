@@ -26,9 +26,10 @@ INSTALLED_APPS = [
     'registrations',
     'analytics',
     'pcradmin',
-    'ckeditor', 
+    'ckeditor',
     'corsheaders',
     'shop.apps.ShopConfig',
+    'regsoft',
 ]
 
 MIDDLEWARE = [
