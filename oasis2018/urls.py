@@ -28,9 +28,7 @@ urlpatterns = [
     url(r'^registrations/',include('registrations.urls')),
     url(r'^analytics/', include('analytics.urls')),
     url(r'^pcradmin/', include('pcradmin.urls')),
-    url(r'^regsoft/', include('pcradmin.urls')),
-    
-   
+    url(r'^regsoft/', include('regsoft.urls')),
 ]
 
 
