@@ -16,12 +16,7 @@ def autoAddWalletStall(sender, **kwargs):
     if kwargs["created"]:
         stall = kwargs["instance"]
         wallet = Wallet.objects.create(user=stall.user, profile="S")
-        # Now give the wallet a balance. This has to be done seperately because
-        # of a the BalanceFirebaseUpdate signal which uses self.wallet.user.id
-        balance = Balance(wallet=wallet)
-        balance.save()
-        # these next two steps are needed... tested and proved.
-        wallet.balance = balance
+        wallet.balance = Balance.objects.create(wallet=wallet)
         wallet.save()
 
 
@@ -29,16 +24,12 @@ def autoAddWalletStall(sender, **kwargs):
 def autoAddWalletBitsian(sender, **kwargs):
     if kwargs["created"]:
         bitsian = kwargs["instance"]
-        wallet = Wallet.objects.create(user=bitsian.user, profile="B")
         bitsian.barcode = genString(bitsian.user.id, bitsian.email)
         bitsian.save()
-        # Now give the wallet a balance. This has to be done seperately because
-        # of a the BalanceFirebaseUpdate signal which uses self.wallet.user.id
-        balance = Balance(wallet=wallet)
-        balance.save()
-        # these next two steps are needed... tested and proved.
-        wallet.balance = balance
-        wallet.save()
+        wallet, exists = Wallet.objects.get_or_create(user=bitsian.user, profile="B")
+        if not exists:
+            wallet.balance = Balance.objects.create(wallet=wallet)
+            wallet.save()
 
 
 @receiver(post_save, sender=Participant)
@@ -49,11 +40,7 @@ def autoAddWalletParticipant(sender, **kwargs):
         if not participant.barcode:
             participant.barcode = genString(participant.user.id, participant.email)
             participant.save()
-        wallet = Wallet.objects.get_or_create(user=participant.user, profile="P")[0]
-        # Now give the wallet a balance. This has to be done seperately because
-        # of a the BalanceFirebaseUpdate signal which uses self.wallet.user.id
-        balance = Balance(wallet=wallet)
-        balance.save()
-        # these next two steps are needed... tested and proved.
-        wallet.balance = balance
-        wallet.save()
+        wallet, exists = Wallet.objects.get_or_create(user=participant.user, profile="P")
+        if not exists:
+            wallet.balance = Balance.objects.create(wallet=wallet)
+            wallet.save()

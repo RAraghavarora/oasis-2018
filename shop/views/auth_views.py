@@ -11,7 +11,7 @@ from rest_framework_jwt.settings import api_settings
 from registrations.models import Bitsian
 from shop.models.wallet import Wallet
 from shop.models.balance import Balance
-
+from shop.permissions import TokenVerification
 
 from random import choice
 import string
@@ -22,8 +22,7 @@ from google.oauth2 import id_token
 
 class Authentication(APIView):
 
-	permission_classes = (AllowAny,)
-
+	permission_classes = (TokenVerification,)
 
 	PASS_CHARS = string.ascii_letters + string.digits
 	for i in '0oO1QlLiI':
@@ -56,14 +55,14 @@ class Authentication(APIView):
 				msg = {"message": "Missing the identity field."}
 				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
-		
+
 		#Bitsian Authentication is done through Google OAuth
 		if is_bitsian:
 			#Checks if Google OAuth token has been provided
 			#The frontend gets this token when the user logs in using Google OAuth
 			try:
 			   token = request.data['id_token']
-			
+
 			except KeyError as missing:
 				msg = {"message": "The following field is missing: {}".format(missing)}
 				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
@@ -71,7 +70,7 @@ class Authentication(APIView):
 			#Verifies bitsian using Google Client-Side API
 			try:
 				idinfo = id_token.verify_oauth2_token(token, requests1.Request(), OAUTH_CLIENT_ID_app)
-			
+
 			except Exception as e:
 				return Response({'message' : str(e)})
 
@@ -82,7 +81,7 @@ class Authentication(APIView):
 			email = idinfo['email']
 			try:
 				bitsian = Bitsian.objects.get(email=email)
-			
+
 			except:
 				return Response(status.HTTP_404_NOT_FOUND)
 
@@ -90,7 +89,7 @@ class Authentication(APIView):
 			username = email.split('@')[0]
 			try:
 				user = User.objects.get(username=username)
-			
+
 			except User.DoesNotExist:
 				user = User.objects.create(username=username, password=password, email=email)
 				bitsian.user = user
@@ -114,7 +113,7 @@ class Authentication(APIView):
 			#Authenticates the user
 			try:
 				user = authenticate(username = username, password = password)
-				
+
 				if user is None:
 					raise User.DoesNotExist
 				print("User: ", user)
@@ -123,11 +122,11 @@ class Authentication(APIView):
 				msg = {'message' : "Incorrect Authentication Credentials or User doesn't exist"}
 				return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
-		
+
 		#Checks if wallet exists
 		try:
 			wallet = Wallet.objects.get(user = user)
-			
+
 			if not wallet:
 				raise Wallet.DoesNotExist
 			print("Wallet: ", wallet)
@@ -137,7 +136,7 @@ class Authentication(APIView):
 			print(msg)
 
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
-		
+
 		#Generates the JWT Token
 		token = self.get_jwt(user)
 

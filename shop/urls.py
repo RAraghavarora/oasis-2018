@@ -4,7 +4,7 @@ from shop.views import auth_views
 from shop.views import ewallet_views
 from shop.views import orders_views
 from shop.views import stalls_views
-#from shop.views import test_views
+from shop.views import misc_views
 
 app_name="shop"
 
@@ -19,4 +19,6 @@ urlpatterns = [
 
     url(r'^stalls/client/orders/$', stalls_views.StallOrdersList.as_view(), name = 'stall-orders'),
     url(r'^stalls/client/order-response/$', stalls_views.StallOrderStatus.as_view(), name = 'stall-order-status'),
+
+    # url(r'^profile/$', misc_views.getProfile.as_view(), name="get-profile"),
 ]
