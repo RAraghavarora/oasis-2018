@@ -14,7 +14,8 @@ class getProfile():
     permission_classes = (IsAuthenticated, TokenVerification)
 
     @csrf_exempt
-    def post():
+    def post(request):
+
 
         # name
         # profile pic url
