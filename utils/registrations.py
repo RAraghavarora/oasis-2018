@@ -1,7 +1,11 @@
-from registrations.models import Participant
 from django.http import HttpResponse
-from random import choice
+
+from registrations.models import Participant
+
 import qrcode
+from random import choice
+
+
 def generate_email_token(participant):
 	'''
 	To generate a unique email token for a registering participant

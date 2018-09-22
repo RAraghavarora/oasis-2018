@@ -1,6 +1,7 @@
 # DIRECTORIES:
 media/
 ignore/
+.vscode/
 
 # FILES:
 *.pyc
@@ -8,3 +9,4 @@ ignore/
 *.sqlite3
 keyconfig.*
 *.log
+#*_creds.json

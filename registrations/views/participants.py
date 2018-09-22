@@ -1,23 +1,24 @@
+from django.contrib import messages
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
+from django.core import serializers
+from django.http import HttpResponse,JsonResponse,HttpResponseRedirect
+from django.shortcuts import render,redirect
+from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+
+from oasis2018.settings_config import keyconfig
+from registrations.views import send_grid
 from events.models import MainParticipation, MainEvent
 from registrations.models import Participant,College
-from django.shortcuts import render,redirect
+
 import requests
-from oasis2018 import keyconfig
-from django.contrib.auth import login, logout, authenticate
-from django.http import HttpResponse,JsonResponse,HttpResponseRedirect
-from django.urls import reverse
+import json
 import re
-from registrations.views import send_grid
 import sendgrid
 from sendgrid.helpers.mail import *
 from utils.registrations import *
-from django.contrib import messages
 from instamojo_wrapper import Instamojo
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from django.core import serializers
-import json
-from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def index(request):
