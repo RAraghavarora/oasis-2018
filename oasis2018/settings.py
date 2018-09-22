@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'analytics',
     'pcradmin',
     'ckeditor', 
-    'corsheaders'
+    'corsheaders',
     'shop.apps.ShopConfig',
 ]
 
