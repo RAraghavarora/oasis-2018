@@ -1,0 +1,213 @@
+
+upstream bits_oasis16_server {
+  server unix:/root/live/oasis/backend/oasis16/run/gunicorn.sock fail_timeout=0;
+}
+upstream bits_oasis17_server {
+  server unix:/root/live/oasis/backend/oasis17/run/gunicorn.sock fail_timeout=0;
+}
+upstream bits_oasis18_server {
+  server unix:/root/live/oasis/backend/oasis18/run/gunicorn.sock fail_timeout=0;
+}
+
+server {
+#    listen [::]:80;
+    server_name bits-oasis.org www.bits-oasis.org;
+#    return 302 https://$server_name$request_uri;
+#}
+
+#server {
+
+##### START HTTPS ####
+#	listen 80;
+#	listen 443 ssl http2;
+#	listen [::]:443 ssl http2;
+#ssl_certificate /etc/letsencrypt/live/bits-oasis.org/fullchain.pem; # managed by Certbot
+#ssl_certificate_key /etc/letsencrypt/live/bits-oasis.org/privkey.pem; # managed by Certbot
+
+#	server_name bits-oasis.org www.bits-oasis.org;
+#	ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+#	ssl_prefer_server_ciphers on;
+#	ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+#	ssl_ecdh_curve prime256v1;
+#	ssl_session_cache shared:SSL:10m;
+#	ssl_session_tickets off;
+#	ssl_stapling on;
+#	ssl_stapling_verify on;
+#	resolver 8.8.8.8 8.8.4.4 valid=300s;
+#	resolver_timeout 5s;
+#	# disable HSTS header for now
+#	#add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
+#	add_header X-Frame-Options DENY;
+#	add_header X-Content-Type-Options nosniff;
+	rewrite ^/$ /2018main;
+#	#rewrite ^/$ http://bits-oasis.org/2017/registrations/ permanent;
+#	ssl_dhparam /etc/ssl/certs/dhparam.pem;
+	
+### END HTTPS ###
+
+	client_max_body_size 4G;
+
+	access_log /var/log/nginx/access.log;
+	error_log /var/log/nginx/error.log;
+
+	index index.html index.htm index.php;
+	autoindex on;
+	root /root/live/oasis/others;
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+	}
+
+#	rewrite ^/id/$ https://bits-apogee.org/wallet/ redirect;
+
+#### OASIS 2018 ####
+        location /backend_static/ {
+                expires 1h;
+                autoindex on;
+                alias   /root/live/oasis/backend/oasis-2018/static/;
+        }
+
+	location /2018intro/ {
+                autoindex on;
+                alias   /root/live/oasis/others/2018intro/dist/;
+        }
+	
+	location /2018maintest/ {
+		autoindex on;
+		alias /root/live/oasis/others/2018maintest/;
+	}
+
+	location ~ /2018$ { return 301 http://bits-oasis.org/2018/; }
+        location /2018/ {
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                # enable this if and only if you use HTTPS, this helps Rack
+                # set the proper protocol for doing redirects:
+                # proxy_set_header X-Forwarded-Proto https;
+                proxy_set_header Host $http_host;
+                proxy_set_header SCRIPT_NAME /2018;
+                proxy_redirect off;
+                        # proxy_buffering off;
+                if (!-f $request_filename) {
+                        proxy_pass http://bits_oasis18_server;
+                        break;
+                }
+        }
+#### END OASIS 2018 ####
+
+#### OASIS 2017 ####
+        location /2017/static {
+                expires 1h;
+                autoindex on;
+                alias   /root/live/oasis/backend/oasis-2017/static/;
+        }
+        location ~ /2017$ { return 302 https://bits-oasis.org/2017/; }
+        location /2017/ {
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                # enable this if and only if you use HTTPS, this helps Rack
+                # set the proper protocol for doing redirects:
+                # proxy_set_header X-Forwarded-Proto https;
+                proxy_set_header Host $http_host;
+                proxy_set_header SCRIPT_NAME /2017;
+                proxy_redirect off;
+                        # proxy_buffering off;
+                if (!-f $request_filename) {
+                        proxy_pass http://bits_oasis17_server;
+                        break;
+                }
+        }
+	location /2017maintest {
+		proxy_pass http://127.0.0.1:3000;
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade websocket;
+		proxy_set_header Connection Upgrade;
+		proxy_set_header Host $host;
+	}
+
+        location /latch {
+                proxy_pass http://127.0.0.1:8100;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade websocket;
+                proxy_set_header Connection Upgrade;
+                proxy_set_header Host $host;
+        }
+#### END OASIS 2017 ####
+	### oasis test ###
+		location /test {
+			expires 1h;
+			autoindex on;
+			alias /root/live/oasis/frontend/2017test/;
+			try_files $uri $uri.html $uri/ /index.html;
+		}
+	### end oasis test ###
+
+
+	### rocktaves 2016 ###
+		location /rocktaves {
+			expires 1h;
+			autoindex on;
+			alias /root/live/oasis/others/rocktaves-2016/;
+			try_files $uri $uri.html $uri/ /index.html;
+		}
+	### end rocktaves 2016
+#### OASIS 2016 ####
+	location /2016/static {
+		expires 1h;
+		autoindex on;
+		alias   /root/live/oasis/backend/oasis-2016/static/;
+	}
+	location ~ /2016$ { return 301 $scheme://bits-oasis.org/2016/; }
+	location /2016/ {
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		# enable this if and only if you use HTTPS, this helps Rack
+		# set the proper protocol for doing redirects:
+		# proxy_set_header X-Forwarded-Proto https;
+		proxy_set_header Host $http_host;
+		proxy_set_header SCRIPT_NAME /2016;
+		proxy_redirect off;
+			# proxy_buffering off;
+		if (!-f $request_filename) {
+			proxy_pass http://bits_oasis16_server;
+			break;
+		}
+	}
+#### END OASIS 2016 ####
+
+
+
+    # Redirect non-https traffic to https
+    # if ($scheme != "https") {
+    #     return 301 https://$host$request_uri;
+    # } # managed by Certbot
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/bits-dvm.org/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/bits-dvm.org/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
+
+
+}
+
+
+
+server {
+    if ($host = www.bits-oasis.org) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    if ($host = bits-oasis.org) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name bits-oasis.org www.bits-oasis.org;
+    return 404; # managed by Certbot
+
+
+
+
+}
