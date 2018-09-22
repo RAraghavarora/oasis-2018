@@ -1,0 +1,131 @@
+-------------------------------------
+HEADERS:
+	FIELDS:
+		{
+			"Wallet-Token":<string>
+			"Authorization":<string> #jwt token
+		}
+
+-------------------------------------
+AUTHENTICATION
+
+API END POINT:
+	.../2018/shop/auth/
+
+REQUEST TYPE:
+	POST
+
+HEADER:
+	#only Wallet-Token and not Authorization	
+
+FOR PARTICIPANT:
+	FIELDS:
+		{
+			"username":<string>
+			"password":<string>
+			"is_bitsian":<boolean>
+		}
+
+FOR BITSIAN:
+	FIELDS:
+		{
+			"id_token":<string>
+			"is_bitsian":<boolean>
+		}
+
+RESPONSE:
+	FIELDS:
+		{
+			"token":<string>
+		}
+
+-------------------------------------
+PLACE ORDER
+
+API END POINT:
+	.../2018/shop/place-order/
+
+REQUEST TYPE:
+	POST
+
+FIELDS:
+	{
+		"date":
+		"order":
+		{
+			"stall_id":
+			{
+				"items":
+				[
+					"id":<int>
+					"qty":<int>
+				]
+			}
+		}
+	}
+
+RESPONSE:
+	FIELDS:
+		{
+			"order_id":
+			"fragments_id":
+			"cost":
+		}
+
+-------------------------------------
+STALLS
+
+API END POINT:
+	.../2018/shop/stalls/
+
+REQUEST TYPE:
+	GET
+
+REPONSE:
+	FIELDS:
+		{
+			"id":
+			"name":
+			"description":
+		}
+
+-------------------------------------
+STALL PRODUCTS LIST
+
+API END POINT:
+	.../2018/shop/stalls/<stall_id>/
+
+REQUEST TYPE:
+	GET
+
+REPONSE:
+	FIELDS:
+		{
+			"name":
+			"stall":
+			"description":
+			"is_combo":
+			"is_veg":
+			"price":
+			"is_available":
+			"stock":
+			"size":
+			"color":
+			"itemtype":
+		}
+
+-------------------------------------
+TRANSFER:
+
+API END POINT:
+	.../2018/shop/transfer/
+
+REQUEST TYPE:
+	POST
+
+FIELDS:
+	{
+		"source-id":<int>
+		"target-id":<int>
+		"amount":<float>
+	}
