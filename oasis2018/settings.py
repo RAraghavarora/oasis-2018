@@ -25,8 +25,10 @@ INSTALLED_APPS = [
     'events',
     'registrations',
     'analytics',
-    'shop.apps.ShopConfig',
+    'pcradmin',
+    'ckeditor', 
     'corsheaders',
+    'shop.apps.ShopConfig',
 ]
 
 MIDDLEWARE = [
@@ -38,6 +40,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # middlewares in created apps
+    'pcradmin.middleware.PCrAdminMiddleware',
 ]
 
 try:
@@ -66,7 +71,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'oasis2018.wsgi.application'
 
-"""try:
+try:
     from oasis2018.settings_config.keyconfig import *
     DATABASES = {
         'default': {
@@ -80,13 +85,13 @@ WSGI_APPLICATION = 'oasis2018.wsgi.application'
         }
     }
 except Exception as error_message:
-    print("DATABASE SETTINGS ERROR: {}".format(error_message))"""
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    print("DATABASE SETTINGS ERROR: {}".format(error_message))
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -144,8 +149,8 @@ GOOGLE_RECAPTCHA_SECRET_KEY = google_recaptcha_secret_key
 
 APPEND_SLASH = False
 
-# LOGIN_URL = '/2018/register/login/'
-
+LOGIN_URL = '/2018/registrations/login/'
+LOGOUT_REDIRECT_URL = '/2018/registrations/'
 
 CORS_ORIGIN_ALLOW_ALL = True
 

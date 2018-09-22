@@ -1,0 +1,204 @@
+{% extends 'pcradmin/base.html' %}
+
+{% block body %}
+<div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+{% if messages %}
+<div class="body">
+{% for message in messages %}
+<div class="alert alert-info alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+    {{message}}
+</div>
+{% endfor %}
+</div>
+{% endif %}
+            {% if cr %}
+                    <div class="card">
+
+                        <div class="header">
+                            <h2>
+                                College Representative
+                            </h2>
+                        </div>
+                    <div class="body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable">
+                            <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                        <th>Gender</th>
+                                        <th>Verfied</th>
+                                        <th>Head of Society</th>
+                                        <th>Year of Study</th>
+                                        <th>Payment</th>
+                                        <th>Verify Profile</th>
+                                        <th>Edit</th>
+                                    </tr>
+                                </thead>
+                                
+                                <tbody>
+                                
+                                    <tr>
+                                        <td>{{cr.name}}</td>
+                                        <td>{{cr.phone}}</td>
+                                        <td>{{cr.email}}</td>
+                                        <td>{{cr.gender}}</td>
+                                        <td>{{cr.pcr_approved}}</td>
+                                        <td>{{cr.head_of_society}}</td>
+                                        <td>{{cr.year_of_study}}</td>
+                                        <td>{% if cr.controlz_paid %}950{% else %}{% if cr.paid %}300{% else %}0{% endif %}{% endif %}</td>
+                                        <td><a href="{% url 'pcradmin:verify_profile' cr.id %}">Verify Profile</a></td>
+                                        <td><a href="{% url 'pcradmin:edit_participant' cr.id %}">Edit</a></td>
+                                </tbody>
+                            </table>
+                                        <form action="" method="post">
+                                        {% csrf_token %}
+                                            <input type="hidden" name="data" value="{{cr.id}}" id="{{cr.id}}"><label for="{{cr.id}}"></label>
+                                            <button type="submit" class="btn btn-primary m-t-15 waves-effect" value="delete" name="submit" onclick="disable_function" id="disable_onclick">Remove</button>
+                                        </form>
+                        </div>
+                    </div>
+                </div>
+
+
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                                Participants of {{college}}
+                            </h2>
+                        </div>
+                    <div class="body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable">
+                            <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                        <th>Gender</th>
+                                        <th>Verfied</th>
+                                        <th>Head of Society</th>
+                                        <th>Year of Study</th>
+                                        <th>Event List</th>
+                                        <th>Payment</th>
+                                        <th>Verify Profile</th>
+                                        <th>Edit</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                        <th>Gender</th>
+                                        <th>Verfied</th>
+                                        <th>Head of Society</th>
+                                        <th>Year of Study</th>
+                                        <th>Event List</th>
+                                        <th>Payment</th>
+                                        <th>Verify Profile</th>
+                                        <th>Edit</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                {% for part in parts %}
+                                    <tr>
+                                        {% for i in part.data %}
+                                        <td>{{i}}</td>
+                                        {% endfor %}
+                                        <td><a href="{% url 'pcradmin:verify_profile' part.id %}">Verify Profile</a></td>
+                                        <td><a href="{% url 'pcradmin:edit_participant' part.id %}">Edit</a></td>
+                                    </tr>
+                                {% endfor %}
+                                            
+                                </tbody>
+
+                   
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            {% else %}
+            <form method="POST" action="">
+                {% csrf_token %}
+
+                <div class="card">
+                        <div class="header">
+                            <h2>
+                                Choose a Participant as College Representative for {{college.name}}
+                            </h2>
+                        </div>
+                    <div class="body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover dataTable js-exportable">
+                            <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                        <th>Gender</th>
+                                        <th>Verfied</th>
+                                        <th>Head of Society</th>
+                                        <th>Year of Study</th>
+                                        <th>Event List</th>
+                                        <th>Payment</th>
+                                        <th>Select</th>
+                                        <th>Edit</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                        <th>Gender</th>
+                                        <th>Verfied</th>
+                                        <th>Head of Society</th>
+                                        <th>Year of Study</th>
+                                        <th>Event List</th>
+                                        <th>Payment</th>
+                                        <th>Select</th>
+                                        <th>Edit</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                {% for part in parts %}
+                                    <tr>
+                                        {% for i in part.data %}
+                                        <td>{{i}}</td>
+                                        {% endfor %}
+                                        <td>
+                                            <input name="data" type="radio" id="{{part.id}}" value="{{part.id}}"/>
+                                            <label for="{{part.id}}"></label>
+                                        </td>
+                                        <td><a href="{% url 'pcradmin:edit_participant' part.id %}">Edit</a></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+
+                   
+                    </table>
+                     <button type="submit" class="btn btn-primary m-t-15 waves-effect" value="select" name="submit" id="disable_onclick">Submit</button>
+        </div>
+    </div>
+</div>
+
+            </form>
+            
+
+            {% endif %}
+
+</div>
+</div>
+<script type="text/javascript">
+    $('#disable_onclick').on('click',function() {
+        $(this).prop("disabled",true);
+    });
+</script>
+{% endblock %}
