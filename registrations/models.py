@@ -58,7 +58,7 @@ class Participant(models.Model):
 	email = models.EmailField(unique=True)
 	college = models.ForeignKey(College, on_delete=None, null=True)
 	phone = models.BigIntegerField()
-	barcode = models.CharField(max_length=50, null=True, blank=True)
+	barcode = models.CharField(max_length=200, null=True, blank=True)
 	state = models.CharField(max_length=50, blank=True)
 	year_of_study = models.CharField(max_length=3, null=True, blank=True)
 	user = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
@@ -75,7 +75,7 @@ class Participant(models.Model):
 	checkout_group = models.ForeignKey('CheckoutGroup', on_delete=models.SET_NULL, null=True, blank=True)
 	# ems_code = models.CharField(max_length=10, default='', null=True)
 	bits_id = models.CharField(max_length=20, null=True, blank=True)
-	
+
 	# Boolean fields
 	head_of_society = models.BooleanField(default=False, blank=True)
 	email_verified = models.BooleanField(default=False, blank=True)
@@ -118,7 +118,7 @@ class Bitsian(models.Model):
 	name = models.CharField(max_length=50, null=True, blank=True)
 	gender = models.CharField(max_length=1, null=True, blank=True)
 	email = models.EmailField(null=True)
-	barcode = models.CharField(max_length=10, null=True, blank=True, unique=True)
+	barcode = models.CharField(max_length=200, null=True, blank=True, unique=True)
 	phone = models.BigIntegerField(default=0, null=True)
 	bhawan = models.CharField(max_length=20, null=True, blank=True)
 	room_no = models.IntegerField(default=0)
