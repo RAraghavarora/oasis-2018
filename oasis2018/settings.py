@@ -1,13 +1,19 @@
 import os
 import datetime
-from oasis2018.settings_config.keyconfig import *
+from oasis2018.settings_config import keyconfig
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ALLOWED_HOSTS = ['*']
 
-DEBUG = Debug
+DEBUG = keyconfig.DEBUG
+
+SECRET_KEY = keyconfig.SECRET_KEY
+
+SERVER = keyconfig.SERVER
+
+
 
 # Application definition
 
@@ -19,17 +25,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework_jwt',
-    'preregistration',
-    'events',
-    'registrations',
-    'analytics',
-    'pcradmin',
+
     'ckeditor',
     'corsheaders',
+    'rest_framework',
+    'rest_framework_jwt',
+
+    'events',
+    'pcradmin',
+    'analytics',
+    'registrations',
+    'preregistration',
     'shop.apps.ShopConfig',
-    'regsoft',
 ]
 
 MIDDLEWARE = [
@@ -46,13 +53,13 @@ MIDDLEWARE = [
     'pcradmin.middleware.PCrAdminMiddleware',
 ]
 
-try:
-    if SERVER:
-        MIDDLEWARE.append('oasis2018.middlewares.AppException')
-except:
-    pass
+
+if keyconfig.SERVER:
+    MIDDLEWARE.append('oasis2018.middlewares.AppException')
+
 
 ROOT_URLCONF = 'oasis2018.urls'
+
 
 TEMPLATES = [
     {
@@ -70,29 +77,32 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'oasis2018.wsgi.application'
 
-try:
-    from oasis2018.settings_config.keyconfig import *
+
+if keyconfig.SERVER:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': DATABASE_NAME,
-            'USER': DATABASE_USER,
-            'PASSWORD': DATABASE_PASSWORD,
+            'NAME': keyconfig.DATABASE_NAME,
+            'USER': keyconfig.DATABASE_USER,
+            'PASSWORD': keyconfig.DATABASE_PASSWORD,
             'HOST': 'localhost',
             'PORT': '3306',
             'OPTIONS': {'charset': 'utf8mb4'},
         }
     }
-except Exception as error_message:
-    print("DATABASE SETTINGS ERROR: {}".format(error_message))
+else:
+    print("Using SQLite3 locally.")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
+
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -127,6 +137,7 @@ REST_FRAMEWORK = {
     ),
 }
 
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Asia/Kolkata'
@@ -146,7 +157,9 @@ STATIC_URL = '/backend_static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/backend_media/'
 
-GOOGLE_RECAPTCHA_SECRET_KEY = google_recaptcha_secret_key
+GOOGLE_RECAPTCHA_SECRET_KEY = keyconfig.google_recaptcha_secret_key
+GOOGLE_RECAPTCHA_SITE_KEY = keyconfig.google_recaptcha_site_key
+
 
 APPEND_SLASH = False
 
@@ -155,11 +168,10 @@ LOGOUT_REDIRECT_URL = '/2018/registrations/'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-#settings.py update
-
 JWT_AUTH = {
     "JWT_EXPIRATION_DELTA": datetime.timedelta(days=365)
 }
+
 
 #Logging
 '''
@@ -168,8 +180,8 @@ so this import can only occur after it has been declared.
 
 Use logging_tree module to visualize logging structure.
 '''
-from oasis2018.settings_config.loggers import *
 import raven
+from oasis2018.settings_config.loggers import *
 
 RAVEN_CONFIG = {
     'dsn': 'https://0830bb2a73324f2f8d8082acf42fb52c:1b167f754ba54602825fe60a5e87bffa@sentry.io/1276415',

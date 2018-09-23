@@ -57,15 +57,13 @@ class StallOrdersList(APIView):
 		except:
 			return Response(status = status.HTTP_401_UNAUTHORIZED)
 
-		
+
 		orderfrag = OrderFragment.objects.filter(stall = stall)
-		print(orderfrag)
 		orders_pending = OrderFragment.objects.filter(stall = stall, status = 'pending').order_by('order__timestamp')
 		orders_accepted = OrderFragment.objects.filter(stall = stall, status = 'accepted').order_by('order__timestamp')
 		orders_finished = OrderFragment.objects.filter(stall = stall, status = 'finished').order_by('order__timestamp')
-		
+
 		serializer_pending = OrderFragmentSerializer(orders_pending, many = True)
-		print(serializer_pending.data)
 		serializer_accepted = OrderFragmentSerializer(orders_accepted, many = True)
 		serializer_finished = OrderFragmentSerializer(orders_finished, many = True)
 
@@ -98,7 +96,6 @@ class StallOrderStatus(APIView):
 			return Response(status = status.HTTP_404_NOT_FOUND)
 
 		if not order_fragment.stall.user == request.user:
-			print(order_fragment.stall.user, request.user)
 			msg = {"message": "Permission Denied!"}
 			return Response(msg, status = status.HTTP_403_FORBIDDEN)
 

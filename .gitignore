@@ -1,13 +1,14 @@
-# DIRECTORIES:
+### DIRECTORIES:
 media/
-static/
+/static
 ignore/
 .vscode/
+__pycache__/
+settings_config/
 
-# FILES:
+### FILES:
 *.pyc
-*_secret
+*_ignore*
 *.sqlite3
-keyconfig.*
 *.log
-#*_creds.json
+*.save

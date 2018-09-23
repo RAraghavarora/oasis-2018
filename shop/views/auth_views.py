@@ -102,12 +102,9 @@ class Authentication(APIView):
 			try:
 				username = request.data['username']
 				password = request.data['password']
-				print("Fetch data: ", username, password)
 
-			except:
+			except Exception as err:
 				msg = {'message' : "Authentication credentials weren't provided"}
-				print(msg)
-
 				return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
 			#Authenticates the user
@@ -116,7 +113,6 @@ class Authentication(APIView):
 
 				if user is None:
 					raise User.DoesNotExist
-				print("User: ", user)
 
 			except Exception as e:
 				msg = {'message' : "Incorrect Authentication Credentials or User doesn't exist"}
@@ -129,11 +125,9 @@ class Authentication(APIView):
 
 			if not wallet:
 				raise Wallet.DoesNotExist
-			print("Wallet: ", wallet)
 
 		except Wallet.DoesNotExist:
 			msg = {'message' : 'Contact the administrators'}
-			print(msg)
 
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
@@ -141,5 +135,4 @@ class Authentication(APIView):
 		token = self.get_jwt(user)
 
 		msg = {'token' : token}
-		print(msg)
 		return Response(msg, status = status.HTTP_200_OK)

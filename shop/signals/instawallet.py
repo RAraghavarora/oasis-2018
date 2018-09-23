@@ -15,9 +15,11 @@ from registrations.models import Participant
 def autoAddWalletStall(sender, **kwargs):
     if kwargs["created"]:
         stall = kwargs["instance"]
-        wallet = Wallet.objects.create(user=stall.user, profile="S")
-        wallet.balance = Balance.objects.create(wallet=wallet)
-        wallet.save()
+        wallet, created = Wallet.objects.get_or_create(user=stall.user, profile="S")
+        if created:
+            balance = Balance.objects.create(wallet=wallet)
+            wallet.balance = balance
+            wallet.save()
 
 
 @receiver(post_save, sender=Bitsian)
@@ -26,9 +28,10 @@ def autoAddWalletBitsian(sender, **kwargs):
         bitsian = kwargs["instance"]
         bitsian.barcode = genString(bitsian.user.id, bitsian.email)
         bitsian.save()
-        wallet, exists = Wallet.objects.get_or_create(user=bitsian.user, profile="B")
-        if not exists:
-            wallet.balance = Balance.objects.create(wallet=wallet)
+        wallet, created = Wallet.objects.get_or_create(user=bitsian.user, profile="B")
+        if created:
+            balance = Balance.objects.create(wallet=wallet)
+            wallet.balance = balance
             wallet.save()
 
 
@@ -40,7 +43,8 @@ def autoAddWalletParticipant(sender, **kwargs):
         if not participant.barcode:
             participant.barcode = genString(participant.user.id, participant.email)
             participant.save()
-        wallet, exists = Wallet.objects.get_or_create(user=participant.user, profile="P")
-        if not exists:
-            wallet.balance = Balance.objects.create(wallet=wallet)
+        wallet, created = Wallet.objects.get_or_create(user=participant.user, profile="P")
+        if created:
+            balance = Balance.objects.create(wallet=wallet)
+            wallet.balance = balance
             wallet.save()
