@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'registrations',
     'preregistration',
     'shop.apps.ShopConfig',
+    'regsoft'
 ]
 
 MIDDLEWARE = [
