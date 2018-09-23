@@ -15,7 +15,7 @@ from shop.serializers import ItemClassSerializer, StallSerializer, OrderFragment
 
 class StallsList(APIView):
 
-	permission_classes = (IsAuthenticated, TokenVerification,)
+	permission_classes = (TokenVerification,)
 
 	#Return Stalls list, including name and description of each stall.
 	def get(self, request):
@@ -27,7 +27,7 @@ class StallsList(APIView):
 
 class ProductsList(APIView):
 
-	permission_classes = (IsAuthenticated, TokenVerification,)
+	permission_classes = (TokenVerification,)
 
 	#Return Products list, corresponding to thhe stall stall_id.
 	def get(self, request, stall_id):
