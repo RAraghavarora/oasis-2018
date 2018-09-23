@@ -31,6 +31,7 @@ class OrderFragmentSerializer(serializers.ModelSerializer):
 
 	customer = serializers.SerializerMethodField()
 	quantity = serializers.SerializerMethodField()
+	status = serializers.SerializerMethodField()
 	timestamp = serializers.SerializerMethodField()
 	#items = serializers.ReadOnlyField(source="ItemInstanceSerializer")
 
@@ -48,13 +49,16 @@ class OrderFragmentSerializer(serializers.ModelSerializer):
 		       quantity.append(item)
 		return quantity
 
+	def get_status(self, obj):
+		return obj.get_status_display()
+
 	def get_timestamp(self, obj):
 		timestamp = obj.order.timestamp
 		return timestamp
 
 	class Meta:
 		model = OrderFragment
-		fields = ('id', 'order', 'customer', 'quantity', 'timestamp')
+		fields = ('id', 'order', 'customer', 'status', 'quantity', 'timestamp')
 
 
 class NestedOrderSerializer(serializers.ModelSerializer):

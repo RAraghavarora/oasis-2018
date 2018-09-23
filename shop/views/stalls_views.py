@@ -58,10 +58,9 @@ class StallOrdersList(APIView):
 			return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
-		orderfrag = OrderFragment.objects.filter(stall = stall)
-		orders_pending = OrderFragment.objects.filter(stall = stall, status = 'pending').order_by('order__timestamp')
-		orders_accepted = OrderFragment.objects.filter(stall = stall, status = 'accepted').order_by('order__timestamp')
-		orders_finished = OrderFragment.objects.filter(stall = stall, status = 'finished').order_by('order__timestamp')
+		orders_pending = OrderFragment.objects.filter(stall = stall, status = OrderFragment.PENDING).order_by('order__timestamp')
+		orders_accepted = OrderFragment.objects.filter(stall = stall, status = OrderFragment.ACCEPTED).order_by('order__timestamp')
+		orders_finished = OrderFragment.objects.filter(stall = stall, status = OrderFragment.FINISHED).order_by('order__timestamp')
 
 		serializer_pending = OrderFragmentSerializer(orders_pending, many = True)
 		serializer_accepted = OrderFragmentSerializer(orders_accepted, many = True)
@@ -84,7 +83,7 @@ class StallOrderStatus(APIView):
 	def post(self, request):
 		try:
 			order_fragment_id = request.data['order_fragment']
-			order_status = request.data['order_status']
+			order_status = request.data['order_status'].title()
 		except KeyError as missing:
 			msg = {"message": "The following field is missing: {}".format(missing)}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
@@ -99,7 +98,7 @@ class StallOrderStatus(APIView):
 			msg = {"message": "Permission Denied!"}
 			return Response(msg, status = status.HTTP_403_FORBIDDEN)
 
-		if not(order_status == 'accepted' or order_status == 'declined' or order_status == 'finished'):
+		if not(order_status == 'Accepted' or order_status == 'Declined' or order_status == 'Finished'):
 			msg = {"message": "order_status response not recognized."}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
@@ -107,7 +106,9 @@ class StallOrderStatus(APIView):
 		if order_status == 'finished':
 			request.user.wallet.balance.add(transfers = order_fragment.calculateSubTotal())
 
-		order_fragment.status = order_status
+		status_dict = {long_form : short_form for short_form, long_form in OrderFragment.STATUS}
+		order_fragment.status = status_dict[order_status]
+
 		order_fragment.save()
 		msg = {"message" : "Request Successful"}
 		return Response(msg, status = status.HTTP_200_OK)
