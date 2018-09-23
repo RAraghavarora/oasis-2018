@@ -22,12 +22,12 @@ class Transfer(APIView):
     def post(self, request, format=None):
             data = request.data
             try:
-                source = Wallet.objects.get(id=data["source-id"])
-                target = Wallet.objects.get(id=data["target-id"])
+                source = request.user.wallet
+                target_user = User.objects.get(id=data["target_user"])
+                target = Wallet.objects.get(user=user)
                 amount = data["amount"]
                 if amount < 0:
-                    raise ValueError("amount transfered cannot be negative.")
-                    # log and handle accordingly - value error
+                    return Response({"message": "transfered amount cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
                 source.transferTo(target, amount, transfertype="transfer")
                 msg = {"message": "successful!"}
                 return Response(msg, status=status.HTTP_200_OK)
@@ -36,4 +36,4 @@ class Transfer(APIView):
                 return Response(msg, status=status.HTTP_400_BAD_REQUEST)
             except Wallet.DoesNotExist:
                 msg = {"message": "Wallet does not exist"}
-                return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+                return Response(msg, status=status.HTTP_404_NOT_FOUND)

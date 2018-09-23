@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Balance(models.Model):
-	""" 
+	"""
 	There are 4 sources of money for each wallet, and it is essential that
 	we keep the 4 sources seperate. SWD money must be refunded while other
 	money will be lost at the end (the user SHOULD and will be warned).

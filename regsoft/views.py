@@ -23,12 +23,12 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 import sendgrid
 import os
-import re   
+import re
 from sendgrid.helpers.mail import *
-from oasis2018.keyconfig import *
+from oasis2018.settings_config.keyconfig import *
 import string
 from random import sample, choice
-from django.contrib import messages 
+from django.contrib import messages
 
 
 ###Helper function to get the group leader##
@@ -183,7 +183,7 @@ def firewallz_approval(request, c_id):
 #                 part.acco = False
 #                 part.room = None
 #                 part.save()
-#         return redirect(reverse('regsoft:recnacc_group_list',kwargs={'c_id':get_group_leader(group).college.id})) 
+#         return redirect(reverse('regsoft:recnacc_group_list',kwargs={'c_id':get_group_leader(group).college.id}))
 #     else:
 #         room_list=Room.objects.all()
 #         unalloted_participants=group.participant_set.filter(acco=False,checkout_group=None,controlz=True)
@@ -191,7 +191,7 @@ def firewallz_approval(request, c_id):
 #         checked_out=group.participant_set.filter(checkout_group__isnull=False)
 #         return render(request,'regsoft/allot.html',{'unalloted':unalloted_participants,'alloted':alloted_participants,'rooms':room_list,'group':group,'checked_out':checked_out
 #     })
-    
+
 
 # @staff_member_required
 # def recnacc_group_list(request,c_id):
@@ -199,9 +199,9 @@ def firewallz_approval(request, c_id):
 #     group_list=[group for group in Group.objects.all() if get_group_leader(group).college==college]
 #     complete_groups = [group for group in group_list if all(part.acco for part in group.participant_set.filter(controlz=True))]
 #     incomplete_groups=[group for group in group_list if not group in complete_groups]
-    
+
 #     complete_rows = [{'data':[group.created_time, get_group_leader(group).name, group.participant_set.filter(controlz=True).count(), group.participant_set.filter(acco=True,checkout_group=None, controlz=True).count()], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:allocate_participants', kwargs={'g_id':group.id})), 'title':'Manage group'}]} for group in complete_groups]
-    
+
 #     incomplete_rows = [{'data':[group.created_time, get_group_leader(group).name, group.participant_set.filter(controlz=True).count(), group.participant_set.filter(acco=True,checkout_group=None, controlz=True).count()], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:allocate_participants', kwargs={'g_id':group.id})), 'title':'Manage group'}]} for group in incomplete_groups]
 
 #     complete_table={
@@ -221,7 +221,7 @@ def firewallz_approval(request, c_id):
 # def room_details(request):
 #     room_list=Room.objects.all()
 #     rows = [{'data':[room.room, room.bhavan.name, room.vacancy, room.capacity,], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:manage_vacancies', kwargs={'r_id':room.id})), 'title':'Manage'},]} for room in room_list]
-#     headings=['Room','Bhawan','Vacancy','Capacity']    
+#     headings=['Room','Bhawan','Vacancy','Capacity']
 #     title = 'Manage Room Details'
 #     table = {
 #         'rows':rows,

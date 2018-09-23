@@ -30,12 +30,12 @@ from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Spacer, Table, TableStyle,Image
 from PyPDF2 import PdfFileWriter, PdfFileReader
-from oasis2018.keyconfig import *
+from oasis2018.settings_config.keyconfig import *
 import string
 from django.contrib import messages
 from random import choice
 from utils.registrations import *
-API_KEY='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' #my api 
+API_KEY='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' #my api
 
 @staff_member_required
 def index(request):
@@ -65,7 +65,7 @@ def select_college_rep(request,id):
         except:
             messages.warning(request,'Select a participant')
             return redirect(request.META.get('HTTP_REFERER'))
-        
+
 
         if data['submit']=='delete':
             part=Participant.objects.get(id=part_id)
@@ -104,7 +104,7 @@ def select_college_rep(request,id):
                 user.save()
                 part.user=user
                 part.save()
-            body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+            body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 			<center><img src="http://bits-oasis.org/2017/static/registrations/img/logo.png" height="150px" width="150px"></center>
 			<pre style="font-family:rowsboto,sans-serif">
 Hello %s!
@@ -113,8 +113,8 @@ Thank you for registering!
 
 Greetings from BITS Pilani!
 
-It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 27th to October 31st.             
-           
+It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 27th to October 31st.
+
 This is to inform you that you have been selected as the College Representative for your college.
 You can now login <a href="%s">here</a> using the following credentials:
 username : '%s'
@@ -126,7 +126,7 @@ Please make sure to upload your <b>Picture</b> as well as <b>verification docume
 
 We look forward to seeing you at OASIS 2018.
 
-P.S: THIS EMAIL DOES NOT CONFIRM YOUR PRESENCE AT OASIS 2018. YOU WILL BE RECEIVING ANOTHER EMAIL FOR THE CONFIRMATION OF YOUR PARTICIPATION. 
+P.S: THIS EMAIL DOES NOT CONFIRM YOUR PRESENCE AT OASIS 2018. YOU WILL BE RECEIVING ANOTHER EMAIL FOR THE CONFIRMATION OF YOUR PARTICIPATION.
 
 Regards,
 StuCCAn (Head)
@@ -159,7 +159,7 @@ pcr@bits-oasis.org
     except:
         cr=[]
     parts = [{'data':[part.name, part.phone, part.email, part.gender, part.pcr_approved, part.head_of_society, part.year_of_study, event_list(part), how_much_paid(part)], "id":part.id,} for part in participants]
-    
+
     return render(request, 'pcradmin/college_rep.html',{'college':college, 'parts':parts, 'cr':cr})
 
 
@@ -238,7 +238,7 @@ def verify_profile(request,part_id):
             MainParticipation.objects.filter(id__in=data1['data'],cr_approved=True).update(pcr_approved=True)
             message='Events succesfully unconfirmed'
             not_pcr_approved_particpants=[not participant.pcr_approved for participant in MainParticipation.objects.filter(particpant=part)]
-            if all(not_pcr_approved_particpants):       
+            if all(not_pcr_approved_particpants):
                 part.pcr_approved=False
                 message += ' and ' + part.name + '\'sprofile is uncofirmed'
                 #Look into the above functionality
@@ -257,7 +257,7 @@ def verify_profile(request,part_id):
     events_unconfirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=False)]
     return render(request, 'pcradmin/verify_profile.html',
 	{ 'part':part, 'confirmed':events_confirmed, 'unconfirmed':events_unconfirmed})
-        
+
 @staff_member_required
 def add_college(request):
     if request.method=='POST':
@@ -316,7 +316,7 @@ def edit_participant(request,part_id):
 
 
 
-#################################### STATS ##########################################     
+#################################### STATS ##########################################
 
 
 @staff_member_required
@@ -332,7 +332,7 @@ def stats(request, order=None):
                 cr = 'True (' + cr_participant.name + ')'
             except:
                 cr = False
-            
+
             male_participants = participants.filter(gender='M')
             female_participants = participants.filter(gender='F')
             display_data = {
@@ -342,7 +342,7 @@ def stats(request, order=None):
                     profile_stats(participants)
                 ],
                 'link' : []
-            }    
+            }
             rows.append(display_data)
         participants = Participant.objects.all()
         male_participants = participants.filter(gender='M')
@@ -357,7 +357,7 @@ def stats(request, order=None):
         }
         rows.append(display_data)
         headings = [
-            'College', 'CR Selected', 'Male', 'Female', 'Stats', 'Profile Status' 
+            'College', 'CR Selected', 'Male', 'Female', 'Stats', 'Profile Status'
         ]
         title = 'CollegeWise Participants Stats'
         context = {
@@ -366,7 +366,7 @@ def stats(request, order=None):
             ]
         }
         return render(request, 'pcradmin/tables.html', context)
-    
+
     if order == 'eventwise':
         rows = []
         for event in MainEvent.objects.all().iterator():
@@ -377,7 +377,7 @@ def stats(request, order=None):
                 display_data = {
                     'data': [
                         event.name, event.category, participants_count(male_participants),
-                        participants_count(female_participants), participants_count(participants) 
+                        participants_count(female_participants), participants_count(participants)
                     ],
                     'link' : [
                         { 'title': 'View', 'url': reverse('pcradmin:stats_event', kwargs={'e_id': event.id})}
@@ -388,10 +388,10 @@ def stats(request, order=None):
         title = 'EventWise Participants Stats'
         context = {
             'tables': [
-                {'rows': rows, 'headings': headings, 'title': title},   
+                {'rows': rows, 'headings': headings, 'title': title},
             ]
         }
-        return render(request, 'pcradmin/tables.html', context) 
+        return render(request, 'pcradmin/tables.html', context)
 
     if order == 'paidwise':
         rows = []
@@ -409,7 +409,7 @@ def stats(request, order=None):
         title = "Participant's Payment Status"
         context = {
             'tables': [
-                {'rows': rows, 'headings': headings, 'title': title},   
+                {'rows': rows, 'headings': headings, 'title': title},
             ]
         }
         return render(request, 'pcradmin/tables.html', context)
@@ -445,7 +445,7 @@ def stats_event(request, e_id):
             cr = 'True (' + cr_participant.name + ')'
         except:
             cr = False
-        
+
         male_participants = participants.filter(gender='M')
         female_participants = participants.filter(gender = 'F')
         display_data = {
@@ -455,7 +455,7 @@ def stats_event(request, e_id):
                 profile_stats(participants)
             ],
             'link' : [{
-                'url': request.build_absolute_uri(reverse('pcradmin:stats_event_college', 
+                'url': request.build_absolute_uri(reverse('pcradmin:stats_event_college',
                 kwargs={'e_id': event.id, 'c_id': college.id})),
                 'title': 'View Participants'
             }]
@@ -497,7 +497,7 @@ def stats_event_college(request, e_id, c_id):
     ])
     rows=[]
     for participant in participants:
-        
+
         display_data = {
             'data': [
                 participant.name, participant.college.name, get_cr_name(participant),
@@ -507,12 +507,12 @@ def stats_event_college(request, e_id, c_id):
             'link' : []
         }
         rows.append(display_data)
-        
+
     headings = ['Name', 'College', 'CR', 'Gender', 'Phone', 'Email', 'PCr Approval', 'Payment Status']
     title = "Participant's Stats for " + event.name + " from " + college.name
     context = {
         'tables': [
-            {'rows': rows, 'headings': headings, 'title': title},   
+            {'rows': rows, 'headings': headings, 'title': title},
         ]
     }
     return render(request, 'pcradmin/tables.html', context)
@@ -527,7 +527,7 @@ def master_stats(request):
         try:
             colleges = data.getlist('college')
         except:
-            pass 
+            pass
         try:
             events = data.getlist('event')
         except:
@@ -571,7 +571,7 @@ def master_stats(request):
             for college_name in colleges:
                 college_names += college_name + ', '
             college_names = college_names[:-2]
-           
+
             title = "Participants registered for %s event from %s college." %(event_names, college_names)
 
         elif events[0]!='':
@@ -627,7 +627,7 @@ def master_stats(request):
         # context = {
         #     'tables': [table, ], 'colleges': colleges, 'events': events
         # }
-        
+
         return render(request, 'pcradmin/master_stats.html', context)
     # events = MainEvent.objects.all()
     # colleges = College.objects.all()
@@ -670,7 +670,7 @@ def final_confirmation(request, c_id):
 	parts = college.participant_set.filter(pcr_approved=True, pcr_final=False)
 	parts_final = college.participant_set.filter(pcr_approved=True,pcr_final=True)
 	return render(request, 'pcradmin/final_confirmation.html', {'parts':parts, 'college':college, 'parts_final':parts_final})
-   
+
 @staff_member_required
 def final_email(request, eg_id):
 	email_group = EmailGroup.objects.get(id=eg_id)
@@ -691,7 +691,7 @@ def final_email_send(request, eg_id):
         _dir = '/home/raghav/Downloads/'
         doc_name = _dir + 'final_list.pdf'
         pdf = create_final_pdf(eg_id, doc_name, _dir)
-    
+
     #sendgrid email sending code
 
     import base64
@@ -711,14 +711,14 @@ def final_email_send(request, eg_id):
     sg = sendgrid.SendGridAPIClient(apikey=API_KEY)
     for participant in participants:
         to_email = Email(participant.email)
-        body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+        body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 			<center><img src="http://bits-oasis.org/2018/static/registrations/img/logo.png" height="150px" width="150px"></center>
 			<pre style="font-family:Roboto,sans-serif">
 Hello %s!
 Greetings from BITS Pilani!
 
-It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 31st to November 4th.             
-           
+It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 31st to November 4th.
+
 This is to confirm your participation at OASIS '18.
 We would be really happy to see your college represented at our fest.
 
@@ -736,7 +736,7 @@ pcr@bits-oasis.org
 
 <b>Please reply to this email with number of people, if you require conveyance to or from Loharu and the timings for it.</b>
 </pre>
-			""" %(participant.name,get_pcr_number()) 
+			""" %(participant.name,get_pcr_number())
         content = Content('text/html', body)
         try:
             mail = Mail(from_email, subject, to_email, content)
@@ -777,7 +777,7 @@ def download_pdf(request, eg_id):
     response['Content-Disposition'] = 'attachment; filename="final_list.pdf"'
     return response
 
-#not much idea of the functions of reportlab... 
+#not much idea of the functions of reportlab...
 def create_final_pdf(eg_id, response, _dir):
     logo="/home/raghav/dvm/oasis-2018/pcradmin/static/pcradmin/images/Oasis-Logo.png"
     im=Image(logo,1*inch,1*inch)
@@ -792,7 +792,7 @@ def create_final_pdf(eg_id, response, _dir):
         events = events[:-2]
         amount = how_much_paid(part)
         data.append((part.name, events, amount))
-    
+
     table_with_style = Table(data, [3 * inch, 1.5 * inch, inch])
 
     table_with_style.setStyle(TableStyle([
@@ -847,7 +847,7 @@ def contacts(request):
 
 def profile_stats(parts):
     #What this function does is:
-    # its input is a list of participants and this function returns 
+    # its input is a list of participants and this function returns
     # number of profiles fully completed and number of participants approved by pcr
     x = parts.filter(pcr_approved = True).count()
     # y = 0
