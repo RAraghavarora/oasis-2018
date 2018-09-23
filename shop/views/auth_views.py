@@ -86,7 +86,10 @@ class Authentication(APIView):
 				return Response({'message' : str(e)})
 
 			if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-				return Response({'message': 'Invalid user'})
+				print("path 1")
+				return Response({'message': 'Invalid user'}, status=status.HTTP_404_NOT_FOUND)
+			else:
+				print("path 2")
 
 			#Checks if Bitsian exists, return 404 if doesn't.
 			email = idinfo['email']
