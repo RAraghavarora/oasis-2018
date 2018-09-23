@@ -20,5 +20,5 @@ urlpatterns = [
     url(r'^stalls/client/orders/$', stalls_views.StallOrdersList.as_view(), name = 'stall-orders'),
     url(r'^stalls/client/order-response/$', stalls_views.StallOrderStatus.as_view(), name = 'stall-order-status'),
 
-    # url(r'^profile/$', misc_views.getProfile.as_view(), name="get-profile"),
+    url(r'^get-profile/$', misc_views.GetProfile.as_view(), name='get-profile'),
 ]
