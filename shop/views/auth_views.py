@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import status
@@ -13,8 +14,10 @@ from shop.models.wallet import Wallet
 from shop.models.balance import Balance
 from shop.permissions import TokenVerification
 
+
 from random import choice
 import string
+from google.auth.transport import requests as google_requests
 
 #google oauth client side
 from google.oauth2 import id_token
@@ -22,11 +25,15 @@ from google.oauth2 import id_token
 
 class Authentication(APIView):
 
-	permission_classes = (TokenVerification,)
+	permission_classes = (AllowAny, TokenVerification,)
+
 
 	PASS_CHARS = string.ascii_letters + string.digits
 	for i in '0oO1QlLiI':
 		PASS_CHARS = PASS_CHARS.replace(i,'')
+
+	CLIENT_ID_ios = "157934063064-po2m0hg1vt113ho1oohld9g06khvb74l.apps.googleusercontent.com"
+	CLIENT_ID_web = "157934063064-et3fmi6jlivnr6h70q2rnegik50aqj3g.apps.googleusercontent.com"
 
 
 	def generate_random_password(self):
@@ -47,29 +54,33 @@ class Authentication(APIView):
 		try:
 			is_bitsian = request.data['is_bitsian']
 			is_stall = False
+		
 		except KeyError:
 			try:
 				is_stall = request.data['is_stall']
 				is_bitsian = False
+			
 			except KeyError:
 				msg = {"message": "Missing the identity field."}
 				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
-
+		
 		#Bitsian Authentication is done through Google OAuth
 		if is_bitsian:
 			#Checks if Google OAuth token has been provided
 			#The frontend gets this token when the user logs in using Google OAuth
 			try:
-			   token = request.data['id_token']
-
+				token = request.data['id_token']
+			
 			except KeyError as missing:
 				msg = {"message": "The following field is missing: {}".format(missing)}
 				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
 			#Verifies bitsian using Google Client-Side API
 			try:
-				idinfo = id_token.verify_oauth2_token(token, requests1.Request(), OAUTH_CLIENT_ID_app)
+				idinfo = id_token.verify_oauth2_token(token, google_requests.Request())
+				if idinfo['aud'] not in [self.CLIENT_ID_web, self.CLIENT_ID_ios]:
+					raise ValueError('Could not verify audience.')
 
 			except Exception as e:
 				return Response({'message' : str(e)})
@@ -81,7 +92,7 @@ class Authentication(APIView):
 			email = idinfo['email']
 			try:
 				bitsian = Bitsian.objects.get(email=email)
-
+				print(bitsian)
 			except:
 				return Response(status.HTTP_404_NOT_FOUND)
 
@@ -89,9 +100,9 @@ class Authentication(APIView):
 			username = email.split('@')[0]
 			try:
 				user = User.objects.get(username=username)
-
-			except User.DoesNotExist:
-				user = User.objects.create(username=username, password=password, email=email)
+			
+			except ObjectDoesNotExist:
+				user = User.objects.create(username=username, email=email)
 				bitsian.user = user
 				bitsian.save()
 
@@ -102,37 +113,44 @@ class Authentication(APIView):
 			try:
 				username = request.data['username']
 				password = request.data['password']
+				print("Fetch data: ", username, password)
 
-			except Exception as err:
+			except:
 				msg = {'message' : "Authentication credentials weren't provided"}
+				print(msg)
+
 				return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
 			#Authenticates the user
 			try:
 				user = authenticate(username = username, password = password)
-
+				
 				if user is None:
 					raise User.DoesNotExist
+				print("User: ", user)
 
 			except Exception as e:
 				msg = {'message' : "Incorrect Authentication Credentials or User doesn't exist"}
 				return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
-
+		
 		#Checks if wallet exists
 		try:
 			wallet = Wallet.objects.get(user = user)
-
+			
 			if not wallet:
 				raise Wallet.DoesNotExist
+			print("Wallet: ", wallet)
 
 		except Wallet.DoesNotExist:
 			msg = {'message' : 'Contact the administrators'}
+			print(msg)
 
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
-
+		
 		#Generates the JWT Token
 		token = self.get_jwt(user)
 
 		msg = {'token' : token}
+		print(msg)
 		return Response(msg, status = status.HTTP_200_OK)
