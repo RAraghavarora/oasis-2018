@@ -25,7 +25,7 @@ from google.oauth2 import id_token
 
 class Authentication(APIView):
 
-	permission_classes = (AllowAny, TokenVerification,)
+	permission_classes = (TokenVerification,)
 
 
 	PASS_CHARS = string.ascii_letters + string.digits
@@ -54,24 +54,24 @@ class Authentication(APIView):
 		try:
 			is_bitsian = request.data['is_bitsian']
 			is_stall = False
-		
+
 		except KeyError:
 			try:
 				is_stall = request.data['is_stall']
 				is_bitsian = False
-			
+
 			except KeyError:
 				msg = {"message": "Missing the identity field."}
 				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
-		
+
 		#Bitsian Authentication is done through Google OAuth
 		if is_bitsian:
 			#Checks if Google OAuth token has been provided
 			#The frontend gets this token when the user logs in using Google OAuth
 			try:
 				token = request.data['id_token']
-			
+
 			except KeyError as missing:
 				msg = {"message": "The following field is missing: {}".format(missing)}
 				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
@@ -92,7 +92,6 @@ class Authentication(APIView):
 			email = idinfo['email']
 			try:
 				bitsian = Bitsian.objects.get(email=email)
-				print(bitsian)
 			except:
 				return Response(status.HTTP_404_NOT_FOUND)
 
@@ -100,7 +99,7 @@ class Authentication(APIView):
 			username = email.split('@')[0]
 			try:
 				user = User.objects.get(username=username)
-			
+
 			except ObjectDoesNotExist:
 				user = User.objects.create(username=username, email=email)
 				bitsian.user = user
@@ -113,44 +112,37 @@ class Authentication(APIView):
 			try:
 				username = request.data['username']
 				password = request.data['password']
-				print("Fetch data: ", username, password)
 
 			except:
 				msg = {'message' : "Authentication credentials weren't provided"}
-				print(msg)
-
 				return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
 			#Authenticates the user
 			try:
 				user = authenticate(username = username, password = password)
-				
+
 				if user is None:
 					raise User.DoesNotExist
-				print("User: ", user)
 
 			except Exception as e:
 				msg = {'message' : "Incorrect Authentication Credentials or User doesn't exist"}
 				return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
-		
+
 		#Checks if wallet exists
 		try:
 			wallet = Wallet.objects.get(user = user)
-			
+
 			if not wallet:
 				raise Wallet.DoesNotExist
-			print("Wallet: ", wallet)
 
 		except Wallet.DoesNotExist:
 			msg = {'message' : 'Contact the administrators'}
-			print(msg)
 
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
-		
+
 		#Generates the JWT Token
 		token = self.get_jwt(user)
 
 		msg = {'token' : token}
-		print(msg)
 		return Response(msg, status = status.HTTP_200_OK)

@@ -4,7 +4,7 @@ media/
 ignore/
 .vscode/
 __pycache__/
-settings_config/
+oasis2018/settings_config/
 
 ### FILES:
 *.pyc
