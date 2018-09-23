@@ -6,8 +6,9 @@ app_name='regsoft'
 urlpatterns=[
     
    #url(r'^$', views.index, name='index'),
-
-
+   ###FIREWALLS###
+   url(r'^firewallz$',views.firewallz_home,name = 'firewalls_home'),
+   url(r'^firewallz/(?P<c_id>\d+)/$', views.firewallz_approval, name='firewallz_approval'),
     ###Recnacc###
  #    url(r'^recnacc/$', views.recnacc_home, name='recnacc_home'),
 	# url(r'^recnacc/allocate/(?P<g_id>\d+)/$', views.allocate_participants, name='allocate_participants'),
@@ -24,4 +25,7 @@ urlpatterns=[
 	# url(r'^recnacc/checkout/groups/(?P<c_id>\d+)/$', views.checkout_groups, name="checkout_groups"),
 	# url(r'^recnacc/checkout/groupdetails/(?P<ck_id>\d+)/$', views.ck_group_details, name="ck_group_details"),
 	# url(r'^recnacc/checkout/master_checkout/$', views.master_checkout, name="master_checkout"),
+
+	### CONTROLS ###
+	url(r'^controls',views.controls_home)
 ]

@@ -8,11 +8,12 @@ from django.views.static import serve
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^analytics/', include('analytics.urls')),
     url(r'^events/',include('events.urls')),
-    url(r'^pcradmin/', include('pcradmin.urls')),
-    url(r'^preregistration/',include('preregistration.urls')),
     url(r'^registrations/',include('registrations.urls')),
+    url(r'^analytics/', include('analytics.urls')),
+    url(r'^pcradmin/', include('pcradmin.urls')),
+    url(r'^regsoft/', include('regsoft.urls')),
+    url(r'^preregistration/',include('preregistration.urls')),
     #url(r'^regsoft/', include('regsoft.urls')),
     url(r'^shop/', include('shop.urls')),
 ]
