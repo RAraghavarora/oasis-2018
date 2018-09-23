@@ -36,11 +36,16 @@ class OrderFragment(models.Model):
 	""" Each constituent part of a larger order, part of the the "many stalls,
 	many items" ordering feature. The order for each stall """
 
+	PENDING = 'P'
+	ACCEPTED = 'A'
+	DECLINED = 'D'
+	FINISHED = 'F'
+
 	STATUS = (
-		('P', "pending"),
-		('A', "accepted"),
-		('D', "declined"), 
-		('F', "finished") # order is ready for pick-up
+		(PENDING, "Pending"),
+		(ACCEPTED, "Accepted"),
+		(DECLINED, "Declined"), 
+		(FINISHED, "Finished") # order is ready for pick-up
 	)
 
 	stall = models.ForeignKey("Stall", related_name="orders", null=True, on_delete=models.CASCADE)
@@ -50,7 +55,7 @@ class OrderFragment(models.Model):
 	# items: ItemInstances
 
 	def __str__(self):
-		return "Order : #{} - Stall : {} - Status : {}".format(self.order.id, self.stall.name, self.status)
+		return "Order : #{}#{} - Stall : {} - Status : {}".format(self.order.id, self.id, self.stall.name, self.status)
 
 	def calculateSubTotal(self):
 		subtotal = 0

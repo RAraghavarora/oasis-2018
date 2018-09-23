@@ -8,11 +8,9 @@ class CategorySerializer(serializers.ModelSerializer):
 	def get_events(self, obj):
 		print("GET EVENTS")
 		events = obj.mainevent_set.all()
-		print(events)
 		data = {}
 		for event in events:
 			data[event.name] = event.content
-		print(data)
 		return data
 
 	class Meta:

@@ -21,7 +21,6 @@ def balanceFirebaseUpdate(sender, **kwargs):
     collection = db.collection(id_str)
     collection.document("Balance").set(data)
 
-
 @receiver(pre_delete, sender=Balance)
 def balanceFirebaseDelete(sender, **kwargs):
     db = firestore.client()

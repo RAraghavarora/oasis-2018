@@ -32,12 +32,12 @@ INSTALLED_APPS = [
     'rest_framework_jwt',
 
     'events',
+    'regsoft',
     'pcradmin',
     'analytics',
     'registrations',
     'preregistration',
     'shop.apps.ShopConfig',
-    'regsoft',
 ]
 
 MIDDLEWARE = [
@@ -123,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',

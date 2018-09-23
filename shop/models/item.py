@@ -12,7 +12,7 @@ class ItemClass(models.Model):
 	COLORS = ()
 	TYPES = ()
 
-	name = models.CharField(max_length=20, blank=True)
+	name = models.CharField(max_length=20)
 	stall = models.ForeignKey("Stall", related_name="menu", null=True, on_delete=models.CASCADE)
 	description = models.TextField(default='', blank=True)
 	is_combo = models.BooleanField(default=False)
