@@ -32,12 +32,12 @@ INSTALLED_APPS = [
     'rest_framework_jwt',
 
     'events',
+    'regsoft',
     'pcradmin',
     'analytics',
     'registrations',
     'preregistration',
     'shop.apps.ShopConfig',
-    'regsoft'
 ]
 
 MIDDLEWARE = [

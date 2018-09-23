@@ -31,11 +31,99 @@ from random import sample, choice
 from django.contrib import messages
 
 
-# #########Recnacc#########
+###Helper function to get the group leader##
+def get_group_leader(group):
+    return group.participant_set.get(is_g_leader=True)
 
-# ##Helper function to get the group leader##
-# def get_group_leader(group):
-#     return group.participant_set.get(is_g_leader=True)
+#To create a code for the group
+def generate_group_code(group):
+	group_id = group.id
+	encoded = group.group_code
+	if encoded == '':
+		raise ValueError
+	if encoded is not None:
+		return encoded
+	group_ida = "%04d" % int(group_id)
+	college_code = ''.join(get_group_leader(group).college.name.split(' '))
+	if len(college_code)<4:
+		college_code += str(0)*(4-len(college_code))
+	group.group_code = college_code + group_ida
+	group.save()
+	return encoded
+
+############FIREWALLS#############
+
+@staff_member_required
+def firewallz_home(request):
+    college_list = [college for college in College.objects.all() if college.participant_set.filter(is_cr=True)]
+
+    rows = []
+    for college in college_list:
+    	name = college.name
+    	cr = college.participant_set.get(college=college, is_cr=True).name
+    	total_final = college.participant_set.filter(pcr_final=True).count()
+    	firewallz_passed = college.participant_set.filter(pcr_final=True, firewallz_passed=True).count()
+    	url = 'www.google.com'#request.build_absolute_uri(reverse('regsoft:firewallz_approval', kwargs={'c_id':college.id}))
+    	rows.append({'data': [name,cr,total_final,firewallz_passed] , 'link':[{'url':url,'title':'Approve Participants'},]})
+
+    print(rows)
+    headings = ['College', 'CR', 'PCr Finalised Participants', 'Firewallz Passed','Approve Participants']
+    title = 'Select college to approve Participants'
+    table = {
+        'rows':rows,
+        'headings':headings,
+        'title':title
+    }
+    print(table)
+    return render(request, 'regsoft/tables.html', {'tables':[table,]})
+
+@staff_member_required
+def firewallz_approval(request, c_id):
+    college = get_object_or_404(College, id=c_id)
+    if request.method == 'POST':
+        try:
+            data = request.POST
+            id_list = data.getlist('id_list')
+        except:
+            return redirect(request.META.get('HTTP_REFERER'))
+        try:
+            g_leader_id = data['g_leader_id']
+            if not g_leader_id in id_list:
+                messages.warning(request,'Please select a Group Leader from the participant list.')
+                return redirect(request.META.get('HTTP_REFERER'))   
+            g_leader = Participant.objects.get(id=g_leader_id)
+            g_leader.is_g_leader = True
+            g_leader.save()
+        
+        except:
+            messages.warning(request,'Please select a Group Leader.')
+            return redirect(request.META.get('HTTP_REFERER'))
+        
+        group = Group.objects.create()
+        for part_id in id_list:
+            part = Participant.objects.get(id=part_id)
+            if part.group is not None:
+                g_leader.is_g_leader = False
+                g_leader.save()
+                group.delete()
+                context = {
+                    'error_heading': "Error",
+                    'message': "Participant(s) already in a group",
+                    'url':request.build_absolute_uri(reverse('regsoft:firewallz_home'))
+                    }
+                return render(request, 'registrations/message.html', context)
+            part.firewallz_passed=True
+            part.group = group
+            part.save() 
+        encoded = generate_group_code(group)
+        group.save()
+        part_list = Participant.objects.filter(id__in=id_list)
+    return HttpResponse('hello world')
+    return redirect(reverse('regsoft:get_group_list', kwargs={'g_id':group.id}))
+
+
+
+# #########Recnacc#########
 
 # @staff_member_required
 # def recnacc_home(request):
@@ -344,3 +432,7 @@ def controls_home(request):
         time = group.created_time
         no_of_members = group.participant_set.filter(is_guest = False).count()
         controls_passed = group.participant_set.filter(controlz = True).count()
+        bill_url = request.build_absolute_uri(reverse('regsoft:create_bill', kwargs={'g_id':group.id}))
+        rows.append({'data':[code,leader_name,leader_college,leader_phone,time,no_of_members, controls_passed],'link':[{'url':bill_url,'title':'Create Bill'}]})
+        print(rows)
+        return HttpResponse(rows)

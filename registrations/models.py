@@ -104,6 +104,9 @@ class Group(models.Model):
 	created_time = models.DateTimeField(auto_now=True)
 	group_code = models.CharField(max_length=100, null=True, blank=True)
 
+	# def __str__(self):
+	# 	return self.group_code
+
 
 class CheckoutGroup(models.Model):
 
