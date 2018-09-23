@@ -1,12 +1,14 @@
-# DIRECTORIES:
+### DIRECTORIES:
 media/
+/static
 ignore/
 .vscode/
+__pycache__/
+oasis2018/settings_config/
 
-# FILES:
+### FILES:
 *.pyc
-*_secret
+*_ignore*
 *.sqlite3
-keyconfig.*
 *.log
-
+*.save
