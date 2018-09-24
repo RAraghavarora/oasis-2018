@@ -94,7 +94,7 @@ class Authentication(APIView):
 				bitsian = Bitsian.objects.get(email=email)
 			except:
 				msg = "Bitsian not in SWD list, for security reasons you will need to contact the DVM."
-				return Response({"message": }, status=status.HTTP_404_NOT_FOUND)
+				return Response({"message": msg}, status=status.HTTP_404_NOT_FOUND)
 
 			#Checks if user exist creates if doesn't.
 			username = email.split('@')[0]
