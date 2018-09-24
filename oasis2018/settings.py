@@ -182,7 +182,6 @@ so this import can only occur after it has been declared.
 Use logging_tree module to visualize logging structure.
 '''
 import raven
-from oasis2018.settings_config.loggers import *
 
 RAVEN_CONFIG = {
     'dsn': 'https://0830bb2a73324f2f8d8082acf42fb52c:1b167f754ba54602825fe60a5e87bffa@sentry.io/1276415',
