@@ -7,8 +7,10 @@ urlpatterns=[
     
    #url(r'^$', views.index, name='index'),
    ###FIREWALLS###
-   url(r'^firewallz$',views.firewallz_home,name = 'firewalls_home'),
+   url(r'^firewallz/$',views.firewallz_home,name = 'firewalls_home'),
    url(r'^firewallz/(?P<c_id>\d+)/$', views.firewallz_approval, name='firewallz_approval'),
+   url(r'^firewallz/groups/(?P<g_id>\d+)/$', views.get_group_list, name='get_group_list'),
+
     ###Recnacc###
  #    url(r'^recnacc/$', views.recnacc_home, name='recnacc_home'),
 	# url(r'^recnacc/allocate/(?P<g_id>\d+)/$', views.allocate_participants, name='allocate_participants'),
@@ -27,5 +29,7 @@ urlpatterns=[
 	# url(r'^recnacc/checkout/master_checkout/$', views.master_checkout, name="master_checkout"),
 
 	### CONTROLS ###
-	url(r'^controls',views.controls_home)
+	url(r'^controls',views.controls_home),
+    url(r'^controls/firewallz/profile_cards/(?P<g_id>\d+)/$', views.get_profile_card_group, name='get_profile_card_group'),
+
 ]

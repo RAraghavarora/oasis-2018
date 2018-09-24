@@ -173,7 +173,7 @@ def event_list(part):
 
 def how_much_paid(part):
     if part.controlz_paid or part.curr_controlz_paid:
-        return 950
+        return 1000
     if part.paid or part.curr_paid:
         return 300
     return 0
@@ -333,8 +333,8 @@ def stats(request, order=None):
             except:
                 cr = False
 
-            male_participants = participants.filter(gender='M')
-            female_participants = participants.filter(gender='F')
+            male_participants = participants.filter(gender='male')
+            female_participants = participants.filter(gender='female')
             display_data = {
                 'data': [
                     college.name, cr, participants_count(male_participants),
@@ -345,8 +345,8 @@ def stats(request, order=None):
             }
             rows.append(display_data)
         participants = Participant.objects.all()
-        male_participants = participants.filter(gender='M')
-        female_participants = participants.filter(gender='F')
+        male_participants = participants.filter(gender='male')
+        female_participants = participants.filter(gender='female')
         display_data = {
             'data': [
                 'Total', ' ', participants_count(male_participants),
@@ -372,8 +372,9 @@ def stats(request, order=None):
         for event in MainEvent.objects.all().iterator():
             participants = event.participant_set.all()
             if participants.count()>0:
-                male_participants = participants.filter(gender = 'M')
-                female_participants = participants.filter(gender = 'F')
+                male_participants = participants.filter(gender = 'male')
+                print(male_participants)
+                female_participants = participants.filter(gender = 'female')
                 display_data = {
                     'data': [
                         event.name, event.category, participants_count(male_participants),
@@ -416,7 +417,7 @@ def stats(request, order=None):
 def get_payment_status(part):
 	if part.paid or part.curr_paid:
 		if part.controlz_paid or part.curr_controlz_paid:
-			return 950
+			return 1000
 		else:
 			return 300
 	else:
@@ -446,8 +447,8 @@ def stats_event(request, e_id):
         except:
             cr = False
 
-        male_participants = participants.filter(gender='M')
-        female_participants = participants.filter(gender = 'F')
+        male_participants = participants.filter(gender='male')
+        female_participants = participants.filter(gender = 'female')
         display_data = {
             'data': [
                 college.name, cr, participants_count(male_participants),
@@ -464,8 +465,8 @@ def stats_event(request, e_id):
     participants = Participant.objects.filter(id__in=[
         participant.id for participant in Participant.objects.filter(email_verified=True) if MainParticipation.objects.filter(participant = participant, event = event)
     ])
-    male_participants = participants.filter(gender='M')
-    female_participants = participants.filter(gender='F')
+    male_participants = participants.filter(gender='male')
+    female_participants = participants.filter(gender='female')
     display_data = {
         'data': [
             'Total', ' ', participants_count(male_participants),
@@ -488,34 +489,21 @@ def stats_event(request, e_id):
 
 @staff_member_required
 def stats_event_college(request, e_id, c_id):
-    #e_id is event id and c_id is college id.
-    event = get_object_or_404(MainEvent, id = e_id)
-    college = get_object_or_404(College, id = c_id)
-    participants1 = college.participant_set.filter(email_verified = True)
-    participants = Participant.objects.filter(id__in=[
-        participant.id for participant in Participant.objects.filter(email_verified=True) if MainParticipation.objects.filter(participant = participant, event = event)
-    ])
-    rows=[]
-    for participant in participants:
-
-        display_data = {
-            'data': [
-                participant.name, participant.college.name, get_cr_name(participant),
-                participant.gender, participant.phone, participant.email, MainParticipation.objects.get(participant=p, event = event).pcr_approved,
-                participant.paid or participant.curr_paid
-            ],
-            'link' : []
-        }
-        rows.append(display_data)
-
+    event = get_object_or_404(MainEvent, id=e_id)
+    college = get_object_or_404(College, id=c_id)
+    parts1 = college.participant_set.filter(email_verified=True)
+    parts = Participant.objects.filter(id__in=[p.id for p in parts1 if MainParticipation.objects.filter(participant=p, event=event)])
+    try:
+        rows = [{'data':[part.name, part.college.name, get_cr_name(part),part.gender, part.phone, part.email, MainParticipation.objects.get(participant=part, event=event).pcr_approved, part.paid or part.curr_paid], 'link':[]} for part in parts]
+    except:
+        messages.warning(request,'Please select a College Representative for this college.')
+        return redirect(request.META.get('HTTP_REFERER'))
     headings = ['Name', 'College', 'CR', 'Gender', 'Phone', 'Email', 'PCr Approval', 'Payment Status']
-    title = "Participant's Stats for " + event.name + " from " + college.name
-    context = {
-        'tables': [
-            {'rows': rows, 'headings': headings, 'title': title},
-        ]
-    }
-    return render(request, 'pcradmin/tables.html', context)
+    title = 'Participants\' Stats for ' + event.name + ' from ' + college.name
+    return render(request, 'pcradmin/tables.html', {'tables':[{'rows': rows, 'headings':headings, 'title':title}]})
+
+def get_cr_name(part):
+	return Participant.objects.get(college=part.college, is_cr=True).name
 
 @staff_member_required
 def master_stats(request):
@@ -832,10 +820,7 @@ def participants_count(participants):
 	x4=participants.filter(Q(paid=True)|Q(curr_paid=True)).count()
 	x5 = participants.filter(pcr_final=True).count()
 	return str(x1) + ' | ' + str(x2) + ' | ' + str(x3) + ' | ' + str(x4) + ' | ' + str(x5)
-
-def get_cr_name(participant):
-    return MainParticipation.objects.get(college=participant.college, is_cr=True).name
-
+    
 @login_required
 def user_logout(request):
 	logout(request)

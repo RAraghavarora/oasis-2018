@@ -1,4 +1,4 @@
-
+{% extends "regsoft/base.html" %}
 {% block body %}
 {% load regsoft_tags %}
 {% if unapproved_list %}
@@ -56,7 +56,7 @@
                         <td>{{i.name}}</td>
                         <td>{{i|get_events_list}}</td>
                         <td>
-                            <a href="{% url 'regsoft:show_uploads' i.id %}" target="blank">Show</a>
+                            <a>Show</a>
                         </td>
                         <td>
                         	<input type="checkbox" name="id_list" id="{{i.id}}" value="{{i.id}}">
@@ -118,7 +118,7 @@
                         <td>{{i.created_time}}</td>
                         <td>{{i.group_code}}</td>
                         <td>{{i| get_gleader_name}}</td>
-                        <td><a href="{% url 'regsoft:get_group_list' i.id %}">View Details</a></td>
+                        <a>View Details</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
