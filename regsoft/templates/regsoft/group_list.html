@@ -66,8 +66,8 @@
         </div>
     </form>
     <br>
-    <a  class="btn btn-primary btn-lg m-l-15 waves-effect" target="blank">Get Group Cards</a>
-    <a  class="btn btn-primary btn-lg m-l-15 waves-effect">Delete Group</a>
+    <a href="{% url 'regsoft:get_profile_card_group' group.id %}" class="btn btn-primary btn-lg m-l-15 waves-effect" target="blank">Get Group Cards</a>
+    <a href="{% url 'regsoft:delete_group' group.id %}" class="btn btn-primary btn-lg m-l-15 waves-effect">Delete Group</a>
     </div>
 </div>
 {% endblock %}

@@ -51,14 +51,6 @@ def generate_group_code(group):
 	group.save()
 	return encoded
 
-#Helper function to produce profile cards for the group
-@staff_member_required
-def get_profile_card_group(request, g_id):
-    group = get_object_or_404(Group, id=g_id)
-    part_list = group.participant_set.all()
-    url = request.build_absolute_uri(reverse('registrations:generate_qr'))
-    return render(request, 'regsoft/card.html', {'part_list':part_list, 'url':url})
-
 ############FIREWALLS#############
 
 @staff_member_required
@@ -71,7 +63,7 @@ def firewallz_home(request):
     	cr = college.participant_set.get(college=college, is_cr=True).name
     	total_final = college.participant_set.filter(pcr_final=True).count()
     	firewallz_passed = college.participant_set.filter(pcr_final=True, firewallz_passed=True).count()
-    	url = request.build_absolute_uri(reverse('regsoft:firewallz_approval', kwargs={'c_id':college.id}))
+    	url = 'www.google.com'#request.build_absolute_uri(reverse('regsoft:firewallz_approval', kwargs={'c_id':college.id}))
     	rows.append({'data': [name,cr,total_final,firewallz_passed] , 'link':[{'url':url,'title':'Approve Participants'},]})
 
     print(rows)
@@ -87,7 +79,6 @@ def firewallz_home(request):
 
 @staff_member_required
 def firewallz_approval(request, c_id):
-    print('approval')
     college = get_object_or_404(College, id=c_id)
     if request.method == 'POST':
         try:
@@ -126,16 +117,8 @@ def firewallz_approval(request, c_id):
             part.save() 
         encoded = generate_group_code(group)
         group.save()
-        print(group.group_code)
         part_list = Participant.objects.filter(id__in=id_list)
         return redirect(reverse('regsoft:get_group_list', kwargs={'g_id':group.id}))
-        # url = request.build_absolute_uri(reverse('registrations:generate_qr'))
-        # return render(request, 'regsoft/card.html', {'part_list':part_list,'url':url})
-    
-    groups_passed = [group for group in Group.objects.all() if get_group_leader(group).college == college]
-    unapproved_list = college.participant_set.filter(pcr_final=True, firewallz_passed=False, is_guest=False)
-    print( groups_passed)
-    return render(request, 'regsoft/firewallz_approval.html', {'groups_passed':groups_passed, 'unapproved_list':unapproved_list, 'college':college})
 
 @staff_member_required
 def get_group_list(request, g_id):
@@ -474,7 +457,7 @@ def controls_home(request):
         time = group.created_time
         no_of_members = group.participant_set.filter(is_guest = False).count()
         controls_passed = group.participant_set.filter(controlz = True).count()
-        bill_url ='google.com' #request.build_absolute_uri(reverse('regsoft:create_bill', kwargs={'g_id':group.id}))
+        bill_url = request.build_absolute_uri(reverse('regsoft:create_bill', kwargs={'g_id':group.id}))
         rows.append({'data':[code,leader_name,leader_college,leader_phone,time,no_of_members, controls_passed],'link':[{'url':bill_url,'title':'Create Bill'}]})
         print(rows)
         return HttpResponse(rows)
