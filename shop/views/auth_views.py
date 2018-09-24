@@ -86,17 +86,15 @@ class Authentication(APIView):
 				return Response({'message' : str(e)})
 
 			if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-				print("path 1")
 				return Response({'message': 'Invalid user'}, status=status.HTTP_404_NOT_FOUND)
-			else:
-				print("path 2")
 
 			#Checks if Bitsian exists, return 404 if doesn't.
 			email = idinfo['email']
 			try:
 				bitsian = Bitsian.objects.get(email=email)
 			except:
-				return Response(status.HTTP_404_NOT_FOUND)
+				msg = "Bitsian not in SWD list, for security reasons you will need to contact the DVM."
+				return Response({"message": msg}, status=status.HTTP_404_NOT_FOUND)
 
 			#Checks if user exist creates if doesn't.
 			username = email.split('@')[0]
@@ -107,7 +105,6 @@ class Authentication(APIView):
 				user = User.objects.create(username=username, email=email)
 				bitsian.user = user
 				bitsian.save()
-
 
 		#Stall and Participant Authentication is done using django authentication
 		else:
@@ -147,5 +144,5 @@ class Authentication(APIView):
 		#Generates the JWT Token
 		token = self.get_jwt(user)
 
-		msg = {'token' : token}
+		msg = {'user_id': user.id, 'token' : token}
 		return Response(msg, status = status.HTTP_200_OK)
