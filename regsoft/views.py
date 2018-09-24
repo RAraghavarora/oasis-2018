@@ -168,7 +168,7 @@ def recnacc_home(request):
 def allocate_participants(request,g_id):
     group=get_object_or_404(Group,id=g_id)
     if request.method=='POST':
-        from datetime import *
+        from datetime import datetime
         data=request.POST
         try:
             group.amount_deduct=data['amount_retained']
@@ -359,7 +359,7 @@ def generate_ckgroup_code(group):
     group_ida = "%04d" % int(group_id)
     college_code = ''.join(group.participant_set.all()[0].college.name.split(' '))
     if len(college_code)<4:
-		college_code += str(0)*(4-len(college_code))
+        college_code += str(0)*(4-len(college_code))
     group.group_code = college_code + group_ida
     group.save()
     return encoded
