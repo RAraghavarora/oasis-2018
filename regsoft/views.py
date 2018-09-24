@@ -118,8 +118,33 @@ def firewallz_approval(request, c_id):
         encoded = generate_group_code(group)
         group.save()
         part_list = Participant.objects.filter(id__in=id_list)
-    return HttpResponse('hello world')
-    return redirect(reverse('regsoft:get_group_list', kwargs={'g_id':group.id}))
+        return redirect(reverse('regsoft:get_group_list', kwargs={'g_id':group.id}))
+
+@staff_member_required
+def get_group_list(request, g_id):
+    group = get_object_or_404(Group, id=g_id)
+    if request.method == 'POST':
+        try:
+            data = request.POST
+            id_list = data.getlist('id_list')
+        except:
+            return redirect(request.META.get('HTTP_REFERER'))
+
+        participant_list = Participant.objects.filter(id__in=id_list)
+        for participant in participant_list:
+            if participant.is_g_leader:
+                messages.warning(request,'Cannot unconfirm a Group Leader.')
+                continue
+            participant.group = None
+            participant.firewallz_passed = False
+            participant.save()
+        leader = get_group_leader(group)
+        if group.participant_set.count == 0:
+            group.delete()
+        return redirect(reverse('regsoft:firewallz_approval', kwargs={'c_id':leader.college.id}))
+    participant_list = group.participant_set.all()
+    return render(request, 'regsoft/group_list.html', {'participant_list':participant_list, 'group':group})
+
 
 
 

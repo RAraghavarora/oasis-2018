@@ -33,11 +33,11 @@
             <div class="form-group">
                 <select class="form-control show-tick" name="gender" data-live-search="true">
                     {% if participant.gender == 'M' %}
-                    <option value="M" selected="true">Male</option>
-                    <option value="F">Female</option>
+                    <option value="male" selected="true">Male</option>
+                    <option value="female">Female</option>
                     {% else %}
-                    <option value="M">Male</option>
-                    <option value="F" selected="true">Female</option>
+                    <option value="male">Male</option>
+                    <option value="female" selected="true">Female</option>
                     {% endif %}
                 </select>
             </div>
