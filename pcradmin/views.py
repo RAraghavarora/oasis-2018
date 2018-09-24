@@ -489,18 +489,14 @@ def stats_event(request, e_id):
 
 @staff_member_required
 def stats_event_college(request, e_id, c_id):
-    event = get_object_or_404(MainEvent, id=e_id)
-    college = get_object_or_404(College, id=c_id)
-    parts1 = college.participant_set.filter(email_verified=True)
-    parts = Participant.objects.filter(id__in=[p.id for p in parts1 if MainParticipation.objects.filter(participant=p, event=event)])
-    try:
-        rows = [{'data':[part.name, part.college.name, get_cr_name(part),part.gender, part.phone, part.email, MainParticipation.objects.get(participant=part, event=event).pcr_approved, part.paid or part.curr_paid], 'link':[]} for part in parts]
-    except:
-        messages.warning(request,'Please select a College Representative for this college.')
-        return redirect(request.META.get('HTTP_REFERER'))
-    headings = ['Name', 'College', 'CR', 'Gender', 'Phone', 'Email', 'PCr Approval', 'Payment Status']
-    title = 'Participants\' Stats for ' + event.name + ' from ' + college.name
-    return render(request, 'pcradmin/tables.html', {'tables':[{'rows': rows, 'headings':headings, 'title':title}]})
+	event = get_object_or_404(MainEvent, id=e_id)
+	college = get_object_or_404(College, id=c_id)
+	parts1 = college.participant_set.filter(email_verified=True)
+	parts = Participant.objects.filter(id__in=[p.id for p in parts1 if MainParticipation.objects.filter(participant=p, event=event)])
+	rows = [{'data':[part.name, part.college.name, get_cr_name(part),part.gender, part.phone, part.email, MainParticipation.objects.get(participant=part, event=event).pcr_approved, part.paid or part.curr_paid], 'link':[]} for part in parts]
+	headings = ['Name', 'College', 'CR', 'Gender', 'Phone', 'Email', 'PCr Approval', 'Payment Status']
+	title = 'Participants\' Stats for ' + event.name + ' from ' + college.name
+	return render(request, 'pcradmin/tables.html', {'tables':[{'rows': rows, 'headings':headings, 'title':title}]})
 
 def get_cr_name(part):
 	return Participant.objects.get(college=part.college, is_cr=True).name
