@@ -1,3 +1,5 @@
+import json
+
 from django.db import models
 from django.utils import timezone
 from shop.models.stall import Stall
@@ -9,8 +11,10 @@ class Order(models.Model):
 	""" Each order placed by a user. It's basically a composition of
 	OrderFragments which comprise the Order as a whole. Mainly created to
 	facilitate the "many stalls, many items" ordering feature. """
+
 	customer = models.ForeignKey("Wallet", related_name="orders", null=True, on_delete=models.CASCADE)
 	timestamp = models.DateTimeField(default=timezone.now)
+	query_string = models.TextField(null=True, blank=True) # something extra for the frontend team
 	# fragments: OrderFragments
 
 	def __str__(self):
@@ -31,6 +35,19 @@ class Order(models.Model):
 			status[fragment.stall] = fragment.status
 		return status
 
+	def setQueryString(self, dictionary):
+		try:
+			self.query_string = json.dumps(dictionary)
+			self.save()
+			return True
+		except Exception as e:
+			print(e)
+			return False
+
+	def getQueryString(self):
+		return json.loads(self.query_string)
+
+
 
 class OrderFragment(models.Model):
 	""" Each constituent part of a larger order, part of the the "many stalls,
@@ -44,7 +61,7 @@ class OrderFragment(models.Model):
 	STATUS = (
 		(PENDING, "Pending"),
 		(ACCEPTED, "Accepted"),
-		(DECLINED, "Declined"), 
+		(DECLINED, "Declined"),
 		(FINISHED, "Finished") # order is ready for pick-up
 	)
 
