@@ -11,4 +11,3 @@ class TokenVerification(BasePermission):
 			return request.META['HTTP_WALLET_TOKEN'] == self.WALLET_TOKEN
 		except KeyError:
 			return False
-		
