@@ -143,5 +143,5 @@ class Authentication(APIView):
 		#Generates the JWT Token
 		token = self.get_jwt(user)
 
-		msg = {'token' : token}
+		msg = {'user_id': user.id, 'token' : token}
 		return Response(msg, status = status.HTTP_200_OK)

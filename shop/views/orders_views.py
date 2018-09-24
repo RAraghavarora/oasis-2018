@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -78,8 +80,10 @@ class PlaceOrder(APIView):
                 except KeyError:
                     msg = {"message" : "Quantity of item: #{} wasn't specified.".format(item["id"])}
                     return Response(msg, status = status.HTTP_404_NOT_FOUND)
-                    
+
                 fragment.items.create(itemclass=itemclass, quantity=item["qty"], order=fragment)
+
+            fragment.save() # to perform some extra synchronization with firestore
 
         # Part 2:
         net_cost = order.calculateTotal()
@@ -104,4 +108,26 @@ class PlaceOrder(APIView):
         request.user.wallet.balance.deduct(net_cost)
         fragments = [fragment.id for fragment in order.fragments.all()]
 
+
+        data["order_id"] = order.id
+        data["fragment_ids"] = fragments
+        data["date"] = request.data["date"]
+        order.setQueryString({"order": data})
+
         return Response({"order_id": order.id, "fragments_ids": fragments, "cost": net_cost})
+
+
+class GetOrders(APIView):
+
+    permission_classes = (IsAuthenticated, TokenVerification,)
+
+    @csrf_exempt
+    def get(self, request):
+        data = dict()
+        data["orders"] = list()
+        for order in request.user.wallet.orders.all():
+            try:
+                data["orders"].append(order.getQueryString())
+            except TypeError: # no query string e.g. orders made via. admin panal
+                pass
+        return Response(data, status=status.HTTP_200_OK)
