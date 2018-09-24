@@ -7,8 +7,9 @@ urlpatterns=[
     
    #url(r'^$', views.index, name='index'),
    ###FIREWALLS###
-   url(r'^firewallz$',views.firewallz_home,name = 'firewalls_home'),
+   url(r'^firewallz/$',views.firewallz_home,name = 'firewalls_home'),
    url(r'^firewallz/(?P<c_id>\d+)/$', views.firewallz_approval, name='firewallz_approval'),
+   url(r'^firewallz/groups/(?P<g_id>\d+)/$', views.get_group_list, name='get_group_list'),
     ###Recnacc###
  #    url(r'^recnacc/$', views.recnacc_home, name='recnacc_home'),
 	# url(r'^recnacc/allocate/(?P<g_id>\d+)/$', views.allocate_participants, name='allocate_participants'),

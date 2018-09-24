@@ -335,7 +335,7 @@ def return_qr(request):
 #         if int(request.POST['key']) == 1:
 #             amount = 300
 #         elif int(request.POST['key']) == 2:
-#             amount = 950
+#             amount = 1000
 #         elif int(request.POST['key']) == 3:
 #             amount = 650
 #         else:
@@ -398,7 +398,7 @@ def return_qr(request):
 #             return HttpResponse(e)
 #         # payment_group = PaymentGroup.objects.get(id=group_id)
 #         # count = payment_group.participant_set.all().count()
-#         # if (amount/count) == 950:
+#         # if (amount/count) == 1000:
 #         # for part in payment_group.participant_set.all():
 #         # part.controlz_paid = True
 #         # part.paid = True
