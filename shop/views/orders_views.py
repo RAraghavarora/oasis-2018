@@ -135,7 +135,6 @@ class GetOrders(APIView):
         for order in request.user.wallet.orders.all():
             try:
                 order = order.getQueryString()
-
                 meta_fields = ("order_id", "fragment_ids", "date", "price")
                 for field in meta_fields:
                     try:
@@ -148,13 +147,14 @@ class GetOrders(APIView):
                 new_fragment_ids = list()
                 for frag_id in order["fragment_ids"]:
                     try:
-                        new_fragment_ids.append({"id": frag_id, "stall_id": OrderFragment.objects.get(id=frag_id).stall.id})
+                        fragment = OrderFragment.objects.get(id=frag_id)
+                        order["status"] = fragment.status
+                        print(order["status"])
+                        new_fragment_ids.append({"id": frag_id, "stall_id": fragment.stall.id})
                     except Exception as e:
                         print(e)
                         return Response({"message": "one or more of the stalls are non-existant."}, status=status.HTTP_404_NOT_FOUND)
                 order["fragment_ids"] = new_fragment_ids
-
-
                 data["orders"].append(order)
             except TypeError: # no query string e.g. orders made via. admin panal
                 pass
@@ -164,7 +164,7 @@ class GetOrders(APIView):
 class GetTickets(APIView):
 
     # permission_classes = (TokenVerification, IsAuthenticated,)
-    permission_classes = (TokenVerification)
+    permission_classes = (TokenVerification,)
 
     @csrf_exempt
     def post(self, request):
