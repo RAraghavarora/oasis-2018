@@ -28,7 +28,7 @@ class GetProfile(APIView):
         response_data = dict()
         response_data["name"] = profile.name
         response_data["balance"] = user.wallet.getTotalBalance()
-        response_data["qr_code"] = profile.barcode # @Juniors: please name it qr_code and not barcode.... we would have but it's a bit late.
+        response_data["qr_code"] = profile.barcode # @Juniors: please name it qr_code and not barcode.... we would have but it was a bit too late.
         if isinstance(profile, Bitsian):
             response_data["bits-id"] = profile.long_id
         else:
