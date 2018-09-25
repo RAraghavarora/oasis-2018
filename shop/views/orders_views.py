@@ -135,13 +135,26 @@ class GetOrders(APIView):
         for order in request.user.wallet.orders.all():
             try:
                 order = order.getQueryString()
+
                 meta_fields = ("order_id", "fragment_ids", "date", "price")
-                meta = list()
                 for field in meta_fields:
                     try:
                         order[field] = order["order"].pop(field)
                     except:
                         pass
+
+                print(json.dumps(order, indent=4))
+
+                new_fragment_ids = list()
+                for frag_id in order["fragment_ids"]:
+                    try:
+                        new_fragment_ids.append({"id": frag_id, "stall_id": OrderFragment.objects.get(id=frag_id).stall.id})
+                    except Exception as e:
+                        print(e)
+                        return Response({"message": "one or more of the stalls are non-existant."}, status=status.HTTP_404_NOT_FOUND)
+                order["fragment_ids"] = new_fragment_ids
+
+
                 data["orders"].append(order)
             except TypeError: # no query string e.g. orders made via. admin panal
                 pass
@@ -150,10 +163,13 @@ class GetOrders(APIView):
 
 class GetTickets(APIView):
 
-    permission_classes = (TokenVerification,) # Extra form of verification needed? Only allow departments to access this endpoint?
+    # permission_classes = (TokenVerification, IsAuthenticated,)
+    permission_classes = (TokenVerification)
 
     @csrf_exempt
     def post(self, request):
+        #if not request.user == User.objects.get(username = "audiforce-official"):
+        #    return Response({"message": "Only members of audiforce may use this endpoint."}, status=status.HTTP_401_UNAUTHORIZED)
         qr_code = request.data["qr_code"]
         user_id = decString(qr_code)[0]        # a custom function from utils.wallet_qrcode
         user = get_object_or_404(User, id=user_id)
@@ -182,10 +198,13 @@ class ConsumeTickets(APIView):
            }
     """
 
+    # permission_classes = (TokenVerification, IsAuthenticated,)
     permission_classes = (TokenVerification,) # Extra form of verification needed? Only allow departments to access this endpoint?
 
     @csrf_exempt
     def post(self, request):
+        #if not request.user == User.objects.get(username = "audiforce-official"):
+        #    return Response({"message": "Only members of audiforce may use this endpoint."}, status=status.HTTP_401_UNAUTHORIZED)
         qr_code = request.data["qr_code"]
         user_id = decString(qr_code)[0]
         user = get_object_or_404(User, id=user_id)
