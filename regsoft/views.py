@@ -63,7 +63,7 @@ def firewallz_home(request):
     	cr = college.participant_set.get(college=college, is_cr=True).name
     	total_final = college.participant_set.filter(pcr_final=True).count()
     	firewallz_passed = college.participant_set.filter(pcr_final=True, firewallz_passed=True).count()
-    	url = 'www.google.com'#request.build_absolute_uri(reverse('regsoft:firewallz_approval', kwargs={'c_id':college.id}))
+    	url = request.build_absolute_uri(reverse('regsoft:firewallz_approval', kwargs={'c_id':college.id}))
     	rows.append({'data': [name,cr,total_final,firewallz_passed] , 'link':[{'url':url,'title':'Approve Participants'},]})
 
     print(rows)
