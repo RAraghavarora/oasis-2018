@@ -134,7 +134,15 @@ class GetOrders(APIView):
         data["orders"] = list()
         for order in request.user.wallet.orders.all():
             try:
-                data["orders"].append(order.getQueryString())
+                order = order.getQueryString()
+                meta_fields = ("order_id", "fragment_ids", "date", "price")
+                meta = list()
+                for field in meta_fields:
+                    try:
+                        data["orders"].append(order.pop(field))
+                    except:
+                        pass
+                    data["orders"].append(order)
             except TypeError: # no query string e.g. orders made via. admin panal
                 pass
         return Response(data, status=status.HTTP_200_OK)
