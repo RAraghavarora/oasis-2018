@@ -95,7 +95,7 @@ class PlaceOrder(APIView):
         total_balance = request.user.wallet.getTotalBalance()
 
         if total_balance < net_cost:
-            msg = {"message": "Insufficient balance.", "missing_funds":net_cost-total_balance},
+            msg = {"message": "Insufficient balance.", "missing_funds":net_cost-total_balance}
             stat = status.HTTP_400_BAD_REQUEST
             order.delete()
             return Response(msg, stat)
