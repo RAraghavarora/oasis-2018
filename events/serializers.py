@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from events.models import Category
+from events.models import Category, MainProfShow
 
 class CategorySerializer(serializers.ModelSerializer):
 	events = serializers.SerializerMethodField()
@@ -16,3 +16,10 @@ class CategorySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Category
 		fields = ('name', 'events',)
+
+
+class MainProfShowSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = MainProfShow
+		fields = '__all__'
