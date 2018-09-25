@@ -46,6 +46,7 @@ class PlaceOrder(APIView):
         # Part 1:
         try:
             data = request.data["order"]
+            date = request.data["date"]
         except KeyError as missing:
             msg = {"message": "missing the following field: {}".format(missing)}
             return Response(msg, status=status.HTTP_400_BAD_REQUEST)
@@ -115,7 +116,7 @@ class PlaceOrder(APIView):
 
         data["order_id"] = order.id
         data["fragment_ids"] = fragments
-        data["date"] = request.data["date"]
+        data["date"] = date
         order.setQueryString({"order": data})
 
         return Response({"order_id": order.id, "fragments_ids": fragments, "cost": net_cost})
