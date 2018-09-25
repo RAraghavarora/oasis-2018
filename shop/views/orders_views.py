@@ -138,11 +138,8 @@ class GetOrders(APIView):
                 meta_fields = ("order_id", "fragment_ids", "date", "price")
                 meta = list()
                 for field in meta_fields:
-                    try:
-                        data["orders"].append(order.pop(field))
-                    except:
-                        pass
-                    data["orders"].append(order)
+                    order[field] = order["order"].pop(field)
+                data["orders"].append(order)
             except TypeError: # no query string e.g. orders made via. admin panal
                 pass
         return Response(data, status=status.HTTP_200_OK)
