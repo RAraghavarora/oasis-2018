@@ -3,6 +3,8 @@ import json
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -11,9 +13,11 @@ from rest_framework.permissions import IsAuthenticated
 
 from shop.models.order import Order, OrderFragment
 from shop.models.stall import Stall
-from shop.models.item import ItemClass, ItemInstance
+from shop.models.item import ItemClass, ItemInstance, Tickets
 from shop.models.transaction import Transaction
 from shop.permissions import TokenVerification
+from utils.wallet_qrcode import decString
+from events.models import MainProfShow
 
 
 class PlaceOrder(APIView):
@@ -131,3 +135,56 @@ class GetOrders(APIView):
             except TypeError: # no query string e.g. orders made via. admin panal
                 pass
         return Response(data, status=status.HTTP_200_OK)
+
+
+class GetTickets(APIView):
+
+    permission_classes = (TokenVerification,) # Extra form of verification needed? Only allow departments to access this endpoint?
+
+    @csrf_exempt
+    def post(self, request):
+        qr_code = request.data["qr_code"]
+        user_id = decString(qr_code)[0]        # a custom function from utils.wallet_qrcode
+        user = get_object_or_404(User, id=user_id)
+
+        try:
+            tickets = {"tickets": []}
+            for ticket in user.tickets.all():
+                tickets["tickets"].append({
+                                            "show_id": ticket.prof_show.id,
+                                            "show_name": ticket.prof_show.name,
+                                            "number_of_tickets": ticket.count
+                                        })
+        except:
+            return Response({"message": "user has no tickets."})
+
+        return Response(tickets, status=status.HTTP_200_OK)
+
+
+class ConsumeTickets(APIView):
+    """ The endpoint which is called for scanning and deducting tickets.
+        sample request:
+            {
+                "qr_code": "gAAAAABbpxxqQKmaLjQdoCWlbwif6WNzbvZgjiemu8qG7-UhaCAW6DMaEQROYMRX5A10X_wDnxcDNRnn4QS49CVOVCme8Gu3vCIvKNwDhWEwmw995nMGl0U=OASIS18",
+                "consume": 3,
+                "show_id": 1
+           }
+    """
+
+    permission_classes = (TokenVerification,) # Extra form of verification needed? Only allow departments to access this endpoint?
+
+    @csrf_exempt
+    def post(self, request):
+        qr_code = request.data["qr_code"]
+        user_id = decString(qr_code)[0]
+        user = get_object_or_404(User, id=user_id)
+        show = get_object_or_404(MainProfShow, id=request.data["show_id"])
+        tickets = get_object_or_404(Tickets, user=user, prof_show=show)
+        consume = request.data["consume"]
+
+        max_count = tickets.count
+        if(consume > max_count):
+            return Response({"success": False, "max_tickets": max_count})
+        tickets.count -= consume
+        tickets.save()
+        return Response({"success": True, "remaining_tickets": tickets.count})

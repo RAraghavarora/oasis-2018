@@ -11,7 +11,3 @@ admin.site.register(MainParticipation)
 admin.site.register(MainEvent)
 admin.site.register(MainProfShow)
 admin.site.register(MainAttendance)
-
-
-
-

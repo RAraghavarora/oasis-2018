@@ -1,8 +1,12 @@
 import uuid as uuid_pylib
+
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
+
 from shop.models.stall import Stall
 from shop.models.order import OrderFragment
+from events.models import MainProfShow
 
 
 class ItemClass(models.Model):
@@ -56,3 +60,26 @@ class ItemInstance(models.Model):
 
 	def calculatePrice(self):
 		return self.itemclass.price*self.quantity
+
+
+class Tickets(models.Model):
+	""" A simple through model kind of class for holding tickets to prof shows.
+		Each instance represents the number of tickets a particular user has for a
+		particular prof show. """
+
+	prof_show = models.ForeignKey(MainProfShow, null=True, on_delete=models.SET_NULL, related_name="tickets")
+	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tickets")
+	count = models.SmallIntegerField(default=0, blank=True)
+
+	def __str__(self):
+		try:
+			profile = self.user.bitsian
+		except:
+			try:
+				profile = self.user.participant
+			except:
+				profile = self.user.id
+		return "{}'s tickets for {} : {}".format(profile.name, self.prof_show.name, self.count)
+
+	class Meta:
+		verbose_name_plural = "Tickets"
