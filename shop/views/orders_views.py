@@ -149,7 +149,8 @@ class GetOrders(APIView):
                         fragment = OrderFragment.objects.get(id=frag_id)
                         order["status"] = fragment.status
                         new_fragment_ids.append({"id": frag_id, "stall_id": frag["stall_id"]})
-                    except Exception:
+                    except Exception as e:
+                        print(e)
                         return Response({"message": "one or more of the stalls are non-existant."}, status=status.HTTP_404_NOT_FOUND)
                 order["fragment_ids"] = new_fragment_ids
                 data["orders"].append(order)
@@ -202,18 +203,12 @@ class ConsumeTickets(APIView):
     def post(self, request):
         #if not request.user == User.objects.get(username = "audiforce-official"):
         #    return Response({"message": "Only members of audiforce may use this endpoint."}, status=status.HTTP_401_UNAUTHORIZED)
-        try:
-            qr_code = request.data["qr_code"]
-            try:
-                user_id = decString(qr_code)[0]
-            except ValueError as ve:
-                return Response({"success": False, "message": "invalid qr_code provided."}, status=status.HTTP_400_BAD_REQUEST)
-            user = get_object_or_404(User, id=user_id)
-            show = get_object_or_404(MainProfShow, id=request.data["show_id"])
-            tickets = get_object_or_404(Tickets, user=user, prof_show=show)
-            consume = request.data["consume"]
-        except KeyError as missing:
-            return Response({"success": False, "message": "missing field: {}".format(missing)}, status=status.HTTP_400_BAD_REQUEST)
+        qr_code = request.data["qr_code"]
+        user_id = decString(qr_code)[0]
+        user = get_object_or_404(User, id=user_id)
+        show = get_object_or_404(MainProfShow, id=request.data["show_id"])
+        tickets = get_object_or_404(Tickets, user=user, prof_show=show)
+        consume = request.data["consume"]
 
         max_count = tickets.count
         if(consume > max_count):
