@@ -112,7 +112,7 @@ class PlaceOrder(APIView):
                                         transfer_from=request.user.wallet
                                     )
         request.user.wallet.balance.deduct(net_cost)
-        fragments = [fragment.id for fragment in order.fragments.all()]
+        fragments = [{"id": fragment.id, "stall_id": fragment.stall.id} for fragment in order.fragments.all()]
 
 
         data["order_id"] = order.id
