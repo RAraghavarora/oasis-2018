@@ -7,8 +7,8 @@ from ems.models.level import LevelClass, LevelInstance
 
 class ParameterClass(models.Model):
 	name = models.CharField(max_length = 100)
-	level = models.ForeginKey(LevelClass, related_name = "parameters", on_delete = models.CASCADE)
-	max_value = models.IntegerField(defualt = 0)
+	level = models.ForeignKey(LevelClass, related_name = "parameters", on_delete = models.CASCADE)
+	max_value = models.IntegerField(default = 0)
 	#instances : ParameterInstance
 
 	def __str__(self):
@@ -22,8 +22,8 @@ class ParameterInstance(models.Model):
 	value = models.IntegerField(default = 0)
 
 	def __str__(self):
-		ret_string = "Level : {}".format(self.parameterclass.level.name) + /
-			" - Parameter : {}".format(self.parameterclass.name) + /
+		ret_string = "Level : {}".format(self.parameterclass.level.name) + \
+			" - Parameter : {}".format(self.parameterclass.name) + \
 			" - Participant : {}".format(self.level.participant.username)
 
 		return ret_string

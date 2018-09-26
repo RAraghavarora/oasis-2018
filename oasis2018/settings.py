@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'registrations',
     'preregistration',
     'shop.apps.ShopConfig',
+    'ems.apps.EmsConfig',
 ]
 
 MIDDLEWARE = [
