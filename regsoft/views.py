@@ -21,20 +21,15 @@ import string
 # from pcradmin.views import get_cr_name, gen_barcode, get_pcr_number
 from django.contrib import messages
 from django.contrib.auth.models import User
-
 import sendgrid
-from sendgrid.helpers.mail import *
-from . import send_grid
-
 import os
 import re
-
-from utils.registrations import get_pcr_number
-
+from sendgrid.helpers.mail import *
 from oasis2018.settings_config.keyconfig import *
+import string
 from random import sample, choice
 from django.contrib import messages
-chars = string.ascii_lowercase + string.ascii_uppercase + string.digits
+
 
 ###Helper function to get the group leader##
 def get_group_leader(group):
@@ -68,7 +63,7 @@ def firewallz_home(request):
     	cr = college.participant_set.get(college=college, is_cr=True).name
     	total_final = college.participant_set.filter(pcr_final=True).count()
     	firewallz_passed = college.participant_set.filter(pcr_final=True, firewallz_passed=True).count()
-    	url = request.build_absolute_uri(reverse('regsoft:firewallz_approval', kwargs={'c_id':college.id}))
+    	url = 'www.google.com'#request.build_absolute_uri(reverse('regsoft:firewallz_approval', kwargs={'c_id':college.id}))
     	rows.append({'data': [name,cr,total_final,firewallz_passed] , 'link':[{'url':url,'title':'Approve Participants'},]})
 
     print(rows)
@@ -124,11 +119,6 @@ def firewallz_approval(request, c_id):
         group.save()
         part_list = Participant.objects.filter(id__in=id_list)
         return redirect(reverse('regsoft:get_group_list', kwargs={'g_id':group.id}))
-    groups_passed = [group for group in Group.objects.all() if get_group_leader(group).college == college]
-    unapproved_list = college.participant_set.filter(pcr_final=True, firewallz_passed=False, is_guest=False)
-    print (groups_passed)
-    return render(request, 'regsoft/firewallz_approval.html', {'groups_passed':groups_passed, 'unapproved_list':unapproved_list, 'college':college})
-
 
 @staff_member_required
 def get_group_list(request, g_id):
@@ -155,101 +145,8 @@ def get_group_list(request, g_id):
     participant_list = group.participant_set.all()
     return render(request, 'regsoft/group_list.html', {'participant_list':participant_list, 'group':group})
 
-@staff_member_required
-def add_guest(request):
-    if request.method == 'POST':
-        data = request.POST
-        print(data)
-        email = data['email']
-        if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
-            messages.warning(request,'Please enter a valid email address.')
-            return redirect(request.META.get('HTTP_REFERER'))
-        else:
-            try:
-                Participant.objects.get(email=data['email'])
-                messages.warning(request,'Email already registered.')
-                return redirect(request.META.get('HTTP_REFERER'))
-            except:
-                pass
-            participant = Participant()
-            participant.name = str(data['name'])
-            participant.gender = str(data['gender'])
-            participant.city = str(data['city'])
-            participant.email = str(data['email'])
-            participant.college = College.objects.get(name=str(data['college']))
-            participant.phone = int(data['phone'])
-            participant.is_guest = True
-            participant.email_verified = True
-            try:
-                participant.bits_id = str(data['bits_id'])
-            except:
-                messages.warning(request, 'Please enter the bits id')
-                return redirect(request.META.get('HTTP_REFERER'))
-            participant.save()
-            participant.firewallz_passed = True
-            
-            # ems_code = str(participant.college.id).rjust(3,'0') + str(participant.id).rjust(4,'0')
-            # participant.ems_code = ems_code
-            # participant.save()ss
-            username = participant.name.split(' ')[0] + str(participant.id)
-            print(participant.id)
-            password = ''.join(choice(chars) for i in range(8)) #random alphanumeric password of length 8
-            user = User.objects.create_user(username=username, password=password)
-            participant.user = user
-            participant.save() # Barcode will automatically be generated and assigned
 
-            email_class = send_grid.add_guest()
 
-            send_to = participant.email
-            name = participant.name
-            body = email_class.body%(name, username, password, get_pcr_number())
-            to_email = Email(send_to)
-            content = Content('text/html', body)
-
-            try:
-                mail = Mail(email_class.from_email,email_class.subject,to_email,content)
-                response = send_grid.sg.client.mail.send.post(request_body = mail.get())
-                print("EMAIL SENT")
-            except:
-                participant.user = None
-                participant.save()
-                user.delete()
-                participant.delete()
-                context = {
-                    'url':request.build_absolute_uri(reverse('regsoft:firewallz_home')),
-                    'error_heading': "Error sending mail",
-                    'message': "Sorry! Error in sending email. Please try again.",
-                }
-                return render(request, 'registrations/message.html', context)
-
-            context = {
-                'error_heading': "Emails sent",
-                'message': "Login credentials have been mailed to the corresponding new participants.",
-                'url':request.build_absolute_uri(reverse('regsoft:firewallz_home'))
-            }
-            return render(request, 'registrations/message.html', context)
-    else:
-        colleges = College.objects.all()
-        guests = Participant.objects.filter(is_guest=True)
-        return render(request, 'regsoft/add_guest.html', {'colleges':colleges, 'guests':guests})
-
-@staff_member_required
-def remove_guests(request):
-    if request.method == 'POST':
-        data = request.POST
-        try:
-            list = data.getlist('guest_list')
-        except:
-            messages.warning(request, 'No guest selected.')
-            return redirect(request.META.get('HTTP_REFERER'))
-        participants=Participant.objects.filter(id__in=data.getlist('guest_list'), is_guest=True)
-        for participant in participants:
-            user = participant.user
-            participant.user = None
-            user.delete()
-        participants.delete()
-    return redirect(reverse('regsoft:add_guest'))
-    
 
 # #########Recnacc#########
 
@@ -554,29 +451,14 @@ def controls_home(request):
     rows=[]
     for group in Group.objects.all():
         code = group.group_code
-        group_leader = get_group_leader(group)
-        leader_name = group_leader.name
-        leader_college = group_leader.college.name
-        leader_phone = group_leader.phone
+        leader_name = get_group_leader(group).name
+        leader_college = get_group_leader(group).college.name
+        leader_phone = get_group_leader(group).phone
         time = group.created_time
         no_of_members = group.participant_set.filter(is_guest = False).count()
         controls_passed = group.participant_set.filter(controlz = True).count()
         bill_url = request.build_absolute_uri(reverse('regsoft:create_bill', kwargs={'g_id':group.id}))
-        rows.append({
-            'data': [
-                code,
-                leader_name,
-                leader_college,
-                leader_phone,
-                time,
-                no_of_members, 
-                controls_passed
-            ],
-            'link': [{
-                'url':bill_url,
-                'title':'Create Bill'
-            }]
-        })
+        rows.append({'data':[code,leader_name,leader_college,leader_phone,time,no_of_members, controls_passed],'link':[{'url':bill_url,'title':'Create Bill'}]})
         print(rows)
         return HttpResponse(rows)
 

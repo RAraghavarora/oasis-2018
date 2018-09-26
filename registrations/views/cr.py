@@ -17,8 +17,6 @@ from django.http import HttpResponse
 def approve(request):
     '''
     Page where CR will approve the participations of his college
-    This will create a user for the participants
-    and give them login credntials via email
     '''
     user = request.user
     participant = Participant.objects.get(user=user)
