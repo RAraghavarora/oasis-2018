@@ -29,7 +29,7 @@ class Team(models.Model):
     score = models.IntegerField(default = 0)
     
     rank = models.PositiveSmallIntegerField(default=0)
-    status = models.CharField(max_length = 1, choices = STATUS, default = self.PARTICIPANT)
+    status = models.CharField(max_length = 1, choices = STATUS, default = 'P')
 
     def __str__(self):
         return self.name

@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from django.conf import AUTH_USER_MODEL
+from django.conf import settings
 from django.db import models
 
 from events.models import MainEvent
