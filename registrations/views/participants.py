@@ -177,6 +177,10 @@ def home(request):
 
 
 def email_confirm(request,token):
+    '''
+    To confirm the email by email token sent to the participant by email
+    This does not give login credentials to the participant
+    '''
     member = authenticate_email_token(token)
     print("EMAIL CONFIRM")
     if member:
@@ -195,6 +199,9 @@ def email_confirm(request,token):
 
 @login_required
 def manage_events(request):
+    '''
+    Participant can add/remove his events
+    '''
     participant = Participant.objects.get(user=request.user)
     if request.method == 'POST':
         data = request.POST

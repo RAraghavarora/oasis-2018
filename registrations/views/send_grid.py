@@ -82,4 +82,4 @@ class cr_approved(object):
 	'''
 	x='register@bits-oasis.org'
 	from_email = Email('register@bits-oasis.org')
-	subject = "Registration for OASIS '18"	
+	subject = "Registration for OASIS '18 THE FAR OUT FEST"	
