@@ -142,17 +142,14 @@ class GetOrders(APIView):
                     except:
                         pass
 
-                print(json.dumps(order, indent=4))
-
                 new_fragment_ids = list()
-                for frag_id in order["fragment_ids"]:
+                for frag in order["fragment_ids"]:
                     try:
+                        frag_id = frag["id"]
                         fragment = OrderFragment.objects.get(id=frag_id)
                         order["status"] = fragment.status
-                        print(order["status"])
-                        new_fragment_ids.append({"id": frag_id, "stall_id": fragment.stall.id})
-                    except Exception as e:
-                        print(e)
+                        new_fragment_ids.append({"id": frag_id, "stall_id": frag["stall_id"]})
+                    except Exception:
                         return Response({"message": "one or more of the stalls are non-existant."}, status=status.HTTP_404_NOT_FOUND)
                 order["fragment_ids"] = new_fragment_ids
                 data["orders"].append(order)
