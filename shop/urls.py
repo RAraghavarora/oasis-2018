@@ -25,5 +25,6 @@ urlpatterns = [
     url(r'^get-orders/$', orders_views.GetOrders.as_view(), name='get-orders'),
     url(r'^get-tickets/$', orders_views.GetTickets.as_view(), name='get-tickets'),
 
-    url(r'^consume-tickets/$', orders_views.ConsumeTickets.as_view(), name='consume-tickets')
+    url(r'^consume-tickets/$', orders_views.ConsumeTickets.as_view(), name='consume-tickets'),
+    url(r'^get-profshows/$', misc_views.GetProfShows.as_view(), name="get-profshows"),
 ]

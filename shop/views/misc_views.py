@@ -8,11 +8,12 @@ from rest_framework.permissions import IsAuthenticated
 
 from shop.permissions import TokenVerification
 from registrations.models import Bitsian
-
+from events.models import MainProfShow
+from events.serializers import MainProfShowSerializer
 
 class GetProfile(APIView):
 
-    permission_classes = (IsAuthenticated, TokenVerification)
+    permission_classes = (IsAuthenticated, TokenVerification,)
 
     @csrf_exempt
     def post(self, request):
@@ -34,3 +35,15 @@ class GetProfile(APIView):
         else:
             response_data["bits-id"] = None
         return Response(response_data, status=status.HTTP_200_OK)
+
+
+class GetProfShows(APIView):
+
+        permission_classes = (TokenVerification,)
+
+        @csrf_exempt
+        def get(self, request):
+            shows = list()
+            for show in MainProfShow.objects.all():
+                shows.append(MainProfShowSerializer(show).data)
+            return Response({"shows": shows})
