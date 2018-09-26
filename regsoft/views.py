@@ -160,7 +160,6 @@ def add_guest(request):
     if request.method == 'POST':
         data = request.POST
         print(data)
-        email = data['email']
         if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
             messages.warning(request,'Please enter a valid email address.')
             return redirect(request.META.get('HTTP_REFERER'))
@@ -177,7 +176,11 @@ def add_guest(request):
             participant.city = str(data['city'])
             participant.email = str(data['email'])
             participant.college = College.objects.get(name=str(data['college']))
-            participant.phone = int(data['phone'])
+            try:
+                participant.phone = int(data['phone'])
+            except:
+                messages.warning(request, 'Please enter a valid phone number')
+                return redirect(request.META.get('HTTP_REFERER'))
             participant.is_guest = True
             participant.email_verified = True
             try:
@@ -197,7 +200,7 @@ def add_guest(request):
             user = User.objects.create_user(username=username, password=password)
             participant.user = user
             participant.save() # Barcode will automatically be generated and assigned
-
+            print(participant.user.username)
             email_class = send_grid.add_guest()
 
             send_to = participant.email
@@ -250,7 +253,118 @@ def remove_guests(request):
         participants.delete()
     return redirect(reverse('regsoft:add_guest'))
     
+@staff_member_required
+def add_participant(request):
+    if request.method == 'GET':
+        event_list = Event.objects.all()
+        colleges = College.objects.all()
+        guests = Participant.objects.filter(is_guest=True)
+        return render(request, 'regsoft/add_participant.html', {'event_list':event_list,'colleges':colleges, 'guests':guests})
 
+    if request.method == 'POST':
+        data = request.POST
+        email = data['email']
+        if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
+            messages.warning(request,'Please enter a valid email address.')
+            return redirect(request.META.get('HTTP_REFERER'))
+        else:
+            try:
+                Participant.objects.get(email=data['email'])
+                messages.warning(request,'Email already registered.')
+                return redirect(request.META.get('HTTP_REFERER'))
+            except:
+                pass
+            try:
+                events = data.getlist('events')
+            except:
+                pass
+            participant = Participant()
+            participant.name = str(data['name'])
+            participant.gender = str(data['gender'])
+            participant.city = str(data['city'])
+            participant.email = str(data['email'])
+            participant.college = College.objects.get(name=str(data['college']))
+            participant.phone = int(data['phone'])
+            participant.email_verified = True
+            participant.pcr_final = True
+            participant.pcr_approved = True
+            participant.save()
+            ems_code = str(participant.college.id).rjust(3,'0') + str(participant.id).rjust(4,'0')
+            participant.ems_code = ems_code
+            encoded = gen_barcode(participant)
+            participant.save()
+            username = participant.name.split(' ')[0] + str(participant.id)
+            password = ''.join(choice(chars) for _ in xrange(8))
+            user = User.objects.create_user(username=username, password=password)
+            participant.user = user
+            participant.save()
+            college = participant.college
+            if not college.participant_set.filter(is_cr=True):
+                participant.is_cr = True
+                participant.save()
+            try:
+                events = data.getlist('events')
+                for key in data.getlist('events'):
+                    event = Event.objects.get(id=int(key))
+                    Participation.objects.create(event=event, participant=participant, pcr_approved=True)
+            except:
+                pass
+            participant.save()
+
+            send_to = participant.email
+            name = participant.name
+            body = '''<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+            <center><img src="http://bits-oasis.org/2017/static/registrations/img/logo.png" height="150px" width="150px"></center>
+            <pre style="font-family:Roboto,sans-serif">
+            Hello %s!
+
+            Thank you for registering!
+
+            Greetings from BITS Pilani!
+
+            It gives me immense pleasure in inviting your institute to the 47th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 31st to November 4th.             
+                       
+            This is to inform you that your guest registration is complete.
+            You can now login in the app using the following credentials and get your exclusive qrcode:
+            username : '%s'
+            password : '%s'
+
+            Regards,
+            StuCCAn (Head)
+            Dept. of Publications & Correspondence, OASIS 2017
+            BITS Pilani
+            %s
+            pcr@bits-oasis.org
+            </pre>
+            ''' %(name, username, password, get_pcr_number())
+            sg = sendgrid.SendGridAPIClient(apikey=API_KEY)
+            from_email = Email('register@bits-oasis.org')
+            to_email = Email(send_to)
+            subject = "Registration for OASIS '17 REALMS OF FICTION"
+            content = Content('text/html', body)
+
+            try:
+                mail = Mail(from_email, subject, to_email, content)
+                response = sg.client.mail.send.post(request_body=mail.get())
+            except :
+                participant.user = None
+                participant.save()
+                user.delete()
+                participant.delete()
+                context = {
+                    'url':request.build_absolute_uri(reverse('regsoft:firewallz_home')),
+                    'error_heading': "Error sending mail",
+                    'message': "Sorry! Error in sending email. Please try again.",
+                }
+                return render(request, 'registrations/message.html', context)
+
+            context = {
+                'error_heading': "Emails sent",
+                'message': "Login credentials have been mailed to the corresponding new participants.",
+                'url':request.build_absolute_uri(reverse('regsoft:firewallz_home'))
+            }
+            return render(request, 'registrations/message.html', context)
+    
 # #########Recnacc#########
 
 @staff_member_required
