@@ -46,6 +46,8 @@ class PlaceOrder(APIView):
         # Part 1:
         try:
             data = request.data["order"]
+            date = request.data["date"]
+            price = request.data["price"]
         except KeyError as missing:
             msg = {"message": "missing the following field: {}".format(missing)}
             return Response(msg, status=status.HTTP_400_BAD_REQUEST)
@@ -94,7 +96,7 @@ class PlaceOrder(APIView):
         total_balance = request.user.wallet.getTotalBalance()
 
         if total_balance < net_cost:
-            msg = {"message": "Insufficient balance.", "missing_funds":net_cost-total_balance},
+            msg = {"message": "Insufficient balance.", "missing_funds":net_cost-total_balance}
             stat = status.HTTP_400_BAD_REQUEST
             order.delete()
             return Response(msg, stat)
@@ -115,7 +117,8 @@ class PlaceOrder(APIView):
 
         data["order_id"] = order.id
         data["fragment_ids"] = fragments
-        data["date"] = request.data["date"]
+        data["date"] = date
+        data["price"] = price
         order.setQueryString({"order": data})
 
         return Response({"order_id": order.id, "fragments_ids": fragments, "cost": net_cost})
@@ -131,7 +134,28 @@ class GetOrders(APIView):
         data["orders"] = list()
         for order in request.user.wallet.orders.all():
             try:
-                data["orders"].append(order.getQueryString())
+                order = order.getQueryString()
+                meta_fields = ("order_id", "fragment_ids", "date", "price")
+                for field in meta_fields:
+                    try:
+                        order[field] = order["order"].pop(field)
+                    except:
+                        pass
+
+                print(json.dumps(order, indent=4))
+
+                new_fragment_ids = list()
+                for frag_id in order["fragment_ids"]:
+                    try:
+                        fragment = OrderFragment.objects.get(id=frag_id)
+                        order["status"] = fragment.status
+                        print(order["status"])
+                        new_fragment_ids.append({"id": frag_id, "stall_id": fragment.stall.id})
+                    except Exception as e:
+                        print(e)
+                        return Response({"message": "one or more of the stalls are non-existant."}, status=status.HTTP_404_NOT_FOUND)
+                order["fragment_ids"] = new_fragment_ids
+                data["orders"].append(order)
             except TypeError: # no query string e.g. orders made via. admin panal
                 pass
         return Response(data, status=status.HTTP_200_OK)
@@ -139,10 +163,13 @@ class GetOrders(APIView):
 
 class GetTickets(APIView):
 
-    permission_classes = (TokenVerification,) # Extra form of verification needed? Only allow departments to access this endpoint?
+    # permission_classes = (TokenVerification, IsAuthenticated,)
+    permission_classes = (TokenVerification,)
 
     @csrf_exempt
     def post(self, request):
+        #if not request.user == User.objects.get(username = "audiforce-official"):
+        #    return Response({"message": "Only members of audiforce may use this endpoint."}, status=status.HTTP_401_UNAUTHORIZED)
         qr_code = request.data["qr_code"]
         user_id = decString(qr_code)[0]        # a custom function from utils.wallet_qrcode
         user = get_object_or_404(User, id=user_id)
@@ -171,10 +198,13 @@ class ConsumeTickets(APIView):
            }
     """
 
+    # permission_classes = (TokenVerification, IsAuthenticated,)
     permission_classes = (TokenVerification,) # Extra form of verification needed? Only allow departments to access this endpoint?
 
     @csrf_exempt
     def post(self, request):
+        #if not request.user == User.objects.get(username = "audiforce-official"):
+        #    return Response({"message": "Only members of audiforce may use this endpoint."}, status=status.HTTP_401_UNAUTHORIZED)
         qr_code = request.data["qr_code"]
         user_id = decString(qr_code)[0]
         user = get_object_or_404(User, id=user_id)
