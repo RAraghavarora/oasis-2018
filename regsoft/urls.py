@@ -32,9 +32,9 @@ urlpatterns=[
 	# url(r'^recnacc/checkout/groupdetails/(?P<ck_id>\d+)/$', views.ck_group_details, name="ck_group_details"),
 	# url(r'^recnacc/checkout/master_checkout/$', views.master_checkout, name="master_checkout"),
 
-	### CONTROLS ###
-	url(r'^controls/$',views.controls_home),
-	url(r'^controls/recnacc_list/$', views.recnacc_list, name='recnacc_list'),
-	url(r'^controls/recnacc_list/(?P<g_id>\d+)/$', views.recnacc_list_group, name='recnacc_list_group'),
+	### CONTROLZ ###
+	url(r'^controlz/$',views.controlz_home),
+	url(r'^controlz/recnacc_list/$', views.recnacc_list, name='recnacc_list'),
+	url(r'^controlz/recnacc_list/(?P<g_id>\d+)/$', views.recnacc_list_group, name='recnacc_list_group'),
 
 ]

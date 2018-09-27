@@ -56,7 +56,7 @@ def generate_group_code(group):
     group.save()
     return encoded
 
-############FIREWALLS#############
+############FIREWALLZ#############
 
 @staff_member_required
 def firewallz_home(request):
@@ -377,7 +377,7 @@ def add_participant(request):
 def recnacc_home(request):
     rows=[{'data':[group.group_code,get_group_leader(group).name,get_group_leader(group).college.name,get_group_leader(group).phone,group.created_time,group.participant_set.filter(controlz=True).count(),group.participant_set.filter(checkout_group__isnull=False).count()], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:allocate_participants', kwargs={'g_id':group.id})), 'title':'Allocate Participants'}]} for group in Group.objects.all().order_by('-created time')]
     title='Groups that have passed Firewallz'
-    headings = ['Group Code', 'Group Leader', 'College', 'Gleader phone', 'Firewallz passed time', 'Total controls passed','Total alloted', 'Checkout','View Participants']
+    headings = ['Group Code', 'Group Leader', 'College', 'Gleader phone', 'Firewallz passed time', 'Total controlz passed','Total alloted', 'Checkout','View Participants']
 
     table={
         'rows':rows,
@@ -667,10 +667,10 @@ def ck_group_details(request, ck_id):
     return render(request, 'regsoft/tables.html', {'tables':[table,],})
 
 
-################### CONTROLS ##################
+################### CONTROLZ ##################
 
 @staff_member_required
-def controls_home(request):
+def controlz_home(request):
     rows=[]
     for group in Group.objects.all():
         code = group.group_code
@@ -680,7 +680,7 @@ def controls_home(request):
         leader_phone = group_leader.phone
         time = group.created_time
         no_of_members = group.participant_set.filter(is_guest = False).count()
-        controls_passed = group.participant_set.filter(controlz = True).count()
+        controlz_passed = group.participant_set.filter(controlz = True).count()
         bill_url = request.build_absolute_uri(reverse('regsoft:create_bill', kwargs={'g_id':group.id}))
         rows.append({
             'data': [
@@ -690,7 +690,7 @@ def controls_home(request):
                 leader_phone,
                 time,
                 no_of_members, 
-                controls_passed
+                controlz_passed
             ],
             'link': [{
                 'url':bill_url,
@@ -855,7 +855,7 @@ def recnacc_list(request):
         leader_college = group_leader.college.name
         leader_phone = group_leader.phone
         time = group.created_time
-        controls_passed = group.participant_set.filter(controlz = True).count()
+        controlz_passed = group.participant_set.filter(controlz = True).count()
         total_alloted = group.participant_set.filter(controlz=True, acco=True, checkout_group=None).count()
         chekout_count =  group.participant_set.filter(checkout_group__isnull=False).count()
         acco_details_url = request.build_absolute_uri(reverse('regsoft:recnacc_list_group', kwargs={'g_id':group.id}))
@@ -867,9 +867,9 @@ def recnacc_list(request):
                 leader_college,
                 leader_phone,
                 time,
-                controls_passed,
+                controlz_passed,
                 total_alloted,
-                checkout_count
+                checkout_count,
                 ],
             'link':[{
                 'url':acco_details_url,
@@ -877,7 +877,7 @@ def recnacc_list(request):
                 }]
             })
 
-    headings = ['Group Code', 'Group Leader', 'College', 'Gleader phone', 'Firewallz passed time', 'Total controls passed','Total alloted', 'Checkout','View Participants']
+    headings = ['Group Code', 'Group Leader', 'College', 'Gleader phone', 'Firewallz passed time', 'Total controlz passed','Total alloted', 'Checkout','View Participants']
     title = 'Groups that have been alloted'
     table = {
         'rows':rows,

@@ -21,5 +21,5 @@ class IsActiveJudge(BasePermission):
 		
 		return judge.exists() and judge[0].is_active:
 
-class IsControls(BasePermission):
+class IsControlz(BasePermission):
 	

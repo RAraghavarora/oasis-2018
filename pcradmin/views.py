@@ -34,8 +34,9 @@ from oasis2018.settings_config.keyconfig import *
 import string
 from django.contrib import messages
 from random import choice
+from oasis2018.settings_config.keyconfig import *
 from utils.registrations import *
-API_KEY='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' #my api
+#API_KEY='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' #my api
 
 @staff_member_required
 def index(request):
@@ -124,7 +125,6 @@ password : '%s'
 We would be really happy to see your college represented at our fest.
 It is your responsibility to confirm the participants for different events.
 
-Please make sure to upload your <b>Picture</b> as well as <b>verification documents(Preferably Bonafide Certificate for as many participants as possible)</b> once you login to complete your registration.
 
 We look forward to seeing you at OASIS 2018.
 
@@ -170,7 +170,7 @@ def event_list(part):
     events=''
     for participation in MainParticipation.objects.filter(participant=part):
         events+=participation.event.name +','
-    events=events[:-2]
+    #events=events[:-2]
     return events
 
 def how_much_paid(part):
@@ -302,7 +302,7 @@ def edit_participant(request,part_id):
             phone=data['phone']
             email=data['email']
             gender=data['gender']
-            if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email) or not gender in ['M','F'] or len(phone) is not int(10):
+            if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email) or not gender in ['male','female'] or len(phone) is not int(10):
                 raise Exception
         except:
             messages.warning(request, 'Fill all the details properly.')
@@ -716,7 +716,7 @@ This is to confirm your participation at OASIS '18.
 We would be really happy to see your college represented at our fest.
 
 We look forward to seeing you at OASIS 2018.
-A new link would be active in your OASIS '18 account once you clear the Firewallz booth at BITS with the access to your exclusive profile card.
+A new link would be active in your OASIS '18 account once you clear the Firewalls booth at BITS with the access to your exclusive profile card.
 <b>IT IS COMPULSORY FOR YOU TO BRING A VALID IDENTITY CARD, WITHOUT WHICH YOU WON'T BE ALLOWED TO ENTER THE PREMISES.</b>
 PFA A list of participants from your college.
 
