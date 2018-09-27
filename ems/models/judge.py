@@ -8,7 +8,7 @@ from events.models import MainEvent
 class Judge(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL)
 	event = models.ForeignKey(MainEvent)
-	left_the_event = models.BooleanField(default=False)
+	is_active = models.BooleanField(default=True)
 	frozen = models.BooleanField(default=False)
 	#parameterinstances : ParameterInstance
 
