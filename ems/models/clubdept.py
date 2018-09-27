@@ -16,7 +16,7 @@ class ClubDepartment(models.Model):
 	events = models.ManyToManyField(MainEvent)
 	profshows = models.ManyToManyField(MainEvent)
 
-	mobile = models.PostiveIntegerField(defualt = 0)
+	mobile = models.PositiveIntegerField(default = 0)
 
 	def __str__(self):
 		return self.name

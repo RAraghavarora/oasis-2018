@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from registrations.models import *
@@ -159,8 +158,12 @@ def delete_group(request, g_id):
     try:
         group = get_object_or_404(Group, id=g_id)
     except:
-        response = JsonResponse({'message':'No such group exists'})
-        return response
+        context = {
+        'error_heading': "Error",
+        'message': "No such group exists",
+        'url':request.build_absolute_uri(reverse('regsoft:firewallz_home'))
+        }
+        return render(request, 'registrations/message.html', context)
     leader = get_group_leader(group)
     for part in group.participant_set.all():
         part.firewallz_passed = False

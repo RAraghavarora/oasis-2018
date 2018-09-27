@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ems.models.clubdept import ClubDept
+from ems.models.clubdept import ClubDepartment
 from ems.models.judge import Judge
 from ems.models.level import LevelClass, LevelInstance
 from ems.models.parameter import ParameterClass, ParameterInstance
@@ -10,7 +10,7 @@ from ems.models.team import Team
 class ClubDeptSerializer(serializers.ModelSerializer):
 
 	class Meta:
-		model = ClubDept
+		model = ClubDepartment
 		fields = '__all__'
 
 
