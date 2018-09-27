@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
-from ems.models import ClubDepartment
+from ems.models.clubdept import ClubDepartment
 
 class IsClubDept(BasePermission):
 
@@ -19,7 +19,10 @@ class IsActiveJudge(BasePermission):
 		user = request.user
 		judge = Judge.objects.filter(user = user)
 		
-		return judge.exists() and judge[0].is_active:
+		return judge.exists() and judge[0].is_active
 
-class IsControlz(BasePermission):
+class IsControls(BasePermission):
 	
+	def has_permission(self, request, view):
+		user = request.user
+		return user.is_superuser or user.username == 'controls'
