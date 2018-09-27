@@ -129,3 +129,43 @@ FIELDS:
 		"target-id":<int>
 		"amount":<float>
 	}
+-------------------------------------
+STALLS ORDERS LIST
+
+API END POINT:
+	.../2018/shop/stalls/client/orders/
+
+REQUEST TYPE:
+	GET
+
+REPONSE:
+	FIELDS:
+		{
+			"id": #order fragment id
+			"order": #order id
+			"status": #current status
+			"items_list": #list of item instances
+				[
+					{
+						"id":
+						"qty"
+					}
+				]
+			"timestamp":
+
+		}
+-------------------------------------
+STALLS ORDER RESPONSE
+
+API END POINT:
+	.../2018/shop/stalls/client/order-response/
+
+REQUEST TYPE:
+	POST
+
+FIELDS:
+	{
+		"order_fragment":<int> #order fragment id
+		"order_status":<string> #The value can be "accepted", "declined" or "finished" only.
+	}
+-------------------------------------

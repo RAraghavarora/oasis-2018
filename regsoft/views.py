@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from registrations.models import *
@@ -21,15 +20,20 @@ import string
 # from pcradmin.views import get_cr_name, gen_barcode, get_pcr_number
 from django.contrib import messages
 from django.contrib.auth.models import User
+
 import sendgrid
+from sendgrid.helpers.mail import *
+from . import send_grid
+
 import os
 import re
-from sendgrid.helpers.mail import *
+
+from utils.registrations import get_pcr_number
+
 from oasis2018.settings_config.keyconfig import *
-import string
 from random import sample, choice
 from django.contrib import messages
-
+chars = string.ascii_lowercase + string.ascii_uppercase + string.digits
 
 ###Helper function to get the group leader##
 def get_group_leader(group):
@@ -37,21 +41,21 @@ def get_group_leader(group):
 
 #To create a code for the group
 def generate_group_code(group):
-	group_id = group.id
-	encoded = group.group_code
-	if encoded == '':
-		raise ValueError
-	if encoded is not None:
-		return encoded
-	group_ida = "%04d" % int(group_id)
-	college_code = ''.join(get_group_leader(group).college.name.split(' '))
-	if len(college_code)<4:
-		college_code += str(0)*(4-len(college_code))
-	group.group_code = college_code + group_ida
-	group.save()
-	return encoded
+    group_id = group.id
+    encoded = group.group_code
+    if encoded == '':
+        raise ValueError
+    if encoded is not None:
+        return encoded
+    group_ida = "%04d" % int(group_id)
+    college_code = ''.join(get_group_leader(group).college.name.split(' '))
+    if len(college_code)<4:
+        college_code += str(0)*(4-len(college_code))
+    group.group_code = college_code + group_ida
+    group.save()
+    return encoded
 
-############FIREWALLS#############
+############FIREWALLZ#############
 
 @staff_member_required
 def firewallz_home(request):
@@ -59,12 +63,12 @@ def firewallz_home(request):
 
     rows = []
     for college in college_list:
-    	name = college.name
-    	cr = college.participant_set.get(college=college, is_cr=True).name
-    	total_final = college.participant_set.filter(pcr_final=True).count()
-    	firewallz_passed = college.participant_set.filter(pcr_final=True, firewallz_passed=True).count()
-    	url = 'www.google.com'#request.build_absolute_uri(reverse('regsoft:firewallz_approval', kwargs={'c_id':college.id}))
-    	rows.append({'data': [name,cr,total_final,firewallz_passed] , 'link':[{'url':url,'title':'Approve Participants'},]})
+        name = college.name
+        cr = college.participant_set.get(college=college, is_cr=True).name
+        total_final = college.participant_set.filter(pcr_final=True).count()
+        firewallz_passed = college.participant_set.filter(pcr_final=True, firewallz_passed=True).count()
+        url = request.build_absolute_uri(reverse('regsoft:firewallz_approval', kwargs={'c_id':college.id}))
+        rows.append({'data': [name,cr,total_final,firewallz_passed] , 'link':[{'url':url,'title':'Approve Participants'},]})
 
     print(rows)
     headings = ['College', 'CR', 'PCr Finalised Participants', 'Firewallz Passed','Approve Participants']
@@ -119,6 +123,10 @@ def firewallz_approval(request, c_id):
         group.save()
         part_list = Participant.objects.filter(id__in=id_list)
         return redirect(reverse('regsoft:get_group_list', kwargs={'g_id':group.id}))
+    groups_passed = [group for group in Group.objects.all() if get_group_leader(group).college == college]
+    unapproved_list = college.participant_set.filter(pcr_final=True, firewallz_passed=False, is_guest=False)
+    print (groups_passed)
+    return render(request, 'regsoft/firewallz_approval.html', {'groups_passed':groups_passed, 'unapproved_list':unapproved_list, 'college':college})
 
 @staff_member_required
 def get_group_list(request, g_id):
@@ -145,16 +153,234 @@ def get_group_list(request, g_id):
     participant_list = group.participant_set.all()
     return render(request, 'regsoft/group_list.html', {'participant_list':participant_list, 'group':group})
 
+@staff_member_required
+def delete_group(request, g_id):
+    try:
+        group = get_object_or_404(Group, id=g_id)
+    except:
+        context = {
+        'error_heading': "Error",
+        'message': "No such group exists",
+        'url':request.build_absolute_uri(reverse('regsoft:firewallz_home'))
+        }
+        return render(request, 'registrations/message.html', context)
+    leader = get_group_leader(group)
+    for part in group.participant_set.all():
+        part.firewallz_passed = False
+        part.is_g_leader = False
+        part.save()
+    group.delete()
+    return redirect(reverse('regsoft:firewallz_approval', kwargs={'c_id':leader.college.id}))
 
+@staff_member_required
+def add_guest(request):
+    if request.method == 'GET':
+        colleges = College.objects.all()
+        guests = Participant.objects.filter(is_guest=True)
+        return render(request, 'regsoft/add_guest.html', {'colleges':colleges, 'guests':guests})
 
+    elif request.method == 'POST':
+        data = request.POST.dict()
+        email = data['email']
+        print(data)
+        if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
+            messages.warning(request,'Please enter a valid email address.')
+            return redirect(request.META.get('HTTP_REFERER'))
+        else:
+            try:
+                Participant.objects.get(email=data['email'])
+                messages.warning(request,'Email already registered.')
+                return redirect(request.META.get('HTTP_REFERER'))
+            except:
+                pass
+            participant = Participant()
+            if not data['name']:
+                messages.warning(request, 'Please enter your name')
+                return redirect(request.META.get('HTTP_REFERER'))
+            if len(data['phone'])==10:
+                participant.phone = int(data['phone'])
+            else:
+                messages.warning(request, 'Please enter a valid phone number')
+                return redirect(request.META.get('HTTP_REFERER'))
 
+            participant.name = str(data['name'])
+            participant.gender = str(data['gender'])
+            participant.city = str(data['city'])
+            participant.email = str(data['email'])
+            participant.college = College.objects.get(name=str(data['college']))
+            
+            if not data['bits_id']:
+                messages.warning(request, 'Please enter the bits id')
+                return redirect(request.META.get('HTTP_REFERER'))
+            participant.bits_id = str(data['bits_id'])
+
+            participant.is_guest = True
+            participant.email_verified = True
+            participant.save()
+            participant.firewallz_passed = True
+            
+            # ems_code = str(participant.college.id).rjust(3,'0') + str(participant.id).rjust(4,'0')
+            # participant.ems_code = ems_code
+            # participant.save()ss
+            username = participant.name.split(' ')[0] + str(participant.id)
+            print(participant.id)
+            password = ''.join(choice(chars) for i in range(8)) #random alphanumeric password of length 8
+            user = User.objects.create_user(username=username, password=password)
+            participant.user = user
+            participant.save() # Barcode will automatically be generated and assigned. Django Signals
+            print(participant.user.username)
+            
+            #sendgrid email body is written in a separate file called send_grid.py
+            email_class = send_grid.add_guest() 
+            send_to = participant.email
+            name = participant.name
+            body = email_class.body%(name, username, password, get_pcr_number())
+            to_email = Email(send_to)
+            content = Content('text/html', body)
+
+            try:
+                mail = Mail(email_class.from_email,email_class.subject,to_email,content)
+                response = send_grid.sg.client.mail.send.post(request_body = mail.get())
+                print("EMAIL SENT")
+            except:
+                participant.user = None
+                participant.save()
+                user.delete()
+                participant.delete()
+                context = {
+                    'url':request.build_absolute_uri(reverse('regsoft:firewallz_home')),
+                    'error_heading': "Error sending mail",
+                    'message': "Sorry! Error in sending email. Please try again.",
+                }
+                return render(request, 'registrations/message.html', context)
+
+            context = {
+                'error_heading': "Emails sent",
+                'message': "Login credentials have been mailed to the corresponding new participants.",
+                'url':request.build_absolute_uri(reverse('regsoft:firewallz_home'))
+            }
+            return render(request, 'registrations/message.html', context)
+    
+@staff_member_required
+def remove_guests(request):
+    if request.method == 'POST':
+        data = request.POST
+        try:
+            list = data.getlist('guest_list')
+        except:
+            messages.warning(request, 'No guest selected.')
+            return redirect(request.META.get('HTTP_REFERER'))
+        participants=Participant.objects.filter(id__in=data.getlist('guest_list'), is_guest=True)
+        for participant in participants:
+            user = participant.user
+            participant.user = None
+            user.delete()
+        participants.delete()
+    return redirect(reverse('regsoft:add_guest'))
+    
+@staff_member_required
+def add_participant(request):
+    if request.method == 'GET':
+        event_list = MainEvent.objects.all()
+        colleges = College.objects.all()
+        return render(request, 'regsoft/add_participant.html', {'event_list':event_list,'colleges':colleges})
+
+    if request.method == 'POST':
+        data = request.POST
+        email = data['email']
+        if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
+            messages.warning(request,'Please enter a valid email address.')
+            return redirect(request.META.get('HTTP_REFERER'))
+        else:
+            try:
+                Participant.objects.get(email=data['email'])
+                messages.warning(request,'Email already registered.')
+                return redirect(request.META.get('HTTP_REFERER'))
+            except:
+                pass
+            try:
+                events = data.getlist('events')
+                print(events)
+            except:
+                pass
+            participant = Participant()
+            if not data['name']:
+                messages.warning(request, 'Please enter your name')
+                return redirect(request.META.get('HTTP_REFERER'))
+            if len(data['phone'])==10:
+                participant.phone = int(data['phone'])
+            else:
+                messages.warning(request, 'Please enter a valid phone number')
+                return redirect(request.META.get('HTTP_REFERER'))
+            participant.name = str(data['name'])
+            participant.phone = int(data['phone'])
+            participant.gender = str(data['gender'])
+            participant.city = str(data['city'])
+            participant.email = str(data['email'])
+            participant.college = College.objects.get(name=str(data['college']))
+           
+            participant.email_verified = True
+            participant.pcr_approved = True
+            participant.save()
+            participant.pcr_final = True
+            # ems_code = str(participant.college.id).rjust(3,'0') + str(participant.id).rjust(4,'0')
+            # participant.ems_code = ems_code
+            username = participant.name.split(' ')[0] + str(participant.id)
+            password = ''.join(choice(chars) for _ in range(8)) #random alphanumeric password of length 8
+            user = User.objects.create_user(username=username, password=password)
+            participant.user = user
+            participant.save() # Here, barcode will automatically be generated and stored using django signals.
+            college = participant.college
+            if not college.participant_set.filter(is_cr=True):
+                participant.is_cr = True
+                participant.save()
+            try:
+                events = data.getlist('events')
+                for key in data.getlist('events'):
+                    event = Event.objects.get(id=int(key))
+                    MainParticipation.objects.create(event=event, participant=participant, pcr_approved=True)
+            except:
+                pass
+            participant.save()
+
+            #sendgrid email body is written in a separate file called send_grid.py
+            #DRY
+            email_class = send_grid.add_guest() 
+            send_to = participant.email
+            name = participant.name
+            body = email_class.body%(name, username, password, get_pcr_number())
+            to_email = Email(send_to)
+            content = Content('text/html', body)
+
+            try:
+                mail = Mail(email_class.from_email,email_class.subject,to_email,content)
+                response = send_grid.sg.client.mail.send.post(request_body = mail.get())
+                print("EMAIL SENT")
+            except:
+                participant.user = None
+                participant.save()
+                user.delete()
+                participant.delete()
+                context = {
+                    'url':request.build_absolute_uri(reverse('regsoft:firewallz_home')),
+                    'error_heading': "Error sending mail",
+                    'message': "Sorry! Error in sending email. Please try again.",
+                }
+                return render(request, 'registrations/message.html', context)
+            context = {
+                'error_heading': "Emails sent",
+                'message': "Login credentials have been mailed to the corresponding new participants.",
+                'url':request.build_absolute_uri(reverse('regsoft:firewallz_home'))
+            }
+            return render(request, 'registrations/message.html', context)
+    
 # #########Recnacc#########
 
 @staff_member_required
 def recnacc_home(request):
     rows=[{'data':[group.group_code,get_group_leader(group).name,get_group_leader(group).college.name,get_group_leader(group).phone,group.created_time,group.participant_set.filter(controlz=True).count(),group.participant_set.filter(checkout_group__isnull=False).count()], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:allocate_participants', kwargs={'g_id':group.id})), 'title':'Allocate Participants'}]} for group in Group.objects.all().order_by('-created time')]
     title='Groups that have passed Firewallz'
-    headings = ['Group Code', 'Group Leader', 'College', 'Gleader phone', 'Firewallz passed time', 'Total controls passed','Total alloted', 'Checkout','View Participants']
+    headings = ['Group Code', 'Group Leader', 'College', 'Gleader phone', 'Firewallz passed time', 'Total controlz passed','Total alloted', 'Checkout','View Participants']
 
     table={
         'rows':rows,
@@ -297,11 +523,11 @@ def recnacc_bhavans(request):
 
 @staff_member_required
 def bhavan_details(request, b_id):
-	bhavan = Bhavan.objects.get(id=b_id)
-	rows = [{'data':[room.room, room.vacancy, room.capacity], 'link':[{'title':'Details', 'url':request.build_absolute_uri(reverse('regsoft:manage_vacancies', kwargs={'r_id':room.id}))},]} for room in bhavan.room_set.all()]
-	headings = ['Room', 'Vacancy', 'Capacity', 'Manage Vacancies']
-	tables = [{'title': 'Details for ' + bhavan.name + ' bhavan', 'headings':headings, 'rows':rows}]
-	return render(request, 'regsoft/tables.html', {'tables':tables})
+    bhavan = Bhavan.objects.get(id=b_id)
+    rows = [{'data':[room.room, room.vacancy, room.capacity], 'link':[{'title':'Details', 'url':request.build_absolute_uri(reverse('regsoft:manage_vacancies', kwargs={'r_id':room.id}))},]} for room in bhavan.room_set.all()]
+    headings = ['Room', 'Vacancy', 'Capacity', 'Manage Vacancies']
+    tables = [{'title': 'Details for ' + bhavan.name + ' bhavan', 'headings':headings, 'rows':rows}]
+    return render(request, 'regsoft/tables.html', {'tables':tables})
 
 @staff_member_required
 def group_vs_bhavan(request):
@@ -444,21 +670,36 @@ def ck_group_details(request, ck_id):
     return render(request, 'regsoft/tables.html', {'tables':[table,],})
 
 
-################### CONTROLS ##################
+################### CONTROLZ ##################
 
 @staff_member_required
-def controls_home(request):
+def controlz_home(request):
     rows=[]
     for group in Group.objects.all():
         code = group.group_code
-        leader_name = get_group_leader(group).name
-        leader_college = get_group_leader(group).college.name
-        leader_phone = get_group_leader(group).phone
+        group_leader = get_group_leader(group)
+        leader_name = group_leader.name
+        leader_college = group_leader.college.name
+        leader_phone = group_leader.phone
         time = group.created_time
         no_of_members = group.participant_set.filter(is_guest = False).count()
-        controls_passed = group.participant_set.filter(controlz = True).count()
+        controlz_passed = group.participant_set.filter(controlz = True).count()
         bill_url = request.build_absolute_uri(reverse('regsoft:create_bill', kwargs={'g_id':group.id}))
-        rows.append({'data':[code,leader_name,leader_college,leader_phone,time,no_of_members, controls_passed],'link':[{'url':bill_url,'title':'Create Bill'}]})
+        rows.append({
+            'data': [
+                code,
+                leader_name,
+                leader_college,
+                leader_phone,
+                time,
+                no_of_members, 
+                controlz_passed
+            ],
+            'link': [{
+                'url':bill_url,
+                'title':'Create Bill'
+            }]
+        })
         print(rows)
         return HttpResponse(rows)
 
@@ -521,7 +762,6 @@ def create_bill(request,g_id):
     else:
         return render(request,'regsoft/controlz_group.html',{'controlz_passed':controlz_passed,'controlz_unpassed':controlz_unpassed,'group':group})
 
-
 @staff_member_required
 def show_all_bills(request):
     rows=[{'data':[college.name,college.participant_set.filter(controlz=True).count()],'link':[{'url':request.build_absolute_uri(reverse('regsoft:show_college_bills',kwargs={'c.id':college.id})),'title':'Show bills'}]} for college in College.objects.all()]
@@ -533,7 +773,6 @@ def show_all_bills(request):
         'title':title
     }
     return render(request,'regsoft/tables.html',{'tables':[table,]})
-
 
 @staff_member_required
 def show_college_bills(request,c_id):
@@ -561,10 +800,10 @@ def bill_details(request,b_id):
     college=participants[0].college
     c_rows = [{'data':[part.name, get_event_string(part), bill.time_paid, get_amount(part)], 'link':[]} for part in bill.participant_set.all()]
     table = {
-		'title' : 'Participant details for the bill from ' + college.name +'. Cash amount = Rs ' + str(bill.amount-bill.draft_amount) + '. Draft Amount = Rs ' + str(bill.draft_amount),
-		'headings' : ['Name', 'Event(s)', 'Time created','Had to pay'],
-		'rows':c_rows,
-	}
+        'title' : 'Participant details for the bill from ' + college.name +'. Cash amount = Rs ' + str(bill.amount-bill.draft_amount) + '. Draft Amount = Rs ' + str(bill.draft_amount),
+        'headings' : ['Name', 'Event(s)', 'Time created','Had to pay'],
+        'rows':c_rows,
+    }
     return render(request, 'regsoft/bill_details.html', {'tables':[table,],'bill':bill, 'participant_list':participants, 'college':college, 'curr_time':time_stamp})
 
 def get_amount(participant):
@@ -591,7 +830,6 @@ def print_bill(request,b_id):
     payment_methods=[{'method':'Cash','amount':bill.amount-bill.draft_amount},{'method':'Draft number '+draft,'amount':bill.draft_amount}]
     return render(request, 'regsoft/bill_invoice.html', {'bill':bill, 'part_list':participants, 'college':college, 'payment_methods':payment_methods, 'time':time, 'cr':g_leader})
 
-
 @staff_member_required
 def delete_bill(request,b_id):
     bill=get_object_or_404(Bill,id=b_id)
@@ -605,3 +843,115 @@ def delete_bill(request,b_id):
     college=participants[0].college
     return redirect(reverse('regsoft:show_college_bills',kwargs={'c_id':college.id}))
     
+
+
+###########################################################################################
+
+
+@staff_member_required
+def recnacc_list(request):
+    rows = []
+    for group in Group.objects.all().order_by('-created_time'):
+        code = group.group_code
+        group_leader = get_group_leader(group)
+        leader_name = group_leader.name
+        leader_college = group_leader.college.name
+        leader_phone = group_leader.phone
+        time = group.created_time
+        controlz_passed = group.participant_set.filter(controlz = True).count()
+        total_alloted = group.participant_set.filter(controlz=True, acco=True, checkout_group=None).count()
+        chekout_count =  group.participant_set.filter(checkout_group__isnull=False).count()
+        acco_details_url = request.build_absolute_uri(reverse('regsoft:recnacc_list_group', kwargs={'g_id':group.id}))
+        rows.append({
+            'data':[
+                code,
+                group_leader,
+                leader_name,
+                leader_college,
+                leader_phone,
+                time,
+                controlz_passed,
+                total_alloted,
+                checkout_count,
+                ],
+            'link':[{
+                'url':acco_details_url,
+                'title':'Select Participants'
+                }]
+            })
+
+    headings = ['Group Code', 'Group Leader', 'College', 'Gleader phone', 'Firewallz passed time', 'Total controlz passed','Total alloted', 'Checkout','View Participants']
+    title = 'Groups that have been alloted'
+    table = {
+        'rows':rows,
+        'headings':headings,
+        'title':title
+    }
+    return render(request, 'regsoft/tables.html', {'tables':[table,]})
+
+@staff_member_required
+def recnacc_list_group(request, g_id):
+    try:
+        group = get_object_or_404(Group, id=g_id)
+    except:
+        response = JsonResponse({'message':'No such group exists'})
+        return response
+    participant_list = group.participant_set.filter(acco=True).order_by('-recnacc_time')
+    context = {'participant_list':participant_list,'college':get_group_leader(group).college}
+    return render(request, 'regsoft/recnacc_list.html', context)
+
+@staff_member_required
+def generate_recnacc_list(request):
+    if request.method == 'POST':
+        data = request.POST
+        id_list = data.getlist('data')
+        c_rows = []
+        for p_id in id_list:
+            part = Participant.objects.get(id=p_id)
+            c_rows.append({
+                'data':[
+                    part.name,
+                    part.college.name,
+                    part.gender,
+                    get_cr_name(part), 
+                    get_event_string(part), 
+                    part.room.room, 
+                    part.room.bhavan, 
+                    400], 
+                'link':[]})
+        c_rows.append({'data':['Total', '','','','','','',amount]})
+        table = {
+            'title':'Participant list for RecNAcc from ' + part.college.name,
+            'headings':['Name', 'College', 'Gender', 'CR Name', 'Event(s)', 'Room','Bhavan', 'Caution Deposit'],
+            'rows': c_rows
+        }
+        return render(request, 'regsoft/tables.html', {'tables':[table,]})
+
+@staff_member_required
+def get_profile_card(request):
+    rows = [{'data':[part.name, part.phone, part.email, part.gender, get_event_string(part)], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:get_profile_card_participant', kwargs={'p_id':part.id})), 'title':'Get profile card'}]} for part in Participant.objects.filter(Q(pcr_final=True) | Q(is_guest=True))]
+    print(rows[0]['link'])
+    headings = ['Name', 'Phone', 'Email', 'Gender', 'Events', 'Get profile card']
+    title = 'Generate Profile Card'
+    table = {
+        'rows':rows,
+        'headings':headings,
+        'title':title,
+    }
+    return render(request, 'regsoft/tables.html', {'tables':[table,],})
+
+@staff_member_required
+def get_profile_card_group(request, g_id):
+    group = get_object_or_404(Group, id=g_id)
+    part_list = group.participant_set.all()
+    url = request.build_absolute_uri(reverse('registrations:generate_qr'))
+    return render(request, 'regsoft/card.html', {'part_list':part_list, 'url':url})
+
+@staff_member_required
+def contacts(request):
+    return render(request, 'regsoft/contact.html')
+
+@staff_member_required
+def user_logout(request):
+    logout(request)
+    return redirect('regsoft:index')

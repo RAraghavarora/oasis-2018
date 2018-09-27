@@ -57,8 +57,7 @@ class Wallet(models.Model):
 
 	def transferTo(self, target_wallet, amount, transfertype):
 		self.balance.deduct(amount)
-		target_wallet.balance.transfers += amount
-		target_wallet.balance.save()
+		target_wallet.balance.add(0,0,0,amount)
 		Transaction.objects.create(
 									amount = amount,
 									transfer_to = target_wallet,

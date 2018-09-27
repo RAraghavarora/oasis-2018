@@ -100,6 +100,10 @@ class Authentication(APIView):
 			username = email.split('@')[0]
 			try:
 				user = User.objects.get(username=username)
+				try:
+					qr_code = user.bitsian.barcode
+				except:
+					qr_code = None
 
 			except ObjectDoesNotExist:
 				user = User.objects.create(username=username, email=email)
@@ -128,6 +132,12 @@ class Authentication(APIView):
 				msg = {'message' : "Incorrect Authentication Credentials or User doesn't exist"}
 				return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
+			if not is_stall:
+				try:
+					qr_code = user.participant.barcode
+				except:
+					qr_code = None
+
 
 		#Checks if wallet exists
 		try:
@@ -144,5 +154,5 @@ class Authentication(APIView):
 		#Generates the JWT Token
 		token = self.get_jwt(user)
 
-		msg = {'user_id': user.id, 'token' : token}
+		msg = {'user_id': user.id, 'token': token, 'qr_code': qr_code}
 		return Response(msg, status = status.HTTP_200_OK)

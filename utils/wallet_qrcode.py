@@ -53,10 +53,13 @@ def decString(value, key=KEY):
         output: (id, email) if valid else bool False
     """
     # decrypt using the python Cryptography library
-    cipher = Fernet(key)
-    ciphertext = value[:-7].encode("utf-8") # remove the OASIS_18 part
-    decoded_string = cipher.decrypt(ciphertext).decode("utf-8")
-    result = decoded_string.split("_/_")[:2]
+    try:
+        cipher = Fernet(key)
+        ciphertext = value[:-7].encode("utf-8") # remove the OASIS_18 part
+        decoded_string = cipher.decrypt(ciphertext).decode("utf-8")
+        result = decoded_string.split("_/_")[:2]
+    except:
+        raise ValueError("Invalid qr_code provided.")
 
     # check to see if the decrypted values are legitimate else return False
     try:
