@@ -759,7 +759,6 @@ def create_bill(request,g_id):
     else:
         return render(request,'regsoft/controlz_group.html',{'controlz_passed':controlz_passed,'controlz_unpassed':controlz_unpassed,'group':group})
 
-
 @staff_member_required
 def show_all_bills(request):
     rows=[{'data':[college.name,college.participant_set.filter(controlz=True).count()],'link':[{'url':request.build_absolute_uri(reverse('regsoft:show_college_bills',kwargs={'c.id':college.id})),'title':'Show bills'}]} for college in College.objects.all()]
@@ -771,7 +770,6 @@ def show_all_bills(request):
         'title':title
     }
     return render(request,'regsoft/tables.html',{'tables':[table,]})
-
 
 @staff_member_required
 def show_college_bills(request,c_id):
@@ -829,7 +827,6 @@ def print_bill(request,b_id):
     payment_methods=[{'method':'Cash','amount':bill.amount-bill.draft_amount},{'method':'Draft number '+draft,'amount':bill.draft_amount}]
     return render(request, 'regsoft/bill_invoice.html', {'bill':bill, 'part_list':participants, 'college':college, 'payment_methods':payment_methods, 'time':time, 'cr':g_leader})
 
-
 @staff_member_required
 def delete_bill(request,b_id):
     bill=get_object_or_404(Bill,id=b_id)
@@ -843,3 +840,115 @@ def delete_bill(request,b_id):
     college=participants[0].college
     return redirect(reverse('regsoft:show_college_bills',kwargs={'c_id':college.id}))
     
+
+
+###########################################################################################
+
+
+@staff_member_required
+def recnacc_list(request):
+    rows = []
+    for group in Group.objects.all().order_by('-created_time'):
+        code = group.group_code
+        group_leader = get_group_leader(group)
+        leader_name = group_leader.name
+        leader_college = group_leader.college.name
+        leader_phone = group_leader.phone
+        time = group.created_time
+        controls_passed = group.participant_set.filter(controlz = True).count()
+        total_alloted = group.participant_set.filter(controlz=True, acco=True, checkout_group=None).count()
+        chekout_count =  group.participant_set.filter(checkout_group__isnull=False).count()
+        acco_details_url = request.build_absolute_uri(reverse('regsoft:recnacc_list_group', kwargs={'g_id':group.id}))
+        rows.append({
+            'data':[
+                code,
+                group_leader,
+                leader_name,
+                leader_college,
+                leader_phone,
+                time,
+                controls_passed,
+                total_alloted,
+                checkout_count
+                ],
+            'link':[{
+                'url':acco_details_url,
+                'title':'Select Participants'
+                }]
+            })
+
+    headings = ['Group Code', 'Group Leader', 'College', 'Gleader phone', 'Firewallz passed time', 'Total controls passed','Total alloted', 'Checkout','View Participants']
+    title = 'Groups that have been alloted'
+    table = {
+        'rows':rows,
+        'headings':headings,
+        'title':title
+    }
+    return render(request, 'regsoft/tables.html', {'tables':[table,]})
+
+@staff_member_required
+def recnacc_list_group(request, g_id):
+    try:
+        group = get_object_or_404(Group, id=g_id)
+    except:
+        response = JsonResponse({'message':'No such group exists'})
+        return response
+    participant_list = group.participant_set.filter(acco=True).order_by('-recnacc_time')
+    context = {'participant_list':participant_list,'college':get_group_leader(group).college}
+    return render(request, 'regsoft/recnacc_list.html', context)
+
+@staff_member_required
+def generate_recnacc_list(request):
+    if request.method == 'POST':
+        data = request.POST
+        id_list = data.getlist('data')
+        c_rows = []
+        for p_id in id_list:
+            part = Participant.objects.get(id=p_id)
+            c_rows.append({
+                'data':[
+                    part.name,
+                    part.college.name,
+                    part.gender,
+                    get_cr_name(part), 
+                    get_event_string(part), 
+                    part.room.room, 
+                    part.room.bhavan, 
+                    400], 
+                'link':[]})
+        c_rows.append({'data':['Total', '','','','','','',amount]})
+        table = {
+            'title':'Participant list for RecNAcc from ' + part.college.name,
+            'headings':['Name', 'College', 'Gender', 'CR Name', 'Event(s)', 'Room','Bhavan', 'Caution Deposit'],
+            'rows': c_rows
+        }
+        return render(request, 'regsoft/tables.html', {'tables':[table,]})
+
+@staff_member_required
+def get_profile_card(request):
+    rows = [{'data':[part.name, part.phone, part.email, part.gender, get_event_string(part)], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:get_profile_card_participant', kwargs={'p_id':part.id})), 'title':'Get profile card'}]} for part in Participant.objects.filter(Q(pcr_final=True) | Q(is_guest=True))]
+    print(rows[0]['link'])
+    headings = ['Name', 'Phone', 'Email', 'Gender', 'Events', 'Get profile card']
+    title = 'Generate Profile Card'
+    table = {
+        'rows':rows,
+        'headings':headings,
+        'title':title,
+    }
+    return render(request, 'regsoft/tables.html', {'tables':[table,],})
+
+@staff_member_required
+def get_profile_card_group(request, g_id):
+    group = get_object_or_404(Group, id=g_id)
+    part_list = group.participant_set.all()
+    url = request.build_absolute_uri(reverse('registrations:generate_qr'))
+    return render(request, 'regsoft/card.html', {'part_list':part_list, 'url':url})
+
+@staff_member_required
+def contacts(request):
+    return render(request, 'regsoft/contact.html')
+
+@staff_member_required
+def user_logout(request):
+    logout(request)
+    return redirect('regsoft:index')
