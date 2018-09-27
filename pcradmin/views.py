@@ -89,6 +89,8 @@ def select_college_rep(request,id):
             print("dsd")
 
             #Barcode generation here left for now. To be discussed if only QR or not
+            #Barcode will automatically be generated and stored if the participant is pcr_final
+            
             part.save()
             user=part.user
             if not user==None:

@@ -129,7 +129,6 @@ def firewallz_approval(request, c_id):
     print (groups_passed)
     return render(request, 'regsoft/firewallz_approval.html', {'groups_passed':groups_passed, 'unapproved_list':unapproved_list, 'college':college})
 
-
 @staff_member_required
 def get_group_list(request, g_id):
     group = get_object_or_404(Group, id=g_id)
@@ -156,9 +155,30 @@ def get_group_list(request, g_id):
     return render(request, 'regsoft/group_list.html', {'participant_list':participant_list, 'group':group})
 
 @staff_member_required
+def delete_group(request, g_id):
+    try:
+        group = get_object_or_404(Group, id=g_id)
+    except:
+        response = JsonResponse({'message':'No such group exists'})
+        return response
+    leader = get_group_leader(group)
+    for part in group.participant_set.all():
+        part.firewallz_passed = False
+        part.is_g_leader = False
+        part.save()
+    group.delete()
+    return redirect(reverse('regsoft:firewallz_approval', kwargs={'c_id':leader.college.id}))
+
+@staff_member_required
 def add_guest(request):
-    if request.method == 'POST':
-        data = request.POST
+    if request.method == 'GET':
+        colleges = College.objects.all()
+        guests = Participant.objects.filter(is_guest=True)
+        return render(request, 'regsoft/add_guest.html', {'colleges':colleges, 'guests':guests})
+
+    elif request.method == 'POST':
+        data = request.POST.dict()
+        email = data['email']
         print(data)
         if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
             messages.warning(request,'Please enter a valid email address.')
@@ -171,23 +191,28 @@ def add_guest(request):
             except:
                 pass
             participant = Participant()
+            if not data['name']:
+                messages.warning(request, 'Please enter your name')
+                return redirect(request.META.get('HTTP_REFERER'))
+            if len(data['phone'])==10:
+                participant.phone = int(data['phone'])
+            else:
+                messages.warning(request, 'Please enter a valid phone number')
+                return redirect(request.META.get('HTTP_REFERER'))
+
             participant.name = str(data['name'])
             participant.gender = str(data['gender'])
             participant.city = str(data['city'])
             participant.email = str(data['email'])
             participant.college = College.objects.get(name=str(data['college']))
-            try:
-                participant.phone = int(data['phone'])
-            except:
-                messages.warning(request, 'Please enter a valid phone number')
-                return redirect(request.META.get('HTTP_REFERER'))
-            participant.is_guest = True
-            participant.email_verified = True
-            try:
-                participant.bits_id = str(data['bits_id'])
-            except:
+            
+            if not data['bits_id']:
                 messages.warning(request, 'Please enter the bits id')
                 return redirect(request.META.get('HTTP_REFERER'))
+            participant.bits_id = str(data['bits_id'])
+
+            participant.is_guest = True
+            participant.email_verified = True
             participant.save()
             participant.firewallz_passed = True
             
@@ -199,10 +224,11 @@ def add_guest(request):
             password = ''.join(choice(chars) for i in range(8)) #random alphanumeric password of length 8
             user = User.objects.create_user(username=username, password=password)
             participant.user = user
-            participant.save() # Barcode will automatically be generated and assigned
+            participant.save() # Barcode will automatically be generated and assigned. Django Signals
             print(participant.user.username)
-            email_class = send_grid.add_guest()
-
+            
+            #sendgrid email body is written in a separate file called send_grid.py
+            email_class = send_grid.add_guest() 
             send_to = participant.email
             name = participant.name
             body = email_class.body%(name, username, password, get_pcr_number())
@@ -231,11 +257,7 @@ def add_guest(request):
                 'url':request.build_absolute_uri(reverse('regsoft:firewallz_home'))
             }
             return render(request, 'registrations/message.html', context)
-    else:
-        colleges = College.objects.all()
-        guests = Participant.objects.filter(is_guest=True)
-        return render(request, 'regsoft/add_guest.html', {'colleges':colleges, 'guests':guests})
-
+    
 @staff_member_required
 def remove_guests(request):
     if request.method == 'POST':
@@ -256,10 +278,9 @@ def remove_guests(request):
 @staff_member_required
 def add_participant(request):
     if request.method == 'GET':
-        event_list = Event.objects.all()
+        event_list = MainEvent.objects.all()
         colleges = College.objects.all()
-        guests = Participant.objects.filter(is_guest=True)
-        return render(request, 'regsoft/add_participant.html', {'event_list':event_list,'colleges':colleges, 'guests':guests})
+        return render(request, 'regsoft/add_participant.html', {'event_list':event_list,'colleges':colleges})
 
     if request.method == 'POST':
         data = request.POST
@@ -276,28 +297,36 @@ def add_participant(request):
                 pass
             try:
                 events = data.getlist('events')
+                print(events)
             except:
                 pass
             participant = Participant()
+            if not data['name']:
+                messages.warning(request, 'Please enter your name')
+                return redirect(request.META.get('HTTP_REFERER'))
+            if len(data['phone'])==10:
+                participant.phone = int(data['phone'])
+            else:
+                messages.warning(request, 'Please enter a valid phone number')
+                return redirect(request.META.get('HTTP_REFERER'))
             participant.name = str(data['name'])
+            participant.phone = int(data['phone'])
             participant.gender = str(data['gender'])
             participant.city = str(data['city'])
             participant.email = str(data['email'])
             participant.college = College.objects.get(name=str(data['college']))
-            participant.phone = int(data['phone'])
+           
             participant.email_verified = True
-            participant.pcr_final = True
             participant.pcr_approved = True
             participant.save()
-            ems_code = str(participant.college.id).rjust(3,'0') + str(participant.id).rjust(4,'0')
-            participant.ems_code = ems_code
-            encoded = gen_barcode(participant)
-            participant.save()
+            participant.pcr_final = True
+            # ems_code = str(participant.college.id).rjust(3,'0') + str(participant.id).rjust(4,'0')
+            # participant.ems_code = ems_code
             username = participant.name.split(' ')[0] + str(participant.id)
-            password = ''.join(choice(chars) for _ in xrange(8))
+            password = ''.join(choice(chars) for _ in range(8)) #random alphanumeric password of length 8
             user = User.objects.create_user(username=username, password=password)
             participant.user = user
-            participant.save()
+            participant.save() # Here, barcode will automatically be generated and stored using django signals.
             college = participant.college
             if not college.participant_set.filter(is_cr=True):
                 participant.is_cr = True
@@ -306,47 +335,25 @@ def add_participant(request):
                 events = data.getlist('events')
                 for key in data.getlist('events'):
                     event = Event.objects.get(id=int(key))
-                    Participation.objects.create(event=event, participant=participant, pcr_approved=True)
+                    MainParticipation.objects.create(event=event, participant=participant, pcr_approved=True)
             except:
                 pass
             participant.save()
 
+            #sendgrid email body is written in a separate file called send_grid.py
+            #DRY
+            email_class = send_grid.add_guest() 
             send_to = participant.email
             name = participant.name
-            body = '''<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
-            <center><img src="http://bits-oasis.org/2017/static/registrations/img/logo.png" height="150px" width="150px"></center>
-            <pre style="font-family:Roboto,sans-serif">
-            Hello %s!
-
-            Thank you for registering!
-
-            Greetings from BITS Pilani!
-
-            It gives me immense pleasure in inviting your institute to the 47th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 31st to November 4th.             
-                       
-            This is to inform you that your guest registration is complete.
-            You can now login in the app using the following credentials and get your exclusive qrcode:
-            username : '%s'
-            password : '%s'
-
-            Regards,
-            StuCCAn (Head)
-            Dept. of Publications & Correspondence, OASIS 2017
-            BITS Pilani
-            %s
-            pcr@bits-oasis.org
-            </pre>
-            ''' %(name, username, password, get_pcr_number())
-            sg = sendgrid.SendGridAPIClient(apikey=API_KEY)
-            from_email = Email('register@bits-oasis.org')
+            body = email_class.body%(name, username, password, get_pcr_number())
             to_email = Email(send_to)
-            subject = "Registration for OASIS '17 REALMS OF FICTION"
             content = Content('text/html', body)
 
             try:
-                mail = Mail(from_email, subject, to_email, content)
-                response = sg.client.mail.send.post(request_body=mail.get())
-            except :
+                mail = Mail(email_class.from_email,email_class.subject,to_email,content)
+                response = send_grid.sg.client.mail.send.post(request_body = mail.get())
+                print("EMAIL SENT")
+            except:
                 participant.user = None
                 participant.save()
                 user.delete()
@@ -357,7 +364,6 @@ def add_participant(request):
                     'message': "Sorry! Error in sending email. Please try again.",
                 }
                 return render(request, 'registrations/message.html', context)
-
             context = {
                 'error_heading': "Emails sent",
                 'message': "Login credentials have been mailed to the corresponding new participants.",
