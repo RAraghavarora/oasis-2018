@@ -53,21 +53,22 @@
                     <option value="{{college.name}}">{{college.name}}</option>        
                 {% endfor %}
             </select>
-            <label for="events">Event(s)</label>
-            <select class="form-control show-tick" name="events" data-live-search="true" multiple>
-                {% for event in event_list %}
-                    <option value="{{event.id}}">{{event.name}}</option>        
-                {% endfor %}
-            </select>
+            
             <label for="phone">Phone number</label>
             <div class="form-group">
                 <div class="form-line">
                     <input type="number" id="phone" class="form-control" placeholder="Phone number" name="phone">
                 </div>
             </div>
+            <label for="events">Event(s)</label>
+            <select class="form-control show-tick" name="events" data-live-search="true" multiple>
+                {% for event in event_list %}
+                    <option value="{{event.id}}">{{event.name}}</option>        
+                {% endfor %}
+            </select>
 
             <br>
-            <button type="submit" class="btn btn-primary m-t-15 waves-effect">Add Guest</button>
+            <button type="submit" class="btn btn-primary m-t-15 waves-effect">Add Participant</button>
         </div>
     </div>
 </div>
