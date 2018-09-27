@@ -46,8 +46,8 @@ class PlaceOrder(APIView):
         # Part 1:
         try:
             data = request.data["order"]
-            date = request.data["date"]
-            price = request.data["price"]
+            # date = request.data["date"]
+            # price = request.data["price"]
         except KeyError as missing:
             msg = {"message": "missing the following field: {}".format(missing)}
             return Response(msg, status=status.HTTP_400_BAD_REQUEST)
@@ -56,40 +56,49 @@ class PlaceOrder(APIView):
 
         order = Order.objects.create(customer=customer)
 
+        flag = True
+        unavailable = []
+
         for stall_id, stall in data.items():
             try:
                 stall_instance = Stall.objects.get(id = stall_id)
             except Stall.DoesNotExist:
                 order.delete()
-                msg = {"message" : "Stall doesn't exist"}
+                msg = {"message" : "Stall with the following id doesn't exist: {}".format(stall_id)}
                 return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
-            fragment = order.fragments.create(stall=stall_instance, order=order)
+            if flag:
+                fragment = order.fragments.create(stall=stall_instance, order=order)
 
             for item in stall["items"]:
                 try:
                     itemclass = ItemClass.objects.get(id=item["id"])
-                except:
-                    msg = "invalid item id {}".format(item["id"])
-                    stat = status.HTTP_404_NOT_FOUND
+                    qty = item["qty"]
+                except KeyError as missing:
+                    msg = {"message" : "The following field was missing: {}".format(missing)}
                     order.delete()
-                    return Response({"message": msg}, status=stat)
+                    return Response(msg, status = status.HTTP_404_NOT_FOUND)
+                except ItemClass.DoesNotExist:
+                    msg = "Item with the following id doesn't exist: {}".format(item["id"])
+                    order.delete()
+                    return Response({"message": msg}, status = status.HTTP_404_NOT_FOUND)
 
                 if not itemclass.is_available:
-                    msg = {"message":"{} is not currently available".format(itemclass)}
-                    stat = status.HTTP_404_NOT_FOUND
-                    order.delete()
-                    return Response(msg, status=stat)
+                    unavailable.append(itemclass.id)
+                    flag = False
+                
+                if flag:
+                    fragment.items.create(itemclass=itemclass, quantity=item["qty"], order=fragment)
 
-                try:
-                    qty = item["qty"]
-                except KeyError:
-                    msg = {"message" : "Quantity of item: #{} wasn't specified.".format(item["id"])}
-                    return Response(msg, status = status.HTTP_404_NOT_FOUND)
+            if flag:
+                fragment.save() # to perform some extra synchronization with firestore
 
-                fragment.items.create(itemclass=itemclass, quantity=item["qty"], order=fragment)
+        if unavailable:
+            order.delete()
+            dump = json.dumps({"unavailable" : unavailable}, sort_keys=True, separators=(',', ': '))
+            load = json.loads(dump)
+            return Response(load, status = status.HTTP_424_FAILED_DEPENDENCY)
 
-            fragment.save() # to perform some extra synchronization with firestore
 
         # Part 2:
         net_cost = order.calculateTotal()
@@ -117,8 +126,8 @@ class PlaceOrder(APIView):
 
         data["order_id"] = order.id
         data["fragment_ids"] = fragments
-        data["date"] = date
-        data["price"] = price
+        # data["date"] = date
+        # data["price"] = price
         order.setQueryString({"order": data})
 
         return Response({"order_id": order.id, "fragments_ids": fragments, "cost": net_cost})
