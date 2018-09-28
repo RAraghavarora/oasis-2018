@@ -132,6 +132,7 @@ def firewallz_approval(request, c_id):
         group.save()
         part_list = Participant.objects.filter(id__in=id_list)
         return redirect(reverse('regsoft:get_group_list', kwargs={'g_id':group.id}))
+    print(Group)
     groups_passed = [group for group in Group.objects.all() if get_group_leader(group).college == college]
     unapproved_list = college.participant_set.filter(pcr_final=True, firewallz_passed=False, is_guest=False)
     print (groups_passed)
@@ -592,6 +593,7 @@ def generate_ckgroup_code(group):
     if encoded is not None:
         return encoded
     group_ida = "%04d" % int(group_id)
+    print("\n PARTCI \n",group.participant_set.all())
     college_code = ''.join(group.participant_set.all()[0].college.name.split(' '))
     if len(college_code)<4:
         college_code += str(0)*(4-len(college_code))
@@ -614,7 +616,6 @@ def checkout(request,c_id):
 
         for participant in part_list:
             room=participant.room
-            
             room.vacancy+=1
             room.save()
             participant.checkout_group=checkout_group
@@ -646,6 +647,7 @@ def master_checkout(request):
 @staff_member_required
 def checkout_groups(request, c_id):
     college = get_object_or_404(College, id=c_id)
+    print(CheckoutGroup.objects.all())
     ck_group_list = [ck_group for ck_group in CheckoutGroup.objects.all() if ck_group.participant_set.all()[0].college == college]
     print(ck_group_list)
     rows = [{'data':[ck_group.participant_set.all().count(), ck_group.created_time, ck_group.amount_retained], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:ck_group_details', kwargs={'ck_id':ck_group.id})), 'title':'View Details'}]} for ck_group in ck_group_list]
@@ -782,7 +784,7 @@ def create_bill(request,g_id):
 
 @staff_member_required
 def show_all_bills(request):
-    rows=[{'data':[college.name,college.participant_set.filter(controlz=True).count()],'link':[{'url':request.build_absolute_uri(reverse('regsoft:show_college_bills',kwargs={'c.id':college.id})),'title':'Show bills'}]} for college in College.objects.all()]
+    rows=[{'data':[college.name,college.participant_set.filter(controlz=True).count()],'link':[{'url':request.build_absolute_uri(reverse('regsoft:show_college_bills',kwargs={'c_id':college.id})),'title':'Show bills'}]} for college in College.objects.all()]
     headings=['College','Controlz passed participants','Show bills']
     title='Colleges for bill details'
     table={
