@@ -17,7 +17,7 @@ from oasis2018.settings import BASE_DIR
 import os
 from time import gmtime, strftime
 import string
-# from pcradmin.views import get_cr_name, gen_barcode, get_pcr_number
+from pcradmin.views import get_cr_name, get_pcr_number
 from django.contrib import messages
 from django.contrib.auth.models import User
 
@@ -473,7 +473,7 @@ def recnacc_group_list(request,c_id):
     incomplete_table={
         'rows':incomplete_rows,
         'headings':['Created Time','GroupLeader Name','Total','Alloted','Manage'],
-        'title':'Incompletely alloted groups from  '+college.name
+        'title':'Incompletely alloted groups from '+college.name
     }
     return render(request,'regsoft/tables.html',{'tables':[complete_table,incomplete_table],'college':college})
 
