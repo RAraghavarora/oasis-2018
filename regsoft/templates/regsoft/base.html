@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>RegSoft | Oasis'17</title>
+    <title>RegSoft | Oasis'18</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
 
@@ -27,7 +27,7 @@
     {% block head %}
     {% endblock %}
     <link href="{% static 'pcradmin/css/themes/all-themes.css' %}" rel="stylesheet" />
-    
+    <link rel="shortcut icon" href="{% static 'pcradmin/images/Oasis-Logo.png' %}">
     
 </head>
 
@@ -57,7 +57,7 @@
             <div class="navbar-header">
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
-                <a class="navbar-brand" >RegSoft | Oasis'17</a>
+                <a class="navbar-brand" href="{% url 'regsoft:index' %}">RegSoft | Oasis'18</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -83,7 +83,7 @@
                         <ul class="dropdown-menu pull-right">
                             <li><a href="#"><i class="material-icons">person</i>Contacts</a></li>
                             <li role="seperator" class="divider"></li>
-                            <li><i class="material-icons">input</i>Sign Out</a></li>
+                            <li><a href="{% url 'pcradmin:user-logout' %}"><i class="material-icons">input</i>Sign Out</a></li>
                         </ul>
                     </div>
                 </div>
@@ -94,7 +94,7 @@
                 <ul class="list">
                     <li class="header">MAIN NAVIGATION</li>
                     <li class="active">
-                        
+                        <a href="{% url 'regsoft:index' %}">
                             <i class="material-icons">home</i>
                             <span>Home</span>
                         </a>
@@ -106,13 +106,13 @@
                         </a>
                         <ul class="ml-menu">
                             <li>
-                                <span>View Colleges</span></a>
+                                <a href="{% url 'regsoft:firewallz_home' %}"><span>View Colleges</span></a>
                             </li>
                             <li>
-                                <span>Add guest</span></a>
+                                <a href="{% url 'regsoft:add_guest' %}"><span>Add guest</span></a>
                             </li>
                             <li>
-                                <span>Add Participant</span></a>
+                                <a href="{% url 'regsoft:add_participant' %}"><span>Add Participant</span></a>
                             </li>
                         </ul>
                     </li>
@@ -122,44 +122,43 @@
                         </a>
                         <ul class="ml-menu">
                             <li>
-                                <span>View Groups</span></a>
+                                <a href="{% url 'regsoft:recnacc_home' %}"><span>View Groups</span></a>
                             </li>
                             <li>
-                                <span>Room Details</span></a>
+                                <a href="{% url 'regsoft:room_details' %}"><span>Room Details</span></a>
                             </li>
                             <li>
-                                <span>Group vs Bhavans</span></a>
+                                <a href="{% url 'regsoft:group_vs_bhavan' %}"><span>Group vs Bhavans</span></a>
                             </li>
                             <li>
-                                <span>Collegewise Details</span></a>
+                                <a href="{% url 'regsoft:recnacc_college_details' %}"><span>Collegewise Details</span></a>
                             </li>
                             <li>
-                                <span>Checkout</span></a>
+                                <a href="{% url 'regsoft:checkout_college' %}"><span>Checkout</span></a>
                             </li>
                             <li>
-                                    <span>Master Checkout</span></a>
+                                    <a href="{% url 'regsoft:master_checkout' %}"><span>Master Checkout</span></a>
                             </li>
                         </ul>
                     </li>
                     <li>
                         <a href="javascript:void(0);" class="menu-toggle">
-                            <span>Controlz</span>
+                            <span>Controls</span>
                         </a>
                         <ul class="ml-menu">
                             <li>
-                                <span>View Groups</span></a>
+                                <a href="{% url 'regsoft:controlz_home' %}"><span>View Groups</span></a>
                             </li>
                             <li>
-                                <span>Manage Bills</span></a>
+                                <a href="{% url 'regsoft:show_all_bills' %}"><span>Manage Bills</span></a>
                             </li>
                             <li>
-                                <span>Generate RecNAcc List</span></a>
+                                <a href="{% url 'regsoft:recnacc_list' %}"><span>Generate RecNAcc List</span></a>
                             </li>
                         </ul>
                     </li>
                     <li class="header">LABELS</li>
                     <li>
-                        
                             <i class="material-icons col-amber">donut_large</i>
                             <span>Contacts</span>
                         </a>
@@ -176,7 +175,7 @@
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">
-                    Made with &hearts; for OASIS'17
+                    Made with &hearts; for OASIS'18
                 </div>
                 <div class="version">
                     <a href="https://gitlab.com/dvm-bitspilani">DVM, BITS Pilani</a>
@@ -200,7 +199,7 @@
                                 <a class="btn btn-block bg-blue waves-effect" href="https://bits-oasis.org">Go to the main site</a>
                             </li>
                             <li>
-                                <a class="btn btn-block bg-blue waves-effect" href="https://bits-oasis.org/2018/admin">Admin Login</a>
+                                <a class="btn btn-block bg-blue waves-effect" href="https://bits-oasis.org/2017/admin">Admin Login</a>
                             </li>
                         </ul>
                         <p>ACCOUNT SETTINGS</p>

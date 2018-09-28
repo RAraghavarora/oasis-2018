@@ -55,6 +55,15 @@ def generate_group_code(group):
     group.save()
     return encoded
 
+@staff_member_required
+def index(request):
+	if request.user.username.lower() == 'controlz':
+		return redirect(reverse('regsoft:controlz_home'))
+	if request.user.username.lower() == 'recnacc':
+		return redirect(reverse('regsoft:recnacc_home'))
+	if request.user.username == 'firewallz' or request.user.is_superuser:
+		return redirect(reverse('regsoft:firewallz_home'))
+
 ############FIREWALLZ#############
 
 @staff_member_required
@@ -378,7 +387,8 @@ def add_participant(request):
 
 @staff_member_required
 def recnacc_home(request):
-    rows=[{'data':[group.group_code,get_group_leader(group).name,get_group_leader(group).college.name,get_group_leader(group).phone,group.created_time,group.participant_set.filter(controlz=True).count(),group.participant_set.filter(checkout_group__isnull=False).count()], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:allocate_participants', kwargs={'g_id':group.id})), 'title':'Allocate Participants'}]} for group in Group.objects.all().order_by('-created time')]
+    rows = [{'data':[group.group_code, get_group_leader(group).name, get_group_leader(group).college.name, get_group_leader(group).phone,group.created_time, group.participant_set.filter(controlz=True).count(), group.participant_set.filter(controlz=True, acco=True, checkout_group=None).count(), group.participant_set.filter(checkout_group__isnull=False).count()], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:allocate_participants', kwargs={'g_id':group.id})), 'title':'Allocate Participants'}]} for group in Group.objects.all().order_by('-created_time')]
+
     title='Groups that have passed Firewallz'
     headings = ['Group Code', 'Group Leader', 'College', 'Gleader phone', 'Firewallz passed time', 'Total controlz passed','Total alloted', 'Checkout','View Participants']
 
@@ -458,21 +468,21 @@ def recnacc_group_list(request,c_id):
     complete_table={
         'rows':complete_rows,
         'headings':['Created Time','GroupLeader Name','Total','Alloted','Manage'],
-        'title':'Completely alloted groups from'+college.name
+        'title':'Completely alloted groups from '+college.name
     }
     incomplete_table={
         'rows':incomplete_rows,
         'headings':['Created Time','GroupLeader Name','Total','Alloted','Manage'],
-        'title':'Incompletely alloted groups from'+college.name
+        'title':'Incompletely alloted groups from  '+college.name
     }
     return render(request,'regsoft/tables.html',{'tables':[complete_table,incomplete_table],'college':college})
 
 
 @staff_member_required
 def room_details(request):
-    room_list=Room.objects.all()
+    room_list = Room.objects.all()
     rows = [{'data':[room.room, room.bhavan.name, room.vacancy, room.capacity,], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:manage_vacancies', kwargs={'r_id':room.id})), 'title':'Manage'},]} for room in room_list]
-    headings=['Room','Bhawan','Vacancy','Capacity']
+    headings = ['Room', 'Bhavan', 'Vacancy', 'Capacity', 'Manage Room Details']
     title = 'Manage Room Details'
     table = {
         'rows':rows,
@@ -480,7 +490,6 @@ def room_details(request):
         'title':title,
     }
     return render(request, 'regsoft/tables.html', {'tables':[table,]})
-
 
 @staff_member_required
 def manage_vacancies(request,r_id):
@@ -549,15 +558,14 @@ def group_vs_bhavan(request):
 
 
 @staff_member_required
-def college_details(request):
-    college_list=[]
-    for college in College.objects.all():
+def recnacc_college_details(request):
+    college_list = []
+    for c in College.objects.all():
         try:
-            part=college.participant_set.filter(is_cr=True)
-            college_list.append(college)
+            p = c.participant_set.get(is_cr=True)
+            college_list.append(c)
         except:
             pass
-
     rows = [{'data':[college.name, college.participant_set.get(is_cr=True).name,college.participant_set.filter(acco=True).count()], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:recnacc_group_list', kwargs={'c_id':college.id})), 'title':'View Details'}]} for college in college_list]
     headings = ['College', 'Cr Name','Alloted Participants', 'View Details']
     title = 'Select college to approve Participants'
