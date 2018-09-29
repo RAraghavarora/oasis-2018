@@ -33,7 +33,6 @@ def autoAddWalletBitsian(sender, **kwargs):
             balance = Balance.objects.create(wallet=wallet)
             wallet.balance = balance
             wallet.save()
-            print("WALLET CREATED")
 
 
 @receiver(post_save, sender=Participant)
