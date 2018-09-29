@@ -32,17 +32,17 @@ def index(request):
         data = json.loads(request.body.decode('utf8').replace("'", '"'))
         print(request.body)
         print (data)
-        # recaptcha_response = data['g-recaptcha-response']
-        # data_1={
-        #     'secret' : keyconfig.google_recaptcha_secret_key,
-        #     'response' : recaptcha_response
-        # }
-        # r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data_1)
+        recaptcha_response = data['g-recaptcha-response']
+        data_1={
+            'secret' : keyconfig.google_recaptcha_secret_key,
+            'response' : recaptcha_response
+        }
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data_1)
         
-        # result=r.json()
-        # if not result['success']:
-        #     print(result)
-        #     return JsonResponse({'status':0, 'message':'Invalid Recaptcha. Try Again'})
+        result=r.json()
+        if not result['success']:
+            print(result)
+            return JsonResponse({'status':0, 'message':'Invalid Recaptcha. Try Again'})
         if len(data['phone'])!=10:
             return JsonResponse({'status':0,'message':'Please enter a valid contact number.'})
         try:
