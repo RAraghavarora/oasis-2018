@@ -86,7 +86,7 @@ class PlaceOrder(APIView):
                 if not itemclass.is_available:
                     unavailable.append(itemclass.id)
                     flag = False
-                
+
                 if flag:
                     fragment.items.create(itemclass=itemclass, quantity=item["qty"], order=fragment)
 
@@ -156,8 +156,7 @@ class GetOrders(APIView):
                     try:
                         frag_id = frag["id"]
                         fragment = OrderFragment.objects.get(id=frag_id)
-                        order["status"] = fragment.status
-                        new_fragment_ids.append({"id": frag_id, "stall_id": frag["stall_id"]})
+                        new_fragment_ids.append({"id": frag_id, "stall_id": frag["stall_id"], "status": fragment.status})
                     except Exception as e:
                         print(e)
                         return Response({"message": "one or more of the stalls are non-existant."}, status=status.HTTP_404_NOT_FOUND)
