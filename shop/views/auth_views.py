@@ -92,8 +92,11 @@ class Authentication(APIView):
 			#Checks if Bitsian exists, return 404 if doesn't.
 			email = idinfo['email']
 			try:
+				print("EMAIL: {}".format(email))
 				bitsian = Bitsian.objects.get(email=email)
-			except:
+				print("BITSIAN: {}".format(bitsian))
+			except Exception as e:
+				print(e)
 				msg = "Bitsian not in SWD list, for security reasons you will need to contact the DVM."
 				return Response({"message": msg}, status=status.HTTP_404_NOT_FOUND)
 
@@ -142,14 +145,14 @@ class Authentication(APIView):
 
 		#Checks if wallet exists
 		try:
-			wallet = Wallet.objects.get(user = user)
-
+			print("User: {}".format(user))
+			wallet = Wallet.objects.get(user=user)
+			print("Wallet: {}".format(wallet))
 			if not wallet:
 				raise Wallet.DoesNotExist
 
 		except Wallet.DoesNotExist:
 			msg = {'message' : 'Contact the administrators'}
-
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
 		#Generates the JWT Token
