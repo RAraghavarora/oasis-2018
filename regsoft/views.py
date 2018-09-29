@@ -219,8 +219,10 @@ def add_guest(request):
             participant.email = str(data['email'])
             participant.college = College.objects.get(name=str(data['college']))
             
-            if not data['bits_id']:
-                messages.warning(request, 'Please enter the bits id')
+            if not re.match(
+                r'^20\d{2}(A[1-578B]([PT]S|A[1-578B]|B[1-5])|[CD]2[TP]S|B[1-5]([PT]S|A[1-578B])|H[DS0-9]\d{2}|PH[X0-9][PF0-9])\d{4}P$',
+                str(data['bits_id'])):
+                messages.warning(request, 'Please enter a proper bits id')
                 return redirect(request.META.get('HTTP_REFERER'))
             participant.bits_id = str(data['bits_id'])
 
