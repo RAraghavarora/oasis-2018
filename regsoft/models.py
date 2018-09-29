@@ -6,7 +6,7 @@ class Bhavan(models.Model):
 
 	name = models.CharField(max_length=30)
 
-	def __unicode__(self):
+	def __str__(self):
 
 		return self.name
 
@@ -17,7 +17,7 @@ class Room(models.Model):
 	vacancy = models.IntegerField(default=0)
 	capacity = models.IntegerField(default=0)
 
-	def __unicode__(self):
+	def __str__(self):
 
 		return self.room + '-' + str(self.bhavan.name)
 
