@@ -32,7 +32,7 @@ def index(request):
         data = json.loads(request.body.decode('utf8').replace("'", '"'))
         print(request.body)
         print (data)
-        recaptcha_response = data['reCaptacha']
+        recaptcha_response = data['reCaptcha']
         data_1={
             'secret' : keyconfig.google_recaptcha_secret_key,
             'response' : recaptcha_response
