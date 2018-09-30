@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.models import User
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -24,7 +25,9 @@ class Transfer(APIView):
             try:
                 source = request.user.wallet
                 target_user = User.objects.get(id=data["target_user"])
-                target = Wallet.objects.get(user=user)
+                target = Wallet.objects.get(user=target_user)
+                if source == target:
+                    return {"message": "You can't transfer money to yourself."}
                 amount = data["amount"]
                 if amount < 0:
                     return Response({"message": "transfered amount cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
