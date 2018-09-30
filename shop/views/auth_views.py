@@ -97,7 +97,7 @@ class Authentication(APIView):
 				print("BITSIAN: {}".format(bitsian))
 			except Exception as e:
 				print(e)
-				msg = "Bitsian not in SWD list, for security reasons you will need to contact the DVM."
+				msg = "Bitsian associated with {} not in SWD list, for security reasons you will need to contact the DVM.".format(email)
 				return Response({"message": msg}, status=status.HTTP_404_NOT_FOUND)
 
 			#Checks if user exist creates if doesn't.
