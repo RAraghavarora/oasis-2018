@@ -9,8 +9,10 @@ from shop.views import misc_views
 app_name="shop"
 
 urlpatterns = [
-    url('transfer/', ewallet_views.Transfer.as_view(), name="transfer"),
-    url('place-order/', orders_views.PlaceOrder.as_view(), name="place-order"),
+    url('transfer', ewallet_views.Transfer.as_view(), name="transfer"),
+    url('place-order', orders_views.PlaceOrder.as_view(), name="place-order"),
+    url(r'^addmoney$', ewallet_views.AddMoney.as_view(), name="AddMoney" ),
+    url(r'^addmoneyresponse', ewallet_views.AddMoneyResponse.as_view(), name="AddMoneyResponse"),
 
     url(r'^auth/', auth_views.Authentication.as_view(), name = "auth"),
 
@@ -27,4 +29,5 @@ urlpatterns = [
 
     url(r'^consume-tickets/$', orders_views.ConsumeTickets.as_view(), name='consume-tickets'),
     url(r'^get-profshows/$', misc_views.GetProfShows.as_view(), name="get-profshows"),
+
 ]
