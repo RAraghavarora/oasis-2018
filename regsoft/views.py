@@ -17,7 +17,7 @@ from oasis2018.settings import BASE_DIR
 import os
 from time import gmtime, strftime
 import string
-# from pcradmin.views import get_cr_name, gen_barcode, get_pcr_number
+from pcradmin.views import get_cr_name, get_pcr_number
 from django.contrib import messages
 from django.contrib.auth.models import User
 
@@ -132,6 +132,7 @@ def firewallz_approval(request, c_id):
         group.save()
         part_list = Participant.objects.filter(id__in=id_list)
         return redirect(reverse('regsoft:get_group_list', kwargs={'g_id':group.id}))
+    print(Group)
     groups_passed = [group for group in Group.objects.all() if get_group_leader(group).college == college]
     unapproved_list = college.participant_set.filter(pcr_final=True, firewallz_passed=False, is_guest=False)
     print (groups_passed)
@@ -218,8 +219,10 @@ def add_guest(request):
             participant.email = str(data['email'])
             participant.college = College.objects.get(name=str(data['college']))
             
-            if not data['bits_id']:
-                messages.warning(request, 'Please enter the bits id')
+            if not re.match(
+                r'^20\d{2}(A[1-578B]([PT]S|A[1-578B]|B[1-5])|[CD]2[TP]S|B[1-5]([PT]S|A[1-578B])|H[DS0-9]\d{2}|PH[X0-9][PF0-9])\d{4}P$',
+                str(data['bits_id'])):
+                messages.warning(request, 'Please enter a proper bits id')
                 return redirect(request.META.get('HTTP_REFERER'))
             participant.bits_id = str(data['bits_id'])
 
@@ -473,7 +476,7 @@ def recnacc_group_list(request,c_id):
     incomplete_table={
         'rows':incomplete_rows,
         'headings':['Created Time','GroupLeader Name','Total','Alloted','Manage'],
-        'title':'Incompletely alloted groups from  '+college.name
+        'title':'Incompletely alloted groups from '+college.name
     }
     return render(request,'regsoft/tables.html',{'tables':[complete_table,incomplete_table],'college':college})
 
@@ -540,11 +543,12 @@ def bhavan_details(request, b_id):
 
 @staff_member_required
 def group_vs_bhavan(request):
-    rows=[]
+    rows = []
     for group in Group.objects.all():
         if group.participant_set.filter(acco=True):
-            bhavans=[]
+            bhavans = []
             for part in group.participant_set.filter(acco=True):
+                
                 if not part.room.bhavan in bhavans:
                     bhavans.append(part.room.bhavan)
             for bhavan in bhavans:
@@ -591,6 +595,7 @@ def generate_ckgroup_code(group):
     if encoded is not None:
         return encoded
     group_ida = "%04d" % int(group_id)
+    print("\n PARTCI \n",group.participant_set.all())
     college_code = ''.join(group.participant_set.all()[0].college.name.split(' '))
     if len(college_code)<4:
         college_code += str(0)*(4-len(college_code))
@@ -644,7 +649,9 @@ def master_checkout(request):
 @staff_member_required
 def checkout_groups(request, c_id):
     college = get_object_or_404(College, id=c_id)
+    print(CheckoutGroup.objects.all())
     ck_group_list = [ck_group for ck_group in CheckoutGroup.objects.all() if ck_group.participant_set.all()[0].college == college]
+    print(ck_group_list)
     rows = [{'data':[ck_group.participant_set.all().count(), ck_group.created_time, ck_group.amount_retained], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:ck_group_details', kwargs={'ck_id':ck_group.id})), 'title':'View Details'}]} for ck_group in ck_group_list]
     headings = ['Participant Count', 'Time of Checkout', 'Amount Retained', 'View Details']
     title = 'Checkout groups from ' + college.name
@@ -708,8 +715,15 @@ def controlz_home(request):
                 'title':'Create Bill'
             }]
         })
-        print(rows)
-        return HttpResponse(rows)
+    headings = ['Group Code', 'Group Leader', 'College', 'Gleader phone', 'Firewallz passed time', 'Total in group', 'Passed controls from group','View Participants']
+    title = 'Groups that have passed firewallz'
+    table = {
+        'rows':rows,
+        'headings':headings,
+        'title':title
+    }
+    return render(request, 'regsoft/tables.html', {'tables':[table,]})
+
 
 @staff_member_required
 def create_bill(request,g_id):
@@ -744,9 +758,9 @@ def create_bill(request,g_id):
         amount_dict = {'twothousands':2000, 'fivehundreds':500, 'twohundreds':200,'hundreds':100, 'fifties':50, 'twenties':20, 'tens':10}
         return_dict = {'twothousandsreturned':2000, 'fivehundredsreturned':500, 'twohundredsreturned':200,'hundredsreturned':100, 'fiftiesreturned':50, 'twentiesreturned':20, 'tensreturned':10}
         bill.amount=0
-        for key,value in amount_dict.iteritems():
+        for key,value in amount_dict.items():
             bill.amount+=int(data[key])*int(value)
-        for key,value in return_dict.iteritems():
+        for key,value in return_dict.items():
             bill.amount-=int(data[key])*int(value)
         try:
             bill.draft_number=data['draft_number']
@@ -772,7 +786,7 @@ def create_bill(request,g_id):
 
 @staff_member_required
 def show_all_bills(request):
-    rows=[{'data':[college.name,college.participant_set.filter(controlz=True).count()],'link':[{'url':request.build_absolute_uri(reverse('regsoft:show_college_bills',kwargs={'c.id':college.id})),'title':'Show bills'}]} for college in College.objects.all()]
+    rows=[{'data':[college.name,college.participant_set.filter(controlz=True).count()],'link':[{'url':request.build_absolute_uri(reverse('regsoft:show_college_bills',kwargs={'c_id':college.id})),'title':'Show bills'}]} for college in College.objects.all()]
     headings=['College','Controlz passed participants','Show bills']
     title='Colleges for bill details'
     table={
@@ -851,11 +865,6 @@ def delete_bill(request,b_id):
     college=participants[0].college
     return redirect(reverse('regsoft:show_college_bills',kwargs={'c_id':college.id}))
     
-
-
-###########################################################################################
-
-
 @staff_member_required
 def recnacc_list(request):
     rows = []
@@ -868,12 +877,11 @@ def recnacc_list(request):
         time = group.created_time
         controlz_passed = group.participant_set.filter(controlz = True).count()
         total_alloted = group.participant_set.filter(controlz=True, acco=True, checkout_group=None).count()
-        chekout_count =  group.participant_set.filter(checkout_group__isnull=False).count()
+        checkout_count =  group.participant_set.filter(checkout_group__isnull=False).count()
         acco_details_url = request.build_absolute_uri(reverse('regsoft:recnacc_list_group', kwargs={'g_id':group.id}))
         rows.append({
             'data':[
                 code,
-                group_leader,
                 leader_name,
                 leader_college,
                 leader_phone,

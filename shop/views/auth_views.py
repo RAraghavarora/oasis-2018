@@ -33,7 +33,7 @@ class Authentication(APIView):
 		PASS_CHARS = PASS_CHARS.replace(i,'')
 
 	CLIENT_ID_ios = "157934063064-po2m0hg1vt113ho1oohld9g06khvb74l.apps.googleusercontent.com"
-	CLIENT_ID_web = "157934063064-et3fmi6jlivnr6h70q2rnegik50aqj3g.apps.googleusercontent.com"
+	CLIENT_ID_web = "563920200402-chepn5acpejf0bac9v6on3a8pdvmvvg0.apps.googleusercontent.com"
 
 
 	def generate_random_password(self):
@@ -80,7 +80,8 @@ class Authentication(APIView):
 			try:
 				idinfo = id_token.verify_oauth2_token(token, google_requests.Request())
 				if idinfo['aud'] not in [self.CLIENT_ID_web, self.CLIENT_ID_ios]:
-					raise ValueError('Could not verify audience.')
+					print(idinfo)
+					raise ValueError('Could not verify audience: {}'.format(idinfo['aud']))
 
 			except Exception as e:
 				return Response({'message' : str(e)})
@@ -91,8 +92,11 @@ class Authentication(APIView):
 			#Checks if Bitsian exists, return 404 if doesn't.
 			email = idinfo['email']
 			try:
+				print("EMAIL: {}".format(email))
 				bitsian = Bitsian.objects.get(email=email)
-			except:
+				print("BITSIAN: {}".format(bitsian))
+			except Exception as e:
+				print(e)
 				msg = "Bitsian not in SWD list, for security reasons you will need to contact the DVM."
 				return Response({"message": msg}, status=status.HTTP_404_NOT_FOUND)
 
@@ -100,6 +104,10 @@ class Authentication(APIView):
 			username = email.split('@')[0]
 			try:
 				user = User.objects.get(username=username)
+				try:
+					qr_code = user.bitsian.barcode
+				except:
+					qr_code = None
 
 			except ObjectDoesNotExist:
 				user = User.objects.create(username=username, email=email)
@@ -128,21 +136,27 @@ class Authentication(APIView):
 				msg = {'message' : "Incorrect Authentication Credentials or User doesn't exist"}
 				return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
+			if not is_stall:
+				try:
+					qr_code = user.participant.barcode
+				except:
+					qr_code = None
+
 
 		#Checks if wallet exists
 		try:
-			wallet = Wallet.objects.get(user = user)
-
+			print("User: {}".format(user))
+			wallet = Wallet.objects.get(user=user)
+			print("Wallet: {}".format(wallet))
 			if not wallet:
 				raise Wallet.DoesNotExist
 
 		except Wallet.DoesNotExist:
 			msg = {'message' : 'Contact the administrators'}
-
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
 		#Generates the JWT Token
 		token = self.get_jwt(user)
 
-		msg = {'user_id': user.id, 'token' : token}
+		msg = {'user_id': user.id, 'token': token, 'qr_code': qr_code}
 		return Response(msg, status = status.HTTP_200_OK)

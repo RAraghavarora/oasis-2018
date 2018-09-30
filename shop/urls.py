@@ -9,6 +9,7 @@ from shop.views import misc_views
 app_name="shop"
 
 urlpatterns = [
+<<<<<<< HEAD
     url('transfer', ewallet_views.Transfer.as_view(), name="transfer"),
     url('place-order', orders_views.PlaceOrder.as_view(), name="place-order"),
     url(r'^addmoney$', ewallet_views.AddMoney.as_view(), name="AddMoney" ),
