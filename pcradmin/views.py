@@ -71,7 +71,7 @@ def select_college_rep(request,id):
         if data['submit']=='delete':
             part=Participant.objects.get(id=part_id)
             user=part.user
-            #user.delete()
+            user.delete()
             part.user=None
             part.is_cr=False
             part.cr_approved=False
