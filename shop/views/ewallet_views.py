@@ -18,6 +18,8 @@ from oasis2018.settings_config.keyconfig import *
 from registrations.models import Participant,Bitsian
 from django.contrib.auth.models import User
 from shop.models.transaction import Transaction
+from firebase_admin import firestore
+
 
 try:
     api = Instamojo(api_key=INSTA_API_KEY, auth_token=AUTH_TOKEN)
@@ -55,6 +57,19 @@ class Transfer(APIView):
             except Wallet.DoesNotExist:
                 msg = {"message": "Wallet does not exist"}
                 return Response(msg, status=status.HTTP_404_NOT_FOUND)
+
+
+def changeActiveTransfer(open_modal, success, user):
+        """ Modify some user data in firebase to allow the app to 
+        know if the payment was successful or not and if it should 
+        close the modal/window pop up for payment. Have the app and/or
+        frontend people make sure that they set "success" to false
+        after they have seen that it was successful. """
+
+        db = firestore.client()
+        data = {"open_modal": open_modal, "success": success}
+        db.collection("User #{}".format(user.id)).document("Active Transfer").set(data)
+
 
 class AddMoney(APIView):
     """
@@ -98,10 +113,14 @@ class AddMoney(APIView):
                 phone=user_mobile,
                 redirect_url=redirect_url
             )
+
+            changeActiveTransfer(True, False, request.user)
+
             return Response({'url': response['payment_request']['longurl']})
         except Exception as e:
+            print("ADD MONEY FAILED!!!")
             print(e)
-            return Response({'message': 'Add Money Failed!1 '})
+            return Response({'message': 'Add Money Failed! '})
 
 
 class AddMoneyResponse(APIView):
@@ -113,12 +132,10 @@ class AddMoneyResponse(APIView):
 
     def post(self, request, format=None):
         data = request.data
-        # print(data)
-        print(request.user)
         try:
             payid = data['payment_request_id']
+            changeActiveTransfer(False, False, request.user)
         except Exception as e:
-            print(e)
             return Response({'message': 'missing key in body "payment_request_id"'}, status=status.HTTP_400_BAD_REQUEST)
         try:
             headers = {'X-Api-Key': INSTA_API_KEY, 'X-Auth-Token': AUTH_TOKEN}
@@ -128,20 +145,25 @@ class AddMoneyResponse(APIView):
             r = requests.get('https://test.instamojo.com/api/1.1/payment-requests/'+str(payid), headers=headers)
         
         json_ob=r.json()
-        print(json_ob)
-        print(json_ob['payment_request']['payments'][0]['payment_id'])
-
         payment_id=json_ob['payment_request']['payments'][0]['payment_id']
+        status_ = json_ob['success']
+        if not status_:
+            changeActiveTransfer(False, False, request.user)
+            return Response({'message': 'Payment not successful/cancelled. '}, status=status.HTTP_200_OK)
         
-        wallet = Wallet.objects.get(user=request.user)
-        amount = int(float(json_ob['payment_request']['amount']))
-        try:
-            transaction = Transaction(
-                amount=amount, transfer_from=wallet, transfer_to=wallet,transfer_type="add", payment_id=payment_id)
-            transaction.save()
-        except Exception as e:
-            print(e)
-            return Response({'message': "Don't act smart! You have encashed this money"}, status=status.HTTP_429_TOO_MANY_REQUESTS)
-        wallet.balance.add(0,0,amount,0)
-        return Response({'message':'Money Added!'})
+        else:
+            wallet = Wallet.objects.get(user=request.user)
+            amount = int(float(json_ob['payment_request']['amount']))
+            try:
+                transaction = Transaction(
+                    amount=amount, transfer_from=wallet, transfer_to=wallet,transfer_type="add", payment_id=payment_id)
+                transaction.save()
+            except Exception as e:
+                changeActiveTransfer(False, False, request.user)
+                return Response({'message': "You have encashed this money. "}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+            wallet.balance.add(0,0,amount,0)
+
+            changeActiveTransfer(False, True, request.user)
+           
+            return Response({'message':'Money Added!'})
             
