@@ -60,8 +60,8 @@ class Transfer(APIView):
 
 
 def changeActiveTransfer(open_modal, success, user):
-        """ Modify some user data in firebase to allow the app to 
-        know if the payment was successful or not and if it should 
+        """ Modify some user data in firebase to allow the app to
+        know if the payment was successful or not and if it should
         close the modal/window pop up for payment. Have the app and/or
         frontend people make sure that they set "success" to false
         after they have seen that it was successful. """
@@ -81,6 +81,14 @@ class AddMoney(APIView):
 
     def post(self, request, format=None):
         data = request.data
+
+        try:
+            origin = request.meta["X-ORIGIN"]
+            if not origin in ["iOS", "Web", "Android"]
+                return Response({"message": "invalid x-origin"}, status=status.HTTP_400_BAD_REQUEST)
+        except KeyError:
+            return Response({"message": "x-origin missing from headers."}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             amount=data['amount']
             if amount<0:
@@ -92,7 +100,7 @@ class AddMoney(APIView):
                     profile = Bitsian.objects.get(user=request.user)
                 except:
                     return Response({"message": "The user has not been identified as a bitsian nor as participant."}, status=status.HTTP_403_FORBIDDEN)
-            user_email = profile.email 
+            user_email = profile.email
             user_mobile = profile.phone
             user_name = profile.name
 
@@ -132,6 +140,14 @@ class AddMoneyResponse(APIView):
 
     def post(self, request, format=None):
         data = request.data
+
+        try:
+            origin = request.meta["X-ORIGIN"]
+            if not origin in ["iOS", "Web", "Android"]
+                return Response({"message": "invalid x-origin"}, status=status.HTTP_400_BAD_REQUEST)
+        except KeyError:
+            return Response({"message": "x-origin missing from headers."}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             payid = data['payment_request_id']
             changeActiveTransfer(False, False, request.user)
@@ -143,14 +159,14 @@ class AddMoneyResponse(APIView):
         except:
             headers = {'X-Api-Key': INSTA_API_KEY_test, 'X-Auth-Token': AUTH_TOKEN_test}
             r = requests.get('https://test.instamojo.com/api/1.1/payment-requests/'+str(payid), headers=headers)
-        
+
         json_ob=r.json()
         payment_id=json_ob['payment_request']['payments'][0]['payment_id']
         status_ = json_ob['success']
         if not status_:
             changeActiveTransfer(False, False, request.user)
             return Response({'message': 'Payment not successful/cancelled. '}, status=status.HTTP_200_OK)
-        
+
         else:
             wallet = Wallet.objects.get(user=request.user)
             amount = int(float(json_ob['payment_request']['amount']))
@@ -164,6 +180,7 @@ class AddMoneyResponse(APIView):
             wallet.balance.add(0,0,amount,0)
 
             changeActiveTransfer(False, True, request.user)
-           
+
+            if origin == "Web":
+                return Response({"message": "Money added. now all we need is a url to redirect to."})
             return Response({'message':'Money Added!'})
-            
