@@ -84,7 +84,7 @@ class AddMoney(APIView):
 
         try:
             origin = request.meta["X-ORIGIN"]
-            if origin not in ["iOS", "Web", "Android"]
+            if origin not in ["iOS", "Web", "Android"]:
                 return Response({"message": "invalid x-origin"}, status=status.HTTP_400_BAD_REQUEST)
         except KeyError:
             return Response({"message": "x-origin missing from headers."}, status=status.HTTP_400_BAD_REQUEST)
