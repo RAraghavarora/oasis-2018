@@ -83,7 +83,7 @@ class AddMoney(APIView):
         data = request.data
 
         try:
-            origin = request.meta["X-ORIGIN"]
+            origin = request.META["HTTP_X_ORIGIN"]
             if origin not in ["iOS", "Web", "Android"]:
                 return Response({"message": "invalid x-origin"}, status=status.HTTP_400_BAD_REQUEST)
         except KeyError:
@@ -142,7 +142,7 @@ class AddMoneyResponse(APIView):
         data = request.data
 
         try:
-            origin = request.meta["X-ORIGIN"]
+            origin = request.META["HTTP_X_ORIGIN"]
             if origin not in ["iOS", "Web", "Android"]:
                 return Response({"message": "invalid x-origin"}, status=status.HTTP_400_BAD_REQUEST)
         except KeyError:
