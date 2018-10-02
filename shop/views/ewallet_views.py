@@ -119,7 +119,7 @@ class AddMoney(APIView):
                 redirect_url = reverse("shop:AddMoneyResponseWeb",request=request)
             elif origin == "Android":
                 redirect_url = reverse("shop:AddMoneyResponseAndroid",request=request)
-            # print("Hi")
+            
             response = api.payment_request_create(
                 amount=str(amount),
                 purpose='Add Money to wallet',
@@ -129,11 +129,9 @@ class AddMoney(APIView):
                 phone=user_mobile,
                 redirect_url=redirect_url
             )
-            # print("Hi")
-            # print(response)
+        
 
             changeActiveTransfer(True, False, request.user)
-            # print("Hi")
 
             return Response({'url': response['payment_request']['longurl']})
         except Exception as e:
@@ -149,12 +147,9 @@ def AddMoneyResponse(request):
     '''
 
     data = request.GET
-    print(data)
-    # print(request.META)
-
+    
     try:
         payid = data['payment_request_id']
-        # print(payid)
         changeActiveTransfer(False, False, request.user)
     except Exception as e:
         return Response({'message': 'missing key in body "payment_request_id"'}, status=status.HTTP_400_BAD_REQUEST)
@@ -166,16 +161,13 @@ def AddMoneyResponse(request):
         r = requests.get('https://test.instamojo.com/api/1.1/payment-requests/'+str(payid), headers=headers)
 
     json_ob=r.json()
-    # print(json_ob)
     status_ = json_ob['success']
-    # print(status_)
 
     if not status_:
         changeActiveTransfer(False, False, request.user)
         return Response({'message': 'Payment not successful/cancelled. '}, status=status.HTTP_200_OK)
 
     else:
-        # print("HEYYYYYYYYYYYY")
         payment_id=json_ob['payment_request']['payments'][0]['payment_id']
         try:
             profile = Participant.objects.get(email=json_ob['payment_request']['email'])
@@ -198,11 +190,9 @@ def AddMoneyResponse(request):
             changeActiveTransfer(False, False, user_)
             return Response({'message': "You have encashed this money. "}, status=status.HTTP_429_TOO_MANY_REQUESTS)
         wallet.balance.add(0,0,amount,0)
-        # print("ADDED {}".format(amount))
 
         changeActiveTransfer(False, True, user_)
         return "OK"
-        # print("EOC")
 
 
 class AddMoneyResponseWeb(APIView):
