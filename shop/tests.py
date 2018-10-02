@@ -22,11 +22,11 @@ class ShopTests(TestCase):
 
     def setUp(self):
         # create a user named Wong, and one named Dr. Stephen Strange.
-        u1 = User(username="wong")
+        u1 = User(username="wong", email="wong@gmail.com")
         u1.set_password("asdfghjkl")
         u1.save()
 
-        u2 = User(username="strange")
+        u2 = User(username="strange@gmail.com")
         u2.set_password("asdfghjkl")
         u2.save()
 
