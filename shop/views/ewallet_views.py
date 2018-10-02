@@ -19,6 +19,7 @@ from registrations.models import Participant,Bitsian
 from django.contrib.auth.models import User
 from shop.models.transaction import Transaction
 from firebase_admin import firestore
+from rest_framework.renderers import TemplateHTMLRenderer
 
 
 try:
@@ -118,7 +119,7 @@ class AddMoney(APIView):
                 redirect_url = reverse("shop:AddMoneyResponseWeb",request=request)
             elif origin == "Android":
                 redirect_url = reverse("shop:AddMoneyResponseAndroid",request=request)
-
+            # print("Hi")
             response = api.payment_request_create(
                 amount=str(amount),
                 purpose='Add Money to wallet',
@@ -128,14 +129,18 @@ class AddMoney(APIView):
                 phone=user_mobile,
                 redirect_url=redirect_url
             )
+            # print("Hi")
+            # print(response)
 
             changeActiveTransfer(True, False, request.user)
+            # print("Hi")
 
             return Response({'url': response['payment_request']['longurl']})
         except Exception as e:
             print("ADD MONEY FAILED!!!")
             print(e)
             return Response({'message': 'Add Money Failed! '})
+            
 
 
 def AddMoneyResponse(request):
@@ -144,9 +149,12 @@ def AddMoneyResponse(request):
     '''
 
     data = request.GET
+    # print(data)
+    # print(request.META)
 
     try:
-        payid = data['payment_request_id'][0]
+        payid = data['payment_request_id']
+        # print(payid)
         changeActiveTransfer(False, False, request.user)
     except Exception as e:
         return Response({'message': 'missing key in body "payment_request_id"'}, status=status.HTTP_400_BAD_REQUEST)
@@ -158,17 +166,29 @@ def AddMoneyResponse(request):
         r = requests.get('https://test.instamojo.com/api/1.1/payment-requests/'+str(payid), headers=headers)
 
     json_ob=r.json()
-    print(json_ob)
-    payment_id=json_ob['payment_request']['payments'][0]['payment_id']
+    # print(json_ob)
     status_ = json_ob['success']
+    # print(status_)
 
     if not status_:
         changeActiveTransfer(False, False, request.user)
         return Response({'message': 'Payment not successful/cancelled. '}, status=status.HTTP_200_OK)
 
     else:
-        print("HEYYYYYYYYYYYY")
-        wallet = Wallet.objects.get(user=request.user)
+        # print("HEYYYYYYYYYYYY")
+        payment_id=json_ob['payment_request']['payments'][0]['payment_id']
+        try:
+            profile = Participant.objects.get(email=json_ob['payment_request']['email'])
+            user_ = profile.user
+        except:
+            try:
+                profile = Bitsian.objects.get(email=json_ob['payment_request']['email'])
+                user_ = profile.user 
+            except:
+                changeActiveTransfer(False, False, request.user)
+                return Response({"message": "The user has not been identified as a bitsian nor as participant."}, status=status.HTTP_403_FORBIDDEN)
+
+        wallet = Wallet.objects.get(user=user_)
         amount = int(float(json_ob['payment_request']['amount']))
         try:
             transaction = Transaction(
@@ -178,11 +198,11 @@ def AddMoneyResponse(request):
             changeActiveTransfer(False, False, request.user)
             return Response({'message': "You have encashed this money. "}, status=status.HTTP_429_TOO_MANY_REQUESTS)
         wallet.balance.add(0,0,amount,0)
-        print("ADDED {}".format(amount))
+        # print("ADDED {}".format(amount))
 
         changeActiveTransfer(False, True, request.user)
         return "OK"
-        print("EOC")
+        # print("EOC")
 
 
 class AddMoneyResponseWeb(APIView):
@@ -191,21 +211,27 @@ class AddMoneyResponseWeb(APIView):
         resp = AddMoneyResponse(request)
         if not resp == "OK":
             return resp
-        return Response({"message": "DO SOMETHING WEB, payment successful"})
+        return Response({"message": "Hello Laksh/Kunal! Wassup? DO SOMETHING WEB, payment successful"})
 
 
 class AddMoneyResponseIOS(APIView):
+
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'shop/base.html'
 
     def get(self, request, format=None):
         resp = AddMoneyResponse(request)
         if not resp == "OK":
             return resp
-        return Response({"message": "DO SOMETHING IOS, payment successful"})
+        return Response({"message": "Hello Sarthak!! Wassup? DO SOMETHING iOS, payment successful"})
 
 
 class AddMoneyResponseAndroid(APIView):
 
     def get(self, request, format=None):
-        AddMoneyResponse(request)
+        resp = AddMoneyResponse(request)
+
+        if not resp == 'OK':
+            return resp
 
         return Response({"message": "DO SOMETHING ANDROID, payment successful"})
