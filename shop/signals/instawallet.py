@@ -3,8 +3,6 @@ import json
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
-from firebase_admin import firestore
-
 from utils.wallet_qrcode import genString
 from shop.models.wallet import Wallet
 from shop.models.balance import Balance
@@ -35,10 +33,7 @@ def autoAddWalletBitsian(sender, **kwargs):
             balance = Balance.objects.create(wallet=wallet)
             wallet.balance = balance
             wallet.save()
-            # for the first time, initialize the "Active Transfer" document of the User on Firestore
-            db = firestore.client()
-            init_data = {"open_modal": False, "success": False}
-            db.collection("User #{}".format(bitsian.user.id)).document("Active Transfer").set(init_data)
+
 
 
 @receiver(post_save, sender=Participant)
@@ -54,7 +49,3 @@ def autoAddWalletParticipant(sender, **kwargs):
             balance = Balance.objects.create(wallet=wallet)
             wallet.balance = balance
             wallet.save()
-            # for the first time, initialize the "Active Transfer" document of the User on Firestore
-            db = firestore.client()
-            init_data = {"open_modal": False, "success": False}
-            db.collection("User #{}".format(participant.user.id)).document("Active Transfer").set(init_data)
