@@ -120,9 +120,8 @@ class PlaceOrder(APIView):
                                         transfer_type="buy",
                                         transfer_from=request.user.wallet
                                     )
-        request.user.wallet.balance.deduct(net_cost)
+        customer.balance.deduct(net_cost)
         fragments = [{"id": fragment.id, "stall_id": fragment.stall.id} for fragment in order.fragments.all()]
-
 
         data["order_id"] = order.id
         data["fragment_ids"] = fragments
@@ -158,7 +157,6 @@ class GetOrders(APIView):
                         fragment = OrderFragment.objects.get(id=frag_id)
                         new_fragment_ids.append({"id": frag_id, "stall_id": frag["stall_id"], "status": fragment.status})
                     except Exception as e:
-                        print(e)
                         return Response({"message": "one or more of the stalls are non-existant."}, status=status.HTTP_404_NOT_FOUND)
                 order["fragment_ids"] = new_fragment_ids
                 data["orders"].append(order)
