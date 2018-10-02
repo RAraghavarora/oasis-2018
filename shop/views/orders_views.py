@@ -218,7 +218,9 @@ class ConsumeTickets(APIView):
 
         max_count = tickets.count
         if(consume > max_count):
-            return Response({"success": False, "max_tickets": max_count})
+            return Response({"success": False, "max_tickets": max_count, "message": "successfully deducted"})
+        if consume < 1:
+            return Response({"success": False, "message": "Number of tickets can't be less than 1", "max_tickets": max_count}, status=status.HTTP_400_BAD_REQUEST)
         tickets.count -= consume
         tickets.save()
         return Response({"success": True, "remaining_tickets": tickets.count})
