@@ -28,7 +28,7 @@ def approve(request):
         }
         return render(request, 'registrations/message.html', context)
     approved_list = MainParticipation.objects.filter(participant__college = participant.college, cr_approved=True)
-    disapproved_list = MainParticipation.objects.filter(participant__college = participant.college, cr_approved=False)
+    disapproved_list = MainParticipation.objects.filter(participant__college = participant.college, cr_approved=False,email_verified=True)
     for person in disapproved_list:
         print(person.participant,'\t',person.participant.email)
     
