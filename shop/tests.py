@@ -46,7 +46,7 @@ class ShopTests(TestCase):
                         )
 
         p2 = Participant.objects.create(
-                            name="Dr. Stephen Strange",
+                            name="Dr. Strange",
                             gender="Male",
                             city="New York",
                             email="strange@gmail.com",
