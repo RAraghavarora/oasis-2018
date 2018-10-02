@@ -149,7 +149,7 @@ def AddMoneyResponse(request):
     '''
 
     data = request.GET
-    # print(data)
+    print(data)
     # print(request.META)
 
     try:
@@ -195,12 +195,12 @@ def AddMoneyResponse(request):
                 amount=amount, transfer_from=wallet, transfer_to=wallet,transfer_type="add", payment_id=payment_id)
             transaction.save()
         except Exception as e:
-            changeActiveTransfer(False, False, request.user)
+            changeActiveTransfer(False, False, user_)
             return Response({'message': "You have encashed this money. "}, status=status.HTTP_429_TOO_MANY_REQUESTS)
         wallet.balance.add(0,0,amount,0)
         # print("ADDED {}".format(amount))
 
-        changeActiveTransfer(False, True, request.user)
+        changeActiveTransfer(False, True, user_)
         return "OK"
         # print("EOC")
 
