@@ -66,7 +66,7 @@ class ShopTests(TestCase):
 
         # create the Baskin Robbins stall and add something to its menu
         s = Stall.objects.create(user=su, name="Baskin Robbins")
-        i = s.menu.create(name="Single Scoop Ice Cream", stall=su, is_veg=True, price=70)
+        i = s.menu.create(name="Single Scoop", stall=su, is_veg=True, price=70)
 
 
     def test_participant_login(self):
@@ -108,7 +108,7 @@ class ShopTests(TestCase):
                     "name": "Baskin Robbins",
                     "items": [{
                         "id": 1,
-                        "name": "Single Scoop Ice Cream",
+                        "name": "Single Scoop",
                         "price": 70,
                         "qty": 5
                     }]
