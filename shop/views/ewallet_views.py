@@ -22,6 +22,8 @@ from firebase_admin import firestore
 
 
 try:
+    if SERVER:
+        raise
     api = Instamojo(api_key=INSTA_API_KEY, auth_token=AUTH_TOKEN)
 except:
     api = Instamojo(api_key=INSTA_API_KEY_test, auth_token=AUTH_TOKEN_test, endpoint='https://test.instamojo.com/api/1.1/') #when in development
@@ -44,7 +46,7 @@ class Transfer(APIView):
                 target_user = User.objects.get(id=data["target_user"])
                 target = Wallet.objects.get(user=target_user)
                 if source == target:
-                    return {"message": "You can't transfer money to yourself."}
+                    return Response({"message": "You can't transfer money to yourself."}, status=status.HTTP_403_FORBIDDEN)
                 amount = data["amount"]
                 if amount < 0:
                     return Response({"message": "transfered amount cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)

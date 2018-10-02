@@ -63,5 +63,5 @@ class Wallet(models.Model):
 									transfer_to = target_wallet,
 									transfer_from = self,
 									transfer_type = transfertype,
-									refund_id = ""
+									payment_id = None
 								)
