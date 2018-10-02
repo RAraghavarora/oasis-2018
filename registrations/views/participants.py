@@ -16,9 +16,14 @@ import requests
 import json
 import re
 import sendgrid
+import string
+
 from sendgrid.helpers.mail import *
 from utils.registrations import *
 from instamojo_wrapper import Instamojo
+
+chars = string.ascii_lowercase + string.ascii_uppercase + string.digits
+
 
 @csrf_exempt
 def index(request):
@@ -258,6 +263,57 @@ def return_qr(request):
     response = HttpResponse(content_type="image/jpeg")
     qr.save(response, "JPEG")
     return response
+
+def forgot_password(request):
+    if(request.method=='POST'):
+        data = request.POST
+        print(data)
+        email = data['email']
+        if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
+            return JsonResponse({'status':0, 'message':'Please enter a valid email address.'})
+        try:
+            participant = Participant.objects.get(email=email)
+            user=participant.user
+            username = user.username
+            password = ''.join(choice(chars) for i in range(8))
+            user.set_password(password)
+            user.save()
+
+            email_class = send_grid.ForgotPassword()
+            name = participant.name
+            send_to = participant.email
+            login_url = str(request.build_absolute_uri(reverse('registrations:home')))
+            body = email_class.body%(name,login_url,username,password,get_pcr_number())
+            to_email=Email(send_to)
+            content = Content('text/html', body)
+            try:
+                mail = Mail(email_class.from_email,email_class.subject,to_email,content)
+                response = send_grid.sg.client.mail.send.post(request_body = mail.get())
+                print("EMAIL SENT")
+            except:
+                context = {
+                    'status': 0,
+                    'error_heading': "Error sending mail",
+                    'message': "Sorry! Error in sending email. Please try again.",
+                }
+                return render(request, 'registrations/message.html', context)
+
+            context = {
+            'error_heading':"Emails sent",
+            'message' : "Login credentials have been mailed to the corresponding participant."
+            }
+            return render(request, 'registrations/message.html', context)
+
+        except Exception as e:
+            print(e)
+            context = {
+                    'error_heading': "Invalid Email",
+                    'message': "Sorry, your email is not registered. Please register again.",
+                    'url':request.build_absolute_uri(reverse('registrations:home'))
+                    }
+            return render(request, 'registrations/message.html', context)
+    else:
+        return render(request,'registrations/forgot_password.html')
 
 
 # @login_required
