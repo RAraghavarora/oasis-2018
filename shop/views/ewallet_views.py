@@ -112,8 +112,13 @@ class AddMoney(APIView):
             except:
                 return Response({"message": "The user has no wallet. Cannot add money as of yet."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-            redirect_url = reverse("shop:AddMoneyResponse",request=request)
-            print(redirect_url)
+            if origin == "iOS":
+                redirect_url = reverse("shop:AddMoneyResponseIOS",request=request)
+            elif origin == "Web":
+                redirect_url = reverse("shop:AddMoneyResponseWeb",request=request)
+            elif origin == "Android":
+                redirect_url = reverse("shop:AddMoneyResponseAndroid",request=request)
+
             response = api.payment_request_create(
                 amount=str(amount),
                 purpose='Add Money to wallet',
@@ -133,56 +138,74 @@ class AddMoney(APIView):
             return Response({'message': 'Add Money Failed! '})
 
 
-class AddMoneyResponse(APIView):
+def AddMoneyResponse(request):
     '''
-        This endpoint is called by the AddMoney view
+        A function called by the AddMoneyResponse____ views
     '''
 
-    permission_classes = (IsAuthenticated, TokenVerification,)
+    data = request.GET
 
-    def post(self, request, format=None):
-        data = request.data
+    try:
+        payid = data['payment_request_id'][0]
+        changeActiveTransfer(False, False, request.user)
+    except Exception as e:
+        return Response({'message': 'missing key in body "payment_request_id"'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        headers = {'X-Api-Key': INSTA_API_KEY, 'X-Auth-Token': AUTH_TOKEN}
+        r = requests.get('https://www.instamojo.com/api/1.1/payment-requests/'+str(payid),headers=headers)
+    except:
+        headers = {'X-Api-Key': INSTA_API_KEY_test, 'X-Auth-Token': AUTH_TOKEN_test}
+        r = requests.get('https://test.instamojo.com/api/1.1/payment-requests/'+str(payid), headers=headers)
 
+    json_ob=r.json()
+    print(json_ob)
+    payment_id=json_ob['payment_request']['payments'][0]['payment_id']
+    status_ = json_ob['success']
+
+    if not status_:
+        changeActiveTransfer(False, False, request.user)
+        return Response({'message': 'Payment not successful/cancelled. '}, status=status.HTTP_200_OK)
+
+    else:
+        print("HEYYYYYYYYYYYY")
+        wallet = Wallet.objects.get(user=request.user)
+        amount = int(float(json_ob['payment_request']['amount']))
         try:
-            origin = request.META["HTTP_X_ORIGIN"]
-            if origin not in ["iOS", "Web", "Android"]:
-                return Response({"message": "invalid x-origin"}, status=status.HTTP_400_BAD_REQUEST)
-        except KeyError:
-            return Response({"message": "x-origin missing from headers."}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            payid = data['payment_request_id']
-            changeActiveTransfer(False, False, request.user)
+            transaction = Transaction(
+                amount=amount, transfer_from=wallet, transfer_to=wallet,transfer_type="add", payment_id=payment_id)
+            transaction.save()
         except Exception as e:
-            return Response({'message': 'missing key in body "payment_request_id"'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            headers = {'X-Api-Key': INSTA_API_KEY, 'X-Auth-Token': AUTH_TOKEN}
-            r = requests.get('https://www.instamojo.com/api/1.1/payment-requests/'+str(payid),headers=headers)
-        except:
-            headers = {'X-Api-Key': INSTA_API_KEY_test, 'X-Auth-Token': AUTH_TOKEN_test}
-            r = requests.get('https://test.instamojo.com/api/1.1/payment-requests/'+str(payid), headers=headers)
-
-        json_ob=r.json()
-        payment_id=json_ob['payment_request']['payments'][0]['payment_id']
-        status_ = json_ob['success']
-        if not status_:
             changeActiveTransfer(False, False, request.user)
-            return Response({'message': 'Payment not successful/cancelled. '}, status=status.HTTP_200_OK)
+            return Response({'message': "You have encashed this money. "}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+        wallet.balance.add(0,0,amount,0)
+        print("ADDED {}".format(amount))
 
-        else:
-            wallet = Wallet.objects.get(user=request.user)
-            amount = int(float(json_ob['payment_request']['amount']))
-            try:
-                transaction = Transaction(
-                    amount=amount, transfer_from=wallet, transfer_to=wallet,transfer_type="add", payment_id=payment_id)
-                transaction.save()
-            except Exception as e:
-                changeActiveTransfer(False, False, request.user)
-                return Response({'message': "You have encashed this money. "}, status=status.HTTP_429_TOO_MANY_REQUESTS)
-            wallet.balance.add(0,0,amount,0)
+        changeActiveTransfer(False, True, request.user)
+        return "OK"
+        print("EOC")
 
-            changeActiveTransfer(False, True, request.user)
 
-            if origin == "Web":
-                return Response({"message": "Money added. now all we need is a url to redirect to."})
-            return Response({'message':'Money Added!'})
+class AddMoneyResponseWeb(APIView):
+
+    def get(self, request, format=None):
+        resp = AddMoneyResponse(request)
+        if not resp == "OK":
+            return resp
+        return Response({"message": "DO SOMETHING WEB, payment successful"})
+
+
+class AddMoneyResponseIOS(APIView):
+
+    def get(self, request, format=None):
+        resp = AddMoneyResponse(request)
+        if not resp == "OK":
+            return resp
+        return Response({"message": "DO SOMETHING IOS, payment successful"})
+
+
+class AddMoneyResponseAndroid(APIView):
+
+    def get(self, request, format=None):
+        AddMoneyResponse(request)
+
+        return Response({"message": "DO SOMETHING ANDROID, payment successful"})
