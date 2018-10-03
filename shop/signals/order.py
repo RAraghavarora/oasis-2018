@@ -15,7 +15,13 @@ from shop.serializers import OrderSerializer, OrderFragmentSerializer
 def orderFragmentFirebaseUpdate(sender, **kwargs):
     db = firestore.client()
     data = OrderFragmentSerializer(kwargs["instance"]).data
+
     col_str = "User #{}".format(kwargs["instance"].order.customer.user.id)
+    collection = db.collection(col_str)
+    doc_string = "OrderFragment #{}".format(kwargs["instance"].id)
+    collection.document(doc_string).set(data)
+
+    col_str = "Stall #{}".format(kwargs["instance"].stall.user.id)
     collection = db.collection(col_str)
     doc_string = "OrderFragment #{}".format(kwargs["instance"].id)
     collection.document(doc_string).set(data)
@@ -24,7 +30,13 @@ def orderFragmentFirebaseUpdate(sender, **kwargs):
 @receiver(pre_delete, sender=OrderFragment)
 def orderFragmentFirebaseDelete(sender, **kwargs):
     db = firestore.client()
+
     col_str = "User #{}".format(kwargs["instance"].order.customer.user.id)
+    collection = db.collection(col_str)
+    doc_string = "OrderFragment #{}".format(kwargs["instance"].id)
+    collection.document(doc_string).delete()
+
+    col_str = "Stall #{}".format(kwargs["instance"].stall.user.id)
     collection = db.collection(col_str)
     doc_string = "OrderFragment #{}".format(kwargs["instance"].id)
     collection.document(doc_string).delete()

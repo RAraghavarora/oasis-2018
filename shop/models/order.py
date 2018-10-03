@@ -41,7 +41,6 @@ class Order(models.Model):
 			self.save()
 			return True
 		except Exception as e:
-			print(e)
 			return False
 
 	def getQueryString(self):

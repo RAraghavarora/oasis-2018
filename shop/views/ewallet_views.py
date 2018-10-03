@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 from django.contrib.auth.models import User
 
 from rest_framework import status
@@ -19,6 +20,7 @@ from registrations.models import Participant,Bitsian
 from django.contrib.auth.models import User
 from shop.models.transaction import Transaction
 from firebase_admin import firestore
+from rest_framework.renderers import TemplateHTMLRenderer
 
 
 try:
@@ -61,18 +63,6 @@ class Transfer(APIView):
                 return Response(msg, status=status.HTTP_404_NOT_FOUND)
 
 
-def changeActiveTransfer(open_modal, success, user):
-        """ Modify some user data in firebase to allow the app to
-        know if the payment was successful or not and if it should
-        close the modal/window pop up for payment. Have the app and/or
-        frontend people make sure that they set "success" to false
-        after they have seen that it was successful. """
-
-        db = firestore.client()
-        data = {"open_modal": open_modal, "success": success}
-        db.collection("User #{}".format(user.id)).document("Active Transfer").set(data)
-
-
 class AddMoney(APIView):
     """
         The API endpoint that will be called when money has to be added to
@@ -112,8 +102,13 @@ class AddMoney(APIView):
             except:
                 return Response({"message": "The user has no wallet. Cannot add money as of yet."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-            redirect_url = reverse("shop:AddMoneyResponse",request=request)
-            print(redirect_url)
+            if origin == "iOS":
+                redirect_url = reverse("shop:AddMoneyResponseIOS",request=request)
+            elif origin == "Web":
+                redirect_url = reverse("shop:AddMoneyResponseWeb",request=request)
+            elif origin == "Android":
+                redirect_url = reverse("shop:AddMoneyResponseAndroid",request=request)
+
             response = api.payment_request_create(
                 amount=str(amount),
                 purpose='Add Money to wallet',
@@ -124,65 +119,80 @@ class AddMoney(APIView):
                 redirect_url=redirect_url
             )
 
-            changeActiveTransfer(True, False, request.user)
-
             return Response({'url': response['payment_request']['longurl']})
+
         except Exception as e:
-            print("ADD MONEY FAILED!!!")
-            print(e)
             return Response({'message': 'Add Money Failed! '})
 
 
-class AddMoneyResponse(APIView):
+
+def AddMoneyResponse(request):
     '''
-        This endpoint is called by the AddMoney view
+        A function called by the AddMoneyResponse____ views
     '''
 
-    permission_classes = (IsAuthenticated, TokenVerification,)
+    data = request.GET
 
-    def post(self, request, format=None):
-        data = request.data
+    payid = data['payment_request_id']
 
-        try:
-            origin = request.META["HTTP_X_ORIGIN"]
-            if origin not in ["iOS", "Web", "Android"]:
-                return Response({"message": "invalid x-origin"}, status=status.HTTP_400_BAD_REQUEST)
-        except KeyError:
-            return Response({"message": "x-origin missing from headers."}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        headers = {'X-Api-Key': INSTA_API_KEY, 'X-Auth-Token': AUTH_TOKEN}
+        r = requests.get('https://www.instamojo.com/api/1.1/payment-requests/'+str(payid),headers=headers)
+    except:
+        headers = {'X-Api-Key': INSTA_API_KEY_test, 'X-Auth-Token': AUTH_TOKEN_test}
+        r = requests.get('https://test.instamojo.com/api/1.1/payment-requests/'+str(payid), headers=headers)
 
+    json_ob=r.json()
+    payment_status = json_ob['success']
+
+    if not payment_status:
+        return 'Payment not successful/cancelled.'
+
+    else:
         try:
-            payid = data['payment_request_id']
-            changeActiveTransfer(False, False, request.user)
-        except Exception as e:
-            return Response({'message': 'missing key in body "payment_request_id"'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            headers = {'X-Api-Key': INSTA_API_KEY, 'X-Auth-Token': AUTH_TOKEN}
-            r = requests.get('https://www.instamojo.com/api/1.1/payment-requests/'+str(payid),headers=headers)
+            profile = Participant.objects.get(email=json_ob['payment_request']['email'])
         except:
-            headers = {'X-Api-Key': INSTA_API_KEY_test, 'X-Auth-Token': AUTH_TOKEN_test}
-            r = requests.get('https://test.instamojo.com/api/1.1/payment-requests/'+str(payid), headers=headers)
-
-        json_ob=r.json()
-        payment_id=json_ob['payment_request']['payments'][0]['payment_id']
-        status_ = json_ob['success']
-        if not status_:
-            changeActiveTransfer(False, False, request.user)
-            return Response({'message': 'Payment not successful/cancelled. '}, status=status.HTTP_200_OK)
-
-        else:
-            wallet = Wallet.objects.get(user=request.user)
-            amount = int(float(json_ob['payment_request']['amount']))
             try:
-                transaction = Transaction(
-                    amount=amount, transfer_from=wallet, transfer_to=wallet,transfer_type="add", payment_id=payment_id)
-                transaction.save()
-            except Exception as e:
-                changeActiveTransfer(False, False, request.user)
-                return Response({'message': "You have encashed this money. "}, status=status.HTTP_429_TOO_MANY_REQUESTS)
-            wallet.balance.add(0,0,amount,0)
+                profile = Bitsian.objects.get(email=json_ob['payment_request']['email'])
+            except:
+                return "The user has not been identified as a bitsian nor as participant."
 
-            changeActiveTransfer(False, True, request.user)
+        wallet = Wallet.objects.get(user=profile.user)
+        amount = int(float(json_ob['payment_request']['amount']))
+        payment_id=json_ob['payment_request']['payments'][0]['payment_id']
 
-            if origin == "Web":
-                return Response({"message": "Money added. now all we need is a url to redirect to."})
-            return Response({'message':'Money Added!'})
+        transaction, created = Transaction.objects.get_or_create(amount=amount, transfer_from=wallet, transfer_to=wallet,transfer_type="add", payment_id=payment_id)
+        if not created:
+            return "You have encashed this money."
+
+        wallet.balance.add(0,0,amount,0)
+
+        return "Money Added Successfully."
+
+
+class AddMoneyResponseWeb(APIView):
+
+    def get(self, request, format=None):
+        message = AddMoneyResponse(request)
+        # response = redirect( url_provided_by_frontend_team )
+        # reponse["X-Message"] = message
+        # return response
+        return HttpResponse(message) # temporary stub, until we have url_provided_by_frontend_team
+
+
+
+class AddMoneyResponseIOS(APIView):
+
+    # renderer_classes = [TemplateHTMLRenderer]
+    # template_name = 'shop/base.html'
+
+    def get(self, request, format=None):
+        message = AddMoneyResponse(request)
+        return render(request, "shop/base.html", {"message": message}) # get a better page from frontend team?
+
+
+class AddMoneyResponseAndroid(APIView):
+
+    def get(self, request, format=None):
+        message = AddMoneyResponse(request)
+        return render(request, "shop/templates", {"message": message}) # get a better page from frontend team?
