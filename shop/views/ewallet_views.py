@@ -82,9 +82,25 @@ class AddMoney(APIView):
             return Response({"message": "x-origin missing from headers."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            amount=data['amount']
+            try:
+                is_swd = data['is_swd']
+                amount=data['amount']
+            except KeyError as missing_data:
+                return Response({"message": "Missing the following field: {}".format(missing_data)}, status=status.HTTP_400_BAD_REQUEST)
             if amount<0:
                 return Response({"message": "Amount to be added cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
+            if is_swd:
+                try:
+                    bitsian_profile = Bitsian.objects.get(user=request.user)
+                except:
+                    return Response({"message": "The user has not been identified as a bitsian."}, status=status.HTTP_403_FORBIDDEN)
+                try:
+                    bitsian_wallet = bitsian_profile.user.wallet
+                except:
+                    return Response({"message": "The bitsian has no wallet. Cannot add money as of yet. Please contact the administrators."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+                bitsian_wallet.balance.add(amount,0,0,0)
+                return Response({"message": "Money added successfully!"})
+                
             try:
                 profile = Participant.objects.get(user=request.user)
             except:
@@ -195,4 +211,4 @@ class AddMoneyResponseAndroid(APIView):
 
     def get(self, request, format=None):
         message = AddMoneyResponse(request)
-        return render(request, "shop/templates", {"message": message}) # get a better page from frontend team?
+        return render(request, "shop/base.html", {"message": message}) # get a better page from frontend team?
