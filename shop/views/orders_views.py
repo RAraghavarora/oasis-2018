@@ -46,8 +46,8 @@ class PlaceOrder(APIView):
         # Part 1:
         try:
             data = request.data["order"]
-            # date = request.data["date"]
-            # price = request.data["price"]
+            date = request.data["date"]
+            price = request.data["price"]
         except KeyError as missing:
             msg = {"message": "missing the following field: {}".format(missing)}
             return Response(msg, status=status.HTTP_400_BAD_REQUEST)
@@ -120,14 +120,13 @@ class PlaceOrder(APIView):
                                         transfer_type="buy",
                                         transfer_from=request.user.wallet
                                     )
-        request.user.wallet.balance.deduct(net_cost)
+        customer.balance.deduct(net_cost)
         fragments = [{"id": fragment.id, "stall_id": fragment.stall.id} for fragment in order.fragments.all()]
-
 
         data["order_id"] = order.id
         data["fragment_ids"] = fragments
-        # data["date"] = date
-        # data["price"] = price
+        data["date"] = date
+        data["price"] = price
         order.setQueryString({"order": data})
 
         return Response({"order_id": order.id, "fragments_ids": fragments, "cost": net_cost})
@@ -158,7 +157,6 @@ class GetOrders(APIView):
                         fragment = OrderFragment.objects.get(id=frag_id)
                         new_fragment_ids.append({"id": frag_id, "stall_id": frag["stall_id"], "status": fragment.status})
                     except Exception as e:
-                        print(e)
                         return Response({"message": "one or more of the stalls are non-existant."}, status=status.HTTP_404_NOT_FOUND)
                 order["fragment_ids"] = new_fragment_ids
                 data["orders"].append(order)
@@ -220,7 +218,9 @@ class ConsumeTickets(APIView):
 
         max_count = tickets.count
         if(consume > max_count):
-            return Response({"success": False, "max_tickets": max_count})
+            return Response({"success": False, "max_tickets": max_count, "message": "successfully deducted"})
+        if consume < 1:
+            return Response({"success": False, "message": "Number of tickets can't be less than 1", "max_tickets": max_count}, status=status.HTTP_400_BAD_REQUEST)
         tickets.count -= consume
         tickets.save()
         return Response({"success": True, "remaining_tickets": tickets.count})

@@ -15,9 +15,7 @@ class Balance(models.Model):
 	# wallet: Wallet
 
 	def __str__(self):
-		ret_string = "{}'s Wallet - ".format(self.wallet.user.username) + \
-			"Balance: {}/{}/{}/{}".format(self.swd, self.cash, self.instamojo, self.transfers)
-		return ret_string
+		return "Balance: {}/{}/{}/{}".format(self.swd, self.cash, self.instamojo, self.transfers)
 
 	def _getTotal(self):
 		return self.swd + self.cash + self.instamojo + self.transfers

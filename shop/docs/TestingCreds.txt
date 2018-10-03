@@ -1,12 +1,29 @@
+__________
+
+Stalls
+__________
+
 App Stall 1
-username:AppStall1
+id: 3
+username: AppStall1
 password: asdfghjkl
-#Items 1,2,5
+#Item ids: 5,6,9
 
 App Stall 2
+id: 4
 username:AppStall2
 password:asdfghjkl
-#Items 3,4
+#Item ids: 7,8
+_____________________________________________________
+
+view further details at .../shop/stalls/<stall_id>/
+_____________________________________________________
+
+
+_____________
+
+Participants
+_____________
 
 App Part 1:
 username: AppPart1
@@ -15,3 +32,34 @@ password: asdfghjkl
 App Part 2:
 username: AppPart2
 psasword: asdfghjkl
+
+
+{
+    "fragments_ids": [
+        {
+            "stall_id": 4,
+            "id": 158
+        },
+        {
+            "stall_id": 3,
+            "id": 159
+        }
+    ],
+    "order_id": 129,
+    "cost": 800
+}
+
+{
+    "fragments_ids": [
+        {
+            "stall_id": 4,
+            "id": 164
+        },
+        {
+            "stall_id": 3,
+            "id": 165
+        }
+    ],
+    "order_id": 133,
+    "cost": 600
+}
