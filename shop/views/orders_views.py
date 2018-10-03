@@ -209,18 +209,28 @@ class ConsumeTickets(APIView):
     def post(self, request):
         #if not request.user == User.objects.get(username = "audiforce-official"):
         #    return Response({"message": "Only members of audiforce may use this endpoint."}, status=status.HTTP_401_UNAUTHORIZED)
-        qr_code = request.data["qr_code"]
-        user_id = decString(qr_code)[0]
-        user = get_object_or_404(User, id=user_id)
-        show = get_object_or_404(MainProfShow, id=request.data["show_id"])
-        tickets = get_object_or_404(Tickets, user=user, prof_show=show)
-        consume = request.data["consume"]
 
-        max_count = tickets.count
-        if(consume > max_count):
-            return Response({"success": False, "max_tickets": max_count, "message": "successfully deducted"})
-        if consume < 1:
-            return Response({"success": False, "message": "Number of tickets can't be less than 1", "max_tickets": max_count}, status=status.HTTP_400_BAD_REQUEST)
-        tickets.count -= consume
-        tickets.save()
-        return Response({"success": True, "remaining_tickets": tickets.count})
+        try:
+            try:
+                qr_code = request.data["qr_code"]
+                user_id = int(decString(qr_code)[0])
+            except:
+                return Response({"message": "invalid qr_code"})
+                
+            user = get_object_or_404(User, id=user_id)
+            show = get_object_or_404(MainProfShow, id=request.data["show_id"])
+            tickets = get_object_or_404(Tickets, user=user, prof_show=show)
+            
+            consume = request.data["consume"]
+
+            max_count = tickets.count
+            if(consume > max_count):
+                return Response({"success": False, "max_tickets": max_count})
+            if consume < 1:
+                return Response({"success": False, "message": "Number of tickets can't be less than 1", "max_tickets": max_count})
+            tickets.count -= consume
+            tickets.save()
+            return Response({"success": True, "remaining_tickets": tickets.count})
+       
+        except KeyError as ke:
+            return Response({"success": False, "message": "missing field: {}".format(ke)}, status=status.HTTP_400_BAD_REQUEST)        
