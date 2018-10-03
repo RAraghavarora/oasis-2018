@@ -32,7 +32,7 @@ class Authentication(APIView):
 	for i in '0oO1QlLiI':
 		PASS_CHARS = PASS_CHARS.replace(i,'')
 
-	CLIENT_ID_ios = "157934063064-po2m0hg1vt113ho1oohld9g06khvb74l.apps.googleusercontent.com"
+	CLIENT_ID_ios = "157934063064-et3fmi6jlivnr6h70q2rnegik50aqj3g.apps.googleusercontent.com"
 	CLIENT_ID_web = "563920200402-chepn5acpejf0bac9v6on3a8pdvmvvg0.apps.googleusercontent.com"
 
 
