@@ -189,3 +189,33 @@ class ShopTests(TestCase):
             transaction = False
 
         self.assertTrue(transaction)
+
+
+    # def add_money_successfully(self):
+    #     """
+    #         Checks:
+    #         1. Participant
+    #             a) Instamojo Payment - 200 status and balance updated, transaction created, balance.instamojo == amount
+    #             b) Requesting swd transfer - 403 forbidden
+    #         2. Bitsian
+    #             a) Instamojo Payment - 200 status and balance updated, transaction created, balance.instamojo == amount
+    #             b) SWD Transfer - 200 status and balance updated, transaction created, balance.swd == amount
+    #         3. Random checks
+    #             a) Missing Parameters: KeyErrors with missing key name(x-origin, amount)
+    #             b) Encashed Payment Error Instamojo - 429 status
+    #             d) Negative amounts
+    #             e) Requesting through non-(participant or bitsian): 403
+    #     """
+
+    #     wong_initial = Wallet.objects.get(user__username="wong").getTotalBalance()
+    #     strange_intial = Wallet.objects.get(user__username="strange").getTotalBalance()
+
+    #     client = RequestsClient()
+    #     headers = CACHE["headers"].update({'x-origin': 'iOS'})
+    #     data = {
+    #         "amount": 299, "is_swd":true
+    #     }
+    #     client.post(
+    #         url="http://testserver/shop/add-money"
+    #     )
+

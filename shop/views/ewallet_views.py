@@ -100,7 +100,8 @@ class AddMoney(APIView):
                     return Response({"message": "The bitsian has no wallet. Cannot add money as of yet. Please contact the administrators."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
                 bitsian_wallet.balance.add(amount,0,0,0)
                 return Response({"message": "Money added successfully!"})
-                
+            if amount not in range(10,200000):
+                return Response({"message": "Amount to be added has to be between Rs. 10 and Rs. 2,00,000."})  
             try:
                 profile = Participant.objects.get(user=request.user)
             except:
