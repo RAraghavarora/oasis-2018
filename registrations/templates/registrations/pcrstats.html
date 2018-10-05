@@ -1,0 +1,46 @@
+{% extends "registrations/base.html" %}
+{% block body %}
+<div class="card">
+    <div class="header">
+        <h2>
+            Participations of {{candidate_name}}
+        </h2>
+    </div>
+	<div class="body">
+	{% csrf_token %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover dataTable">
+                <thead>
+                    <tr>
+                        <th>Event Name</th>
+                        <th>PCR Approved</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Event Name</th>
+                        <th>PCR Approved</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                	{% for participation in participations %}
+                    <tr>
+                        <td>{{participation.event.name}}</a></td>
+                        <td>
+                            {% if participation.pcr_approved %}
+                            Yes
+                            {% else %}
+                            No
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <input type="hidden" value="approve" name="action">
+        </div>
+	</form>
+    </div>
+</div>
+
+{% endblock %}

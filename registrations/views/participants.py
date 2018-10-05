@@ -162,12 +162,20 @@ def home(request):
         
         if user is not None:
             if user.is_active:
-                if not user.participant.email_verified:
-                    message = "It seems you haven\'t verified your email yet. Please verify it as soon as possible to proceed. \
-                    For any query, call the following members of the Department of Publications and Correspondence. Aditi Pandey: %s - pcr@bits-oasis.org .'%(get_pcr_number()), 'url':request.build_absolute_uri(reverse('registrations:home'))"
-                    context = {'error_heading':'Email not verified','message' : message}
-                login(request,user)
-                return redirect('registrations:index')
+                try:
+                    if not user.participant.email_verified:
+                        message = "It seems you haven\'t verified your email yet. Please verify it as soon as possible to proceed.For any query, call the following members of the Department of Publications and Correspondence. Aditi Pandey: %s - pcr@bits-oasis.org ."%(get_pcr_number())
+                        context = {'error_heading':'Email not verified','message' : message,'url':request.build_absolute_uri(reverse('registrations:home'))}
+                        return render(request, 'registrations/message.html', context)
+
+                    login(request,user)
+                    return redirect('registrations:index')
+
+                except:
+                    message = "Participant does not Exist"
+                    context = {'error_heading':'No Participant','message' : message,'url':request.build_absolute_uri(reverse('registrations:home'))}
+                    return render(request, 'registrations/message.html', context)
+
             else:
                 message="Your account is currently INACTIVE. To activate it, call the following members of the \
                 Department of Publications and Correspondence. Aditi Pandey: %s - pcr@bits-bosm.org .'%(get_pcr_number()), 'url':request.build_absolute_uri(reverse('registrations:home'))"
