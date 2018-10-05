@@ -23,7 +23,7 @@ class Transaction(models.Model):
 										on_delete=models.SET_NULL, null=True)
 	transfer_type = models.CharField(max_length=10, default="buy",
 										choices=TYPES, null=True)
-	refund_id = models.CharField(default="", max_length=30)
+	payment_id = models.CharField(null=True, max_length=30, unique=True)
 	timestamp = models.DateTimeField(default=timezone.now)
 	# order: OrderFragment
 

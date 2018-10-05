@@ -32,7 +32,7 @@ class Authentication(APIView):
 	for i in '0oO1QlLiI':
 		PASS_CHARS = PASS_CHARS.replace(i,'')
 
-	CLIENT_ID_ios = "157934063064-po2m0hg1vt113ho1oohld9g06khvb74l.apps.googleusercontent.com"
+	CLIENT_ID_ios = "157934063064-et3fmi6jlivnr6h70q2rnegik50aqj3g.apps.googleusercontent.com"
 	CLIENT_ID_web = "563920200402-chepn5acpejf0bac9v6on3a8pdvmvvg0.apps.googleusercontent.com"
 
 
@@ -80,7 +80,6 @@ class Authentication(APIView):
 			try:
 				idinfo = id_token.verify_oauth2_token(token, google_requests.Request())
 				if idinfo['aud'] not in [self.CLIENT_ID_web, self.CLIENT_ID_ios]:
-					print(idinfo)
 					raise ValueError('Could not verify audience: {}'.format(idinfo['aud']))
 
 			except Exception as e:
@@ -92,12 +91,9 @@ class Authentication(APIView):
 			#Checks if Bitsian exists, return 404 if doesn't.
 			email = idinfo['email']
 			try:
-				print("EMAIL: {}".format(email))
 				bitsian = Bitsian.objects.get(email=email)
-				print("BITSIAN: {}".format(bitsian))
 			except Exception as e:
-				print(e)
-				msg = "Bitsian not in SWD list, for security reasons you will need to contact the DVM."
+				msg = "Bitsian associated with {} not in SWD list, for security reasons you will need to contact the DVM.".format(email)
 				return Response({"message": msg}, status=status.HTTP_404_NOT_FOUND)
 
 			#Checks if user exist creates if doesn't.
@@ -145,9 +141,7 @@ class Authentication(APIView):
 
 		#Checks if wallet exists
 		try:
-			print("User: {}".format(user))
 			wallet = Wallet.objects.get(user=user)
-			print("Wallet: {}".format(wallet))
 			if not wallet:
 				raise Wallet.DoesNotExist
 

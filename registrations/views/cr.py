@@ -18,8 +18,10 @@ def approve(request):
     '''
     Page where CR will approve the participations of his college
     '''
+
     user = request.user
     participant = Participant.objects.get(user=user)
+
     if not participant.is_cr:
         context = {
             'error_heading':'Invalid Access',
@@ -27,14 +29,18 @@ def approve(request):
             'url':request.build_absolute_uri(reverse('registrations:home'))
         }
         return render(request, 'registrations/message.html', context)
-    approved_list = MainParticipation.objects.filter(participant__college = participant.college, cr_approved=True)
-    disapproved_list = MainParticipation.objects.filter(participant__college = participant.college, cr_approved=False)
-    for person in disapproved_list:
-        print(person.participant,'\t',person.participant.email)
+
+    # approved_list = MainParticipation.objects.filter(participant__college = participant.college, cr_approved=True)
+    # disapproved_list = MainParticipation.objects.filter(participant__college = participant.college, cr_approved=False,participant__email_verified=True)
+
+    #participant is the one who is logged in. Candidate is the one chosen by the CR(participant)
+    approved_list= Participant.objects.filter(college = participant.college, cr_approved=True,email_verified=True)
+    disapproved_list = Participant.objects.filter(college = participant.college, cr_approved=False,email_verified=True)
     
     if request.method == 'GET':
         context={'approved_list':approved_list,'disapproved_list':disapproved_list,'participant':participant}
         return render(request, 'registrations/cr_approval.html',context)
+    
     elif request.method == 'POST':
         data = request.POST
         if data['action'] == 'approve':
@@ -45,29 +51,34 @@ def approve(request):
                 #goodbye
                 return redirect(request.META.get('HTTP_REFERER'))
             for id in parts_id:
-                participation = MainParticipation.objects.get(id=id,participant__college=participant.college)
-                print("participation is \t",participation)
-                participation.cr_approved = True
-                participation.save()
-                participant_1 = participation.participant
-                participant.cr_approved=True
-                participant_1.save()
-                print(participant_1.user)
-                if participant_1.user is not None:
-                    user = participant_1.user
+                try:
+                    candidate = Participant.objects.get(id=id,college=participant.college)
+                except:
+                    context = {
+                        'error_heading':'Error Occured',
+                        'message':'Sorry, you cannot perform this action',
+                        'url':request.build_absolute_uri(reverse('registrations:home'))
+                    }
+                    return render(request, 'registrations/message.html', context)
+                partipations = MainParticipation.objects.filter(participant=candidate)
+                partipations.update(cr_approved=True)
+                candidate.cr_approved=True
+                candidate.save()
+                if candidate.user is not None:
+                    user = candidate.user
                     if not user.is_active:
                         user.is_active=True
-                        user.save
+                        user.save()
                 else:
-                    username = participant.name.split(' ')[0] + str(participant_1.id)
+                    username = candidate.name.split(' ')[0] + str(candidate.id)
                     password = ''.join(choice(chars) for i in range(8))
                     print(password)
                     user = User.objects.create_user(username=username, password=password)
-                    participant_1.user=user
-                    participant_1.save()
+                    candidate.user=user
+                    candidate.save()
                     email_class = send_grid.cr_approved()
-                    name = participant_1.name
-                    send_to = participant_1.email
+                    name = candidate.name
+                    send_to = candidate.email
                     login_url = str(request.build_absolute_uri(reverse('registrations:home')))
                     body = email_class.body%(name,login_url,username,password,get_pcr_number())
                     to_email=Email(send_to)
@@ -78,15 +89,14 @@ def approve(request):
                         print("EMAIL SENT")
                     except Exception as e :
                         print(e)
-                        participant_1.user = None
-                        participant_1.save()
+                        candidate.user = None
+                        candidate.save()
                         user.delete()
-                        participation.cr_approved = False
-                        participation.save()
+                        participation.update(cr_approved=False)
                         context = {
-                        'status': 0,
-                        'error_heading': "Error sending mail",
-                        'message': "Sorry! Error in sending email. Please try again.",
+                            'status': 0,
+                            'error_heading': "Error sending mail",
+                            'message': "Sorry! Error in sending email. Please try again.",
                         }
                         return render(request, 'registrations/message.html', context)
                     
@@ -102,16 +112,17 @@ def approve(request):
             except:
                 return redirect(request.META.get('HTTP_REFERER'))
             for part_id in parts_id:
-                participation = MainParticipation.objects.get(id=part_id, participant__college=participant.college)
-                participation.cr_approved = False
-                participation.pcr_approved = False
-                participation.save()
-                participant_1 = participation.participant
-                if all(not i.cr_approved for i in participant_1.mainparticipation_set.all()):
-                    participant_1.cr_approved = False
-                    participant_1.save()
-        approved_list = MainParticipation.objects.filter(participant__college = participant.college, cr_approved=True)
-        disapproved_list = MainParticipation.objects.filter(participant__college = participant.college, cr_approved=False)
+                candidate = Participant.objects.get(id=part_id)
+                participations = MainParticipation.objects.filter(participant=candidate)
+                participations.update(cr_approved=False,pcr_approved=False)
+                # participant_1 = participation.participant
+                # if all(not i.cr_approved for i in participant_1.mainparticipation_set.all()):
+                #     participant_1.cr_approved = False
+                #     participant_1.save()
+                candidate.cr_approved=False
+                candidate.save()
+        approved_list = Participant.objects.filter(college = participant.college, cr_approved=True,email_verified=True)
+        disapproved_list = Participant.objects.filter(college = participant.college, cr_approved=False, email_verified=True)
         return render(request, 'registrations/cr_approval.html', {'approved_list':approved_list, 'disapproved_list':disapproved_list, 'participant':participant})
 
 @login_required
@@ -173,3 +184,22 @@ def get_profile_card_cr(request, p_id):
     print(events)
     events = events[:-2]
     return render(request, 'registrations/profile_card.html', {'participant':get_part, 'events':events,})
+
+@login_required
+def cr_stats(request):
+    participant = Participant.objects.get(user=request.user)
+    college = participant.college
+    approved_participants = Participant.objects.filter(college = college, cr_approved=True)
+    disapproved_participants = Participant.objects.filter(college = college, cr_approved=False)
+
+    context = {'approved_list':approved_participants,'disapproved_list':disapproved_participants}
+
+    return render(request, 'registrations/stats.html',context)
+
+def pcr_stats(request,p_id):
+    candidate = Participant.objects.get(id=p_id)
+    participations = MainParticipation.objects.filter(participant = candidate)
+    
+    context = {'participations':participations,'candidate_name':candidate.name.title()}
+
+    return render(request, 'registrations/pcrstats.html',context)

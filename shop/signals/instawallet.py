@@ -35,6 +35,7 @@ def autoAddWalletBitsian(sender, **kwargs):
             wallet.save()
 
 
+
 @receiver(post_save, sender=Participant)
 def autoAddWalletParticipant(sender, **kwargs):
     participant = kwargs["instance"]
