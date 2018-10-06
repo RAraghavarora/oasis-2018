@@ -9,10 +9,11 @@ register = template.Library()
 def show_tags():
     email_verified = Participant.objects.filter(email_verified=True).count()
     cr_approved = 0
-    for participant in Participant.objects.filter(email_verified=True):
-        if MainParticipation.objects.filter(participant=participant, cr_approved=True):
-            cr_approved += 1
-            continue
+    cr_approved=Participant.objects.filter(email_verified=True, cr_approved=True).count()
+    # for participant in Participant.objects.filter(email_verified=True):
+    #     if MainParticipation.objects.filter(participant=participant, cr_approved=True):
+    #         cr_approved += 1
+    #         continue
     pcr_approved = Participant.objects.filter(pcr_approved=True).count()
     paid = Participant.objects.filter(Q(paid=True,controlz_paid=False) | Q(curr_paid=True, curr_controlz_paid=False)).count()
     full_paid = Participant.objects.filter(Q(paid=True,controlz_paid=True) | Q(curr_paid=True, curr_controlz_paid=True)).count()
