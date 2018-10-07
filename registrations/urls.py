@@ -22,7 +22,7 @@ urlpatterns = [
 				url(r'^pcrstats/(?P<p_id>\d+)/',cr.pcr_stats,name='PcrStats'),
 
 				url(r'^logout$',logout,name='logout'),
-				
-				# url(r'^payment$',participants.payment,name='make_payment'),
-				# url(r'^hello$',participants.payment_response,name='hello')
+				url(r'^payment$',participants.payment,name='make_payment'),
+				url(r'^grouppayment/$', cr.payment, name="cr_payment"),
+				url(r'^payment_response$',participants.payment_response,name='payment_response')
 			]

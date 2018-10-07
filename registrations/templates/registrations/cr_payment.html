@@ -4,6 +4,14 @@
 <form action="{% url 'registrations:cr_payment' %}" method="post">
     {% csrf_token %}
     <div class="card">
+        {% if messages %}
+            <div class="body">
+            {% for message in messages %}
+            <label class='error' for='username' generated="true">{{message}}</label>
+            {% endfor %}
+            </div>
+        {% endif %}
+        
     <div class="header">
         <h2>
             Select payment method and participants for payment
@@ -44,7 +52,7 @@
                     </tr>
                     <tr>
                         <td>
-                            Rs 1000 (Complete the payment to be made at controlz booth and avail a discount of Rs 50 and also skip the rush!)
+                            Rs 1000 
                         </td>
                         <td>
                             <input name="key" type="radio" id="two" value="2"/>
@@ -108,7 +116,7 @@
     <div class="card">
     <div class="header">
         <h2>
-            Participants with preregistration fees paid. Select to pay Rs 650 to avail a discount of Rs 50 for each.
+            Participants with preregistration fees paid. Select to pay Rs 700.
         </h2>
     </div>
         <div class="header">
