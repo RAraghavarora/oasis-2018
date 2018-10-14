@@ -9,6 +9,7 @@ from shop.models.balance import Balance
 from shop.models.stall import Stall
 from registrations.models import Bitsian
 from registrations.models import Participant
+from shop.models.teller import Teller
 
 
 @receiver(post_save, sender=Stall)
@@ -45,6 +46,17 @@ def autoAddWalletParticipant(sender, **kwargs):
             participant.barcode = genString(participant.user.id, participant.email)
             participant.save()
         wallet, created = Wallet.objects.get_or_create(user=participant.user, profile="P")
+        if created:
+            balance = Balance.objects.create(wallet=wallet)
+            wallet.balance = balance
+            wallet.save()
+
+
+@receiver(post_save, sender=Teller)
+def autoAddWalletTeller(sender, **kwargs):
+    if kwargs["created"]:
+        teller = kwargs["instance"]
+        wallet, created = Wallet.objects.get_or_create(user=teller.user, profile="T")
         if created:
             balance = Balance.objects.create(wallet=wallet)
             wallet.balance = balance
