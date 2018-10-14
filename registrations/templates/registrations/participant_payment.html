@@ -10,7 +10,7 @@
                 <div class="header">
                     <h2>
                         {% if participant.paid and not participant.controlz_paid %}
-                        Make Payment (You have already paid Rs 300 so pay only Rs 650)
+                        Make Payment (You have already paid Rs 300 so pay only Rs 700)
                         {% elif participant.controlz_paid %}
                         Payment Complete
                         {% else %}
@@ -55,7 +55,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        Rs 1000 (Complete the payment to be made at controlz booth and avail a discount of Rs 50 and also skip the rush!)
+                                        Rs 1000 
                                     </td>
                                     <td>
                                         <input name="key" type="radio" id="2" value="2"/>
@@ -65,7 +65,7 @@
                                 {% elif participant.paid and not participant.controlz_paid %}
                                 <tr>
                                     <td>
-                                        Rs 650
+                                        Rs 700
                                     </td>
                                     <td>
                                         <input name="key" type="radio" id="3" value="3"/>

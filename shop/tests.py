@@ -192,16 +192,3 @@ class ShopTests(TestCase):
             transaction = False
 
         self.assertTrue(transaction)
-
-"""
-class ShopScannerTests(TestCase):
-
-    def setUp(self):
-        org_user = User.objects.create(username="org_user", password="asdfghjkl")
-        teller_user = User.objects.create(username="teller_user", password="asdfghjkl")
-
-        org_ext =
-
-
-    def test_organizations_ and_tellers_login(self):
-"""

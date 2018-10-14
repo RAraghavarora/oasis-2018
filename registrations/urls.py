@@ -18,8 +18,11 @@ urlpatterns = [
 				url(r'^profilecard/(?P<p_id>\d+)/$',cr.get_profile_card_cr,name='cr_profilecard'),
 				url(r'^getqr/$', participants.return_qr, name="generate_qr"),
 				url(r'^getlist/college/(?P<pk>[0-9]+)/$', excel.college_list, name="College Excel Sheet"),
+				url(r'^stats/',cr.cr_stats,name='cr stats'),
+				url(r'^pcrstats/(?P<p_id>\d+)/',cr.pcr_stats,name='PcrStats'),
+
 				url(r'^logout$',logout,name='logout'),
-				
-				# url(r'^payment$',participants.payment,name='make_payment'),
-				# url(r'^hello$',participants.payment_response,name='hello')
+				url(r'^payment$',participants.payment,name='make_payment'),
+				url(r'^grouppayment/$', cr.payment, name="cr_payment"),
+				url(r'^payment_response$',participants.payment_response,name='payment_response')
 			]

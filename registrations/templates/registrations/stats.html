@@ -4,7 +4,7 @@
 <div class="card">
     <div class="header">
         <h2>
-            Unapproved Participations in Events
+            Participants not approved by CR
         </h2>
     </div>
 	<div class="body">
@@ -15,38 +15,33 @@
                 <thead>
                     <tr>
                         <th>Name(Click to view details)</th>
-                        <th>College</th>
                         <th>Events</th>
                         <th>Contact</th>
-                        <th>Select</th>
+                        <th>More Information</th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
                         <th>Name(Click to view details)</th>
-                        <th>College</th>
                         <th>Events</th>
                         <th>Contact</th>
-                        <th>Select</th>
+                        <th>More Information</th>
                     </tr>
                 </tfoot>
                 <tbody>
                 	{% for candidate in disapproved_list %}
                     <tr>
                         <td><a href="{% url 'registrations:participant_details' candidate.id %}">{{candidate.name}}</a></td>
-                        <td>{{candidate.college.name}}</td>
                         <td>{% for event in candidate.events.all %}{{event}}</br>{% endfor %}</td>
                         <td>{{candidate.phone}}</td>
                         <td>
-                        	<input type="checkbox" name="parts_id" id="{{candidate.id}}" value="{{candidate.id}}">
-                        	<label for="{{candidate.id}}"></label>
+                            <a href="{% url 'registrations:PcrStats' candidate.id %}"> Details </a>
 						</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
             <input type="hidden" value="approve" name="action">
-            <button type="submit" class="btn btn-primary btn-lg m-l-15 waves-effect">Confirm</button>
         </div>
 	</form>
     </div>
@@ -59,7 +54,7 @@
 <div class="card">
     <div class="header">
         <h2>
-            Approved Participations in Events
+            Participants approved by CR
         </h2>
     </div>
 	<div class="body">
@@ -70,28 +65,25 @@
                 <thead>
                     <tr>
                         <th>Name(Click to view details)</th>
-                        <th>College</th>
                         <th>Events</th>
                         <th>Contact</th>
                         <th>Payment Status</th>
-                        <th>Select</th>
+                        <th>More Information</th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
                         <th>Name(Click to view details)</th>
-                        <th>College</th>
                         <th>Events</th>
                         <th>Contact</th>
                         <th>Payment Status</th>
-                        <th>Select</th>
+                        <th>More Information</th>
                     </tr>
                 </tfoot>
                 <tbody>
                 	{% for candidate in approved_list %}
                     <tr>
                         <td><a href="{% url 'registrations:participant_details' candidate.id %}">{{candidate.name}}</a></td>
-                        <td>{{candidate.college.name}}</td>
                         <td>{% for event in candidate.events.all %}{{event}}</br>{% endfor %}</td>
                         <td>{{candidate.phone}}</td>
                         <td>
@@ -102,15 +94,12 @@
                             {% endif %}
                         </td>
                         <td>
-                        	<input type="checkbox" name="parts_id" id="{{candidate.id}}" value="{{candidate.id}}">
-                        	<label for="{{candidate.id}}"></label>
+                            <a href="{% url 'registrations:PcrStats' candidate.id %}"> Details </a>
 						</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <input type="hidden" value="disapprove" name="action">
-            <button type="submit" class="btn btn-primary btn-lg m-l-15 waves-effect">Unapprove</button>
         </div>
 	</form>
     </div>

@@ -66,65 +66,82 @@ class Transfer(APIView):
 
 
 class AddMoney(APIView):
-	"""
-		The API endpoint that will be called when money has to be added to
-		the wallet by Credit/Debit Cards or UPIs via Instamojo.
-	"""
+    """
+        The API endpoint that will be called when money has to be added to
+        the wallet by Credit/Debit Cards or UPIs via Instamojo.
+    """
 
-	permission_classes= (IsAuthenticated, TokenVerification,)
+    permission_classes= (IsAuthenticated, TokenVerification,)
 
-	def post(self, request, format=None):
-		data = request.data
+    def post(self, request, format=None):
+        data = request.data
 
-		try:
-			origin = request.META["HTTP_X_ORIGIN"]
-			if origin not in ["iOS", "Web", "Android"]:
-				return Response({"message": "invalid x-origin"}, status=status.HTTP_400_BAD_REQUEST)
-		except KeyError:
-			return Response({"message": "x-origin missing from headers."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            origin = request.META["HTTP_X_ORIGIN"]
+            if origin not in ["iOS", "Web", "Android"]:
+                return Response({"message": "invalid x-origin"}, status=status.HTTP_400_BAD_REQUEST)
+        except KeyError:
+            return Response({"message": "x-origin missing from headers."}, status=status.HTTP_400_BAD_REQUEST)
 
-		try:
-			amount=data['amount']
-			if amount<0:
-				return Response({"message": "Amount to be added cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
-			try:
-				profile = Participant.objects.get(user=request.user)
-			except:
-				try:
-					profile = Bitsian.objects.get(user=request.user)
-				except:
-					return Response({"message": "The user has not been identified as a bitsian nor as participant."}, status=status.HTTP_403_FORBIDDEN)
-			user_email = profile.email
-			user_mobile = profile.phone
-			user_name = profile.name
+        try:
+            try:
+                is_swd = data['is_swd']
+                amount=data['amount']
+            except KeyError as missing_data:
+                return Response({"message": "Missing the following field: {}".format(missing_data)}, status=status.HTTP_400_BAD_REQUEST)
+            if amount<0:
+                return Response({"message": "Amount to be added cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
+            if is_swd:
+                try:
+                    bitsian_profile = Bitsian.objects.get(user=request.user)
+                except:
+                    return Response({"message": "The user has not been identified as a bitsian."}, status=status.HTTP_403_FORBIDDEN)
+                try:
+                    bitsian_wallet = bitsian_profile.user.wallet
+                except:
+                    return Response({"message": "The bitsian has no wallet. Cannot add money as of yet. Please contact the administrators."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+                bitsian_wallet.balance.add(amount,0,0,0)
+                return Response({"message": "Money added successfully!"})
+            if amount not in range(10,200000):
+                return Response({"message": "Amount to be added has to be between Rs. 10 and Rs. 2,00,000."})
+            try:
+                profile = Participant.objects.get(user=request.user)
+            except:
+                try:
+                    profile = Bitsian.objects.get(user=request.user)
+                except:
+                    return Response({"message": "The user has not been identified as a bitsian nor as participant."}, status=status.HTTP_403_FORBIDDEN)
+            user_email = profile.email
+            user_mobile = profile.phone
+            user_name = profile.name
 
-			# just check if the wallet exists before continuing
-			try:
-				wallet = profile.user.wallet
-			except:
-				return Response({"message": "The user has no wallet. Cannot add money as of yet."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            # just check if the wallet exists before continuing
+            try:
+                wallet = profile.user.wallet
+            except:
+                return Response({"message": "The user has no wallet. Cannot add money as of yet."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-			if origin == "iOS":
-				redirect_url = reverse("shop:AddMoneyResponseIOS",request=request)
-			elif origin == "Web":
-				redirect_url = reverse("shop:AddMoneyResponseWeb",request=request)
-			elif origin == "Android":
-				redirect_url = reverse("shop:AddMoneyResponseAndroid",request=request)
+            if origin == "iOS":
+                redirect_url = reverse("shop:AddMoneyResponseIOS",request=request)
+            elif origin == "Web":
+                redirect_url = reverse("shop:AddMoneyResponseWeb",request=request)
+            elif origin == "Android":
+                redirect_url = reverse("shop:AddMoneyResponseAndroid",request=request)
 
-			response = api.payment_request_create(
-				amount=str(amount),
-				purpose='Add Money to wallet',
-				send_email=False,
-				email=user_email,
-				buyer_name=user_name,
-				phone=user_mobile,
-				redirect_url=redirect_url
-			)
+            response = api.payment_request_create(
+                amount=str(amount),
+                purpose='Add Money to wallet',
+                send_email=False,
+                email=user_email,
+                buyer_name=user_name,
+                phone=user_mobile,
+                redirect_url=redirect_url
+            )
 
-			return Response({'url': response['payment_request']['longurl']})
+            return Response({'url': response['payment_request']['longurl']})
 
-		except Exception as e:
-			return Response({'message': 'Add Money Failed! '})
+        except Exception as e:
+            return Response({'message': 'Add Money Failed! '})
 
 
 
