@@ -202,8 +202,7 @@ class ConsumeTickets(APIView):
            }
     """
 
-    # permission_classes = (TokenVerification, IsAuthenticated,)
-    permission_classes = (TokenVerification,) # Extra form of verification needed? Only allow departments to access this endpoint?
+    permission_classes = (TokenVerification, IsAuthenticated,)
 
     @csrf_exempt
     def post(self, request):
