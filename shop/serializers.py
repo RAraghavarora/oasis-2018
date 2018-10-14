@@ -36,8 +36,8 @@ class OrderFragmentSerializer(serializers.ModelSerializer):
 	stall_id = serializers.SerializerMethodField()
 	#items = serializers.ReadOnlyField(source="ItemInstanceSerializer")
 
-	def getStallID(self, obj):
-		return self.stall.id
+	def get_stall_id(self, obj):
+		return obj.stall.id
 
 	def get_customer(self, obj):
 		name = obj.order.customer.user.username
