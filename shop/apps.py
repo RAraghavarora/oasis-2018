@@ -25,16 +25,14 @@ class ShopConfig(AppConfig):
 
         #Then use Google's API to get setup for communtication with
         #Google Cloud Firestore from the server end.
-        try:
-            path = "oasis2018/settings_config/firebase_creds.json"
-            creds = credentials.Certificate(os.path.join(
-                                                settings.BASE_DIR,
-                                                path
-                                                )
+        path = "oasis2018/settings_config/firebase_creds.json"
+        creds = credentials.Certificate(os.path.join(
+                                            settings.BASE_DIR,
+                                            path
                                             )
-            app = firebase_admin.initialize_app(creds)
-        except:
-            pass # already initialized by another app
+                                        )
+        app = firebase_admin.initialize_app(creds)
+
 
 """
 For learning more about how to use Google Cloud Firestore's api,
