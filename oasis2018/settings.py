@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_jwt',
 
-    'events',
+    'events.apps.EventsConfig',
     'regsoft',
     'pcradmin',
     'analytics',
@@ -132,10 +132,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
+    'rest_framework.renderers.JSONRenderer',
     ),
     'DEFAULT_PARSER_CLASSES': (
-        'rest_framework.parsers.JSONParser',
+    'rest_framework.parsers.JSONParser',
     ),
 }
 

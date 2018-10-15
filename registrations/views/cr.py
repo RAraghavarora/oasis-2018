@@ -1,9 +1,10 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from registrations.models import Participant
+from registrations.models import Participant, PaymentGroup
 from events.models import MainParticipation
 from django.urls import reverse
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 import string
 from random import choice
 chars = string.ascii_lowercase + string.ascii_uppercase + string.digits
@@ -11,7 +12,13 @@ from . import send_grid
 import sendgrid
 from sendgrid.helpers.mail import *
 from utils.registrations import *
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from instamojo_wrapper import Instamojo
+from oasis2018.settings_config import keyconfig
+
+
+api = Instamojo(api_key=keyconfig.INSTA_API_KEY_test, auth_token=keyconfig.AUTH_TOKEN_test, endpoint='https://test.instamojo.com/api/1.1/') #when in development
+
 
 @login_required
 def approve(request):
@@ -203,3 +210,71 @@ def pcr_stats(request,p_id):
     context = {'participations':participations,'candidate_name':candidate.name.title()}
 
     return render(request, 'registrations/pcrstats.html',context)
+
+@login_required
+def payment(request):
+    user = request.user
+    participant = Participant.objects.get(user=user)
+    if not participant.is_cr:
+        context = {
+        'status': 0,
+        'error_heading': "Invalid Access",
+        'message': "Sorry! You are not an approved college representative.",
+        }
+        return render(request, 'registrations/message.html', context)
+    if request.method == 'POST':
+        data = request.POST
+        print("DATA=\n",data)
+        try:
+            key = int(data['key'])
+            part_list = data.getlist('part_list')
+            print("LEN=",len(part_list))
+            if len(part_list)==0:
+                messages.warning(request,'Error:Please select participants')
+                return redirect(request.META.get('HTTP_REFERER'))
+        except:
+            return redirect(request.META.get('HTTP_REFERER'))
+        if key == 1:
+            amount = 300
+        elif key == 2:
+            amount = 1000
+        elif key == 3:
+            amount = 700
+        part_list = Participant.objects.filter(id__in=data.getlist('part_list'), pcr_approved=True)
+        group = PaymentGroup()
+        group.amount_paid = amount*len(part_list)
+        group.save()
+        for part in part_list:
+            part.payment_group = group
+            part.save()
+        name = participant.name
+        email = participant.email
+        phone = participant.phone
+        purpose = 'Payment ' + str(group.id)
+        response = api.payment_request_create(
+            buyer_name = name,
+            email = email,
+            phone = phone,
+            amount = group.amount_paid,
+            purpose = purpose,
+            redirect_url = request.build_absolute_uri(reverse("registrations:payment_response"))
+            )
+    # print  email  , response['payment_request']['longurl']            
+        try:
+            url = response['payment_request']['longurl']
+            return HttpResponseRedirect(url)
+        except Exception as e:
+            print(e)
+            group.delete()
+            context = {
+                'error_heading': "Payment error",
+                'message': "An error was encountered while processing the request. Please try again or contact PCr, BITS, Pilani.",
+                'url':request.build_absolute_uri(reverse('registrations:cr_payment'))
+                }
+            return render(request, 'registrations/message.html', context)
+
+    else:
+        participant_list = Participant.objects.filter(college=participant.college,paid=False, pcr_approved=True)
+        prereg_list = Participant.objects.filter(college=participant.college, paid=True, controlz_paid=False)
+        paid_list = Participant.objects.filter(college=participant.college, paid=True, controlz_paid=True)
+        return render(request, 'registrations/cr_payment.html', {'participant_list':participant_list, 'participant':participant, 'prereg_list':prereg_list, 'paid_list':paid_list})

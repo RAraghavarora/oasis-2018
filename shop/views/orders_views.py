@@ -17,7 +17,7 @@ from shop.models.item import ItemClass, ItemInstance, Tickets
 from shop.models.transaction import Transaction
 from shop.permissions import TokenVerification
 from utils.wallet_qrcode import decString
-from events.models import MainProfShow
+from events.models import MainProfShow, Organization
 
 
 class PlaceOrder(APIView):
@@ -202,13 +202,16 @@ class ConsumeTickets(APIView):
            }
     """
 
-    # permission_classes = (TokenVerification, IsAuthenticated,)
-    permission_classes = (TokenVerification,) # Extra form of verification needed? Only allow departments to access this endpoint?
+    permission_classes = (TokenVerification, IsAuthenticated,)
 
     @csrf_exempt
     def post(self, request):
-        #if not request.user == User.objects.get(username = "audiforce-official"):
-        #    return Response({"message": "Only members of audiforce may use this endpoint."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            organization = request.user.organization # note: model found in the events app
+            name = organization.name
+        except Organization.DoesNotExist:
+            return Response({"message": "User is not an organization (club/dept)."}, status=status.HTTP_401_UNAUTHORIZED)
 
         try:
             try:
@@ -216,11 +219,14 @@ class ConsumeTickets(APIView):
                 user_id = int(decString(qr_code)[0])
             except:
                 return Response({"message": "invalid qr_code"})
-                
+
             user = get_object_or_404(User, id=user_id)
             show = get_object_or_404(MainProfShow, id=request.data["show_id"])
             tickets = get_object_or_404(Tickets, user=user, prof_show=show)
-            
+
+            if show not in organization.shows.all():
+                return Response({"message": "Invalid user, only members of {} are allowed to control tickets for this show.".format(show.organization)}, status=status.HTTP_401_UNAUTHORIZED)
+
             consume = request.data["consume"]
 
             max_count = tickets.count
@@ -231,6 +237,6 @@ class ConsumeTickets(APIView):
             tickets.count -= consume
             tickets.save()
             return Response({"success": True, "remaining_tickets": tickets.count})
-       
+
         except KeyError as ke:
-            return Response({"success": False, "message": "missing field: {}".format(ke)}, status=status.HTTP_400_BAD_REQUEST)        
+            return Response({"success": False, "message": "missing field: {}".format(ke)}, status=status.HTTP_400_BAD_REQUEST)

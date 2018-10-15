@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from shop.models.balance import Balance
 from shop.models.transaction import Transaction
+from shop.models.teller import Teller
 
 
 class Wallet(models.Model):
@@ -16,7 +17,8 @@ class Wallet(models.Model):
 	PROFILES = (
 			('B', 'bitsian'),
 			('P', 'participant'),
-			('S', 'stall')
+			('S', 'stall'),
+			('T', 'teller')
 	)
 
 	user = models.OneToOneField(User, related_name = 'wallet', on_delete=models.SET_NULL, null=True)
@@ -36,6 +38,8 @@ class Wallet(models.Model):
 			if not profile:
 				raise
 			else:
+				if isinstance(profile, Teller):
+					return text.format(profile)
 				return text.format(profile.name)
 		except:
 			return (str(self.uuid))
@@ -48,6 +52,8 @@ class Wallet(models.Model):
 				return self.user.participant
 			elif self.profile == "S":
 				return self.user.stall
+			elif self.profile == "T":
+				return self.user.teller
 			raise
 		except:
 			return None

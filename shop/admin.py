@@ -6,6 +6,7 @@ from shop.models.transaction import Transaction
 from shop.models.item import ItemClass, ItemInstance, Tickets
 from shop.models.order import Order, OrderFragment
 from shop.models.stall import Stall
+from shop.models.teller import Teller
 
 
 class ItemInstanceInLine(admin.TabularInline):
@@ -47,3 +48,4 @@ admin.site.register(Stall)
 admin.site.register(ItemClass, ItemClassAdmin)
 admin.site.register(ItemInstance)
 admin.site.register(Tickets)
+admin.site.register(Teller)
