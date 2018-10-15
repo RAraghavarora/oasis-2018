@@ -57,6 +57,7 @@ class MainEvent(models.Model):
     min_teams = models.IntegerField(default=0)
     max_teams = models.IntegerField(default=0)
     contact = models.CharField(max_length=140, default='NA')
+    duration = models.IntegerField(default=0, null=True) # in minutes 
 
     def __str__(self):
         return self.name

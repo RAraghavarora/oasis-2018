@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_jwt',
 
-    'events',
+    'events.apps.EventsConfig',
     'regsoft',
     'pcradmin',
     'analytics',
