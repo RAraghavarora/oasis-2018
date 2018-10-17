@@ -413,23 +413,65 @@ def payment(request):
         name = participant.name
         email = participant.email
         phone = participant.phone
+        college = participant.college
         purpose = 'Payment for OASIS \'18'
-        response = api.payment_request_create(
-            amount = amount,
-            purpose = purpose,
-            # send_email = False,
-            buyer_name = name,
-            email = email,
-            phone = phone,
-            redirect_url = request.build_absolute_uri(reverse("registrations:payment_response"))
-        )
-        print(response)
+
+        url = 'https://www.thecollegefever.com/v1/auth/basiclogin'
+        headers = {'Content-Type': 'application/json'}
+        data = {"email":"webmaster@bits-oasis.org","password":"Ashujain@1997"} 
+        r = requests.post(url=url, headers=headers, data=json.dumps(data))
+        a = json.loads(r.text)
+        session = a['sessionId']
+        print(a)
+        print(r.text)
+        print(session)
+        data2 = {
+            "eventId":4148,
+            "totalFare":1050,
+            "addExtra":0,
+            "attendingEvents":[
+                {
+                    "programId":9183,
+                    "programName":"Oasis 2018 Registrations",
+                    "subProgramName":"Registration",
+                    "fare":1050,
+                    "attendees":[
+                        {
+                            "name":name,
+                            "email":email,
+                            "phone":phone,
+                            # "college":college,
+                            "sex":"MALE",
+                            "extraInfoValue":"BENGALURU"
+                        }
+                    ]
+                }
+            ]
+        }
+        url2 = 'https://www.thecollegefever.com/v1/booking/bookticket'
+        cookies = {'auth':session}
+        r = requests.post(url=url2, headers=headers, data=json.dumps(data2), cookies=cookies)
+        a2 = json.loads(r.text)
+        page = a2['pgUrl']
+        print(page)
+
+        # response = api.payment_request_create(
+        #     amount = amount,
+        #     purpose = purpose,
+        #     # send_email = False,
+        #     buyer_name = name,
+        #     email = email,
+        #     phone = phone,
+        #     redirect_url = request.build_absolute_uri(reverse("registrations:payment_response"))
+        # )
+        # print(response)
         # print(response['payment_request']['status'])
         # print(email)
         # print(response['payment_request']['longurl'])
         
         try:
-            url = response['payment_request']['longurl']
+            # url = response['payment_request']['longurl']
+            url = page
             return HttpResponseRedirect(url)
         except Exception as e:
             print(e)

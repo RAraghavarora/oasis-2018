@@ -11,7 +11,6 @@ class CategorySerializer(serializers.ModelSerializer):
 		data = {}
 		for event in events:
 			data[event.name] = event.content
-			data['rules']=event.detail_rules
 		return data
 
 	class Meta:
