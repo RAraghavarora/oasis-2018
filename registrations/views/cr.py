@@ -15,6 +15,8 @@ from utils.registrations import *
 from django.http import HttpResponse, HttpResponseRedirect
 from instamojo_wrapper import Instamojo
 from oasis2018.settings_config import keyconfig
+import requests
+import json
 
 
 api = Instamojo(api_key=keyconfig.INSTA_API_KEY_test, auth_token=keyconfig.AUTH_TOKEN_test, endpoint='https://test.instamojo.com/api/1.1/') #when in development
