@@ -416,7 +416,6 @@ def payment(request):
         college = participant.college
         purpose = 'Payment for OASIS \'18'
 
-        import json
         url = 'https://www.thecollegefever.com/v1/auth/basiclogin'
         headers = {'Content-Type': 'application/json'}
         data = {"email":"webmaster@bits-oasis.org","password":"Ashujain@1997"} 
