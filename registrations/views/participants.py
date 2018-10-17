@@ -414,47 +414,47 @@ def payment(request):
         email = participant.email
         phone = participant.phone
         college = participant.college
+        gender = participant.gender
         purpose = 'Payment for OASIS \'18'
 
-        url = 'https://www.thecollegefever.com/v1/auth/basiclogin'
+        login_url = 'https://www.thecollegefever.com/v1/auth/basiclogin'
         headers = {'Content-Type': 'application/json'}
-        data = {"email":"webmaster@bits-oasis.org","password":"Ashujain@1997"} 
-        r = requests.post(url=url, headers=headers, data=json.dumps(data))
-        a = json.loads(r.text)
-        session = a['sessionId']
-        print(a)
-        print(r.text)
-        print(session)
-        data2 = {
+        login_data = {"email":"webmaster@bits-oasis.org","password":"Ashujain@1997"} 
+        login_response = requests.post(url=login_url, headers=headers, data=json.dumps(login_data))
+        json_ob = json.loads(login_response.text)
+        session = json_ob['sessionId']
+        # print(login_response)
+        # print(login_response.text)
+        # print(session)
+        book_data = {
             "eventId":4148,
-            "totalFare":1050,
+            "totalFare":1000,
             "addExtra":0,
             "attendingEvents":[
                 {
                     "programId":9183,
                     "programName":"Oasis 2018 Registrations",
                     "subProgramName":"Registration",
-                    "fare":1050,
+                    "fare":1000,
                     "attendees":[
                         {
                             "name":name,
                             "email":email,
                             "phone":phone,
-                            # "college":college,
-                            "sex":"MALE",
+                            "college":college.name,
+                            "sex":gender,
                             "extraInfoValue":"BENGALURU"
                         }
                     ]
                 }
             ]
         }
-        url2 = 'https://www.thecollegefever.com/v1/booking/bookticket'
+        book_url = 'https://www.thecollegefever.com/v1/booking/bookticket'
         cookies = {'auth':session}
-        r = requests.post(url=url2, headers=headers, data=json.dumps(data2), cookies=cookies)
-        a2 = json.loads(r.text)
-        page = a2['pgUrl']
-        print(page)
-
+        book_response = requests.post(url=book_url, headers=headers, data=json.dumps(book_data), cookies=cookies)
+        json_ob_2 = json.loads(book_response.text)
+        page = json_ob_2['pgUrl']
+        # print(page)
         # response = api.payment_request_create(
         #     amount = amount,
         #     purpose = purpose,
