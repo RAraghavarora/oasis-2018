@@ -404,10 +404,13 @@ def payment(request):
             return redirect('registrations:payment')
         if int(request.POST['key']) == 1:
             amount = 300
+            programId = 9381
         elif int(request.POST['key']) == 2:
             amount = 1000
+            programId = 9183
         elif int(request.POST['key']) == 3:
             amount = 700
+            programId = 9382
         else:
             return redirect(request.META.get('HTTP_REFERER'))
         name = participant.name
@@ -428,14 +431,14 @@ def payment(request):
         # print(session)
         book_data = {
             "eventId":4148,
-            "totalFare":1000,
+            "totalFare":amount,
             "addExtra":0,
             "attendingEvents":[
                 {
-                    "programId":9183,
+                    "programId":programId,
                     "programName":"Oasis 2018 Registrations",
                     "subProgramName":"Registration",
-                    "fare":1000,
+                    "fare":amount,
                     "attendees":[
                         {
                             "name":name,
