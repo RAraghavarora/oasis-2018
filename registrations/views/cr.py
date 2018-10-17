@@ -236,10 +236,13 @@ def payment(request):
             return redirect(request.META.get('HTTP_REFERER'))
         if key == 1:
             amount = 300
+            programId = 9381
         elif key == 2:
             amount = 1000
+            programId = 9183
         elif key == 3:
             amount = 700
+            programId = 9382
         part_list = Participant.objects.filter(id__in=data.getlist('part_list'), pcr_approved=True)
         group = PaymentGroup()
         group.amount_paid = amount*len(part_list)
@@ -250,6 +253,7 @@ def payment(request):
         name = participant.name
         email = participant.email
         phone = participant.phone
+        college = participant.college.name
         purpose = 'Payment ' + str(group.id)
         response = api.payment_request_create(
             buyer_name = name,
