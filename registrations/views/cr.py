@@ -245,38 +245,89 @@ def payment(request):
             programId = 9382
         part_list = Participant.objects.filter(id__in=data.getlist('part_list'), pcr_approved=True)
         group = PaymentGroup()
-        group.amount_paid = amount*len(part_list)
+        total_amount = amount*len(part_list)
+        group.amount_paid = total_amount
         group.save()
+        attendees = []
         for part in part_list:
+            dataa={'name':part.name, 'email':part.email, 'phone':part.phone, 'college':part.college.name}
+            attendees+=[dataa]
             part.payment_group = group
             part.save()
         name = participant.name
         email = participant.email
         phone = participant.phone
-        college = participant.college.name
+        college = participant.college
         purpose = 'Payment ' + str(group.id)
-        response = api.payment_request_create(
-            buyer_name = name,
-            email = email,
-            phone = phone,
-            amount = group.amount_paid,
-            purpose = purpose,
-            redirect_url = request.build_absolute_uri(reverse("registrations:payment_response"))
-            )
-    # print  email  , response['payment_request']['longurl']            
+
+        # response = api.payment_request_create(
+        #     buyer_name = name,
+        #     email = email,
+        #     phone = phone,
+        #     amount = group.amount_paid,
+        #     purpose = purpose,
+        #     redirect_url = request.build_absolute_uri(reverse("registrations:payment_response"))
+        #     )
+        login_url = 'https://www.thecollegefever.com/v1/auth/basiclogin'
+        headers = {'Content-Type': 'application/json'}
+        login_data = {"email":"webmaster@bits-oasis.org","password":"Ashujain@1997"} 
+        # try:
+        login_response = requests.post(url=login_url, headers=headers, data=json.dumps(login_data))
+        status_code = login_response.status_code
+        # if status_code==200:
+        json_ob = json.loads(login_response.text)
+        session = json_ob['sessionId']
+
+        book_data = {
+            "eventId":4148,
+            "totalFare":total_amount,
+            "addExtra":0,
+            "attendingEvents":[
+                {
+                    "programId":programId,
+                    "programName":"Oasis 2018 Registrations",
+                    "subProgramName":"Registration",
+                    "fare":amount,
+                    "attendees":attendees
+                }
+            ]
+        }
+        book_url = 'https://www.thecollegefever.com/v1/booking/bookticket'
+        cookies = {'auth':session}
+        book_response = requests.post(url=book_url, headers=headers, data=json.dumps(book_data), cookies=cookies)
+        status_code_2 = book_response.status_code
+        # if status_code_2==200:
+        json_ob_2 = json.loads(book_response.text)
+        print(json_ob_2)
+        
+        page = json_ob_2['pgUrl']
+        # response = api.payment_request_create(
+        #     amount = amount,
+        #     purpose = purpose,
+        #     # send_email = False,
+        #     buyer_name = name,
+        #     email = email,
+        #     phone = phone,
+        #     redirect_url = request.build_absolute_uri(reverse("registrations:payment_response"))
+        # )
+        # print(response)
+        # print(response['payment_request']['status'])
+        # print(email)
+        # print(response['payment_request']['longurl'])
+        
         try:
-            url = response['payment_request']['longurl']
+            # url = response['payment_request']['longurl']
+            url = page
             return HttpResponseRedirect(url)
         except Exception as e:
             print(e)
-            group.delete()
             context = {
-                'error_heading': "Payment error",
-                'message': "An error was encountered while processing the request. Please try again or contact PCr, BITS, Pilani.",
-                'url':request.build_absolute_uri(reverse('registrations:cr_payment'))
-                }
-            return render(request, 'registrations/message.html', context)
-
+            'error_heading': "Payment error",
+            'message': "An error was encountered while processing the request. Please contact PCr, BITS, Pilani.",
+            'url':request.build_absolute_uri(reverse('registrations:make_payment'))
+            }
+            return render(request, 'registrations/message.html')
+        
     else:
         participant_list = Participant.objects.filter(college=participant.college,paid=False, pcr_approved=True)
         prereg_list = Participant.objects.filter(college=participant.college, paid=True, controlz_paid=False)
