@@ -441,7 +441,7 @@ def payment(request):
                             "name":name,
                             "email":email,
                             "phone":phone,
-                            "college":college,
+                            "college":college.name,
                             "sex":gender,
                             "extraInfoValue":"BENGALURU"
                         }
