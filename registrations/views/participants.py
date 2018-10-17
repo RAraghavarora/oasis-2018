@@ -460,7 +460,7 @@ def payment(request):
                             "email":email,
                             "phone":phone,
                             "college":college.name,
-                            "sex":gender,
+                            # "sex":gender,
                             "extraInfoValue":"BENGALURU"
                         }
                     ]
@@ -473,6 +473,8 @@ def payment(request):
         status_code_2 = book_response.status_code
         # if status_code_2==200:
         json_ob_2 = json.loads(book_response.text)
+        print(json_ob_2)
+        
         page = json_ob_2['pgUrl']
         # else:
             # raise Exception('Response not successful')
