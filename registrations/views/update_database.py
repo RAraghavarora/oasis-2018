@@ -5,7 +5,7 @@
     Update "is_paid" to True for participants who have successfully paid through CollegeFever.
     Scraping of excel sheet in CollegeFever Account Dashboard. 
 '''
-
+from registrations.models import Participant, College
 import requests
 import json     
 from collections import OrderedDict
@@ -14,8 +14,6 @@ try:
     from BeautifulSoup import BeautifulSoup
 except ImportError:
     from bs4 import BeautifulSoup
-
-from registrations.models import College, Participant
 
 def update_database():
 
@@ -73,4 +71,4 @@ def update_database():
 
     except Exception as error:
         print(error)
-        return "There was an error in updating database. First {} entries updated.".format(index+1)
+        return "There was an error in updating database. {} entries from the top updated.".format(index+1)
