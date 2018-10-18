@@ -429,21 +429,7 @@ def payment(request):
         # if status_code==200:
         json_ob = json.loads(login_response.text)
         session = json_ob['sessionId']
-        # else:
-        # #     raise Exception('Response not successful')
-        # except Exception as error:
-        #     print(error)
-        #     context = {
-        #     'error_heading': "Payment error",
-        #     'message': "An error was encountered while processing the request. Please contact PCr, BITS, Pilani.",
-        #     'url':request.build_absolute_uri(reverse('registrations:make_payment'))
-        #     }
-        #     return render(request, 'registrations/message.html')
 
-        # print(login_response)
-        # print(login_response.text)
-        # print(session)
-        # try:
         book_data = {
             "eventId":4148,
             "totalFare":amount,
@@ -476,17 +462,6 @@ def payment(request):
         print(json_ob_2)
         
         page = json_ob_2['pgUrl']
-        # else:
-            # raise Exception('Response not successful')
-        # except Exception as error:
-        #     print(error)
-        #     context = {
-        #     'error_heading': "Payment error",
-        #     'message': "An error was encountered while processing the request. Please contact PCr, BITS, Pilani.",
-        #     'url':request.build_absolute_uri(reverse('registrations:make_payment'))
-        #     }
-        #     return render(request, 'registrations/message.html')
-        # print(page)
         # response = api.payment_request_create(
         #     amount = amount,
         #     purpose = purpose,
