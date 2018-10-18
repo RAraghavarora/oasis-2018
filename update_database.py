@@ -14,6 +14,12 @@ try:
 except ImportError:
     from bs4 import BeautifulSoup
 
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'oasis2018.settings')
+
+import django
+django.setup()
+
 from registrations.models import Participant, College
 
 def update_database():
@@ -83,5 +89,8 @@ def update_database():
         print(error)
         return "There was an error in updating database. {} entries from the top updated.".format(index+1)
 
-message = update_database()
-print(message)
+if __name__ == '__main__':
+	print("Starting Database Updation Script...")
+	message = update_database()
+	print(message)	
+
