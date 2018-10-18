@@ -1,3 +1,4 @@
+#!/usr/bin/python
 
 # update_database.py
 
@@ -5,20 +6,22 @@
     Update "is_paid" to True for participants who have successfully paid through CollegeFever.
     Scraping of excel sheet in CollegeFever Account Dashboard. 
 '''
-import requests
-import json     
-from collections import OrderedDict
-
-try: 
-    from BeautifulSoup import BeautifulSoup
-except ImportError:
-    from bs4 import BeautifulSoup
-
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'oasis2018.settings')
 
 import django
 django.setup()
+
+import requests
+
+import json
+
+try: 
+    from BeautifulSoup import BeautifulSoup
+except ImportError:
+    from bs4 import BeautifulSoup
+    
+
 
 from registrations.models import Participant, College
 
@@ -64,13 +67,19 @@ def update_database():
             'Registration', '3D49PKY', '1000.00', 'null', 'BENGALURU', 'null', 'Thu Oct 18 13:28:07 IST 2018']
         ]
         '''
-        
+
         index = 0
         for index, entry in enumerate(table_data):
             email = entry[1]
             amount = int(float(entry[6]))
             # print(type(amount))
+            name= entry[0]
+            phone = int(entry[2])
+            college = entry[3]
+            clg, created = College.objects.get_or_create(name=college)
+            participant, created = Participant.objects.get_or_create(name=name, email=email, phone=phone, college=clg)
             participant = Participant.objects.get(email=email)
+            
             if amount == 1000:
                 participant.paid = True
                 participant.controlz_paid = True
@@ -87,10 +96,9 @@ def update_database():
 
     except Exception as error:
         print(error)
-        return "There was an error in updating database. {} entries from the top updated.".format(index+1)
+        return "There was an error in updating database. {} entries from the top updated.".format(index)
 
 if __name__ == '__main__':
 	print("Starting Database Updation Script...")
 	message = update_database()
-	print(message)	
-
+	print(message)
