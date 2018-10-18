@@ -33,8 +33,12 @@ class GetProfile(APIView):
         response_data["qr_code"] = profile.barcode # @Juniors: please name it qr_code and not barcode.... we would have but it was a bit too late.
         if isinstance(profile, Bitsian):
             response_data["bits-id"] = profile.long_id
-            response_data
+            response_data["college"] = "BITS Pilani"
         else:
+            if profile.college:
+                response_data["college"] = str(profile.college)
+            else:
+                response_data["college"] = ""
             response_data["bits-id"] = None
         return Response(response_data, status=status.HTTP_200_OK)
 
