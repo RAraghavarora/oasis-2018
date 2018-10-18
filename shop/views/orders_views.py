@@ -46,8 +46,6 @@ class PlaceOrder(APIView):
         # Part 1:
         try:
             data = request.data["order"]
-            date = request.data["date"]
-            price = request.data["price"]
         except KeyError as missing:
             msg = {"message": "missing the following field: {}".format(missing)}
             return Response(msg, status=status.HTTP_400_BAD_REQUEST)
@@ -123,12 +121,6 @@ class PlaceOrder(APIView):
         customer.balance.deduct(net_cost)
         fragments = [{"id": fragment.id, "stall_id": fragment.stall.id} for fragment in order.fragments.all()]
 
-        data["order_id"] = order.id
-        data["fragment_ids"] = fragments
-        data["date"] = date
-        data["price"] = price
-        order.setQueryString({"order": data})
-
         return Response({"order_id": order.id, "fragments_ids": fragments, "cost": net_cost})
 
 
@@ -138,42 +130,28 @@ class GetOrders(APIView):
 
     @csrf_exempt
     def get(self, request):
-        data = dict()
-        data["orders"] = list()
+        response = dict()
+        response["orders"] = list()
         for order in request.user.wallet.orders.all():
-            try:
-                order = order.getQueryString()
-                meta_fields = ("order_id", "fragment_ids", "date", "price")
-                for field in meta_fields:
-                    try:
-                        order[field] = order["order"].pop(field)
-                    except:
-                        pass
-
-                new_fragment_ids = list()
-                for frag in order["fragment_ids"]:
-                    try:
-                        frag_id = frag["id"]
-                        fragment = OrderFragment.objects.get(id=frag_id)
-                        new_fragment_ids.append({"id": frag_id, "stall_id": frag["stall_id"], "status": fragment.status})
-                    except Exception as e:
-                        return Response({"message": "one or more of the stalls are non-existant."}, status=status.HTTP_404_NOT_FOUND)
-                order["fragment_ids"] = new_fragment_ids
-                data["orders"].append(order)
-            except TypeError: # no query string e.g. orders made via. admin panal
-                pass
-        return Response(data, status=status.HTTP_200_OK)
+            data = dict()
+            data["order_id"] = order.id
+            data["price"] = order.calculateTotal()
+            data["date"] = order.getDateString()
+            data["fragment_ids"] = [{"stall_id": fragment.stall.id, "status": fragment.status, "id": fragment.id} for fragment in order.fragments.all()]
+            data["order"] = dict()
+            for fragment in order.fragments.all():
+                data["order"][str(fragment.stall.id)] = dict()
+                data["order"][str(fragment.stall.id)]["items"] = [{"qty": item.quantity, "name": item.itemclass.name, "price": item.calculatePrice(), "id": item.itemclass.id} for item in fragment.items.all()]
+            response["orders"].append(data)
+        return Response(response, status=status.HTTP_200_OK)
 
 
 class GetTickets(APIView):
 
-    # permission_classes = (TokenVerification, IsAuthenticated,)
     permission_classes = (TokenVerification,)
 
     @csrf_exempt
     def post(self, request):
-        #if not request.user == User.objects.get(username = "audiforce-official"):
-        #    return Response({"message": "Only members of audiforce may use this endpoint."}, status=status.HTTP_401_UNAUTHORIZED)
         qr_code = request.data["qr_code"]
         user_id = decString(qr_code)[0]        # a custom function from utils.wallet_qrcode
         user = get_object_or_404(User, id=user_id)
@@ -218,7 +196,7 @@ class ConsumeTickets(APIView):
                 qr_code = request.data["qr_code"]
                 user_id = int(decString(qr_code)[0])
             except:
-                return Response({"message": "invalid qr_code"})
+                return Response({"message": "invalid qr_code"}, status=status.HTTP_404_NOT_FOUND)
 
             user = get_object_or_404(User, id=user_id)
             show = get_object_or_404(MainProfShow, id=request.data["show_id"])
