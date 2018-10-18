@@ -404,10 +404,13 @@ def payment(request):
             return redirect('registrations:payment')
         if int(request.POST['key']) == 1:
             amount = 300
+            programId = 9381
         elif int(request.POST['key']) == 2:
             amount = 1000
+            programId = 9183
         elif int(request.POST['key']) == 3:
             amount = 700
+            programId = 9382
         else:
             return redirect(request.META.get('HTTP_REFERER'))
         name = participant.name
@@ -420,29 +423,44 @@ def payment(request):
         login_url = 'https://www.thecollegefever.com/v1/auth/basiclogin'
         headers = {'Content-Type': 'application/json'}
         login_data = {"email":"webmaster@bits-oasis.org","password":"Ashujain@1997"} 
+        # try:
         login_response = requests.post(url=login_url, headers=headers, data=json.dumps(login_data))
+        status_code = login_response.status_code
+        # if status_code==200:
         json_ob = json.loads(login_response.text)
         session = json_ob['sessionId']
+        # else:
+        # #     raise Exception('Response not successful')
+        # except Exception as error:
+        #     print(error)
+        #     context = {
+        #     'error_heading': "Payment error",
+        #     'message': "An error was encountered while processing the request. Please contact PCr, BITS, Pilani.",
+        #     'url':request.build_absolute_uri(reverse('registrations:make_payment'))
+        #     }
+        #     return render(request, 'registrations/message.html')
+
         # print(login_response)
         # print(login_response.text)
         # print(session)
+        # try:
         book_data = {
             "eventId":4148,
-            "totalFare":1000,
+            "totalFare":amount,
             "addExtra":0,
             "attendingEvents":[
                 {
-                    "programId":9183,
+                    "programId":programId,
                     "programName":"Oasis 2018 Registrations",
                     "subProgramName":"Registration",
-                    "fare":1000,
+                    "fare":amount,
                     "attendees":[
                         {
                             "name":name,
                             "email":email,
                             "phone":phone,
                             "college":college.name,
-                            "sex":gender,
+                            # "sex":gender,
                             "extraInfoValue":"BENGALURU"
                         }
                     ]
@@ -452,8 +470,22 @@ def payment(request):
         book_url = 'https://www.thecollegefever.com/v1/booking/bookticket'
         cookies = {'auth':session}
         book_response = requests.post(url=book_url, headers=headers, data=json.dumps(book_data), cookies=cookies)
+        status_code_2 = book_response.status_code
+        # if status_code_2==200:
         json_ob_2 = json.loads(book_response.text)
+        print(json_ob_2)
+        
         page = json_ob_2['pgUrl']
+        # else:
+            # raise Exception('Response not successful')
+        # except Exception as error:
+        #     print(error)
+        #     context = {
+        #     'error_heading': "Payment error",
+        #     'message': "An error was encountered while processing the request. Please contact PCr, BITS, Pilani.",
+        #     'url':request.build_absolute_uri(reverse('registrations:make_payment'))
+        #     }
+        #     return render(request, 'registrations/message.html')
         # print(page)
         # response = api.payment_request_create(
         #     amount = amount,
