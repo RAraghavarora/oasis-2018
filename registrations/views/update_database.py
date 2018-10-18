@@ -63,7 +63,7 @@ def update_database():
         for index, entry in enumerate(table_data):
             email = entry[1]
             amount = int(float(entry[6]))
-            print(type(amount))
+            # print(type(amount))
             participant = Participant.objects.get(email=email)
             if amount == 1000:
                 participant.paid = True
