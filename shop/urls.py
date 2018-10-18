@@ -14,7 +14,7 @@ urlpatterns = [
     url(r'^add-moneyresponse-ios/', ewallet_views.AddMoneyResponseIOS.as_view(), name="AddMoneyResponseIOS"),
     url(r'^add-moneyresponse-web/', ewallet_views.AddMoneyResponseWeb.as_view(), name="AddMoneyResponseWeb"),
     url(r'^add-moneyresponse-android/', ewallet_views.AddMoneyResponseAndroid.as_view(), name="AddMoneyResponseAndroid"),
-    url(r'^ewallet/add_money/$', ewallet_views.AddByCash.as_view(), name="AddByCash"),
+    url(r'^ewallet/add-money/$', ewallet_views.AddByCash.as_view(), name="AddByCash"),
 
     url(r'^auth/$', auth_views.Authentication.as_view(), name = "auth"),
     url(r'^auth/ot/$', auth_views.OrganizationsAndTellersLogin.as_view(), name="auth-ot"),
