@@ -105,7 +105,6 @@ class ShopTests(TestCase):
         initial_balance = user.wallet.getTotalBalance()
 
         order = {
-            "date": "October 18th, 2018",
             "order": {
                 "1": {
                     "name": "Baskin Robbins",
@@ -116,8 +115,7 @@ class ShopTests(TestCase):
                         "qty": 5
                     }]
                 }
-            },
-            "price": 350
+            }
         }
 
         client = RequestsClient()
