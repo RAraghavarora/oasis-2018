@@ -60,11 +60,20 @@ def update_database():
         '''
         
         index = 0
-
         for index, entry in enumerate(table_data):
             email = entry[1]
-            participant = Participant.objects.filter(email=email)
-            participant.is_paid = True
+            amount = int(float(entry[6]))
+            print(type(amount))
+            participant = Participant.objects.get(email=email)
+            if amount == 1000:
+                participant.paid = True
+                participant.controlz_paid = True
+            elif amount == 300:
+                participant.paid = True
+            elif amount == 700:
+                participant.controlz_paid = True
+
+            participant.save()
             ''' Yipppeeee!! Now I am registered. '''
 
         return 'All entries upto {} updated successfully.'.format(len(table_data))
