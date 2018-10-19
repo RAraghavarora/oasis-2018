@@ -25,6 +25,91 @@ def home(request):
 		context['player'] = Player.objects.get(user=user)
 	return render(request, 'wordwars/index.html', context)
 
+@login_required(login_url=reverse_lazy('wordwars:login'))
+def play(request, day=None):
+	user = request.user
+	player = Player.objects.get(user=user)
+	if not player.is_active:
+		return redirect('wordwars:home')
+	day1 = Question.objects.filter(day__day_no=1).count()
+	day2 = Question.objects.filter(day__day_no=2).count()
+	day3 = Question.objects.filter(day__day_no=3).count()
+	context = {'day1':day1, 'day2':day2, 'day3':day3, 'player':player}
+
+	if day=='1' or day is None:
+		if player.day1 == day1:
+			messages.success(request, 'This day is complete. Wait for the day to end or start attempting Day-2.')
+			return redirect(reverse_lazy('wordwars:home'))
+		question = Question.objects.get(day__day_no=1, question_no=player.day1+1)
+		day_no = 1
+		if request.method == 'POST':
+			try:
+				ans = request.POST['answer']
+			except:
+				messages.warning(request, 'Don\'t leave the field empty' )
+				return redirect(request.META.get('HTTP_REFERER'))
+			if ans == question.answer:
+				player.day1 += 1
+				player.score += question.points
+				player.save()
+				messages.success(request, 'CORRECT!')
+				try:
+					question = Question.objects.get(day__day_no=1, question_no=player.day1+1)
+				except:
+					return redirect(reverse_lazy('wordwars:play', kwargs={'day':1}))
+			else:
+				messages.warning(request, 'WRONG ANSWER!!!!!')
+	if day=='2':
+		if player.day2 == day2:
+			messages.success(request, 'This day is already complete. Wait for the day to end or start attempting Day-3.')
+			return redirect(reverse_lazy('wordwars:home'))
+		question = Question.objects.get(day__day_no=2, question_no=player.day2+1)
+		day_no = 2
+		if request.method == 'POST':
+			try:
+				ans = request.POST['answer']
+			except:
+				messages.warning(request, 'Don\'t leave the field empty' )
+				return redirect(request.META.get('HTTP_REFERER'))
+			if ans == question.answer:
+				player.day2 += 1
+				player.score += question.points
+				player.save()
+				messages.success(request, 'CORRECT!')
+				try:
+					question = Question.objects.get(day__day_no=2, question_no=player.day2+1)
+				except:
+					return redirect(reverse_lazy('wordwars:play', kwargs={'day':2}))
+
+			else:
+				messages.warning(request, 'WRONG ANSWER!!!!!')
+	if day == '3':
+		if player.day3 == day3:
+			messages.success(request, 'Congratulations! You have successfully completed all the questions.')
+			return redirect(reverse_lazy('wordwars:home'))
+		question = Question.objects.get(day__day_no=3, question_no=player.day3+1)
+		day_no = 3
+		if request.method == 'POST':
+			try:
+				ans = request.POST['answer']
+			except:
+				messages.warning(request, 'Don\'t leave the field empty' )
+				return redirect(request.META.get('HTTP_REFERER'))
+			if ans == question.answer:
+				player.day3 += 1
+				player.score += question.points
+				player.save()
+				messages.success(request, 'CORRECT!')
+				try:
+					question = Question.objects.get(day__day_no=3, question_no=player.day3+1)
+				except:
+					return redirect(reverse_lazy('wordwars:play', kwargs={'day':2}))
+
+			else:
+				messages.warning(request, 'WRONG ANSWER!!!!!')
+	return render(request, 'wordwars/question.html', {'day1':day1, 'day2':day2, 'day3':day3, 'player':player, 'question':question, 'day_no':day_no})
+
+
 def user_logout(request):
 	logout(request)
 	return redirect('wordwars:home')
@@ -198,6 +283,6 @@ def player_status(request):
 	active_players = Player.objects.filter(is_active=True)
 	inactive_players = Player.objects.filter(is_active=False)
 	return render(request, 'wordwars/player_status.html', {'active':active_players, 'inactive':inactive_players})
-    
+
 
 

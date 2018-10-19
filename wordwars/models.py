@@ -26,13 +26,13 @@ class Day(models.Model):
 	is_active = models.BooleanField(default=False)
 	announced = models.DateTimeField(auto_now=True)
 
-	def __unicode__(self):
+	def __str__(self):
 		return str(self.day_no)
 
 
 class Question(models.Model):
 	image = models.ImageField(upload_to=question_image_path, null=True)
-	question_no = models.IntegerField(default=0)
+	question_no = models.IntegerField(default=1)
 	day = models.ForeignKey(Day)
 	answer = models.CharField(max_length=100)
 	points = models.IntegerField(default=0)

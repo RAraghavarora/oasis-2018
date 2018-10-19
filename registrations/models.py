@@ -92,7 +92,7 @@ class Participant(models.Model):
 	is_g_leader = models.BooleanField(default=False, blank=True)
 	cr_approved = models.BooleanField(default=False, blank=True)
 	is_guest = models.BooleanField(default=False, blank=True)
-
+	is_chor = models.BooleanField(default=False, blank=True)
 
 	def __str__(self):
 		return (self.name) + ' - ' + str(self.college.name)

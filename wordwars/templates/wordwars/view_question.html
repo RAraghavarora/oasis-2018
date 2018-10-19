@@ -19,15 +19,17 @@
             <div class="header">
                 <h2>{{question.answer}}</h2>
             </div>
-            <div class="body">
-                <div id="carousel-example-generic_2" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner" role="listbox">
-                        <div class="item active">
-                            <img src="{{question.image.url}}" />
+            {%if question.image %}
+                <div class="body">
+                    <div id="carousel-example-generic_2" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner" role="listbox">
+                            <div class="item active">
+                                <img src="{{question.image.url}}" />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
 </div>
 </div>
