@@ -552,4 +552,4 @@ def payment_response(request):
             'message': "An error was encountered while processing the payment. Please contact PCr, BITS, Pilani.",
             'url':request.build_absolute_uri(reverse('registrations:index'))
             }
-        return render(request, 'registrations/message.html', context)
+        return render(request, 'registrations/message.html', context)       

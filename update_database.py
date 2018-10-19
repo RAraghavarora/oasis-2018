@@ -3,7 +3,7 @@
 # update_database.py
 
 '''
-    Update "is_paid" to True for participants who have successfully paid through CollegeFever.
+    Update "Payment Status" to True for participants who have successfully paid through CollegeFever.
     Scraping of excel sheet in CollegeFever Account Dashboard. 
 '''
 import os
@@ -22,6 +22,7 @@ except ImportError:
     from bs4 import BeautifulSoup
     
 
+import datetime
 
 from registrations.models import Participant, College
 
@@ -99,6 +100,6 @@ def update_database():
         return "There was an error in updating database. {} entries from the top updated.".format(index)
 
 if __name__ == '__main__':
-	print("Starting Database Updation Script...")
+	print(str(datetime.datetime.now())+ " : Starting Database Updation Script...")
 	message = update_database()
-	print(message)
+	print(str(datetime.datetime.now()) + ' : ' + message)
