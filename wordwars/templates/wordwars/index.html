@@ -1,0 +1,78 @@
+{% extends 'wordwars/base.html' %}
+{% block body %}
+{% load static %}
+
+
+{% if messages %}
+{% for message in messages %}
+<div class="body">
+<div class="alert alert-info alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+    <large>{{message}}</large>
+</div>
+</div>
+{% endfor %}
+{% endif %}
+
+
+    <div class="row">
+        <div class="container">
+        <div class="col s12 m6 l4">
+            <div class="card card-aaa">
+                <div class="card-image">
+                <img src="{% static 'pcradmin/images/wordwars.jpg' %}">
+                </div>
+                <div class="card-content">
+                Day 1
+                </div>
+                <div class="card-action">
+                {% if day1 %}
+                <a href="{% url 'wordwars:play' 1 %}">Start</a>
+                {% else %}
+                 <a href="#">Inactive</a>
+                 {% endif %}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col s12 m6 l4">
+            <div class="card card-aaa">
+                <div class="card-image">
+                <img src="{% static 'pcradmin/images/wordwars.jpg' %}">
+                </div>
+                <div class="card-content">
+                Day 2
+                </div>
+                <div class="card-action">
+                {% if day2 %}
+                <a href="{% url 'wordwars:play' 2 %}">Start</a>
+                {% else %}
+                 <a href="#">Inactive</a>
+                 {% endif %}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col s12 m6 l4">
+            <div class="card card-aaa">
+                <div class="card-image">
+                <img src="{% static 'pcradmin/images/wordwars.jpg' %}">
+                </div>
+                <div class="card-content">
+                Day 3
+                </div>
+                <div class="card-action">
+                {% if day3 %}
+                <a href="{% url 'wordwars:play' 3 %}">Start</a>
+                {% else %}
+                 <a href="#">Inactive</a>
+                 {% endif %}
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    
+{% endblock %}
