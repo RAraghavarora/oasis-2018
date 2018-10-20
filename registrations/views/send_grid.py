@@ -11,8 +11,8 @@ sg = sendgrid.SendGridAPIClient(apikey='SG.4tM-ZZEySDCzV5ITHvpQqg._D6YQJPUkFfF50
 
 
 class register(object):
-	name = None
-	verify_email_url = None
+    name = None
+    verify_email_url = None
     logo_path = "http://bits-oasis.org/2017/static/registrations/img/logo.png"
     try:
         im = Image.open(logo_path)
@@ -76,12 +76,12 @@ class register(object):
         '''
         
 
-	from_email = Email('register@bits-oasis.org')
-	subject = "Registration for OASIS '18 THE FAR OUT FEST"
+    from_email = Email('register@bits-oasis.org')
+    subject = "Registration for OASIS '18 THE FAR OUT FEST"
 
 class cr_approved(object):
-	name = None
-	verify_email_url = None
+    name = None
+    verify_email_url = None
     logo_path = "http://bits-oasis.org/2017/static/registrations/img/logo.png"
     try:
         im = Image.open(logo_path)
@@ -144,13 +144,13 @@ class cr_approved(object):
         </pre>
         '''
         
-	x='register@bits-oasis.org'
-	from_email = Email('register@bits-oasis.org')
-	subject = "Registration for OASIS '18"	
+    x='register@bits-oasis.org'
+    from_email = Email('register@bits-oasis.org')
+    subject = "Registration for OASIS '18"	
 
 class ForgotPassword(object):
-	name = None
-	verify_email_url = None
+    name = None
+    verify_email_url = None
     logo_path = "http://bits-oasis.org/2017/static/registrations/img/logo.png"
     try:
         im = Image.open(logo_path)
@@ -213,13 +213,13 @@ class ForgotPassword(object):
         </pre>
         '''
 
-	from_email = Email('register@bits-oasis.org')
-	subject = "Registration for OASIS '18 THE FAR OUT FEST"
+    from_email = Email('register@bits-oasis.org')
+    subject = "Registration for OASIS '18 THE FAR OUT FEST"
 
 class chor(object):
-	name = None
-	verify_email_url = None
-	body = '''
+    name = None
+    verify_email_url = None
+    body = '''
 	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 	<center><img src="http://bits-oasis.org/2017/static/registrations/img/logo.png" height="150px" width="150px"></center>
 	<pre style="font-family:Roboto,sans-serif">
@@ -250,5 +250,5 @@ class chor(object):
 	</pre>
 	'''
 
-	from_email = Email('register@bits-oasis.org')
-	subject = "Registration for OASIS '18 THE FAR OUT FEST"
+    from_email = Email('register@bits-oasis.org')
+    subject = "Registration for OASIS '18 THE FAR OUT FEST"
