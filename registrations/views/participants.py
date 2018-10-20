@@ -133,7 +133,10 @@ def index(request):
     if request.user.is_authenticated():
         user = request.user
         print(user)
-        participant = Participant.objects.get(user=user)
+        try:
+            participant = Participant.objects.get(user=user)
+        except:
+            return redirect('registrations:home')
         participation_set = MainParticipation.objects.filter(participant=participant)
         cr = Participant.objects.get(college=participant.college, is_cr=True)
         return render(request,'registrations/home.html',{'participant':participant,\
