@@ -92,7 +92,7 @@ class Participant(models.Model):
 	is_g_leader = models.BooleanField(default=False, blank=True)
 	cr_approved = models.BooleanField(default=False, blank=True)
 	is_guest = models.BooleanField(default=False, blank=True)
-
+	is_chor = models.BooleanField(default=False, blank=True)
 
 	def __str__(self):
 		return (self.name) + ' - ' + str(self.college.name)
@@ -118,7 +118,7 @@ class CheckoutGroup(models.Model):
 class Bitsian(models.Model):
 
 	long_id = models.CharField(max_length=20, null=True, blank=True)
-	name = models.CharField(max_length=50, null=True, blank=True)
+	name = models.CharField(max_length=100, null=True, blank=True)
 	gender = models.CharField(max_length=1, null=True, blank=True)
 	email = models.EmailField(null=True)
 	barcode = models.CharField(max_length=200, null=True, blank=True, unique=True)

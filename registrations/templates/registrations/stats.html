@@ -1,0 +1,108 @@
+{% extends "registrations/base.html" %}
+{% block body %}
+{% if disapproved_list %}
+<div class="card">
+    <div class="header">
+        <h2>
+            Participants not approved by CR
+        </h2>
+    </div>
+	<div class="body">
+	<form action="{% url 'registrations:cr_approve' %}" method="post">
+	{% csrf_token %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover dataTable">
+                <thead>
+                    <tr>
+                        <th>Name(Click to view details)</th>
+                        <th>Events</th>
+                        <th>Contact</th>
+                        <th>More Information</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Name(Click to view details)</th>
+                        <th>Events</th>
+                        <th>Contact</th>
+                        <th>More Information</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                	{% for candidate in disapproved_list %}
+                    <tr>
+                        <td><a href="{% url 'registrations:participant_details' candidate.id %}">{{candidate.name}}</a></td>
+                        <td>{% for event in candidate.events.all %}{{event}}</br>{% endfor %}</td>
+                        <td>{{candidate.phone}}</td>
+                        <td>
+                            <a href="{% url 'registrations:PcrStats' candidate.id %}"> Details </a>
+						</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <input type="hidden" value="approve" name="action">
+        </div>
+	</form>
+    </div>
+</div>
+{% endif %}
+
+
+
+{% if approved_list %}
+<div class="card">
+    <div class="header">
+        <h2>
+            Participants approved by CR
+        </h2>
+    </div>
+	<div class="body">
+	<form action="{% url 'registrations:cr_approve' %}" method="post">
+	{% csrf_token %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover dataTable">
+                <thead>
+                    <tr>
+                        <th>Name(Click to view details)</th>
+                        <th>Events</th>
+                        <th>Contact</th>
+                        <th>Payment Status</th>
+                        <th>More Information</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Name(Click to view details)</th>
+                        <th>Events</th>
+                        <th>Contact</th>
+                        <th>Payment Status</th>
+                        <th>More Information</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                	{% for candidate in approved_list %}
+                    <tr>
+                        <td><a href="{% url 'registrations:participant_details' candidate.id %}">{{candidate.name}}</a></td>
+                        <td>{% for event in candidate.events.all %}{{event}}</br>{% endfor %}</td>
+                        <td>{{candidate.phone}}</td>
+                        <td>
+                            {% if candidate.paid %}
+                            Paid
+                            {% else %}
+                            Payment left
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'registrations:PcrStats' candidate.id %}"> Details </a>
+						</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+	</form>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

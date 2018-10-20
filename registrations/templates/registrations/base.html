@@ -107,7 +107,17 @@
                         </a>
                     </li>
                     <li class="active">
-                        <a>
+                        <a href="{% url 'registrations:chor_approve' %}">
+                            <span>Manage Choreographers from {{participant.college.name}}</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="{% url 'registrations:cr stats' %}">
+                            <span>See stats of participants</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="{% url 'registrations:cr_payment' %}">
                             <span>Make group payment for participants from {{participant.college.name}}</span>
                         </a>
                     </li>
@@ -118,13 +128,8 @@
                         </a>
                     </li>
                     <li class="active">
-                        <a>
+                        <a href="{% url 'registrations:make_payment' %}">
                             <span>Make Payment</span>
-                        </a>
-                    </li>
-                    <li class="active">
-                        <a>
-                            <span>Manage Profile</span>
                         </a>
                     </li>
                     {% if participant.firewallz_passed or participant.is_guest %}
@@ -168,13 +173,11 @@
                
                 <div role="tabpanel" class="tab-pane fade in active in active" id="settings">
                     <div class="demo-settings">
-                        <p>GENERAL LINKS</p>
                         <ul class="setting-list">
                             <li>
                                 <a class="btn btn-block bg-blue waves-effect" href="https://bits-oasis.org">Go to the main site</a>
                             </li>
                         </ul>
-                        <p>ACCOUNT SETTINGS</p>
                         <ul class="setting-list">
                             <li>
                                 <span>Logout</span>

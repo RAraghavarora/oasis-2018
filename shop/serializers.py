@@ -33,7 +33,11 @@ class OrderFragmentSerializer(serializers.ModelSerializer):
 	items_list = serializers.SerializerMethodField()
 	status = serializers.SerializerMethodField()
 	timestamp = serializers.SerializerMethodField()
+	stall_id = serializers.SerializerMethodField()
 	#items = serializers.ReadOnlyField(source="ItemInstanceSerializer")
+
+	def get_stall_id(self, obj):
+		return obj.stall.id
 
 	def get_customer(self, obj):
 		name = obj.order.customer.user.username
@@ -58,7 +62,7 @@ class OrderFragmentSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = OrderFragment
-		fields = ('id', 'order', 'customer', 'status', 'items_list', 'timestamp')
+		fields = ('id', 'order', 'customer', 'status', 'items_list', 'timestamp', 'stall_id')
 
 
 class NestedOrderSerializer(serializers.ModelSerializer):

@@ -40,6 +40,36 @@ RESPONSE:
 		}
 
 -------------------------------------
+
+ADD MONEY
+
+API END POINT:
+	.../2018/shop/add-money/
+
+REQUEST_TYPE:
+	POST 
+
+HEADERS:
+	#I know some fields are repeated/obvious, but to avoid any confusions they are listed here.
+	wallet-token: asdf
+	Authorization: JWT <JWT Token>
+	x-origin: Android or iOS or Web (for Android, iOS, Web Respectively: 
+									Remember: it is case sensitive and has
+									to be in the same case as here)
+	Content-Type: application/json
+
+FIELDS:
+	{
+		"amount":<int>
+		"is_swd":<boolean>
+	}
+
+Note: For bitsians, is_swd should be true if money to be added from SWD 
+	For outstis, is_swd should be false (Test case covered though)
+	For bitsians, is_swd should be false if money to be added from Credit/Debit Cards, etc.
+	Inform the backend team if you find any test case not covered, or a bug
+
+----------------------------------
 PLACE ORDER
 
 API END POINT:

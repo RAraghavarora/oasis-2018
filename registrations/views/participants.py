@@ -5,12 +5,12 @@ from django.core import serializers
 from django.http import HttpResponse,JsonResponse,HttpResponseRedirect
 from django.shortcuts import render,redirect
 from django.urls import reverse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt,csrf_protect
 
 from oasis2018.settings_config import keyconfig
 from registrations.views import send_grid
 from events.models import MainParticipation, MainEvent
-from registrations.models import Participant,College
+from registrations.models import Participant,College, PaymentGroup
 
 import requests
 import json
@@ -25,10 +25,16 @@ from instamojo_wrapper import Instamojo
 chars = string.ascii_lowercase + string.ascii_uppercase + string.digits
 
 
+api = Instamojo(api_key=keyconfig.INSTA_API_KEY_test, auth_token=keyconfig.AUTH_TOKEN_test, endpoint='https://test.instamojo.com/api/1.1/') #when in development
+
+
+
+
 @csrf_exempt
 def index(request):
     '''
     To register a new participant and send him a verification link
+    Or, if the participant is logged in, his index page.
     '''
 
     if request.method=='POST':
@@ -150,24 +156,32 @@ def index(request):
 
         # return HttpResponse('Redirect')
 
+@csrf_exempt
 def home(request):
     '''
     Login page
     '''
     if request.method == 'POST':
-        # print(request.POST)
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username = username, password = password)
         
         if user is not None:
             if user.is_active:
-                if not user.participant.email_verified:
-                    message = "It seems you haven\'t verified your email yet. Please verify it as soon as possible to proceed. \
-                    For any query, call the following members of the Department of Publications and Correspondence. Aditi Pandey: %s - pcr@bits-oasis.org .'%(get_pcr_number()), 'url':request.build_absolute_uri(reverse('registrations:home'))"
-                    context = {'error_heading':'Email not verified','message' : message}
-                login(request,user)
-                return redirect('registrations:index')
+                try:
+                    if not user.participant.email_verified:
+                        message = "It seems you haven\'t verified your email yet. Please verify it as soon as possible to proceed.For any query, call the following members of the Department of Publications and Correspondence. Aditi Pandey: %s - pcr@bits-oasis.org ."%(get_pcr_number())
+                        context = {'error_heading':'Email not verified','message' : message,'url':request.build_absolute_uri(reverse('registrations:home'))}
+                        return render(request, 'registrations/message.html', context)
+
+                    login(request,user)
+                    return redirect('registrations:index')
+
+                except:
+                    message = "Participant does not Exist"
+                    context = {'error_heading':'No Participant','message' : message,'url':request.build_absolute_uri(reverse('registrations:home'))}
+                    return render(request, 'registrations/message.html', context)
+
             else:
                 message="Your account is currently INACTIVE. To activate it, call the following members of the \
                 Department of Publications and Correspondence. Aditi Pandey: %s - pcr@bits-bosm.org .'%(get_pcr_number()), 'url':request.build_absolute_uri(reverse('registrations:home'))"
@@ -368,135 +382,175 @@ def forgot_password(request):
 # 		pass
 # 	return render(request, 'registrations/upload_docs.html', {'participant':participant, 'image_url':image_url, 'image':image, 'docs_url':docs_url, 'docs':docs})
 
-# @login_required
-# def payment(request):
-#     participant = Participant.objects.get(user=request.user)
-#     # print(participant)
-#     if not participant.pcr_approved:
-#         context = {
-#         'error_heading': "Invalid Access",
-#         'message': "You are yet not approved by Department of PCr, Bits Pilani.",
-#         'url':request.build_absolute_uri(reverse('registrations:index'))
-#         }
-#         return render(request, 'registrations/message.html', context)
-#     if request.method=='GET':
-#         return render(request, 'registrations/participant_payment.html', {'participant':participant})
-#     if request.method == 'POST':
-#         print("***********")
-#         try:
-#             key = request.POST['key']
-#             # print(key)
-#         except:
-#             return redirect(request.META.get('HTTP_REFERER'))
-#         if int(request.POST['key']) == 1:
-#             amount = 300
-#         elif int(request.POST['key']) == 2:
-#             amount = 1000
-#         elif int(request.POST['key']) == 3:
-#             amount = 650
-#         else:
-#             return redirect(request.META.get('HTTP_REFERER'))
-#         name = participant.name
-#         email = participant.email
-#         phone = participant.phone
-#         purpose = 'Payment for OASIS \'18'
-#         response = api.payment_request_create(
-#             amount = amount,
-#             purpose = purpose,
-#             # send_email = False,
-#             buyer_name = name,
-#             email = email,
-#             phone = phone,
-#             redirect_url = request.build_absolute_uri(reverse("registrations:hello"))
-#         )
-#         print(response)
-#         # print(response['payment_request']['status'])
-#         # print(email)
-#         # print(response['payment_request']['longurl'])
+@login_required
+@csrf_exempt
+def payment(request):
+    participant = Participant.objects.get(user=request.user)
+    # print(participant)
+    if not participant.pcr_approved:
+        context = {
+        'error_heading': "Invalid Access",
+        'message': "You are yet not approved by Department of PCr, Bits Pilani.",
+        'url':request.build_absolute_uri(reverse('registrations:index'))
+        }
+        return render(request, 'registrations/message.html', context)
+    if request.method=='GET':
+        return render(request, 'registrations/participant_payment.html', {'participant':participant})
+    if request.method == 'POST':
+        print("***********")
+        try:
+            key = request.POST['key']
+            # print(key)
+        except:
+            return redirect('registrations:payment')
+        if int(request.POST['key']) == 1:
+            amount = 300
+            programId = 9381
+        elif int(request.POST['key']) == 2:
+            amount = 1000
+            programId = 9183
+        elif int(request.POST['key']) == 3:
+            amount = 700
+            programId = 9382
+        else:
+            return redirect(request.META.get('HTTP_REFERER'))
+        name = participant.name
+        email = participant.email
+        phone = participant.phone
+        college = participant.college
+        gender = participant.gender
+        purpose = 'Payment for OASIS \'18'
+
+        login_url = 'https://www.thecollegefever.com/v1/auth/basiclogin'
+        headers = {'Content-Type': 'application/json'}
+        login_data = {"email":"webmaster@bits-oasis.org","password":"Ashujain@1997"} 
+        # try:
+        login_response = requests.post(url=login_url, headers=headers, data=json.dumps(login_data))
+        status_code = login_response.status_code
+        # if status_code==200:
+        json_ob = json.loads(login_response.text)
+        session = json_ob['sessionId']
+
+        book_data = {
+            "eventId":4148,
+            "totalFare":amount,
+            "addExtra":0,
+            "attendingEvents":[
+                {
+                    "programId":programId,
+                    "programName":"Oasis 2018 Registrations",
+                    "subProgramName":"Registration",
+                    "fare":amount,
+                    "attendees":[
+                        {
+                            "name":name,
+                            "email":email,
+                            "phone":phone,
+                            "college":college.name,
+                            # "sex":gender,
+                            "extraInfoValue":"BENGALURU"
+                        }
+                    ]
+                }
+            ]
+        }
+        book_url = 'https://www.thecollegefever.com/v1/booking/bookticket'
+        cookies = {'auth':session}
+        book_response = requests.post(url=book_url, headers=headers, data=json.dumps(book_data), cookies=cookies)
+        status_code_2 = book_response.status_code
+        # if status_code_2==200:
+        json_ob_2 = json.loads(book_response.text)
+        print(json_ob_2)
         
-#         try:
-#             url = response['payment_request']['longurl']
-#             return HttpResponseRedirect(url)
-#         except Exception as e:
-#             print(e)
-#             context = {
-#             'error_heading': "Payment error",
-#             'message': "An error was encountered while processing the request. Please contact PCr, BITS, Pilani.",
-#             'url':request.build_absolute_uri(reverse('registrations:make_payment'))
-#             }
-#             return render(request, 'registrations/message.html')
+        page = json_ob_2['pgUrl']
+        # response = api.payment_request_create(
+        #     amount = amount,
+        #     purpose = purpose,
+        #     # send_email = False,
+        #     buyer_name = name,
+        #     email = email,
+        #     phone = phone,
+        #     redirect_url = request.build_absolute_uri(reverse("registrations:payment_response"))
+        # )
+        # print(response)
+        # print(response['payment_request']['status'])
+        # print(email)
+        # print(response['payment_request']['longurl'])
+        
+        try:
+            # url = response['payment_request']['longurl']
+            url = page
+            return HttpResponseRedirect(url)
+        except Exception as e:
+            print(e)
+            context = {
+            'error_heading': "Payment error",
+            'message': "An error was encountered while processing the request. Please contact PCr, BITS, Pilani.",
+            'url':request.build_absolute_uri(reverse('registrations:make_payment'))
+            }
+            return render(request, 'registrations/message.html')
 
+def payment_response(request):
+    import requests
+    payid=str(request.GET['payment_request_id'])
+    try:
+        headers = {'X-Api-Key': keyconfig.INSTA_API_KEY, 'X-Auth-Token': keyconfig.AUTH_TOKEN}
+        r = requests.get('https://www.instamojo.com/api/1.1/payment-requests/'+str(payid),headers=headers)
+    except:
+        headers = {'X-Api-Key': keyconfig.INSTA_API_KEY_test, 'X-Auth-Token': keyconfig.AUTH_TOKEN_test}
+        r = requests.get('https://test.instamojo.com/api/1.1/payment-requests/'+str(payid), headers=headers)
+    json_ob = r.json()
+    print(json_ob)
+    if (json_ob['success']):
+        payment_request = json_ob['payment_request']
+        purpose = payment_request['purpose']
+        amount = payment_request['amount']
+        amount = int(float(amount))
+        try:
+            group_id = int(purpose.split(' ')[1])
+            payment_group = PaymentGroup.objects.get(id=group_id)
+            count = payment_group.participant_set.all().count()
+            print("COUNT=",count)
+            print("A/C=",amount/count)
+            print(payment_group.participant_set.all())
+            if (amount/count) == 1000:
+                for part in payment_group.participant_set.all():
+                    part.controlz_paid = True
+                    part.paid = True
+                    part.save()
+            elif (amount/count) == 700:
+                for part in payment_group.participant_set.all():
+                    if part.paid:
+                        part.controlz_paid = True
+                        part.save()
 
-# def payment_response(request):
-#     import requests
-#     payid=str(request.GET['payment_request_id'])
-#     print(keyconfig.INSTA_API_KEY_test)
-#     headers = {'X-Api-Key': keyconfig.INSTA_API_KEY_test,
-#     'X-Auth-Token': keyconfig.AUTH_TOKEN_test}
-#     print(headers)
-#     try:
-#         r = requests.get('https://www.instamojo.com/api/1.1/payment-requests/'+str(payid),headers=headers)
-#     except:
-#         r = requests.get('https://test.instamojo.com/api/1.1/payment-requests/'+str(payid), headers=headers)    ### when in development
-#     json_ob = r.json()
-#     print(json_ob)
-#     if (json_ob['success']):
-#         payment_request = json_ob['payment_request']
-#         purpose = payment_request['purpose']
-#         print("purpose\t",purpose)
-#         amount = payment_request['amount']
-#         amount = int(float(amount)) 
-#         try:
-#             group_id = int(purpose.split(' ')[1])
-#             print('group id\t',group_id)
-#             return HttpResponse('ajsp')
-#         except Exception as e:
-#             return HttpResponse(e)
-#         # payment_group = PaymentGroup.objects.get(id=group_id)
-#         # count = payment_group.participant_set.all().count()
-#         # if (amount/count) == 1000:
-#         # for part in payment_group.participant_set.all():
-#         # part.controlz_paid = True
-#         # part.paid = True
-#         # part.save()
-#         # elif (amount/count) == 650:
-#         # for part in payment_group.participant_set.all():
-#         # if part.paid:
-#         # part.controlz_paid = True
-#         # part.save()
+            elif (amount/count) == 300:
+                for part in payment_group.participant_set.all():
+                    print(part.name,end="\n\n")
+                    part.paid = True
+                    part.save()
 
-#         # elif (amount/count) == 300:
-#         # for part in payment_group.participant_set.all():
-#         # part.paid = True
-#         # part.save()
-
-#         # except:
-#         # email = payment_request['email']
-#         # print amount
-#         # print type(amount)
-#         # participant = Participant.objects.get(email=email)
-#         # if amount == 950:
-#         # participant.controlz_paid = True
-#         # elif amount == 650.00 and participant.paid:
-#         # participant.controlz_paid = True
-#         # participant.paid = True
-#         # participant.save()
-#         # context = {
-#         # 'error_heading' : "Payment successful",
-#         # 'message':'Thank you for paying.',
-#         # 'url':request.build_absolute_uri(reverse('registrations:index'))
-#         # }
-#         # return render(request, 'registrations/message.html', context)
-
-#         # else:
-
-#         # payment_request = json_ob['payment_request']
-#         # purpose = payment_request['purpose']
-#         # email = payment_request['email']
-#         context = {
-#         'error_heading': "Payment error",
-#         'message': "An error was encountered while processing the payment. Please contact PCr, BITS, Pilani.",
-#         'url':request.build_absolute_uri(reverse('registrations:index'))
-#         }
-#         return render(request, 'registrations/message.html', context)
-#     return HttpResponse('testing da')
+        except Exception as e:     
+            print(e)
+            email = payment_request['email']
+            participant = Participant.objects.get(email=email)
+            if amount == 1000:
+                participant.controlz_paid = True
+            elif amount == 650.00 and participant.paid:
+                participant.controlz_paid = True
+            participant.paid = True
+            participant.save()
+        context = {
+            'error_heading' : "Payment successful",
+            'message':'Thank you for paying.',
+            'url':request.build_absolute_uri(reverse('registrations:index'))
+            }
+        return render(request, 'registrations/message.html', context)
+    
+    else:
+        context = {
+            'error_heading': "Payment error",
+            'message': "An error was encountered while processing the payment. Please contact PCr, BITS, Pilani.",
+            'url':request.build_absolute_uri(reverse('registrations:index'))
+            }
+        return render(request, 'registrations/message.html', context)       

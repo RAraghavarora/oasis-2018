@@ -11,6 +11,9 @@ from shop.models.order import Order, OrderFragment
 from shop.models.stall import Stall
 from shop.models.item import ItemClass
 from shop.models.transaction import Transaction
+from shop.models.teller import Teller
+
+from events.models import Organization
 
 # Not the most complete or beautiful tests
 # but they're still pretty useful.
@@ -102,7 +105,6 @@ class ShopTests(TestCase):
         initial_balance = user.wallet.getTotalBalance()
 
         order = {
-            "date": "October 18th, 2018",
             "order": {
                 "1": {
                     "name": "Baskin Robbins",
@@ -113,8 +115,7 @@ class ShopTests(TestCase):
                         "qty": 5
                     }]
                 }
-            },
-            "price": 350
+            }
         }
 
         client = RequestsClient()

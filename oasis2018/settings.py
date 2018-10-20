@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'preregistration',
     'shop.apps.ShopConfig',
     'ems.apps.EmsConfig',
+    'wordwars',
 ]
 
 MIDDLEWARE = [
@@ -50,8 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    # middlewares in created apps
+    #'wordwars.middleware.WordWarsMiddleware',
     'pcradmin.middleware.PCrAdminMiddleware',
 ]
 
@@ -132,10 +132,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
+    'rest_framework.renderers.JSONRenderer',
     ),
     'DEFAULT_PARSER_CLASSES': (
-        'rest_framework.parsers.JSONParser',
+    'rest_framework.parsers.JSONParser',
     ),
 }
 

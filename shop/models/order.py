@@ -14,7 +14,6 @@ class Order(models.Model):
 
 	customer = models.ForeignKey("Wallet", related_name="orders", null=True, on_delete=models.CASCADE)
 	timestamp = models.DateTimeField(default=timezone.now)
-	query_string = models.TextField(null=True, blank=True) # something extra for the frontend team
 	# fragments: OrderFragments
 
 	def __str__(self):
@@ -35,17 +34,15 @@ class Order(models.Model):
 			status[fragment.stall] = fragment.status
 		return status
 
-	def setQueryString(self, dictionary):
-		try:
-			self.query_string = json.dumps(dictionary)
-			self.save()
-			return True
-		except Exception as e:
-			return False
-
-	def getQueryString(self):
-		return json.loads(self.query_string)
-
+	def getDateString(self):
+		ts = self.timestamp
+		period = "AM"
+		if ts.hour/12 >= 1:
+			period = "PM"
+		hour = ts.hour%12
+		if hour == 0:
+			hour = 12
+		return "%02d/%02d/%02d at %02d:%02d:%02d %s" % (ts.month, ts.day, ts.year, hour, ts.minute, ts.second, period)
 
 
 class OrderFragment(models.Model):
