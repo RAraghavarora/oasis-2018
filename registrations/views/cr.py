@@ -95,6 +95,8 @@ def approve(request):
                     try:
                         mail = Mail(email_class.from_email,email_class.subject,to_email,content)
                         response = send_grid.sg.client.mail.send.post(request_body = mail.get())
+                        if response.status_code%100!=2:
+                            raise Exception
                         print("EMAIL SENT")
                     except Exception as e :
                         print(e)
@@ -395,6 +397,8 @@ def chor_approve(request):
                     try:
                         mail = Mail(email_class.from_email,email_class.subject,to_email,content)
                         response = send_grid.sg.client.mail.send.post(request_body = mail.get())
+                        if response.status_code%100!=2:
+                            raise Exception
                         print("EMAIL SENT")
                     except Exception as e :
                         print(e)
