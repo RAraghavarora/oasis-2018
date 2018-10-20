@@ -265,7 +265,7 @@ class AddByCash(APIView):
 
 		# check if the amount is positive and if so add it to the user and the teller, then return a success message
 		if amount < 0:
-			return Response({"message": "Amount cannot be negative."}, status=HTTP_400_BAD_REQUEST)
+			return Response({"message": "Amount cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
 
 		user.wallet.balance.add(cash=amount)
 		teller.cash_collected += amount
