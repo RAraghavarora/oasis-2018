@@ -120,6 +120,8 @@ def index(request):
             try:
                 mail_1 = Mail(mail.from_email, mail.subject, to_email, content)
                 response = send_grid.sg.client.mail.send.post(request_body = mail_1.get())
+                if response.status_code%100!=2:
+                    raise Exception
                 print(response)
             except Exception as e:
                 print("\t",e)
@@ -306,6 +308,8 @@ def forgot_password(request):
             try:
                 mail = Mail(email_class.from_email,email_class.subject,to_email,content)
                 response = send_grid.sg.client.mail.send.post(request_body = mail.get())
+                if response.status_code%100!=2:
+                    raise Exception
                 print("EMAIL SENT")
             except:
                 context = {
