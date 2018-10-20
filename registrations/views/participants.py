@@ -34,6 +34,7 @@ api = Instamojo(api_key=keyconfig.INSTA_API_KEY_test, auth_token=keyconfig.AUTH_
 def index(request):
     '''
     To register a new participant and send him a verification link
+    Or, if the participant is logged in, his index page.
     '''
 
     if request.method=='POST':

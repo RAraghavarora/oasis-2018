@@ -3,11 +3,11 @@
 
 <head>
     {% load static %}
-    {% load regsoft_tags %}
+    {% load ems_tags %}
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>RegSoft | Oasis'17</title>
+    <title>EMS | Oasis'17</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
 
@@ -31,7 +31,7 @@
     
 </head>
 
-<body class="theme-{% navbar_color request.user.username %}">
+<body class="theme-cyan">
     <div class="page-loader-wrapper">
         <div class="loader">
             <div class="preloader">
@@ -57,7 +57,7 @@
             <div class="navbar-header">
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
-                <a class="navbar-brand" href="{% url 'regsoft:index' %}">RegSoft | Oasis'17</a>
+                <a class="navbar-brand" href="{% url 'ems:index' %}">EMS | Oasis'17</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -83,7 +83,7 @@
                         <ul class="dropdown-menu pull-right">
                             <li><a href="#"><i class="material-icons">person</i>Contacts</a></li>
                             <li role="seperator" class="divider"></li>
-                            <li><a href="{% url 'pcradmin:user-logout' %}"><i class="material-icons">input</i>Sign Out</a></li>
+                            <li><a href="{% url 'ems:logout' %}"><i class="material-icons">input</i>Sign Out</a></li>
                         </ul>
                     </div>
                 </div>
@@ -93,73 +93,37 @@
             <div class="menu">
                 <ul class="list">
                     <li class="header">MAIN NAVIGATION</li>
+                    
                     <li class="active">
-                        <a href="{% url 'regsoft:index' %}">
+                        <a href="{% url 'ems:team_home' event.id %}">
                             <i class="material-icons">home</i>
-                            <span>Home</span>
+                            <span>{{event.name}} | Home</span>
                         </a>
-                        
                     </li>
-                    <li>
+                    <li class="active">
+                                <a href="{% url 'ems:team_home' event.id %}">
+                                    <span>Teams</span>
+                                </a>
+                    </li>
+                    
+                    {% if request|ems_judge %}
+                    <li class="active">
                         <a href="javascript:void(0);" class="menu-toggle">
-                            <span>Firewallz</span>
+                            <span>Scores</span>
                         </a>
                         <ul class="ml-menu">
+                        {% for level in request|ems_levels %}
                             <li>
-                                <a href="{% url 'regsoft:firewallz_home' %}"><span>View Colleges</span></a>
+                                <a href="{% url 'ems:show_scores' event.id level.id %}"><span>Level-{{level.position}}-{{level.name}}</span></a>
                             </li>
-                            <li>
-                                <a href="{% url 'regsoft:add_guest' %}"><span>Add guest</span></a>
-                            </li>
-                            <li>
-                                <a href="{% url 'regsoft:add_participant' %}"><span>Add Participant</span></a>
-                            </li>
+                        {% endfor %}
                         </ul>
                     </li>
-                    <li>
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <span>RecNAcc</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li>
-                                <a href="{% url 'regsoft:recnacc_home' %}"><span>View Groups</span></a>
-                            </li>
-                            <li>
-                                <a href="{% url 'regsoft:room_details' %}"><span>Room Details</span></a>
-                            </li>
-                            <li>
-                                <a href="{% url 'regsoft:group_vs_bhavan' %}"><span>Group vs Bhavans</span></a>
-                            </li>
-                            <li>
-                                <a href="{% url 'regsoft:recnacc_college_details' %}"><span>Collegewise Details</span></a>
-                            </li>
-                            <li>
-                                <a href="{% url 'regsoft:checkout_college' %}"><span>Checkout</span></a>
-                            </li>
-                            <li>
-                                    <a href="{% url 'regsoft:master_checkout' %}"><span>Master Checkout</span></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <span>Controlz</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li>
-                                <a href="{% url 'regsoft:controlz_home' %}"><span>View Groups</span></a>
-                            </li>
-                            <li>
-                                <a href="{% url 'regsoft:show_all_bills' %}"><span>Manage Bills</span></a>
-                            </li>
-                            <li>
-                                <a href="{% url 'regsoft:recnacc_list' %}"><span>Generate RecNAcc List</span></a>
-                            </li>
-                        </ul>
+                    {% endif %}
                     </li>
                     <li class="header">LABELS</li>
                     <li>
-                        <a href="{% url 'regsoft:contacts' %}">
+                        <a href="{% url 'pcradmin:contacts' %}">
                             <i class="material-icons col-amber">donut_large</i>
                             <span>Contacts</span>
                         </a>
@@ -176,10 +140,10 @@
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">
-                    Made with &hearts; for OASIS'17
+                    &copy; for OASIS'17  <a href="javascript:void(0);">DVM, BITS Pilani</a>
                 </div>
                 <div class="version">
-                    <a href="https://gitlab.com/dvm-bitspilani">DVM, BITS Pilani</a>
+                    <b>Thanks, </b> AdminBSB
                 </div>
             </div>
             <!-- #Footer -->
@@ -208,7 +172,7 @@
                             <li>
                                 <span>Logout</span>
                                 <div class="switch">
-                                    <label><input type="checkbox" onclick='window.location.assign("{% url 'pcradmin:user-logout' %}")' checked><span class="lever"></span></label>
+                                    <label><input type="checkbox" onclick='window.location.assign("{% url 'ems:logout' %}")' checked><span class="lever"></span></label>
                                 </div>
                             </li>
                         </ul>
@@ -220,10 +184,8 @@
     </section>
     <section class="content">
         <div class="container-fluid">
-            <div class="block-header">
-                <h2>DASHBOARD</h2>
-            </div>
-            {% show_tags %}
+            
+            
             {% block body %}
             {% endblock %}
             </div>
@@ -232,7 +194,7 @@
 
     <!-- Jquery Core Js -->
     <script src="{% static 'pcradmin/plugins/jquery/jquery.min.js' %}"></script>
-
+    
     <!-- Bootstrap Core Js -->
     <script src="{% static 'pcradmin/plugins/bootstrap/js/bootstrap.js' %}"></script>
 

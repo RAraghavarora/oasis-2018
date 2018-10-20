@@ -69,8 +69,8 @@ def approve(request):
                         'url':request.build_absolute_uri(reverse('registrations:home'))
                     }
                     return render(request, 'registrations/message.html', context)
-                partipations = MainParticipation.objects.filter(participant=candidate)
-                partipations.update(cr_approved=True)
+                participations = MainParticipation.objects.filter(participant=candidate)
+                participations.update(cr_approved=True)
                 candidate.cr_approved=True
                 candidate.save()
                 if candidate.user is not None:
@@ -101,7 +101,7 @@ def approve(request):
                         candidate.user = None
                         candidate.save()
                         user.delete()
-                        participation.update(cr_approved=False)
+                        participations.update(cr_approved=False)
                         context = {
                             'status': 0,
                             'error_heading': "Error sending mail",
@@ -335,3 +335,102 @@ def payment(request):
         prereg_list = Participant.objects.filter(college=participant.college, paid=True, controlz_paid=False)
         paid_list = Participant.objects.filter(college=participant.college, paid=True, controlz_paid=True)
         return render(request, 'registrations/cr_payment.html', {'participant_list':participant_list, 'participant':participant, 'prereg_list':prereg_list, 'paid_list':paid_list})
+
+@login_required
+def chor_approve(request):
+    '''
+    Page where CR will approve the choreographers of his college
+    '''
+    user = request.user
+    participant = Participant.objects.get(user=user)
+    approved_list= Participant.objects.filter(college = participant.college, cr_approved=True,email_verified=True, is_chor=True)
+    disapproved_list = Participant.objects.filter(college = participant.college, cr_approved=False,email_verified=True,is_chor=True)
+    
+    if request.method == 'GET':
+        context={'approved_list':approved_list,'disapproved_list':disapproved_list,'participant':participant}
+        return render(request, 'registrations/chor_approval.html',context)
+    
+    elif request.method == 'POST':
+        data = request.POST
+        if data['action'] == 'approve':
+            try:
+                parts_id = data.getlist('parts_id')
+                # parts_id is the list of all the id's cr chooses
+            except:
+                #goodbye
+                return redirect(request.META.get('HTTP_REFERER'))
+            for id in parts_id:
+                try:
+                    candidate = Participant.objects.get(id=id,college=participant.college)
+                except:
+                    context = {
+                        'error_heading':'Error Occured',
+                        'message':'Sorry, you cannot perform this action',
+                        'url':request.build_absolute_uri(reverse('registrations:home'))
+                    }
+                    return render(request, 'registrations/message.html', context)
+                participations = MainParticipation.objects.filter(participant=candidate)
+                participations.update(cr_approved=True)
+                candidate.cr_approved=True
+                candidate.save()
+                if candidate.user is not None:
+                    user = candidate.user
+                    if not user.is_active:
+                        user.is_active=True
+                        user.save()
+                else:
+                    username = candidate.name.split(' ')[0] + str(candidate.id)
+                    password = ''.join(choice(chars) for i in range(8))
+                    print(password)
+                    user = User.objects.create_user(username=username, password=password)
+                    candidate.user=user
+                    candidate.save()
+                    email_class = send_grid.cr_approved()
+                    name = candidate.name
+                    send_to = candidate.email
+                    login_url = str(request.build_absolute_uri(reverse('registrations:home')))
+                    body = email_class.body%(name,login_url,username,password,get_pcr_number())
+                    to_email=Email(send_to)
+                    content = Content('text/html', body)
+                    try:
+                        mail = Mail(email_class.from_email,email_class.subject,to_email,content)
+                        response = send_grid.sg.client.mail.send.post(request_body = mail.get())
+                        print("EMAIL SENT")
+                    except Exception as e :
+                        print(e)
+                        candidate.user = None
+                        candidate.save()
+                        user.delete()
+                        participations.update(cr_approved=False)
+                        context = {
+                            'status': 0,
+                            'error_heading': "Error sending mail",
+                            'message': "Sorry! Error in sending email. Please try again.",
+                        }
+                        return render(request, 'registrations/message.html', context)
+                    
+                    context = {
+                        'error_heading':"Emails sent",
+                        'message' : "Login credentials have been mailed to the corresponding new participants."
+                    }
+                    return render(request, 'registrations/message.html', context)
+
+        if 'disapprove' == data['action']:
+            try:
+                parts_id = data.getlist('parts_id')
+            except:
+                return redirect(request.META.get('HTTP_REFERER'))
+            for part_id in parts_id:
+                candidate = Participant.objects.get(id=part_id)
+                participations = MainParticipation.objects.filter(participant=candidate)
+                participations.update(cr_approved=False,pcr_approved=False)
+                # participant_1 = participation.participant
+                # if all(not i.cr_approved for i in participant_1.mainparticipation_set.all()):
+                #     participant_1.cr_approved = False
+                #     participant_1.save()
+                candidate.cr_approved=False
+                candidate.save()
+        approved_list = Participant.objects.filter(college = participant.college, cr_approved=True,email_verified=True,is_chor=True)
+        disapproved_list = Participant.objects.filter(college = participant.college, cr_approved=False, email_verified=True,is_chor=True)
+        return render(request, 'registrations/chor_approval.html', {'approved_list':approved_list, 'disapproved_list':disapproved_list, 'participant':participant})
+

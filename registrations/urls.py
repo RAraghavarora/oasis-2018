@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from registrations.views import intro,participants,cr,excel
+from registrations.views import intro,participants,cr,excel,chor
 from django.contrib.auth.views import logout 
 
 app_name = 'registrations'
@@ -24,5 +24,7 @@ urlpatterns = [
 				url(r'^logout$',logout,name='logout'),
 				url(r'^payment$',participants.payment,name='make_payment'),
 				url(r'^grouppayment/$', cr.payment, name="cr_payment"),
-				url(r'^payment_response$',participants.payment_response,name='payment_response')
+				url(r'^payment_response$',participants.payment_response,name='payment_response'),
+				url(r'^chor_register$',chor.register, name = 'chor_register'),
+				url(r'^chor_approve$',cr.chor_approve, name='chor_approve')
 			]
