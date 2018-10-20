@@ -74,13 +74,17 @@ def select_college_rep(request,id):
 
         if data['submit']=='delete':
             part=Participant.objects.get(id=part_id)
-            print(part.id)
             user=part.user
             user.delete()
             part.user=None
             part.is_cr=False
             part.cr_approved=False
+            part.pcr_approved = False
             part.save()
+            for p in MainParticipation.objects.filter(participant=part):
+                p.cr_approved=False
+                p.save()
+
         elif data['submit']=='select':
             try:
                 Participant.objects.get(college=college,is_cr=True)
@@ -91,12 +95,11 @@ def select_college_rep(request,id):
             part=Participant.objects.get(id=part_id)
             part.is_cr=True
             part.cr_approved=True
-            #encoded = gen_barcode(part)
-            print("dsd")
-
-            #Barcode generation here left for now. To be discussed if only QR or not
-            #Barcode will automatically be generated and stored if the participant is pcr_final
-            
+            part.pcr_approved=True
+            for p in MainParticipation.objects.filter(participant=part):
+                p.cr_approved=True
+                p.save()
+                            
             part.save()
             user=part.user
             if not user==None:
