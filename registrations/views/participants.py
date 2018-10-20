@@ -405,7 +405,7 @@ def payment(request):
             key = request.POST['key']
             # print(key)
         except:
-            return redirect('registrations:payment')
+            return redirect('registrations:make_payment')
         if int(request.POST['key']) == 1:
             amount = 300
             programId = 9381
