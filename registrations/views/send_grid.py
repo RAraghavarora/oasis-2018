@@ -9,6 +9,8 @@ from PIL import Image
 from urllib.request import urlopen
 import io
 
+## this is .
+
 sg = sendgrid.SendGridAPIClient(apikey='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')
 
 
