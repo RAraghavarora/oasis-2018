@@ -147,7 +147,7 @@ def participant_details(request,p_id):
         context = {
         'error_heading': "Invalid Access",
         'message': "Sorry! You are not an approved college representative.",
-        'url':request.build_absolute_uri(reverse('registrations:index'))
+        'url':request.build_absolute_uri(reverse('registrations:home'))
         }
         return render(request, 'registrations/message.html', context)
     get_part = Participant.objects.get(id=p_id)
@@ -155,7 +155,7 @@ def participant_details(request,p_id):
         context = {
         'error_heading': "Invalid Access",
         'message': "Sorry! You do not have access to these details.",
-        'url':request.build_absolute_uri(reverse('registrations:index'))
+        'url':request.build_absolute_uri(reverse('registrations:home'))
         }
         return render(request, 'registrations/message.html', context)
     participation_list = MainParticipation.objects.filter(participant=get_part)
@@ -170,7 +170,7 @@ def get_profile_card_cr(request, p_id):
         context = {
         'error_heading': "Invalid Access",
         'message': "Sorry! You are not an approved college representative.",
-        'url':request.build_absolute_uri(reverse('registrations:index'))
+        'url':request.build_absolute_uri(reverse('registrations:home'))
         }
         return render(request, 'registrations/message.html', context)
     get_part = Participant.objects.get(id=p_id)
@@ -178,14 +178,14 @@ def get_profile_card_cr(request, p_id):
         context = {
         'error_heading': "Invalid Access",
         'message': "Sorry! You do not have access to these details.",
-        'url':request.build_absolute_uri(reverse('registrations:index'))
+        'url':request.build_absolute_uri(reverse('registrations:home'))
         }
         return render(request, 'registrations/message.html', context)
     if not get_part.firewallz_passed:
         context = {
                 'error_heading': "Invalid Access",
                 'message': "Please pass firewallz booth at BITS to access this page.",
-                'url':request.build_absolute_uri(reverse('registrations:index'))
+                'url':request.build_absolute_uri(reverse('registrations:home'))
                 }
         return render(request, 'registrations/message.html', context)
     participation_set = MainParticipation.objects.filter(participant=get_part, pcr_approved=True)

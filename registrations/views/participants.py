@@ -180,7 +180,7 @@ def home(request):
                         return render(request, 'registrations/message.html', context)
 
                     login(request,user)
-                    return redirect('registrations:index')
+                    return redirect('registrations:home')
 
                 except:
                     message = "Participant does not Exist"
@@ -265,7 +265,7 @@ def get_profile_card(request):
             context = {
                     'error_heading': "Invalid Access",
                     'message': "Please pass firewallz booth at BITS to access this page.",
-                    'url':request.build_absolute_uri(reverse('registrations:index'))
+                    'url':request.build_absolute_uri(reverse('registrations:home'))
                     }
             return render(request, 'registrations/message.html', context)
     participant = Participant.objects.get(user=request.user)
@@ -398,7 +398,7 @@ def payment(request):
         context = {
         'error_heading': "Invalid Access",
         'message': "You are yet not approved by Department of PCr, Bits Pilani.",
-        'url':request.build_absolute_uri(reverse('registrations:index'))
+        'url':request.build_absolute_uri(reverse('registrations:home'))
         }
         return render(request, 'registrations/message.html', context)
     if request.method=='GET':
@@ -550,7 +550,7 @@ def payment_response(request):
         context = {
             'error_heading' : "Payment successful",
             'message':'Thank you for paying.',
-            'url':request.build_absolute_uri(reverse('registrations:index'))
+            'url':request.build_absolute_uri(reverse('registrations:home'))
             }
         return render(request, 'registrations/message.html', context)
     
@@ -558,6 +558,6 @@ def payment_response(request):
         context = {
             'error_heading': "Payment error",
             'message': "An error was encountered while processing the payment. Please contact PCr, BITS, Pilani.",
-            'url':request.build_absolute_uri(reverse('registrations:index'))
+            'url':request.build_absolute_uri(reverse('registrations:home'))
             }
         return render(request, 'registrations/message.html', context)       
