@@ -21,7 +21,7 @@
 
 
         </nav>
-        <form class="form" id="register-form" acion="{% url 'registrations:chor_register' %}" method="POST">
+        <form class="form" id="register-form" action="{% url 'registrations:chor_register' %}" method="POST">
             {% csrf_token %}
             <div class="field">
                 <label>1. What is your Name: </label>
