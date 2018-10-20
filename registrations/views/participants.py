@@ -149,7 +149,7 @@ def index(request):
     # data = serializers.serialize('json', c_names)
     # data1 = serializers.serialize('json', e_names)
     data={'colleges':c_names,'events':events}
-    return HttpResponse(json.dumps(data))
+    return HttpResponse("Wrong place! XD")
     # return HttpResponse(x, content_type="application/json")
     # return render(request, 'registrations/signup.html', {'college_list':colleges, 'event_list':events})
 
