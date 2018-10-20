@@ -135,12 +135,12 @@ def index(request):
         print(user)
         try:
             participant = Participant.objects.get(user=user)
+            participation_set = MainParticipation.objects.filter(participant=participant)
+            cr = Participant.objects.get(college=participant.college, is_cr=True)
+            return render(request,'registrations/home.html',{'participant':participant,\
+            'participations':participation_set,'cr':cr})
         except:
-            return redirect('registrations:home')
-        participation_set = MainParticipation.objects.filter(participant=participant)
-        cr = Participant.objects.get(college=participant.college, is_cr=True)
-        return render(request,'registrations/home.html',{'participant':participant,\
-        'participations':participation_set,'cr':cr})
+            pass
 
 
     print("get request")
