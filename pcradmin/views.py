@@ -38,6 +38,10 @@ from oasis2018.settings_config.keyconfig import *
 from utils.registrations import *
 #API_KEY='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' #my api
 
+from PIL import Image
+from urllib.request import urlopen
+import io
+
 @staff_member_required
 def index(request):
     return  redirect('pcradmin:college')
@@ -108,7 +112,12 @@ def select_college_rep(request,id):
                 user.save()
                 part.user=user
                 part.save()
-            body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+            logo_path = "http://bits-oasis.org/2017/static/registrations/img/logo.png"
+            try:
+                fd = urlopen(logo_path)
+                image_file = io.BytesIO(fd.read())
+                im = Image.open(image_file)
+                body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 			<center><img src="http://bits-oasis.org/2017/static/registrations/img/logo.png" height="150px" width="150px"></center>
 			<pre style="font-family:rowsboto,sans-serif">
 Hello %s!
@@ -138,7 +147,40 @@ BITS Pilani
 %s
 pcr@bits-oasis.org
 </pre>
-			""" %(part.name,str(request.build_absolute_uri(reverse('registrations:home'))),username, password,get_pcr_number() ) #get_pcr_number()
+			""" %(part.name,str(request.build_absolute_uri(reverse('registrations:home'))),username, password,get_pcr_number() ) 
+            except:
+                body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+			<pre style="font-family:rowsboto,sans-serif">
+Hello %s!
+
+Thank you for registering!
+
+Greetings from BITS Pilani!
+
+It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 27th to October 31st.
+
+This is to inform you that you have been selected as the College Representative for your college.
+You can now login <a href="%s">here</a> using the following credentials:
+username : '%s'
+password : '%s'
+We would be really happy to see your college represented at our fest.
+It is your responsibility to confirm the participants for different events.
+
+
+We look forward to seeing you at OASIS 2018.
+
+P.S: THIS EMAIL DOES NOT CONFIRM YOUR PRESENCE AT OASIS 2018. YOU WILL BE RECEIVING ANOTHER EMAIL FOR THE CONFIRMATION OF YOUR PARTICIPATION.
+
+Regards,
+StuCCAn (Head)
+Dept. of Publications & Correspondence, OASIS 2018
+BITS Pilani
+%s
+pcr@bits-oasis.org
+</pre>
+			""" %(part.name,str(request.build_absolute_uri(reverse('registrations:home'))),username, password,get_pcr_number() ) 
+
+                #get_pcr_number()
             subject = 'College Representative for Oasis'
             from_email = Email('register@bits-oasis.org')
             to_email = Email(part.email)
@@ -147,6 +189,8 @@ pcr@bits-oasis.org
             try:
                 mail = Mail(from_email, subject, to_email, content)
                 response = sg.client.mail.send.post(request_body=mail.get())
+                if response.status_code%100!=2:
+                    raise Exception
                 messages.warning(request,'Email sent to ' + part.name)
             except :
                 part.user = None
@@ -677,14 +721,15 @@ def final_email_send(request, eg_id):
     email_group = EmailGroup.objects.get(id = eg_id)
     participants = email_group.participant_set.all()
     college = participants[0].college
-    try:
-        _dir = '/root/live/oasis/backend/resources/oasis2018/'
-        doc_name = _dir + 'final_list.pdf'
-        pdf = create_final_pdf(eg_id, doc_name, _dir)
-    except:
-        _dir = '/home/raghav/Downloads/'
-        doc_name = _dir + 'final_list.pdf'
-        pdf = create_final_pdf(eg_id, doc_name, _dir)
+    path_list = ['/root/live/oasis/backend/resources/oasis2018/', '/home/raghav/Downloads/', '/home/nayankhanna/Downloads/']
+    _dir = ''
+    for _dir in path_list:
+        if(os.path.exists(_dir)):
+            break
+    # if _dir=='':
+    #     return 
+    doc_name = _dir + 'letterhead.pdf'
+    pdf = create_final_pdf(eg_id, doc_name, _dir)
 
     #sendgrid email sending code
 
@@ -705,7 +750,13 @@ def final_email_send(request, eg_id):
     sg = sendgrid.SendGridAPIClient(apikey=API_KEY)
     for participant in participants:
         to_email = Email(participant.email)
-        body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        logo_path = "http://bits-oasis.org/2017/static/registrations/img/logo.png"
+        try:
+            fd = urlopen(logo_path)
+            image_file = io.BytesIO(fd.read())
+            im = Image.open(image_file)
+        
+            body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 			<center><img src="http://bits-oasis.org/2018/static/registrations/img/logo.png" height="150px" width="150px"></center>
 			<pre style="font-family:Roboto,sans-serif">
 Hello %s!
@@ -731,12 +782,41 @@ pcr@bits-oasis.org
 <b>Please reply to this email with number of people, if you require conveyance to or from Loharu and the timings for it.</b>
 </pre>
 			""" %(participant.name,get_pcr_number())
+        except:
+            body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+			<pre style="font-family:Roboto,sans-serif">
+Hello %s!
+Greetings from BITS Pilani!
+
+It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 31st to November 4th.
+
+This is to confirm your participation at OASIS '18.
+We would be really happy to see your college represented at our fest.
+
+We look forward to seeing you at OASIS 2018.
+A new link would be active in your OASIS '18 account once you clear the Firewalls booth at BITS with the access to your exclusive profile card.
+<b>IT IS COMPULSORY FOR YOU TO BRING A VALID IDENTITY CARD, WITHOUT WHICH YOU WON'T BE ALLOWED TO ENTER THE PREMISES.</b>
+PFA A list of participants from your college.
+
+Regards,
+StuCCAn (Head)
+Dept. of Publications & Correspondence, OASIS 2018
+BITS Pilani
+%s
+pcr@bits-oasis.org
+
+<b>Please reply to this email with number of people, if you require conveyance to or from Loharu and the timings for it.</b>
+</pre>
+			""" %(participant.name,get_pcr_number())
+
         content = Content('text/html', body)
         try:
             mail = Mail(from_email, subject, to_email, content)
             mail.add_attachment(attachment)
             #mail.add_attachment(attachment_1)
             response = sg.client.mail.send.post(request_body=mail.get())
+            if response.status_code%100!=2:
+                raise Exception
             print('done')
             messages.warning(request, 'Email sent to ', participant.name)
             participant.pcr_final = True

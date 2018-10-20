@@ -80,9 +80,11 @@ def register(request):
 		# 
 		# print(data['events'][0])
 		try:
-		    mail_1 = Mail(mail.from_email, mail.subject, to_email, content)
-		    response = send_grid.sg.client.mail.send.post(request_body = mail_1.get())
-		    print(response)
+			mail_1 = Mail(mail.from_email, mail.subject, to_email, content)
+			response = send_grid.sg.client.mail.send.post(request_body = mail_1.get())
+			if response.status_code%100!=2:
+				raise Exception
+			print(response)
 		except Exception as e:
 		    print("\t",e)
 		    participant.delete()

@@ -2,8 +2,7 @@
 <html>
 
 <head>
-    {% load static %}
-    {% load pcradmin_tags %}
+    {% load static %} {% load pcradmin_tags %}
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -17,18 +16,17 @@
 
     <link href="{% static 'pcradmin/plugins/animate-css/animate.css' %}" rel="stylesheet" />
     <link href="{% static 'pcradmin/plugins/bootstrap-select/css/bootstrap-select.css' %}" rel="stylesheet" />
-    
+
     <!-- <link href="{% static 'pcradmin/plugins/morrisjs/morris.css' %}" rel="stylesheet" /> -->
     <link href="{% static 'pcradmin/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css' %}" rel="stylesheet">
 
     <link href="{% static 'pcradmin/css/style.css' %}" rel="stylesheet">
     <!-- <link href="{% static 'pcradmin/css/materialize.min.css' %}" rel="stylesheet"> -->
 
-    {% block head %}
-    {% endblock %}
+    {% block head %} {% endblock %}
     <link href="{% static 'pcradmin/css/themes/all-themes.css' %}" rel="stylesheet" />
-    <link rel="shortcut icon" href="{% static 'pcradmin/images/Oasis-Logo.png' %}"> 
-    
+    <link rel="shortcut icon" href="{% static 'pcradmin/images/Oasis-Logo.png' %}">
+
 </head>
 
 <body class="theme-cyan">
@@ -72,12 +70,11 @@
         <aside id="leftsidebar" class="sidebar">
             <!-- User Info -->
             <div class="user-info">
-                <div class="image">
-                    <img src="{% static 'pcradmin/images/Oasis-Logo.png' %}" width="60" height="60" alt="User" />
-                </div>
+
                 <div class="info-container">
-                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><strong>{{request.user.username}}</strong></div>
-                    <div class="email">{{request.user.email}}</div>
+                    <br><br><br>
+                    <!-- <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><strong>{{request.user.username}}</strong></div> -->
+                    <!-- <div class="email">{{request.user.email}}</div> -->
                     <div class="btn-group user-helper-dropdown">
                         <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
                         <ul class="dropdown-menu pull-right">
@@ -90,7 +87,7 @@
             </div>
             <!-- #User Info -->
             <!-- Menu -->
-            <div class="menu"style="background-color:white">
+            <div class="menu" style="background-color:white">
 
                 <ul class="list">
                     <li class="header">MAIN NAVIGATION</li>
@@ -99,13 +96,13 @@
                             <i class="material-icons">home</i>
                             <span>Home</span>
                         </a>
-                        
+
                     </li>
                     <li class="active">
-                                <a href="{% url 'pcradmin:college' %}">
-                                <!-- <i class="material-icons">home</i> -->
-                                <span>Colleges</span>
-                                </a>
+                        <a href="{% url 'pcradmin:college' %}">
+                            <!-- <i class="material-icons">home</i> -->
+                            <span>Colleges</span>
+                        </a>
                     </li>
                     <li class="active">
                         <a href="{% url 'pcradmin:add_college' %}">
@@ -156,7 +153,7 @@
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">
-                    &copy; for OASIS'18  <a href="javascript:void(0);">DVM, BITS Pilani</a>
+                    &copy; for OASIS'18 <a href="javascript:void(0);">DVM, BITS Pilani</a>
                 </div>
                 <div class="version">
                     <b>Thanks, </b> AdminBSB
@@ -171,16 +168,20 @@
                 <li role="presentation" class="active"><a href="#settings" data-toggle="tab">SETTINGS</a></li>
             </ul>
             <div class="tab-content">
-               
+
                 <div role="tabpanel" class="tab-pane fade in active in active" id="settings">
                     <div class="demo-settings">
                         <p>GENERAL LINKS</p>
                         <ul class="setting-list">
                             <li>
-                                <a class="btn btn-block bg-blue waves-effect" href="https://bits-oasis.org">Go to the main site</a>
+                                <a class="btn btn-block bg-blue waves-effect" href="https://bits-oasis.org">Go to the main
+                                    site
+                                </a>
                             </li>
                             <li>
-                                <a class="btn btn-block bg-blue waves-effect" href="https://bits-oasis.org/2018/admin">Admin Login</a>
+                                <a class="btn btn-block bg-blue waves-effect" href="https://bits-oasis.org/2018/admin">Admin
+                                    Login
+                                </a>
                             </li>
                         </ul>
                         <p>ACCOUNT SETTINGS</p>
@@ -188,7 +189,8 @@
                             <li>
                                 <span>Logout</span>
                                 <div class="switch">
-                                    <label><input type="checkbox" onclick='window.location.assign("{% url 'pcradmin:user-logout' %}")' checked><span class="lever"></span></label>
+                                    <label><input type="checkbox" onclick='window.location.assign("{% url ' pcradmin:user-logout
+                                            ' %}")' checked><span class="lever"></span></label>
                                 </div>
                             </li>
                         </ul>
@@ -203,10 +205,8 @@
             <div class="block-header">
                 <h2>DASHBOARD</h2>
             </div>
-            {% show_tags %}
-            {% block body %}
-            {% endblock %}
-            </div>
+            {% show_tags %} {% block body %} {% endblock %}
+        </div>
         </div>
     </section>
 
@@ -228,14 +228,14 @@
 
 
     <script src="{% static 'pcradmin/plugins/jquery-countto/jquery.countTo.js' %}"></script>
-    
- 
+
+
     <script src="{% static 'pcradmin/js/pages/index.js' %}"></script>
 
     <!-- Demo Js -->
     <script src="{% static 'pcradmin/js/demo.js' %}"></script>
-    
-        <!-- Jquery DataTable Plugin Js -->
+
+    <!-- Jquery DataTable Plugin Js -->
     <script src="{% static 'pcradmin/plugins/jquery-datatable/jquery.dataTables.js' %}"></script>
     <script src="{% static 'pcradmin/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js' %}"></script>
     <script src="{% static 'pcradmin/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js' %}"></script>
@@ -250,7 +250,7 @@
     <script src="{% static 'pcradmin/js/admin.js' %}"></script>
     <script src="{% static 'pcradmin/js/demo.js' %}"></script>
     <script src="{% static 'pcradmin/js/script.js' %}"></script>
-    
+
 </body>
 
 </html>
