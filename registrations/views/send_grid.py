@@ -17,13 +17,9 @@ class register(object):
     verify_email_url = None
     logo_path = "http://bits-oasis.org/2017/static/registrations/img/logo.png"
     try:
-<<<<<<< HEAD
-        # im = Image.open(logo_path)
-=======
         fd = urlopen(logo_path)
         image_file = io.BytesIO(fd.read())
         im = Image.open(image_file)
->>>>>>> alamos
         body = '''<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <center><img src="http://bits-oasis.org/2017/static/registrations/img/logo.png" height="150px" width="150px"></center>
 <pre style="font-family:Roboto,sans-serif">
@@ -92,13 +88,9 @@ class cr_approved(object):
     verify_email_url = None
     logo_path = "http://bits-oasis.org/2017/static/registrations/img/logo.png"
     try:
-<<<<<<< HEAD
-        # im = Image.open(logo_path)
-=======
-        fd = urlopen(logo_path)
+        # im = Image.open(logo_path)        fd = urlopen(logo_path)
         image_file = io.BytesIO(fd.read())
         im = Image.open(image_file)
->>>>>>> alamos
         body = '''<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <center><img src="http://bits-oasis.org/2017/static/registrations/img/logo.png" height="150px" width="150px"></center>
 <pre style="font-family:Roboto,sans-serif">
@@ -167,13 +159,10 @@ class ForgotPassword(object):
     verify_email_url = None
     logo_path = "http://bits-oasis.org/2017/static/registrations/img/logo.png"
     try:
-<<<<<<< HEAD
         # im = Image.open(logo_path)
-=======
         fd = urlopen(logo_path)
         image_file = io.BytesIO(fd.read())
         im = Image.open(image_file)
->>>>>>> alamos
         body = '''<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <center><img src="http://bits-oasis.org/2017/static/registrations/img/logo.png" height="150px" width="150px"></center>
 <pre style="font-family:Roboto,sans-serif">
@@ -242,13 +231,10 @@ class chor(object):
     logo_path = "http://bits-oasis.org/2017/static/registrations/img/logo.png"
 
     try:
-<<<<<<< HEAD
         # im = Image.open(logo_path)
-=======
         fd = urlopen(logo_path)
         image_file = io.BytesIO(fd.read())
         im = Image.open(image_file)        
->>>>>>> alamos
         body = '''
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <center><img src="http://bits-oasis.org/2017/static/registrations/img/logo.png" height="150px" width="150px"></center>
@@ -271,19 +257,7 @@ We look forward to seeing you at OASIS 2018.
 
 P.S: THIS EMAIL DOES NOT CONFIRM YOUR PRESENCE AT OASIS 2018. YOU WILL BE RECEIVING ANOTHER EMAIL FOR THE CONFIRMATION OF YOUR PARTICIPATION.
 
-<<<<<<< HEAD
-        Regards,
-        StuCCAn (Head)
-        Dept. of Publications & Correspondence, OASIS 2018
-        BITS Pilani
-        +91-80033 05723
-        pcr@bits-oasis.org
-        </pre>
-        '''
-    except Exception as e:
-        print(e)
 
-=======
 Regards,
 StuCCAn (Head)
 Dept. of Publications & Correspondence, OASIS 2018
@@ -293,7 +267,6 @@ pcr@bits-oasis.org
 </pre>
 '''
     except:
->>>>>>> alamos
         body = '''
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 <pre style="font-family:Roboto,sans-serif">
@@ -315,16 +288,7 @@ We look forward to seeing you at OASIS 2018.
 
 P.S: THIS EMAIL DOES NOT CONFIRM YOUR PRESENCE AT OASIS 2018. YOU WILL BE RECEIVING ANOTHER EMAIL FOR THE CONFIRMATION OF YOUR PARTICIPATION.
 
-<<<<<<< HEAD
-        Regards,
-        StuCCAn (Head)
-        Dept. of Publications & Correspondence, OASIS 2018
-        BITS Pilani
-        +91-80033 05723
-        pcr@bits-oasis.org
-        </pre>
-        '''
-=======
+
 Regards,
 StuCCAn (Head)
 Dept. of Publications & Correspondence, OASIS 2018
@@ -334,6 +298,5 @@ pcr@bits-oasis.org
 </pre>
 '''        
 
->>>>>>> alamos
     from_email = Email('register@bits-oasis.org')
     subject = "Registration for OASIS '18 THE FAR OUT FEST"
