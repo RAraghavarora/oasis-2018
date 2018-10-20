@@ -3,7 +3,6 @@
 
 <head>
     {% load static %}
-    {% load ems_tags %}
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -95,31 +94,15 @@
                     <li class="header">MAIN NAVIGATION</li>
                     
                     <li class="active">
-                        <a href="{% url 'ems:team_home' event.id %}">
-                            <i class="material-icons">home</i>
-                            <span>{{event.name}} | Home</span>
-                        </a>
-                    </li>
-                    <li class="active">
-                                <a href="{% url 'ems:team_home' event.id %}">
-                                    <span>Teams</span>
+                                <a href="{% url 'ems:add_cd' %}">
+                                    <span>Clubs 'n' Departments</span>
                                 </a>
                     </li>
-                    
-                    {% if request|ems_judge %}
                     <li class="active">
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <span>Scores</span>
-                        </a>
-                        <ul class="ml-menu">
-                        {% for level in request|ems_levels %}
-                            <li>
-                                <a href="{% url 'ems:show_scores' event.id level.id %}"><span>Level-{{level.position}}-{{level.name}}</span></a>
-                            </li>
-                        {% endfor %}
-                        </ul>
+                                <a href="{% url 'ems:events_controls' %}">
+                                    <span>Events</span>
+                                </a>
                     </li>
-                    {% endif %}
                     </li>
                     <li class="header">LABELS</li>
                     <li>
@@ -172,7 +155,7 @@
                             <li>
                                 <span>Logout</span>
                                 <div class="switch">
-                                    <label><input type="checkbox" onclick='window.location.assign("{% url 'ems:logout' %}")' checked><span class="lever"></span></label>
+<label><input type="checkbox" onclick='window.location.assign("{% url 'ems:logout' %}")' checked><span class="lever"></span></label>
                                 </div>
                             </li>
                         </ul>
