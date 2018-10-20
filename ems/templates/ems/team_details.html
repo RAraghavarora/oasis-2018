@@ -1,0 +1,85 @@
+{% extends 'ems/base.html' %}
+
+{% block body %}
+<div class="row clearfix">
+
+
+{% if messages %}
+{% for message in messages %}
+<div class="body">
+<div class="alert alert-info alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+    <large>{{message}}</large>
+</div>
+</div>
+{% endfor %}
+{% endif %}
+
+
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+            <div class="header">
+                <h2>
+                    {{team.name}} -- {% if team.leader %}<td>{{team.leader}}</td>{% else %}
+                                    <td>{{team.leader_bitsian}}</td>
+                                    {% endif %}
+
+                </h2>
+            <div class="body">
+                <ul class="list-group">
+                    {% for member in members %}
+                    <li>{{member.name}} -- {{member.ems_code}}</li>
+                    {% endfor %}
+                    {% for member in bitsians %}
+                    <li>{{member.name}} -- {{member.long_id}}</li>
+                    {% endfor %}
+                </ul>           
+            </div>
+            <form action="{% url 'ems:team_details' event.id team.id %}" method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                    <div class="form-line">
+                        <input type="text" name="teams" placeholder="Enter  ' , '  separated Ems codes for the Participants to add members" class="form-control" id="teams"><label for="name">Add Members</label>
+                    </div>
+            </div>
+            <div class="row">
+                        <div class="col-xs-2">
+                            <button class="btn btn-block bg-blue waves-effect" type="submit" name="submit" value="add">Submit</button>
+                        </div>
+            </div>
+            </form>
+            </div>
+
+        </div>
+            <div class="card">
+                <div class="header">
+                    <h2>
+                       Score Card
+                </div>
+                <div class="body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover dataTable">
+                            <thead>
+                                <tr> 
+                                    <th>Level</th>
+                                    <th>Level Name</th>
+                                    <th>Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for score in scores %}
+                                <tr>
+                                    <td>{{score.level.position}}</td>
+                                    <td>{{score.level.name}}</td>
+                                    <td>{{score.total}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
