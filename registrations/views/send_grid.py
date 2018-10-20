@@ -15,7 +15,7 @@ class register(object):
     verify_email_url = None
     logo_path = "http://bits-oasis.org/2017/static/registrations/img/logo.png"
     try:
-        im = Image.open(logo_path)
+        # im = Image.open(logo_path)
         body = '''<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <center><img src="http://bits-oasis.org/2017/static/registrations/img/logo.png" height="150px" width="150px"></center>
         <pre style="font-family:Roboto,sans-serif">
@@ -84,7 +84,7 @@ class cr_approved(object):
     verify_email_url = None
     logo_path = "http://bits-oasis.org/2017/static/registrations/img/logo.png"
     try:
-        im = Image.open(logo_path)
+        # im = Image.open(logo_path)
         body = '''<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <center><img src="http://bits-oasis.org/2017/static/registrations/img/logo.png" height="150px" width="150px"></center>
         <pre style="font-family:Roboto,sans-serif">
@@ -153,7 +153,7 @@ class ForgotPassword(object):
     verify_email_url = None
     logo_path = "http://bits-oasis.org/2017/static/registrations/img/logo.png"
     try:
-        im = Image.open(logo_path)
+        # im = Image.open(logo_path)
         body = '''<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <center><img src="http://bits-oasis.org/2017/static/registrations/img/logo.png" height="150px" width="150px"></center>
         <pre style="font-family:Roboto,sans-serif">
@@ -222,7 +222,7 @@ class chor(object):
     logo_path = "http://bits-oasis.org/2017/static/registrations/img/logo.png"
 
     try:
-        im = Image.open(logo_path)
+        # im = Image.open(logo_path)
         body = '''
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <center><img src="http://bits-oasis.org/2017/static/registrations/img/logo.png" height="150px" width="150px"></center>
@@ -253,7 +253,9 @@ class chor(object):
         pcr@bits-oasis.org
         </pre>
         '''
-    except:
+    except Exception as e:
+        print(e)
+
         body = '''
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
         <pre style="font-family:Roboto,sans-serif">
@@ -282,7 +284,6 @@ class chor(object):
         +91-80033 05723
         pcr@bits-oasis.org
         </pre>
-        '''        
-
+        '''
     from_email = Email('register@bits-oasis.org')
     subject = "Registration for OASIS '18 THE FAR OUT FEST"
