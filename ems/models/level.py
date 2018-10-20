@@ -28,10 +28,10 @@ class LevelClass(models.Model):
 class LevelInstance(models.Model):
 	levelclass = models.ForeignKey(LevelClass, related_name = "instances", on_delete = models.CASCADE)
 	
-	team = models.ForeignKey(Team, on_delete = models.CASCADE, related_name = "levels")
+	team = models.ForeignKey(Team, on_delete = models.CASCADE, related_name = "levels", null = True)
 	
 	score = models.PositiveSmallIntegerField(default = 0)
-	position = models.PositiveSmallIntegerField(blank = True)
+	position = models.PositiveSmallIntegerField(blank = True, null = True)
 	
 	#parameters : ParameterInstance
 

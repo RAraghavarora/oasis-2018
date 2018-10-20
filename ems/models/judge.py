@@ -10,7 +10,7 @@ class Judge(models.Model):
 	Development Notes:
 	Does not have level field.
 	'''
-	name = models.CharField(max_length = 200)
+	name = models.CharField(max_length = 200, default = "")
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.CASCADE)
 	
 	event = models.ForeignKey(MainEvent)
