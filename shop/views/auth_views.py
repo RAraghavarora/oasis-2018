@@ -35,6 +35,7 @@ class Authentication(APIView):
 
 	CLIENT_ID_ios = "157934063064-et3fmi6jlivnr6h70q2rnegik50aqj3g.apps.googleusercontent.com"
 	CLIENT_ID_web = "563920200402-chepn5acpejf0bac9v6on3a8pdvmvvg0.apps.googleusercontent.com"
+	CLIENT_ID_android = "157934063064-et3fmi6jlivnr6h70q2rnegik50aqj3g.apps.googleusercontent.com"
 
 
 	def generate_random_password(self):
@@ -80,7 +81,7 @@ class Authentication(APIView):
 			#Verifies bitsian using Google Client-Side API
 			try:
 				idinfo = id_token.verify_oauth2_token(token, google_requests.Request())
-				if idinfo['aud'] not in [self.CLIENT_ID_web, self.CLIENT_ID_ios]:
+				if idinfo['aud'] not in [self.CLIENT_ID_web, self.CLIENT_ID_ios, self.CLIENT_ID_android]:
 					raise ValueError('Could not verify audience: {}'.format(idinfo['aud']))
 
 			except Exception as e:

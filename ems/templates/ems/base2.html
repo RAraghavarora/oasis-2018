@@ -95,31 +95,11 @@
                     <li class="header">MAIN NAVIGATION</li>
                     
                     <li class="active">
-                        <a href="{% url 'ems:team_home' event.id %}">
+                        <a href="{% url 'ems:update_scores' level.id %}">
                             <i class="material-icons">home</i>
-                            <span>{{event.name}} | Home</span>
+                            <span>Level-{{level.position}}({{level.name}}) for {{level.event.name}} </span>
                         </a>
                     </li>
-                    <li class="active">
-                                <a href="{% url 'ems:team_home' event.id %}">
-                                    <span>Teams</span>
-                                </a>
-                    </li>
-                    
-                    {% if request|ems_judge %}
-                    <li class="active">
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <span>Scores</span>
-                        </a>
-                        <ul class="ml-menu">
-                        {% for level in request|ems_levels %}
-                            <li>
-                                <a href="{% url 'ems:show_scores' event.id level.id %}"><span>Level-{{level.position}}-{{level.name}}</span></a>
-                            </li>
-                        {% endfor %}
-                        </ul>
-                    </li>
-                    {% endif %}
                     </li>
                     <li class="header">LABELS</li>
                     <li>

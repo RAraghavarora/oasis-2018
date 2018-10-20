@@ -1,0 +1,119 @@
+{% extends 'ems/base.html' %}
+
+{% block body %}
+
+
+
+<div class="row clearfix">
+{% if messages %}
+{% for message in messages %}
+<div class="body">
+<div class="alert alert-info alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+    <large>{{message}}</large>
+</div>
+</div>
+{% endfor %}
+{% endif %}
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+        <div class="body">
+        <form action="{% url 'ems:add_team' event.id%}" method="post">
+        {% csrf_token %}
+            <div class="header">
+            <h2>Add Teams</h2>   
+            </div>
+            <div class="body">
+            <div class="input-group">
+                    <div class="form-line">
+                        <input type="text" name="teams" placeholder="Enter  ' , '  separated Ems codes for the Participants and  ' ? '  to add multiple teams" class="form-control" id="teams"><label for="name">Add Teams</label>
+                    </div>
+            </div>
+            <div class="row">
+                        <div class="col-xs-2">
+                            <button class="btn btn-block bg-blue waves-effect" type="submit" name="submit" value="add">Submit</button>
+                        </div>
+            </div>
+            </div>
+
+        </div>
+        </form>
+        </div>
+
+        </div>
+    </div>
+
+
+
+
+{% if teams %}
+
+<div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        
+            <div class="card">
+                <div class="header">
+                    <h2>
+                       All Teams
+                    </h2>
+                </div>
+                <div class="body">
+                    <form action="{% url 'ems:add_team' event.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover dataTable js-exportable">
+                            <thead>
+                                <tr> 
+                                	<th>S.no.</th>                                   
+                                    <th>Name</th>
+                                    <th>Leader</th>
+                                    <th>Level</th>
+                                    <th>View</th>
+                                    <th>Select</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>S.no.</th>                                   
+                                    <th>Name</th>
+                                    <th>Leader</th>
+                                    <th>Level</th>
+                                    <th>View</th>
+                                    <th>Select</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                {% for team in teams %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{team.name}}</td>
+                                    {% if team.leader %}
+                                    <td>{{team.leader}}</td>
+                                    {% else %}
+                                    <td>{{team.leader_bitsian}}</td>
+                                    {% endif %}
+                                    <td>{{team.level}}</td>
+                                    <td><a href="{% url 'ems:team_details' event.id team.id %}">View</a></td>
+                                    <td><input type="checkbox" name="delete_team_id" value="{{team.id}}" id="{{team.id}}"> <label for="{{team.id}}"></label></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                        <div class="row">
+                        <div class="col-xs-2">
+                        <button class="btn btn-block bg-blue waves-effect" type="submit" name="submit" value="delete_teams">Delete Teams</button>
+                        </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                No teams in this event. Click on Add Team.
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
