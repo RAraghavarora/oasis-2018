@@ -66,7 +66,7 @@
                             <thead>
                                 <tr>
                                     <th>Event</th>
-                                    <th>CR Approved</th>
+
                                     <th>Select</th>
                                 </tr>
                             </thead>
@@ -74,7 +74,7 @@
                                 {% for i in unconfirmed %}
                                 <tr>
                                     <td>{{i.event}}</td>
-                                    <td>{{i.cr_approved}}</td>
+
                                     <td>
                                         <input type="checkbox" name="data" id="{{i.id}}" value="{{i.id}}">
                                         <label for="{{i.id}}">Select</label>
@@ -105,7 +105,7 @@
                             <thead>
                                 <tr>
                                     <th>Event</th>
-                                    <th>CR Approved</th>
+
                                     <th>Select</th>
                                 </tr>
                             </thead>
@@ -113,7 +113,7 @@
                                 {% for i in confirmed %}
                                 <tr>
                                     <td>{{i.event}}</td>
-                                    <td>{{i.cr_approved}}</td>
+
                                     <td>
                                         <input type="checkbox" name="data" id="{{i.id}}" value="{{i.id}}">
                                         <label for="{{i.id}}">Select</label>
@@ -130,7 +130,7 @@
             </div>
         </div>
         {% endif %}
-        <button onclick='window.location.assign("{% url ' pcradmin:select_college_rep ' part.college.id %}")' class="btn btn-primary m-t-15 waves-effect">Return</button>
+        
     </div>
 </div>
 
