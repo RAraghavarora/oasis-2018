@@ -75,7 +75,8 @@ def index(request):
         else:
             try:
                 participant = Participant()
-                participant.name = str(data['name'])
+                name = ' '.join(str(data['name']).strip().split())
+                participant.name = name
                 participant.gender = str(data['gender'])
                 participant.city = str(data['city'])
                 participant.email = str(data['email'])
