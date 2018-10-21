@@ -230,12 +230,14 @@ def how_much_paid(part):
 
 @staff_member_required
 def approve_participations(request,id):
+    
     college=get_object_or_404(College,id=id)
     try:
         cr=Participant.objects.get(college=college,is_cr=True)
     except:
         messages.warning(request,'College Rep not yet selected. Please select a college rep first for '+college.name)
         return redirect(request.META.get('HTTP_REFERER'))
+    
     if request.method=='POST':
         data=request.POST
         print(data)
@@ -271,7 +273,15 @@ def approve_participations(request,id):
 
 @staff_member_required
 def verify_profile(request,part_id):
-    part=Participant.objects.get(id=part_id)
+    try:
+        part=Participant.objects.get(id=part_id)
+    except:
+        messages.warning(request, 'The participant doesn\'t exist.')
+        return redirect(request.META.get('HTTP_REFERER'))
+
+    if not part.cr_approved:
+        return redirect(request.META.get('HTTP_REFERER'))
+ 
     if request.method=='POST':
         try:
             data=(request.POST)
@@ -303,8 +313,8 @@ def verify_profile(request,part_id):
 		messages.warning(request, message)
 		return redirect(request.META.get('HTTP_REFERER'))'''
     participations=part.mainparticipation_set.all()
-    events_confirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=True)]
-    events_unconfirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=False)]
+    events_confirmed = [{'event':p.event,'cr_approved':p.cr_approved, 'id':p.id} for p in participations.filter(pcr_approved=True)]
+    events_unconfirmed = [{'event':p.event, 'cr_approved': p.cr_approved, 'id':p.id} for p in participations.filter(pcr_approved=False)]
     return render(request, 'pcradmin/verify_profile.html',
 	{ 'part':part, 'confirmed':events_confirmed, 'unconfirmed':events_unconfirmed})
 
@@ -816,23 +826,14 @@ pcr@bits-oasis.org
         try:
             mail = Mail(from_email, subject, to_email, content)
             mail.add_attachment(attachment)
-            #mail.add_attachment(attachment_1)
             response = sg.client.mail.send.post(request_body=mail.get())
             if response.status_code%100!=2:
                 raise Exception
             print('done')
             messages.warning(request, 'Email sent to ', participant.name)
             participant.pcr_final = True
-            # ems_code = str(participant.college.id).rjust(3, '0')+str(participant.id).rjust(4,'0')
-            # participant.ems_code = ems_code
-
-            #finally
             participant.save()
-            # if not participant.is_cr:
-            #     encoded=gen_barcode(participant)
-            #     participant.save()
 
-        # except Exception, e: does not work in py3
         except Exception as e:
             print(str(e))
             messages.warning(request, 'Error sending email')
@@ -856,8 +857,6 @@ def download_pdf(request, eg_id):
 
 #not much idea of the functions of reportlab...
 def create_final_pdf(eg_id, response, _dir):
-    logo="/home/raghav/dvm/oasis-2018/pcradmin/static/pcradmin/images/Oasis-Logo.png"
-    im=Image(logo,1*inch,1*inch)
     email_group = EmailGroup.objects.get(id=eg_id)
     elements = []
     doc = SimpleDocTemplate(response, pagesize=letter)
