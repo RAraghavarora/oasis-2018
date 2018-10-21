@@ -167,8 +167,11 @@ def home(request):
     if request.user is None:
         pass
     else:
-        if(request.user.is_authenticated()):
-            return redirect('registrations:index')
+        try:
+            if(request.user.is_authenticated() and user.participant is not None):
+                return redirect('registrations:index')
+        except:
+            pass
 
     if request.method == 'POST':
         username = request.POST['username']
