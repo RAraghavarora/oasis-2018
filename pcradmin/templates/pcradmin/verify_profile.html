@@ -1,16 +1,11 @@
-{% extends 'pcradmin/base.html' %}
-{% load static %}
-{% block body %}
-
-
-{% if messages %}
+{% extends 'pcradmin/base.html' %} {% load static %} {% block body %} {% if messages %}
 <div class="body">
-{% for message in messages %}
-<div class="alert alert-info alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-    {{message}}
-</div>
-{% endfor %}
+    {% for message in messages %}
+    <div class="alert alert-info alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        {{message}}
+    </div>
+    {% endfor %}
 </div>
 {% endif %}
 
@@ -53,90 +48,91 @@
 
 
 <div class="row clearfix">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
-        		{% if unconfirmed %}
-                    <div class="card">
+        {% if unconfirmed %}
+        <div class="card">
 
-                        <div class="header">
-                            <h2>
-                                Unconfirmed Participations
-                            </h2>
-                        </div>
-                    <div class="body">
-                        <div class="table-responsive">
-                                <form action="" method="post">
-                                {% csrf_token %}
-                            <table class="table table-bordered table-striped table-hover dataTable">
+            <div class="header">
+                <h2>
+                    Unconfirmed Participations
+                </h2>
+            </div>
+            <div class="body">
+                <div class="table-responsive">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <table class="table table-bordered table-striped table-hover dataTable">
                             <thead>
-                                    <tr>
-                                        <th>Event</th>
-                                        <th>Select</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                	{% for i in unconfirmed %}
-                                    <tr>
-                                        <td>{{i.event}}</td>
-                                        <td>
-	                                        <input type="checkbox" name="data" id="{{i.id}}" value="{{i.id}}">
-	                                		<label for="{{i.id}}">Select</label>
-                                		</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                   
-                            </table>
-                            <button type="submit" class="btn btn-primary m-t-15 waves-effect" value="confirm" name="submit">Confirm</button>
-                            </form>
-                        </div>
-                    </div>
+                                <tr>
+                                    <th>Event</th>
+                                    <th>CR Approved</th>
+                                    <th>Select</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in unconfirmed %}
+                                <tr>
+                                    <td>{{i.event}}</td>
+                                    <td>{{i.cr_approved}}</td>
+                                    <td>
+                                        <input type="checkbox" name="data" id="{{i.id}}" value="{{i.id}}">
+                                        <label for="{{i.id}}">Select</label>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+                        <button type="submit" class="btn btn-primary m-t-15 waves-effect" value="confirm" name="submit">Confirm</button>
+                    </form>
                 </div>
-                {% endif %}
-
-
-                {% if confirmed %}
-                    <div class="card">
-
-                        <div class="header">
-                            <h2>
-                                Confirmed Participations 
-                            </h2>
-                        </div>
-                    <div class="body">
-                        <div class="table-responsive">
-                                <form action="" method="post">
-                                {% csrf_token %}
-                            <table class="table table-bordered table-striped table-hover dataTable">
-                            <thead>
-                                    <tr>
-                                        <th>Event</th>
-                                        <th>Select</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                	{% for i in confirmed %}
-                                    <tr>
-                                        <td>{{i.event}}</td>
-                                        <td>
-	                                        <input type="checkbox" name="data" id="{{i.id}}" value="{{i.id}}">
-	                                		<label for="{{i.id}}">Select</label>
-                                		</td>
-                                    </tr>
-                                    {% endfor %}                                            
-                                </tbody>
-                   
-                            </table>
-                            <button type="submit" class="btn btn-primary m-t-15 waves-effect" value="unconfirm" name="submit">Unconfirm</button>
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-            <button onclick='window.location.assign("{% url 'pcradmin:select_college_rep' part.college.id %}")' class="btn btn-primary m-t-15 waves-effect">Return</button>
+            </div>
         </div>
-	</div>
+        {% endif %} {% if confirmed %}
+        <div class="card">
+
+            <div class="header">
+                <h2>
+                    Confirmed Participations
+                </h2>
+            </div>
+            <div class="body">
+                <div class="table-responsive">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <table class="table table-bordered table-striped table-hover dataTable">
+                            <thead>
+                                <tr>
+                                    <th>Event</th>
+                                    <th>CR Approved</th>
+                                    <th>Select</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in confirmed %}
+                                <tr>
+                                    <td>{{i.event}}</td>
+                                    <td>{{i.cr_approved}}</td>
+                                    <td>
+                                        <input type="checkbox" name="data" id="{{i.id}}" value="{{i.id}}">
+                                        <label for="{{i.id}}">Select</label>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+                        <button type="submit" class="btn btn-primary m-t-15 waves-effect" value="unconfirm" name="submit">Unconfirm</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <button onclick='window.location.assign("{% url ' pcradmin:select_college_rep ' part.college.id %}")' class="btn btn-primary m-t-15 waves-effect">Return</button>
+    </div>
+</div>
 
 
 
