@@ -52,19 +52,23 @@ class OrderFragment(models.Model):
 	PENDING = 'P'
 	ACCEPTED = 'A'
 	DECLINED = 'D'
+	READY = 'R'
 	FINISHED = 'F'
 
 	STATUS = (
 		(PENDING, "Pending"),
 		(ACCEPTED, "Accepted"),
 		(DECLINED, "Declined"),
-		(FINISHED, "Finished") # order is ready for pick-up
+		(READY, "Ready"),
+		(FINISHED, "Finished")
 	)
 
 	stall = models.ForeignKey("Stall", related_name="orders", null=True, on_delete=models.CASCADE)
 	order = models.ForeignKey("Order", related_name="fragments", null=True, on_delete=models.CASCADE)
 	transaction = models.OneToOneField("Transaction", null=True, blank=True, on_delete=models.CASCADE)
 	status = models.CharField(max_length=1, choices=STATUS, default='P')
+	otp = models.PositiveIntegerField(default = 1234)
+	show_otp = models.BooleanField(default = False)
 	# items: ItemInstances
 
 	def __str__(self):

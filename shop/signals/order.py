@@ -22,6 +22,7 @@ def orderFragmentFirebaseUpdate(sender, **kwargs):
     collection.document(doc_string).set(data)
 
     col_str = "Stall #{}".format(kwargs["instance"].stall.user.id)
+    print(kwargs["instance"].stall.user.id)
     collection = db.collection(col_str)
     doc_string = "OrderFragment #{}".format(kwargs["instance"].id)
     collection.document(doc_string).set(data)
