@@ -54,7 +54,9 @@ class Transfer(APIView):
 				amount = data["amount"]
 				if amount < 0:
 					return Response({"message": "transfered amount cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
+				print(source.balance)
 				source.transferTo(target, amount, transfertype="transfer")
+				print(source.balance)
 				msg = {"message": "successful!"}
 				return Response(msg, status=status.HTTP_200_OK)
 			except KeyError as missing:
