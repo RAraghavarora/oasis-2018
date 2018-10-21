@@ -42,17 +42,18 @@ def register(request):
 			return JsonResponse({'status':0,'message':'Please select at least one event'})
 
 		try:
-		    participant = Participant()
-		    participant.name = str(data['name'])
-		    participant.gender = str(data['gender'])
-		    participant.city = str(data['city'])
-		    participant.email = str(data['email'])
+			participant = Participant()
+			name = ' '.join(str(data['name']).strip().split())
+			participant.name = name
+			participant.gender = str(data['gender'])
+			participant.city = str(data['city'])
+			participant.email = str(data['email'])
 
-		    try:
-		        participant.college = College.objects.get(name = data['college'])
-		    except:
-		        return JsonResponse({'status':0,'message':'Invalid College'})
-		    participant.phone = int(data['phone'])
+			try:
+				participant.college = College.objects.get(name = data['college'])
+			except:
+				return JsonResponse({'status':0,'message':'Invalid College'})
+			participant.phone = int(data['phone'])
 		    
 		    
 		except KeyError as missing_data:
