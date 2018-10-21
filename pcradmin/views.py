@@ -741,7 +741,7 @@ def final_email_send(request, eg_id):
             break
     # if _dir=='':
     #     return 
-    doc_name = _dir + 'letterhead.pdf'
+    doc_name = _dir + 'final_list.pdf'
     pdf = create_final_pdf(eg_id, doc_name, _dir)
 
     #sendgrid email sending code
@@ -864,25 +864,25 @@ def create_final_pdf(eg_id, response, _dir):
     for part in email_group.participant_set.all():
         events = ''
         for participation in MainParticipation.objects.filter(participant=part, pcr_approved=True):
-            events += participation.event.name + ', '
+            events += participation.event.name + '\n'
         events = events[:-2]
         amount = how_much_paid(part)
         data.append((part.name, events, amount))
 
-    table_with_style = Table(data, [3 * inch, 1.5 * inch, inch])
+    table_with_style = Table(data, [2 * inch, 2.5 * inch, inch])
 
     table_with_style.setStyle(TableStyle([
         ('FONT', (0, 0), (-1, -1), 'Helvetica'),
         ('FONT', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, -1), 8),
         ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-        ('BOX', (0, 0), (-1, 0), 0.25, colors.green),
+        ('BOX', (0, 0), (-1, -1), 0.25, colors.green),
         ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
     ]))
 
 
-    doc.build([Spacer(1, 0.5 * inch),table_with_style,im])
-    watermark_name = _dir + 'Unused.pdf' #Change the watermark
+    doc.build([Spacer(1, 0.5 * inch),table_with_style])
+    watermark_name = _dir + 'letterhead.pdf' #Change the watermark
     output_file = PdfFileWriter()
     input_file = PdfFileReader(open(response, "rb"))
     page_count = input_file.getNumPages()
