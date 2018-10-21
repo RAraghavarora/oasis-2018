@@ -37,6 +37,7 @@ def index(request):
     Or, if the participant is logged in, his index page.
     '''
 
+
     if request.method=='POST':
         print("post request")
         print("******** POST ***********")
@@ -163,6 +164,12 @@ def home(request):
     '''
     Login page
     '''
+    if request.user is None:
+        pass
+    else:
+        if(request.user.is_authenticated()):
+            return redirect('registrations:index')
+
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
