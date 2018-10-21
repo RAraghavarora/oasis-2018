@@ -413,11 +413,11 @@ def chor_approve(request):
                         }
                         return render(request, 'registrations/message.html', context)
                     
-                    context = {
-                        'error_heading':"Emails sent",
-                        'message' : "Login credentials have been mailed to the corresponding new participants."
-                    }
-                    return render(request, 'registrations/message.html', context)
+            context = {
+                'error_heading':"Emails sent",
+                'message' : "Login credentials have been mailed to the corresponding new participants."
+            }
+            return render(request, 'registrations/message.html', context)
 
         if 'disapprove' == data['action']:
             try:
