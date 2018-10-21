@@ -15,22 +15,23 @@ class Index(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        user = request.user
+        return Response(template_name = "ems/test.html")
+        # user = request.user
 
-        if user.is_superuser or user.username=='controls':
-            return redirect(reverse_lazy('ems:events_controls'))
+        # if user.is_superuser or user.username=='controls':
+        #     return redirect(reverse_lazy('ems:events_controls'))
 
-        try:
-            judge = user.judge
-            return redirect(reverse('ems:update_scores', kwargs={'level_id':judge.level.id}))
-        except:
-            pass
+        # try:
+        #     judge = user.judge
+        #     return redirect(reverse('ems:update_scores', kwargs={'level_id':judge.level.id}))
+        # except:
+        #     pass
 
-        try:
-            clubdept = ClubDepartment.objects.get(user = user)
-            return redirect('ems:events_select')
-        except:
-            pass
+        # try:
+        #     clubdept = ClubDepartment.objects.get(user = user)
+        #     return redirect('ems:events_select')
+        # except:
+        #     pass
 
-        logout(request)
-        return redirect(reverse_lazy('ems:login'))    
+        # logout(request)
+        # return redirect(reverse_lazy('ems:login'))
