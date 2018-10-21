@@ -190,7 +190,7 @@ def home(request):
                         return render(request, 'registrations/message.html', context)
 
                     login(request,user)
-                    return redirect('registrations:home')
+                    return redirect('registrations:index')
 
                 except:
                     message = "Participant does not Exist"

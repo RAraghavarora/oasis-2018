@@ -74,10 +74,15 @@ def select_college_rep(request,id):
 
         if data['submit']=='delete':
             part=Participant.objects.get(id=part_id)
+            part.is_cr=False
+            if part.paid or part.controlz_paid:
+                part.save()
+                return messages.warning(request, 'This participant has already paid. So, this participant can only be removed from College Rep Position. But he/she would still remain PCr approved.')
+                return redirect(request.META.get('HTTP_REFERER'))
             user=part.user
             user.delete()
             part.user=None
-            part.is_cr=False
+            
             part.cr_approved=False
             part.pcr_approved = False
             part.save()
@@ -255,15 +260,14 @@ def approve_participations(request,id):
             message="Profile verified"
         elif data['submit']=='disapprove':
             for participation in MainParticipation.objects.filter(id__in=part_list):
+                participant = participation.participant
+                if participant.paid or participant.controlz_paid:
+                    messages.warning(request, 'A participant who has paid can not be disapproved. Contact DVM if much of an issue.')
+                    return redirect(request.META.get('HTTP_REFERER'))
                 participation.pcr_approved=False
                 participation.save()
-                participant=participation.participant
-                list_particpation=[]
-                for part in MainParticipation.objects.filter(participant=participant):
-                    if(not part.pcr_approved):
-                        list_particpation.append(part)
-                if all(list_particpation):   #Still not sure about it's working
-                    participant.pcr_approved=False
+                if MainParticipation.objects.filter(participant=participant, pcr_approved=True).count()==0:
+                    participant.pcr_approved = False 
                     participant.save()
             message="Events successfully unconfirmed"
         messages.success(request,message)
