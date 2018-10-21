@@ -165,8 +165,8 @@ GOOGLE_RECAPTCHA_SITE_KEY = keyconfig.google_recaptcha_site_key
 
 APPEND_SLASH = False
 
-LOGIN_URL = '/registrations/login/'
-LOGOUT_REDIRECT_URL = '/registrations/login/'
+LOGIN_URL = '/2018/registrations/login/'
+# LOGOUT_REDIRECT_URL = '/registrations/login/'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
