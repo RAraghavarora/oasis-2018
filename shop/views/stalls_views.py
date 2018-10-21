@@ -79,6 +79,10 @@ class StallOrderStatus(APIView):
 
 	permission_classes = (IsAuthenticated, TokenVerification,)
 
+	status_dict = {long_form : short_form for short_form, long_form in OrderFragment.STATUS}
+	status_responses = ["Accepted", "Declined", "Ready", "Finished"]
+
+
 	#Accepts stall's response to OrderFragment
 	def post(self, request):
 		try:
@@ -98,16 +102,15 @@ class StallOrderStatus(APIView):
 			msg = {"message": "Permission Denied!"}
 			return Response(msg, status = status.HTTP_403_FORBIDDEN)
 
-		if not(order_status == 'Accepted' or order_status == 'Declined' or order_status == 'Finished'):
+		if not order_status in self.status_responses:
 			msg = {"message": "order_status response not recognized."}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
 		#Stalls transfer money
-		if order_status == 'finished':
+		if order_status == 'Finished':
 			request.user.wallet.balance.add(transfers = order_fragment.calculateSubTotal())
 
-		status_dict = {long_form : short_form for short_form, long_form in OrderFragment.STATUS}
-		order_fragment.status = status_dict[order_status]
+		order_fragment.status = self.status_dict[order_status]
 
 		order_fragment.save()
 		msg = {"message" : "Request Successful"}
