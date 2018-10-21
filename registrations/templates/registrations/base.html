@@ -16,19 +16,16 @@
 
     <link href="{% static 'pcradmin/plugins/animate-css/animate.css' %}" rel="stylesheet" />
     <link href="{% static 'pcradmin/plugins/bootstrap-select/css/bootstrap-select.css' %}" rel="stylesheet" />
-    
+
     <!-- <link href="{% static 'pcradmin/plugins/morrisjs/morris.css' %}" rel="stylesheet" /> -->
     <link href="{% static 'pcradmin/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css' %}" rel="stylesheet">
 
     <link href="{% static 'pcradmin/css/style.css' %}" rel="stylesheet">
     <!-- <link href="{% static 'pcradmin/css/materialize.min.css' %}" rel="stylesheet"> -->
-    <link href="{% static 'pcradmin/plugins/dropzone/dropzone.css' %}" rel="stylesheet">
-
-    {% block head %}
-    {% endblock %}
+    <link href="{% static 'pcradmin/plugins/dropzone/dropzone.css' %}" rel="stylesheet"> {% block head %} {% endblock %}
     <link href="{% static 'pcradmin/css/themes/all-themes.css' %}" rel="stylesheet" />
     <link rel="shortcut icon" href="{% static 'pcradmin/images/Oasis-Logo.png' %}">
-    
+
 </head>
 
 <body class="theme-cyan">
@@ -57,7 +54,7 @@
             <div class="navbar-header">
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
-                <a class="navbar-brand" href="{% url 'pcradmin:index' %}">Registrations | Oasis'18</a>
+                <a class="navbar-brand" href="{% url 'registrations:home' %}">Registrations | Oasis'18</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -72,18 +69,17 @@
         <aside id="leftsidebar" class="sidebar">
             <!-- User Info -->
             <div class="user-info">
-                <div class="image">
-                    <img src="{% static 'pcradmin/images/Oasis-Logo.png' %}" width="60" height="60" alt="User" />
-                </div>
+
                 <div class="info-container">
-                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><strong>{{request.user.username}}</strong></div>
-                    <div class="email">{{request.user.email}}</div>
+                    <br><br><br>
+                    <!-- <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><strong>{{request.user.username}}</strong></div> -->
+                    <!-- <div class="email">{{request.user.email}}</div> -->
                     <div class="btn-group user-helper-dropdown">
                         <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
                         <ul class="dropdown-menu pull-right">
                             <li><a href="#"><i class="material-icons">person</i>Contacts</a></li>
                             <li role="seperator" class="divider"></li>
-                            <li><a href="{% url 'pcradmin:user-logout' %}"><i class="material-icons">input</i>Sign Out</a></li>
+                            <li><a href="{% url 'registrations:logout' %}"><i class="material-icons">input</i>Sign Out</a></li>
                         </ul>
                     </div>
                 </div>
@@ -94,11 +90,11 @@
                 <ul class="list">
                     <li class="header">MAIN NAVIGATION</li>
                     <li class="active">
-                        <a href="{% url 'registrations:index' %}">
+                        <a href="{% url 'registrations:home' %}">
                             <i class="material-icons">home</i>
                             <span>Home</span>
                         </a>
-                        
+
                     </li>
                     {% if participant.is_cr %}
                     <li class="active">
@@ -158,7 +154,7 @@
             <!-- Footer -->
             <div class="legal">
                 <div class="copyright">
-                    &copy; for OASIS'18  <a href="javascript:void(0);">DVM, BITS Pilani</a>
+                    &copy; for OASIS'18 <a href="javascript:void(0);">DVM, BITS Pilani</a>
                 </div>
             </div>
             <!-- #Footer -->
@@ -170,19 +166,22 @@
                 <li role="presentation" class="active"><a href="#settings" data-toggle="tab">SETTINGS</a></li>
             </ul>
             <div class="tab-content">
-               
+
                 <div role="tabpanel" class="tab-pane fade in active in active" id="settings">
                     <div class="demo-settings">
                         <ul class="setting-list">
                             <li>
-                                <a class="btn btn-block bg-blue waves-effect" href="https://bits-oasis.org">Go to the main site</a>
+                                <a class="btn btn-block bg-blue waves-effect" href="https://bits-oasis.org">Go to the main
+                                    site
+                                </a>
                             </li>
                         </ul>
                         <ul class="setting-list">
                             <li>
                                 <span>Logout</span>
                                 <div class="switch">
-                                    <label><input type="checkbox" onclick='window.location.assign("{% url 'pcradmin:user-logout' %}")' checked><span class="lever"></span></label>
+                                    <label><input type="checkbox" onclick='window.location.assign("{% url ' pcradmin:user-logout
+                                            ' %}")' checked><span class="lever"></span></label>
                                 </div>
                             </li>
                         </ul>
@@ -194,11 +193,10 @@
     </section>
     <section class="content">
         <div class="container-fluid">
-            
-            
-            {% block body %}
-            {% endblock %}
-            </div>
+
+
+            {% block body %} {% endblock %}
+        </div>
         </div>
     </section>
 
@@ -220,14 +218,14 @@
 
 
     <script src="{% static 'pcradmin/plugins/jquery-countto/jquery.countTo.js' %}"></script>
-    
- 
+
+
     <script src="{% static 'pcradmin/js/pages/index.js' %}"></script>
 
     <!-- Demo Js -->
     <script src="{% static 'pcradmin/js/demo.js' %}"></script>
-    
-        <!-- Jquery DataTable Plugin Js -->
+
+    <!-- Jquery DataTable Plugin Js -->
     <script src="{% static 'pcradmin/plugins/jquery-datatable/jquery.dataTables.js' %}"></script>
     <script src="{% static 'pcradmin/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js' %}"></script>
     <script src="{% static 'pcradmin/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js' %}"></script>
@@ -244,7 +242,7 @@
     <script src="{% static 'pcradmin/js/admin.js' %}"></script>
     <script src="{% static 'pcradmin/js/demo.js' %}"></script>
     <script src="{% static 'pcradmin/js/script.js' %}"></script>
-    
+
 </body>
 
 </html>

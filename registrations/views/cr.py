@@ -95,6 +95,8 @@ def approve(request):
                     try:
                         mail = Mail(email_class.from_email,email_class.subject,to_email,content)
                         response = send_grid.sg.client.mail.send.post(request_body = mail.get())
+                        if response.status_code%100!=2:
+                            raise Exception
                         print("EMAIL SENT")
                     except Exception as e :
                         print(e)
@@ -109,11 +111,11 @@ def approve(request):
                         }
                         return render(request, 'registrations/message.html', context)
                     
-                    context = {
-                        'error_heading':"Emails sent",
-                        'message' : "Login credentials have been mailed to the corresponding new participants."
-                    }
-                    return render(request, 'registrations/message.html', context)
+            context = {
+                'error_heading':"Emails sent",
+                'message' : "Login credentials have been mailed to the corresponding new participants."
+            }
+            return render(request, 'registrations/message.html', context)
 
         if 'disapprove' == data['action']:
             try:
@@ -129,6 +131,12 @@ def approve(request):
                 #     participant_1.cr_approved = False
                 #     participant_1.save()
                 candidate.cr_approved=False
+                try:
+                    user = candidate.user
+                    user.is_active=False
+                    user.save()
+                except:
+                    pass
                 candidate.save()
         approved_list = Participant.objects.filter(college = participant.college, cr_approved=True,email_verified=True)
         disapproved_list = Participant.objects.filter(college = participant.college, cr_approved=False, email_verified=True)
@@ -145,7 +153,7 @@ def participant_details(request,p_id):
         context = {
         'error_heading': "Invalid Access",
         'message': "Sorry! You are not an approved college representative.",
-        'url':request.build_absolute_uri(reverse('registrations:index'))
+        'url':request.build_absolute_uri(reverse('registrations:home'))
         }
         return render(request, 'registrations/message.html', context)
     get_part = Participant.objects.get(id=p_id)
@@ -153,7 +161,7 @@ def participant_details(request,p_id):
         context = {
         'error_heading': "Invalid Access",
         'message': "Sorry! You do not have access to these details.",
-        'url':request.build_absolute_uri(reverse('registrations:index'))
+        'url':request.build_absolute_uri(reverse('registrations:home'))
         }
         return render(request, 'registrations/message.html', context)
     participation_list = MainParticipation.objects.filter(participant=get_part)
@@ -168,7 +176,7 @@ def get_profile_card_cr(request, p_id):
         context = {
         'error_heading': "Invalid Access",
         'message': "Sorry! You are not an approved college representative.",
-        'url':request.build_absolute_uri(reverse('registrations:index'))
+        'url':request.build_absolute_uri(reverse('registrations:home'))
         }
         return render(request, 'registrations/message.html', context)
     get_part = Participant.objects.get(id=p_id)
@@ -176,14 +184,14 @@ def get_profile_card_cr(request, p_id):
         context = {
         'error_heading': "Invalid Access",
         'message': "Sorry! You do not have access to these details.",
-        'url':request.build_absolute_uri(reverse('registrations:index'))
+        'url':request.build_absolute_uri(reverse('registrations:home'))
         }
         return render(request, 'registrations/message.html', context)
     if not get_part.firewallz_passed:
         context = {
                 'error_heading': "Invalid Access",
                 'message': "Please pass firewallz booth at BITS to access this page.",
-                'url':request.build_absolute_uri(reverse('registrations:index'))
+                'url':request.build_absolute_uri(reverse('registrations:home'))
                 }
         return render(request, 'registrations/message.html', context)
     participation_set = MainParticipation.objects.filter(participant=get_part, pcr_approved=True)
@@ -395,6 +403,8 @@ def chor_approve(request):
                     try:
                         mail = Mail(email_class.from_email,email_class.subject,to_email,content)
                         response = send_grid.sg.client.mail.send.post(request_body = mail.get())
+                        if response.status_code%100!=2:
+                            raise Exception
                         print("EMAIL SENT")
                     except Exception as e :
                         print(e)
@@ -409,11 +419,11 @@ def chor_approve(request):
                         }
                         return render(request, 'registrations/message.html', context)
                     
-                    context = {
-                        'error_heading':"Emails sent",
-                        'message' : "Login credentials have been mailed to the corresponding new participants."
-                    }
-                    return render(request, 'registrations/message.html', context)
+            context = {
+                'error_heading':"Emails sent",
+                'message' : "Login credentials have been mailed to the corresponding new participants."
+            }
+            return render(request, 'registrations/message.html', context)
 
         if 'disapprove' == data['action']:
             try:
@@ -429,6 +439,12 @@ def chor_approve(request):
                 #     participant_1.cr_approved = False
                 #     participant_1.save()
                 candidate.cr_approved=False
+                try:
+                    user = candidate.user
+                    user.is_active = False
+                    user.save()
+                except:
+                    pass
                 candidate.save()
         approved_list = Participant.objects.filter(college = participant.college, cr_approved=True,email_verified=True,is_chor=True)
         disapproved_list = Participant.objects.filter(college = participant.college, cr_approved=False, email_verified=True,is_chor=True)

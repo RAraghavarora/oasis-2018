@@ -37,6 +37,7 @@ def index(request):
     Or, if the participant is logged in, his index page.
     '''
 
+
     if request.method=='POST':
         print("post request")
         print("******** POST ***********")
@@ -74,7 +75,8 @@ def index(request):
         else:
             try:
                 participant = Participant()
-                participant.name = str(data['name'])
+                name = ' '.join(str(data['name']).strip().split())
+                participant.name = name
                 participant.gender = str(data['gender'])
                 participant.city = str(data['city'])
                 participant.email = str(data['email'])
@@ -120,6 +122,8 @@ def index(request):
             try:
                 mail_1 = Mail(mail.from_email, mail.subject, to_email, content)
                 response = send_grid.sg.client.mail.send.post(request_body = mail_1.get())
+                if response.status_code%100!=2:
+                    raise Exception
                 print(response)
             except Exception as e:
                 print("\t",e)
@@ -161,6 +165,15 @@ def home(request):
     '''
     Login page
     '''
+    if request.user is None:
+        pass
+    else:
+        try:
+            if(request.user.is_authenticated() and user.participant is not None):
+                return redirect('registrations:index')
+        except:
+            pass
+
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -260,7 +273,7 @@ def get_profile_card(request):
             context = {
                     'error_heading': "Invalid Access",
                     'message': "Please pass firewallz booth at BITS to access this page.",
-                    'url':request.build_absolute_uri(reverse('registrations:index'))
+                    'url':request.build_absolute_uri(reverse('registrations:home'))
                     }
             return render(request, 'registrations/message.html', context)
     participant = Participant.objects.get(user=request.user)
@@ -303,6 +316,8 @@ def forgot_password(request):
             try:
                 mail = Mail(email_class.from_email,email_class.subject,to_email,content)
                 response = send_grid.sg.client.mail.send.post(request_body = mail.get())
+                if response.status_code%100!=2:
+                    raise Exception
                 print("EMAIL SENT")
             except:
                 context = {
@@ -391,7 +406,7 @@ def payment(request):
         context = {
         'error_heading': "Invalid Access",
         'message': "You are yet not approved by Department of PCr, Bits Pilani.",
-        'url':request.build_absolute_uri(reverse('registrations:index'))
+        'url':request.build_absolute_uri(reverse('registrations:home'))
         }
         return render(request, 'registrations/message.html', context)
     if request.method=='GET':
@@ -543,7 +558,7 @@ def payment_response(request):
         context = {
             'error_heading' : "Payment successful",
             'message':'Thank you for paying.',
-            'url':request.build_absolute_uri(reverse('registrations:index'))
+            'url':request.build_absolute_uri(reverse('registrations:home'))
             }
         return render(request, 'registrations/message.html', context)
     
@@ -551,6 +566,6 @@ def payment_response(request):
         context = {
             'error_heading': "Payment error",
             'message': "An error was encountered while processing the payment. Please contact PCr, BITS, Pilani.",
-            'url':request.build_absolute_uri(reverse('registrations:index'))
+            'url':request.build_absolute_uri(reverse('registrations:home'))
             }
         return render(request, 'registrations/message.html', context)       

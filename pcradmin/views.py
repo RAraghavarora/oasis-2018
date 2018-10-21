@@ -36,7 +36,11 @@ from django.contrib import messages
 from random import choice
 from oasis2018.settings_config.keyconfig import *
 from utils.registrations import *
-#API_KEY='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' #my api
+# API_KEY='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' #my api
+
+from PIL import Image
+from urllib.request import urlopen
+import io
 
 @staff_member_required
 def index(request):
@@ -70,13 +74,22 @@ def select_college_rep(request,id):
 
         if data['submit']=='delete':
             part=Participant.objects.get(id=part_id)
-            print(part.id)
+            part.is_cr=False
+            if part.paid or part.controlz_paid:
+                part.save()
+                return messages.warning(request, 'This participant has already paid. So, this participant can only be removed from College Rep Position. But he/she would still remain PCr approved.')
+                return redirect(request.META.get('HTTP_REFERER'))
             user=part.user
             user.delete()
             part.user=None
-            part.is_cr=False
+            
             part.cr_approved=False
+            part.pcr_approved = False
             part.save()
+            for p in MainParticipation.objects.filter(participant=part):
+                p.cr_approved=False
+                p.save()
+
         elif data['submit']=='select':
             try:
                 Participant.objects.get(college=college,is_cr=True)
@@ -87,12 +100,11 @@ def select_college_rep(request,id):
             part=Participant.objects.get(id=part_id)
             part.is_cr=True
             part.cr_approved=True
-            #encoded = gen_barcode(part)
-            print("dsd")
-
-            #Barcode generation here left for now. To be discussed if only QR or not
-            #Barcode will automatically be generated and stored if the participant is pcr_final
-            
+            part.pcr_approved=True
+            for p in MainParticipation.objects.filter(participant=part):
+                p.cr_approved=True
+                p.save()
+                            
             part.save()
             user=part.user
             if not user==None:
@@ -108,7 +120,12 @@ def select_college_rep(request,id):
                 user.save()
                 part.user=user
                 part.save()
-            body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+            logo_path = "http://bits-oasis.org/2017/static/registrations/img/logo.png"
+            try:
+                fd = urlopen(logo_path)
+                image_file = io.BytesIO(fd.read())
+                im = Image.open(image_file)
+                body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 			<center><img src="http://bits-oasis.org/2017/static/registrations/img/logo.png" height="150px" width="150px"></center>
 			<pre style="font-family:rowsboto,sans-serif">
 Hello %s!
@@ -138,7 +155,40 @@ BITS Pilani
 %s
 pcr@bits-oasis.org
 </pre>
-			""" %(part.name,str(request.build_absolute_uri(reverse('registrations:home'))),username, password,get_pcr_number() ) #get_pcr_number()
+			""" %(part.name,str(request.build_absolute_uri(reverse('registrations:home'))),username, password,get_pcr_number() ) 
+            except:
+                body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+			<pre style="font-family:rowsboto,sans-serif">
+Hello %s!
+
+Thank you for registering!
+
+Greetings from BITS Pilani!
+
+It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 27th to October 31st.
+
+This is to inform you that you have been selected as the College Representative for your college.
+You can now login <a href="%s">here</a> using the following credentials:
+username : '%s'
+password : '%s'
+We would be really happy to see your college represented at our fest.
+It is your responsibility to confirm the participants for different events.
+
+
+We look forward to seeing you at OASIS 2018.
+
+P.S: THIS EMAIL DOES NOT CONFIRM YOUR PRESENCE AT OASIS 2018. YOU WILL BE RECEIVING ANOTHER EMAIL FOR THE CONFIRMATION OF YOUR PARTICIPATION.
+
+Regards,
+StuCCAn (Head)
+Dept. of Publications & Correspondence, OASIS 2018
+BITS Pilani
+%s
+pcr@bits-oasis.org
+</pre>
+			""" %(part.name,str(request.build_absolute_uri(reverse('registrations:home'))),username, password,get_pcr_number() ) 
+
+                #get_pcr_number()
             subject = 'College Representative for Oasis'
             from_email = Email('register@bits-oasis.org')
             to_email = Email(part.email)
@@ -147,6 +197,8 @@ pcr@bits-oasis.org
             try:
                 mail = Mail(from_email, subject, to_email, content)
                 response = sg.client.mail.send.post(request_body=mail.get())
+                if response.status_code%100!=2:
+                    raise Exception
                 messages.warning(request,'Email sent to ' + part.name)
             except :
                 part.user = None
@@ -183,12 +235,14 @@ def how_much_paid(part):
 
 @staff_member_required
 def approve_participations(request,id):
+    
     college=get_object_or_404(College,id=id)
     try:
         cr=Participant.objects.get(college=college,is_cr=True)
     except:
         messages.warning(request,'College Rep not yet selected. Please select a college rep first for '+college.name)
         return redirect(request.META.get('HTTP_REFERER'))
+    
     if request.method=='POST':
         data=request.POST
         print(data)
@@ -206,15 +260,14 @@ def approve_participations(request,id):
             message="Profile verified"
         elif data['submit']=='disapprove':
             for participation in MainParticipation.objects.filter(id__in=part_list):
+                participant = participation.participant
+                if participant.paid or participant.controlz_paid:
+                    messages.warning(request, 'A participant who has paid can not be disapproved. Contact DVM if much of an issue.')
+                    return redirect(request.META.get('HTTP_REFERER'))
                 participation.pcr_approved=False
                 participation.save()
-                participant=participation.participant
-                list_particpation=[]
-                for part in MainParticipation.objects.filter(participant=participant):
-                    if(not part.pcr_approved):
-                        list_particpation.append(part)
-                if all(list_particpation):   #Still not sure about it's working
-                    participant.pcr_approved=False
+                if MainParticipation.objects.filter(participant=participant, pcr_approved=True).count()==0:
+                    participant.pcr_approved = False 
                     participant.save()
             message="Events successfully unconfirmed"
         messages.success(request,message)
@@ -224,7 +277,15 @@ def approve_participations(request,id):
 
 @staff_member_required
 def verify_profile(request,part_id):
-    part=Participant.objects.get(id=part_id)
+    try:
+        part=Participant.objects.get(id=part_id)
+    except:
+        messages.warning(request, 'The participant doesn\'t exist.')
+        return redirect(request.META.get('HTTP_REFERER'))
+
+    if not part.cr_approved:
+        return redirect(request.META.get('HTTP_REFERER'))
+ 
     if request.method=='POST':
         try:
             data=(request.POST)
@@ -258,8 +319,9 @@ def verify_profile(request,part_id):
     participations=part.mainparticipation_set.all()
     events_confirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=True)]
     events_unconfirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=False)]
-    return render(request, 'pcradmin/verify_profile.html',
-	{ 'part':part, 'confirmed':events_confirmed, 'unconfirmed':events_unconfirmed})
+    context = { 'part':part, 'confirmed':events_confirmed, 'unconfirmed':events_unconfirmed}
+    print(context)
+    return render(request, 'pcradmin/verify_profile.html',context)
 
 @staff_member_required
 def add_college(request):
@@ -677,14 +739,15 @@ def final_email_send(request, eg_id):
     email_group = EmailGroup.objects.get(id = eg_id)
     participants = email_group.participant_set.all()
     college = participants[0].college
-    try:
-        _dir = '/root/live/oasis/backend/resources/oasis2018/'
-        doc_name = _dir + 'final_list.pdf'
-        pdf = create_final_pdf(eg_id, doc_name, _dir)
-    except:
-        _dir = '/home/raghav/Downloads/'
-        doc_name = _dir + 'final_list.pdf'
-        pdf = create_final_pdf(eg_id, doc_name, _dir)
+    path_list = ['/root/live/oasis/backend/resources/oasis2018/', '/home/raghav/Downloads/', '/home/nayankhanna/Downloads/']
+    _dir = ''
+    for _dir in path_list:
+        if(os.path.exists(_dir)):
+            break
+    # if _dir=='':
+    #     return 
+    doc_name = _dir + 'final_list.pdf'
+    pdf = create_final_pdf(eg_id, doc_name, _dir)
 
     #sendgrid email sending code
 
@@ -705,7 +768,13 @@ def final_email_send(request, eg_id):
     sg = sendgrid.SendGridAPIClient(apikey=API_KEY)
     for participant in participants:
         to_email = Email(participant.email)
-        body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        logo_path = "http://bits-oasis.org/2017/static/registrations/img/logo.png"
+        try:
+            fd = urlopen(logo_path)
+            image_file = io.BytesIO(fd.read())
+            im = Image.open(image_file)
+        
+            body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 			<center><img src="http://bits-oasis.org/2018/static/registrations/img/logo.png" height="150px" width="150px"></center>
 			<pre style="font-family:Roboto,sans-serif">
 Hello %s!
@@ -731,25 +800,45 @@ pcr@bits-oasis.org
 <b>Please reply to this email with number of people, if you require conveyance to or from Loharu and the timings for it.</b>
 </pre>
 			""" %(participant.name,get_pcr_number())
+        except:
+            body = """<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+			<pre style="font-family:Roboto,sans-serif">
+Hello %s!
+Greetings from BITS Pilani!
+
+It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 31st to November 4th.
+
+This is to confirm your participation at OASIS '18.
+We would be really happy to see your college represented at our fest.
+
+We look forward to seeing you at OASIS 2018.
+A new link would be active in your OASIS '18 account once you clear the Firewalls booth at BITS with the access to your exclusive profile card.
+<b>IT IS COMPULSORY FOR YOU TO BRING A VALID IDENTITY CARD, WITHOUT WHICH YOU WON'T BE ALLOWED TO ENTER THE PREMISES.</b>
+PFA A list of participants from your college.
+
+Regards,
+StuCCAn (Head)
+Dept. of Publications & Correspondence, OASIS 2018
+BITS Pilani
+%s
+pcr@bits-oasis.org
+
+<b>Please reply to this email with number of people, if you require conveyance to or from Loharu and the timings for it.</b>
+</pre>
+			""" %(participant.name,get_pcr_number())
+
         content = Content('text/html', body)
         try:
             mail = Mail(from_email, subject, to_email, content)
             mail.add_attachment(attachment)
-            #mail.add_attachment(attachment_1)
             response = sg.client.mail.send.post(request_body=mail.get())
+            if response.status_code%100!=2:
+                raise Exception
             print('done')
             messages.warning(request, 'Email sent to ', participant.name)
             participant.pcr_final = True
-            # ems_code = str(participant.college.id).rjust(3, '0')+str(participant.id).rjust(4,'0')
-            # participant.ems_code = ems_code
-
-            #finally
             participant.save()
-            # if not participant.is_cr:
-            #     encoded=gen_barcode(participant)
-            #     participant.save()
 
-        # except Exception, e: does not work in py3
         except Exception as e:
             print(str(e))
             messages.warning(request, 'Error sending email')
@@ -773,8 +862,6 @@ def download_pdf(request, eg_id):
 
 #not much idea of the functions of reportlab...
 def create_final_pdf(eg_id, response, _dir):
-    logo="/home/raghav/dvm/oasis-2018/pcradmin/static/pcradmin/images/Oasis-Logo.png"
-    im=Image(logo,1*inch,1*inch)
     email_group = EmailGroup.objects.get(id=eg_id)
     elements = []
     doc = SimpleDocTemplate(response, pagesize=letter)
@@ -782,25 +869,25 @@ def create_final_pdf(eg_id, response, _dir):
     for part in email_group.participant_set.all():
         events = ''
         for participation in MainParticipation.objects.filter(participant=part, pcr_approved=True):
-            events += participation.event.name + ', '
+            events += participation.event.name + '\n'
         events = events[:-2]
         amount = how_much_paid(part)
         data.append((part.name, events, amount))
 
-    table_with_style = Table(data, [3 * inch, 1.5 * inch, inch])
+    table_with_style = Table(data, [2 * inch, 2.5 * inch, inch])
 
     table_with_style.setStyle(TableStyle([
         ('FONT', (0, 0), (-1, -1), 'Helvetica'),
         ('FONT', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, -1), 8),
         ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-        ('BOX', (0, 0), (-1, 0), 0.25, colors.green),
+        ('BOX', (0, 0), (-1, -1), 0.25, colors.green),
         ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
     ]))
 
 
-    doc.build([Spacer(1, 0.5 * inch),table_with_style,im])
-    watermark_name = _dir + 'Unused.pdf' #Change the watermark
+    doc.build([Spacer(1, 0.5 * inch),table_with_style])
+    watermark_name = _dir + 'letterhead.pdf' #Change the watermark
     output_file = PdfFileWriter()
     input_file = PdfFileReader(open(response, "rb"))
     page_count = input_file.getNumPages()
