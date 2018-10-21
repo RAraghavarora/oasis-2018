@@ -36,7 +36,7 @@ from django.contrib import messages
 from random import choice
 from oasis2018.settings_config.keyconfig import *
 from utils.registrations import *
-#API_KEY='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' #my api
+# API_KEY='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' #my api
 
 from PIL import Image
 from urllib.request import urlopen
