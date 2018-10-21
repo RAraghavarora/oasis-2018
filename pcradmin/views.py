@@ -317,10 +317,11 @@ def verify_profile(request,part_id):
 		messages.warning(request, message)
 		return redirect(request.META.get('HTTP_REFERER'))'''
     participations=part.mainparticipation_set.all()
-    events_confirmed = [{'event':p.event,'cr_approved':p.cr_approved, 'id':p.id} for p in participations.filter(pcr_approved=True)]
-    events_unconfirmed = [{'event':p.event, 'cr_approved': p.cr_approved, 'id':p.id} for p in participations.filter(pcr_approved=False)]
-    return render(request, 'pcradmin/verify_profile.html',
-	{ 'part':part, 'confirmed':events_confirmed, 'unconfirmed':events_unconfirmed})
+    events_confirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=True)]
+    events_unconfirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=False)]
+    context = { 'part':part, 'confirmed':events_confirmed, 'unconfirmed':events_unconfirmed}
+    print(context)
+    return render(request, 'pcradmin/verify_profile.html',context)
 
 @staff_member_required
 def add_college(request):
