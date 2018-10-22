@@ -13,7 +13,6 @@ def getAll():
     getCategory()
     getIntroEvent()
     getParticipation()
-    print("GENERATION COMPLETE!")
 
 def getGenParticipant():
     all_gps = GenParticipant.objects.all()
@@ -38,7 +37,6 @@ def getGenParticipant():
         row += 1
 
     wb.save("./scripts/DataSheets/GenParticipant.xlsx")
-    print("GenParticipant.xlsx generated.")
 
 
 def getRoctaves():
@@ -72,7 +70,6 @@ def getRoctaves():
         row += 1
 
     wb.save("./scripts/DataSheets/Roctaves.xlsx")
-    print("Roctaves.xlsx generated.")
 
 
 def getRapWarsExtension():
@@ -94,7 +91,6 @@ def getRapWarsExtension():
         row += 1
 
     wb.save("./scripts/DataSheets/RapWarsExtension.xlsx")
-    print("RapWarsExtension.xlsx generated.")
 
 
 def getPurpleProseExtension():
@@ -121,7 +117,6 @@ def getPurpleProseExtension():
         row += 1
 
     wb.save("./scripts/DataSheets/PurpleProseExtension.xlsx")
-    print("PurpleProseExtension.xlsx generated.")
 
 
 def getStandupSoapboxExtension():
@@ -145,7 +140,6 @@ def getStandupSoapboxExtension():
         row += 1
 
     wb.save("./scripts/DataSheets/StandupSoapboxExtension.xlsx")
-    print("StandupSoapboxExtension.xlsx generated.")
 
 def getCategory():
     all_cat = Category.objects.all()
@@ -162,7 +156,6 @@ def getCategory():
         row += 1
 
     wb.save("./scripts/DataSheets/Category.xlsx")
-    print("Category.xlsx generated.")
 
 def getCategory():
     all_cat = Category.objects.all()
@@ -179,7 +172,6 @@ def getCategory():
         row += 1
 
     wb.save("./scripts/DataSheets/Category.xlsx")
-    print("Category.xlsx generated.")
 
 def getIntroEvent():
     all_ie = IntroEvent.objects.all()
@@ -206,7 +198,6 @@ def getIntroEvent():
         row += 1
 
     wb.save("./scripts/DataSheets/IntroEvent.xlsx")
-    print("IntroEvent.xlsx generated.")
 
 def getParticipation():
     all_part = Participation.objects.all()
@@ -229,4 +220,3 @@ def getParticipation():
         row += 1
 
     wb.save("./scripts/DataSheets/Participation.xlsx")
-    print("Participation.xlsx generated.")

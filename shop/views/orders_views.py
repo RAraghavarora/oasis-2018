@@ -70,11 +70,9 @@ class PlaceOrder(APIView):
                 return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
             otp = self.generate_otp()
-            print(otp)
 
             if flag:
                 fragment = order.fragments.create(stall=stall_instance, order=order, otp = otp)
-                print(fragment.id, ":", fragment.otp)
 
             for item in stall["items"]:
                 try:
@@ -170,11 +168,8 @@ class ShowOTP(APIView):
 
         try:
             order = Order.objects.get(pk = order_id)
-            print(order)
             stall = Stall.objects.get(pk = stall_id)
-            print(stall)
             order_frag = order.fragments.get(stall = stall)
-            print(order_frag)
         except:
             msg = {"message" : "Either the Order or the Stall doesn't exist."}
             return Response(msg, status = status.HTTP_404_NOT_FOUND)

@@ -358,7 +358,6 @@ def add_participant(request):
             try:
                 mail = Mail(email_class.from_email,email_class.subject,to_email,content)
                 response = send_grid.sg.client.mail.send.post(request_body = mail.get())
-                print("EMAIL SENT")
             except:
                 participant.user = None
                 participant.save()
@@ -589,7 +588,6 @@ def generate_ckgroup_code(group):
     if encoded is not None:
         return encoded
     group_ida = "%04d" % int(group_id)
-    print("\n PARTCI \n",group.participant_set.all())
     college_code = ''.join(group.participant_set.all()[0].college.name.split(' '))
     if len(college_code)<4:
         college_code += str(0)*(4-len(college_code))
@@ -940,7 +938,6 @@ def generate_recnacc_list(request):
 @staff_member_required
 def get_profile_card(request):
     rows = [{'data':[part.name, part.phone, part.email, part.gender, get_event_string(part)], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:get_profile_card_participant', kwargs={'p_id':part.id})), 'title':'Get profile card'}]} for part in Participant.objects.filter(Q(pcr_final=True) | Q(is_guest=True))]
-    print(rows[0]['link'])
     headings = ['Name', 'Phone', 'Email', 'Gender', 'Events', 'Get profile card']
     title = 'Generate Profile Card'
     table = {

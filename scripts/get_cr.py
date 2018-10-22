@@ -22,4 +22,3 @@ def getCollegeRepresentative():
         row += 1
 
     wb.save("./scripts/DataSheets/CollegeRepresentative.xlsx")
-    print("CollegeRepresentative.xlsx generated.")

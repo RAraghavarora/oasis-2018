@@ -13,7 +13,6 @@ def setAll():
     setCategory()
     setIntroEvent()
     setParticipation()
-    print("ALL SET!")
 
 def setGenParticipant():
     wb = load_workbook('./scripts/DataSheets/GenParticipant.xlsx')
@@ -29,7 +28,6 @@ def setGenParticipant():
             GenParticipant.objects.get_or_create(name=name, city=city, phone=phone, gender=gender, email_address=email)
         else:
             initial = False
-    print("GenParticipant set.")
 
 def setRoctaves():
     wb = load_workbook('./scripts/DataSheets/Roctaves.xlsx')
@@ -49,7 +47,6 @@ def setRoctaves():
             new = Roctaves.objects.get_or_create(name=name, genre=genre, email_address=email, phone=phone, number_of_participants=nop, elimination_preference=ep, entry1=e1, entry2=e2, enteries=e)
         else:
             initial = False
-    print("Roctaves set.")
 
 def setRapWarsExtension():
     wb = load_workbook('./scripts/DataSheets/RapWarsExtension.xlsx')
@@ -67,7 +64,6 @@ def setRapWarsExtension():
                 pass
         else:
             initial = False
-    print("RapWars set.")
 
 def setPurpleProseExtension():
     wb = load_workbook('./scripts/DataSheets/PurpleProseExtension.xlsx')
@@ -90,7 +86,6 @@ def setPurpleProseExtension():
                 pass
         else:
             initial = False
-    print("PurpleProseExtension set.")
 
 def setStandupSoapboxExtension():
     wb = load_workbook('./scripts/DataSheets/StandupSoapboxExtension.xlsx')
@@ -112,7 +107,6 @@ def setStandupSoapboxExtension():
                 pass
         else:
             initial = False
-    print("StandupSoapboxExtension set.")
 
 def setCategory():
     wb = load_workbook('./scripts/DataSheets/Category.xlsx')
@@ -123,7 +117,6 @@ def setCategory():
             Category.objects.get_or_create(name=row[0].value)
         else:
             initial = False
-    print("Category set.")
 
 def setUsers():
     try:
@@ -162,7 +155,6 @@ def setIntroEvent():
             IntroEvent.objects.get_or_create(user=user, name=name, short_description=sd, rules=rules, category=cat, contact=contact)
         else:
             initial = False
-    print("IntroEvent set.")
 
 def setParticipation():
     wb = load_workbook('./scripts/DataSheets/Participation.xlsx')
@@ -179,4 +171,3 @@ def setParticipation():
             participations.objects.create(event=introevent, participant=gp, pcr_approved=row[2].value, cr_approved=row[3].value)
         else:
             initial = False
-    print("participation set.")

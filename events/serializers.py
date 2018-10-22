@@ -6,7 +6,6 @@ class CategorySerializer(serializers.ModelSerializer):
 	events = serializers.SerializerMethodField()
 
 	def get_events(self, obj):
-		print("GET EVENTS")
 		events = obj.mainevent_set.all()
 		data = {}
 		for event in events:
