@@ -54,9 +54,7 @@ class Transfer(APIView):
 				amount = data["amount"]
 				if amount < 0:
 					return Response({"message": "transfered amount cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
-				print(source.balance)
 				source.transferTo(target, amount, transfertype="transfer")
-				print(source.balance)
 				msg = {"message": "successful!"}
 				return Response(msg, status=status.HTTP_200_OK)
 			except KeyError as missing:
@@ -252,7 +250,6 @@ class AddByCash(APIView):
 		try:
 			user_id = int(decString(qr_code)[0])
 		except Exception as e:
-			print(e)
 			return Response({"message": "Invalid qr_code"}, status=status.HTTP_404_NOT_FOUND)
 
 		try:
