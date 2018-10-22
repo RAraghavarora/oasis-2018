@@ -305,7 +305,7 @@ def payment(request):
         status_code_2 = book_response.status_code
         # if status_code_2==200:
         json_ob_2 = json.loads(book_response.text)
-        
+
         page = json_ob_2['pgUrl']
         # response = api.payment_request_create(
         #     amount = amount,
