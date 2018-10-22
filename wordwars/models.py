@@ -6,7 +6,7 @@ def question_image_path(instance, filename):
 	import string
 	from random import choice
 	chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' + '0123456789'
-	return 'media/wordwars/questions/'+ ''.join(choice(chars) for _ in range(8))
+	return 'wordwars/questions/'+ ''.join(choice(chars) for _ in range(8))
 
 class Player(models.Model):
 	email = models.EmailField(unique=True)
