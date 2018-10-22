@@ -50,7 +50,7 @@ class OrderFragmentSerializer(serializers.ModelSerializer):
 		       "id" : item_instance.itemclass.id,
 		       "name" : item_instance.itemclass.name,
 		       "qty" : item_instance.quantity,
-		       "price" : item.price
+		       "price" : item_instance.itemclass.price
 		       }
 		       items_list.append(item)
 		return items_list
