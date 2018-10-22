@@ -159,7 +159,7 @@ def get_group_list(request, g_id):
         leader = get_group_leader(group)
         if group.participant_set.count == 0:
             group.delete()
-        return redirect(reverse('regsoft:firewallz_approval', kwargs={'c_id':leader.college.id}))
+        return redirect(reverse('regsoft:get_group_list', kwargs={'g_id':g_id}))
     participant_list = group.participant_set.all()
     return render(request, 'regsoft/group_list.html', {'participant_list':participant_list, 'group':group})
 
@@ -685,6 +685,7 @@ def controlz_home(request):
     for group in Group.objects.all():
         code = group.group_code
         group_leader = get_group_leader(group)
+        print(group_leader)
         leader_name = group_leader.name
         leader_college = group_leader.college.name
         leader_phone = group_leader.phone
@@ -927,6 +928,7 @@ def generate_recnacc_list(request):
                     part.room.bhavan, 
                     400], 
                 'link':[]})
+        amount = (len(id_list))*400
         c_rows.append({'data':['Total', '','','','','','',amount]})
         table = {
             'title':'Participant list for RecNAcc from ' + part.college.name,
