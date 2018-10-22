@@ -247,16 +247,20 @@ def payment(request):
             amount = 700
             programId = 9382
         part_list = Participant.objects.filter(id__in=data.getlist('part_list'), pcr_approved=True)
+        # print(part_list)
         group = PaymentGroup()
         total_amount = amount*len(part_list)
+        # print(total_amount)
         group.amount_paid = total_amount
         group.save()
+        # print(group)
         attendees = []
         for part in part_list:
             dataa={'name':part.name, 'email':part.email, 'phone':part.phone, 'college':part.college.name}
             attendees+=[dataa]
             part.payment_group = group
             part.save()
+        # print(attendees)
         name = participant.name
         email = participant.email
         phone = participant.phone
