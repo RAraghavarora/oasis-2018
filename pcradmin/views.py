@@ -82,7 +82,7 @@ def select_college_rep(request,id):
             user=part.user
             user.delete()
             part.user=None
-            
+
             part.cr_approved=False
             part.pcr_approved = False
             part.save()
