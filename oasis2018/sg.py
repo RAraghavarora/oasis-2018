@@ -35,8 +35,3 @@ def send_email():
         to_email = Email(i)
         mail = Mail(from_email, subject, to_email, content)
         response = sg.client.mail.send.post(request_body=mail.get())
-    #print("MAIL = SENT")
-
-#print(response.status_code)
-#print(response.body)
-#print(response.headers)

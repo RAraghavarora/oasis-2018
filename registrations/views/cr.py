@@ -81,7 +81,6 @@ def approve(request):
                 else:
                     username = candidate.name.split(' ')[0] + str(candidate.id)
                     password = ''.join(choice(chars) for i in range(8))
-                    print(password)
                     user = User.objects.create_user(username=username, password=password)
                     candidate.user=user
                     candidate.save()
@@ -97,9 +96,7 @@ def approve(request):
                         response = send_grid.sg.client.mail.send.post(request_body = mail.get())
                         if response.status_code%100!=2:
                             raise Exception
-                        print("EMAIL SENT")
                     except Exception as e :
-                        print(e)
                         candidate.user = None
                         candidate.save()
                         user.delete()
@@ -170,7 +167,6 @@ def participant_details(request,p_id):
 @login_required
 def get_profile_card_cr(request, p_id):
     user = request.user
-    # print("******")
     participant = Participant.objects.get(user=user)
     if not participant.is_cr:
         context = {
@@ -198,7 +194,6 @@ def get_profile_card_cr(request, p_id):
     events = ''
     for participation in participation_set:
         events += participation.event.name + ', '
-    print(events)
     events = events[:-2]
     return render(request, 'registrations/profile_card.html', {'participant':get_part, 'events':events,})
 
@@ -234,11 +229,9 @@ def payment(request):
         return render(request, 'registrations/message.html', context)
     if request.method == 'POST':
         data = request.POST
-        print("DATA=\n",data)
         try:
             key = int(data['key'])
             part_list = data.getlist('part_list')
-            print("LEN=",len(part_list))
             if len(part_list)==0:
                 messages.warning(request,'Error:Please select participants')
                 return redirect(request.META.get('HTTP_REFERER'))
@@ -312,10 +305,8 @@ def payment(request):
         status_code_2 = book_response.status_code
         # if status_code_2==200:
         json_ob_2 = json.loads(book_response.text)
-        # print(json_ob_2)
-        
+
         page = json_ob_2['pgUrl']
-        # print(page)
         # response = api.payment_request_create(
         #     amount = amount,
         #     purpose = purpose,
@@ -325,17 +316,12 @@ def payment(request):
         #     phone = phone,
         #     redirect_url = request.build_absolute_uri(reverse("registrations:payment_response"))
         # )
-        # print(response)
-        # print(response['payment_request']['status'])
-        # print(email)
-        # print(response['payment_request']['longurl'])
         
         try:
             # url = response['payment_request']['longurl']
             url = page
             return HttpResponseRedirect(url)
         except Exception as e:
-            print(e)
             context = {
             'error_heading': "Payment error",
             'message': "An error was encountered while processing the request. Please contact PCr, BITS, Pilani.",
@@ -394,7 +380,6 @@ def chor_approve(request):
                 else:
                     username = candidate.name.split(' ')[0] + str(candidate.id)
                     password = ''.join(choice(chars) for i in range(8))
-                    print(password)
                     user = User.objects.create_user(username=username, password=password)
                     candidate.user=user
                     candidate.save()
@@ -410,9 +395,7 @@ def chor_approve(request):
                         response = send_grid.sg.client.mail.send.post(request_body = mail.get())
                         if response.status_code%100!=2:
                             raise Exception
-                        print("EMAIL SENT")
                     except Exception as e :
-                        print(e)
                         candidate.user = None
                         candidate.save()
                         user.delete()

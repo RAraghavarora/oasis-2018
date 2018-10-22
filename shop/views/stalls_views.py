@@ -57,9 +57,6 @@ class StallOrdersList(APIView):
 		except:
 			return Response(status = status.HTTP_401_UNAUTHORIZED)
 
-		print(stall)
-
-
 		orders_pending = OrderFragment.objects.filter(stall = stall, status = OrderFragment.PENDING).order_by('order__timestamp')
 		orders_accepted = OrderFragment.objects.filter(stall = stall, status = OrderFragment.ACCEPTED).order_by('order__timestamp')
 		orders_ready = OrderFragment.objects.filter(stall = stall, status = OrderFragment.READY).order_by('order__timestamp')
@@ -90,7 +87,7 @@ class StallOrderStatus(APIView):
 
 	#Accepts stall's response to OrderFragment
 	def post(self, request):
-		try:
+		try:	
 			order_fragment_id = request.data['order_fragment']
 			order_status = request.data['order_status'].title()
 		except KeyError as missing:
@@ -99,6 +96,7 @@ class StallOrderStatus(APIView):
 		else:
 			msg = {"message" : "Don't know."}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)			
+		
 		try:
 			order_fragment = OrderFragment.objects.get(id = order_fragment_id)
 		except OrderFragment.DoesNotExist:
@@ -122,3 +120,4 @@ class StallOrderStatus(APIView):
 		order_fragment.save()
 		msg = {"message" : "Request Successful"}
 		return Response(msg, status = status.HTTP_200_OK)
+		
