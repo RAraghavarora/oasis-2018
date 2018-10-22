@@ -9,11 +9,7 @@ from ems.views import event_views
 app_name = 'ems'
 
 urlpatterns = [
-	# url(r'^$', misc_views.Index.as_view(), name='index'),
 	
-	# url(r'^login/$', auth_views.Login.as_view(), name="login"),
-	# url(r'^logout/$', auth_views.Logout.as_view(), name='logout'),
-
 	# # url(r'^level_list/(?P<event_id>\d+)/$', event_views.LevelList.as_view(), name = "Level Detail"),
 
 	# # url(r'^teams/list/(?P<event_id>\d+)/$', team_views.TeamList.as_view(), name = "team_home"),

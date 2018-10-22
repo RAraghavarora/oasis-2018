@@ -14,12 +14,12 @@ from shop.serializers import ItemClassSerializer
 def itemClassFirebaseUpdate(sender, **kwargs):
     db = firestore.client()
     data = ItemClassSerializer(kwargs["instance"]).data
-    collection = db.collection("Stall #{}".format(kwargs["instance"].stall.id))
+    collection = db.collection("Stall #{}".format(kwargs["instance"].stall.user.id))
     collection.document("ItemClass #{}".format(kwargs["instance"].id)).set(data)
 
 
 @receiver(pre_delete, sender=ItemClass)
 def itemClassFirebaseDelete(sender, **kwargs):
     db = firestore.client()
-    collection = db.collection("Stall #{}".format(kwargs["instance"].stall.id))
+    collection = db.collection("Stall #{}".format(kwargs["instance"].stall.user.id))
     collection.document("ItemClass #{}".format(kwargs["instance"].id)).delete()
