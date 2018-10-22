@@ -276,7 +276,7 @@ def approve_participations(request,id):
                     participant.save()
             message="Events successfully unconfirmed"
         messages.success(request,message)
-    approved=MainParticipation.objects.filter(pcr_approved=True,participant__college=college,cr_approved=True)
+    approved=MainParticipation.objects.filter(pcr_approved=True,participant__college=college,participant__cr_approved=True)
     disapproved=MainParticipation.objects.filter(participant__cr_approved = True, pcr_approved=False,participant__college=college)
 
     return render(request, 'pcradmin/approve_participations.html', {'approved':approved, 'disapproved':disapproved, 'cr':cr})
@@ -592,6 +592,7 @@ def master_stats(request):
         except:
             pass
         if not colleges and not events:
+            messages.warning(request, 'Please select atleast one college or one event.')
             return redirect(request.META.get('HTTP_REFERRER'))
         rows = []
         if colleges[0]!='' and events[0]!='':
@@ -783,7 +784,7 @@ def final_email_send(request, eg_id):
 Hello %s!
 Greetings from BITS Pilani!
 
-It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 31st to November 4th.
+It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 27th to October 31st.
 
 This is to confirm your participation at OASIS '18.
 We would be really happy to see your college represented at our fest.
@@ -809,7 +810,7 @@ pcr@bits-oasis.org
 Hello %s!
 Greetings from BITS Pilani!
 
-It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 31st to November 4th.
+It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 27th to October 31st.
 
 This is to confirm your participation at OASIS '18.
 We would be really happy to see your college represented at our fest.
