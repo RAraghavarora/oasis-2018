@@ -82,8 +82,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'oasis2018.wsgi.application'
 
-
-if not keyconfig.SERVER:
+#MC Ab change mat krna isko
+if keyconfig.SERVER:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
