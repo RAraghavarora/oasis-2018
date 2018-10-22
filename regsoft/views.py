@@ -37,7 +37,10 @@ chars = string.ascii_lowercase + string.ascii_uppercase + string.digits
 
 ###Helper function to get the group leader##
 def get_group_leader(group):
-    return group.participant_set.get(is_g_leader=True)
+    try:
+        return group.participant_set.get(is_g_leader=True)
+    except:
+        return None
 
 #To create a code for the group
 def generate_group_code(group):
@@ -79,7 +82,6 @@ def firewallz_home(request):
         url = request.build_absolute_uri(reverse('regsoft:firewallz_approval', kwargs={'c_id':college.id}))
         rows.append({'data': [name,cr,total_final,firewallz_passed] , 'link':[{'url':url,'title':'Approve Participants'},]})
 
-    print(rows)
     headings = ['College', 'CR', 'PCr Finalised Participants', 'Firewallz Passed','Approve Participants']
     title = 'Select college to approve Participants'
     table = {
@@ -87,7 +89,6 @@ def firewallz_home(request):
         'headings':headings,
         'title':title
     }
-    print(table)
     return render(request, 'regsoft/tables.html', {'tables':[table,]})
 
 @staff_member_required
@@ -132,13 +133,16 @@ def firewallz_approval(request, c_id):
         group.save()
         part_list = Participant.objects.filter(id__in=id_list)
         return redirect(reverse('regsoft:get_group_list', kwargs={'g_id':group.id}))
+<<<<<<< HEAD
     print(Group)
     try:
         groups_passed = [group for group in Group.objects.all() if get_group_leader(group).college == college]
     except:
         groups_passed = []
+=======
+    groups_passed = [group for group in Group.objects.all() if get_group_leader(group) and get_group_leader(group).college == college]
+>>>>>>> 7bc59735764a7a827fca10e2b6b5dd28e00dd794
     unapproved_list = college.participant_set.filter(pcr_final=True, firewallz_passed=False, is_guest=False)
-    print (groups_passed)
     return render(request, 'regsoft/firewallz_approval.html', {'groups_passed':groups_passed, 'unapproved_list':unapproved_list, 'college':college})
 
 @staff_member_required

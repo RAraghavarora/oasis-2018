@@ -19,7 +19,12 @@ class Index(APIView):
 
 
     def get(self, request):
+<<<<<<< HEAD
         user = request.user
+=======
+        return Response(template_name = "ems/test.html")
+        # user = request.user
+>>>>>>> 7bc59735764a7a827fca10e2b6b5dd28e00dd794
 
         # if user.is_superuser or user.username=='controls':
         #     return redirect(reverse_lazy('ems:events_controls'))
@@ -37,5 +42,9 @@ class Index(APIView):
         #     pass
 
         # logout(request)
+<<<<<<< HEAD
         # return redirect(reverse_lazy('ems:login'))    
         return Response(template_name = 'ems/add_level.html')
+=======
+        # return redirect(reverse_lazy('ems:login'))
+>>>>>>> 7bc59735764a7a827fca10e2b6b5dd28e00dd794

@@ -111,11 +111,11 @@ def approve(request):
                         }
                         return render(request, 'registrations/message.html', context)
                     
-                    context = {
-                        'error_heading':"Emails sent",
-                        'message' : "Login credentials have been mailed to the corresponding new participants."
-                    }
-                    return render(request, 'registrations/message.html', context)
+            context = {
+                'error_heading':"Emails sent",
+                'message' : "Login credentials have been mailed to the corresponding new participants."
+            }
+            return render(request, 'registrations/message.html', context)
 
         if 'disapprove' == data['action']:
             try:
@@ -131,6 +131,12 @@ def approve(request):
                 #     participant_1.cr_approved = False
                 #     participant_1.save()
                 candidate.cr_approved=False
+                try:
+                    user = candidate.user
+                    user.is_active=False
+                    user.save()
+                except:
+                    pass
                 candidate.save()
         approved_list = Participant.objects.filter(college = participant.college, cr_approved=True,email_verified=True)
         disapproved_list = Participant.objects.filter(college = participant.college, cr_approved=False, email_verified=True)
@@ -433,6 +439,12 @@ def chor_approve(request):
                 #     participant_1.cr_approved = False
                 #     participant_1.save()
                 candidate.cr_approved=False
+                try:
+                    user = candidate.user
+                    user.is_active = False
+                    user.save()
+                except:
+                    pass
                 candidate.save()
         approved_list = Participant.objects.filter(college = participant.college, cr_approved=True,email_verified=True,is_chor=True)
         disapproved_list = Participant.objects.filter(college = participant.college, cr_approved=False, email_verified=True,is_chor=True)
