@@ -271,7 +271,7 @@ def approve_participations(request,id):
                     participant.save()
             message="Events successfully unconfirmed"
         messages.success(request,message)
-    approved=MainParticipation.objects.filter(pcr_approved=True,participant__college=college,cr_approved=True)
+    approved=MainParticipation.objects.filter(pcr_approved=True,participant__college=college,participant__cr_approved=True)
     disapproved=MainParticipation.objects.filter(participant__cr_approved = True, pcr_approved=False,participant__college=college)
 
     return render(request, 'pcradmin/approve_participations.html', {'approved':approved, 'disapproved':disapproved, 'cr':cr})
