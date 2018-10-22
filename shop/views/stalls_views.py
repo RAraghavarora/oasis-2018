@@ -93,10 +93,9 @@ class StallOrderStatus(APIView):
 		except KeyError as missing:
 			msg = {"message": "The following field is missing: {}".format(missing)}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
-		else:
-			msg = {"message" : "Don't know."}
-			return Response(msg, status = status.HTTP_400_BAD_REQUEST)			
-		
+		except Exception as e:
+			msg = {"message" : "Don't Know."}
+
 		try:
 			order_fragment = OrderFragment.objects.get(id = order_fragment_id)
 		except OrderFragment.DoesNotExist:
