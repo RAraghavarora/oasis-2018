@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.contrib import messages
+from django.shortcuts import render,redirect
 from django.core.urlresolvers import reverse
 
 from rest_framework import status
@@ -53,10 +54,28 @@ class TeamList(APIView):
 			return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
 		data = request.data
-		if data['submit']=='delete_teams':
-			print('yes')
+		print(data)
+		
+		#Remove teams
 
-		serializer = TeamSerializer(data = req)
+		if data['submit'] == 'delete_teams':
+		
+			try:
+				team_ids = data['delete_team_id']
+			except:
+				messages.warning(request, 'Select atleast one team')
+				return redirect(request.META.get('HTTP_REFERER'))
+
+			Team.objects.filter(id__in=team_ids).delete()
+			return redirect(reverse('ems:add_team', kwargs={'e_id':event_id}))
+		
+		#Add teams
+
+		try:
+			teams_str = data['teams'][0]
+		except:
+			return redirect(request.META.get('HTTP_REFERER'))
+
 
 class TeamDetail(APIView):
 
