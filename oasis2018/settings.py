@@ -82,7 +82,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'oasis2018.wsgi.application'
 
-
+#MC Ab change mat krna isko
 if keyconfig.SERVER:
     DATABASES = {
         'default': {

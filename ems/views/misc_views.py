@@ -6,6 +6,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.renderers import TemplateHTMLRenderer
+
 
 from ems.models.clubdept import ClubDepartment 
 
@@ -13,8 +15,13 @@ from ems.models.clubdept import ClubDepartment
 class Index(APIView):
 
     permission_classes = (IsAuthenticated,)
+    renderer_classes = (TemplateHTMLRenderer,)
+
 
     def get(self, request):
+
+        user = request.user
+
         return Response(template_name = "ems/test.html")
         # user = request.user
 
@@ -34,4 +41,6 @@ class Index(APIView):
         #     pass
 
         # logout(request)
+        # return redirect(reverse_lazy('ems:login'))    
+        return Response(template_name = 'ems/add_level.html')
         # return redirect(reverse_lazy('ems:login'))

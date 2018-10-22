@@ -25,18 +25,17 @@
             <table class="table table-bordered table-striped table-hover dataTable">
                 <thead>
                     <tr>
-                            <th>Select All</th>
                             <th></th>
                             <th></th>
                             <th>
                                 <input type="checkbox" id="selectAll">
-                                <label for="selectAll"></label>
+                                <label for="selectAll">Select All</label>
                             </th>
+                            <th></th>
                         </tr>
                     <tr>
                         <th>Name</th>
                         <th>Events</th>
-                        <th>Show uploads</th>
                         <th>Select</th>
                         <th>Group Leader</th>
                     </tr>
@@ -45,7 +44,6 @@
                     <tr>
                         <th>Name</th>
                         <th>Events</th>
-                        <th>Show uploads</th>
                         <th>Select</th>
                         <th>Group Leader</th>
                     </tr>
@@ -55,9 +53,6 @@
                     <tr>
                         <td>{{i.name}}</td>
                         <td>{{i|get_events_list}}</td>
-                        <td>
-                            <a target="blank">Show</a>
-                        </td>
                         <td>
                         	<input type="checkbox" name="id_list" id="{{i.id}}" value="{{i.id}}">
                         	<label for="{{i.id}}"></label>
