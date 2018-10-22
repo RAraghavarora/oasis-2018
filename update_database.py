@@ -79,18 +79,20 @@ def update_database():
             college = entry[3]
             # clg, created = College.objects.get_or_create(name=college)
             # participant, created = Participant.objects.get_or_create(name=name, email=email, phone=phone, college=clg)
-            participant = Participant.objects.get(email=email)
-            
-            if amount == 1000:
-                participant.paid = True
-                participant.controlz_paid = True
-            elif amount == 300:
-                participant.paid = True
-            elif amount == 700:
-                participant.controlz_paid = True
+            try:
+                participant = Participant.objects.get(email=email)
+                if amount == 1000:
+                    participant.paid = True
+                    participant.controlz_paid = True
+                elif amount == 300:
+                    participant.paid = True
+                elif amount == 700:
+                    participant.controlz_paid = True
 
-            participant.save()
-            ''' Yipppeeee!! Now I am registered. '''
+                participant.save()
+                ''' Yipppeeee!! Now I am registered. '''
+            except:
+                print('Participant {} doesn\'t exist - {}'.format(participant.email, format.name))
 
         return 'All entries upto {} updated successfully.'.format(len(table_data))
 
