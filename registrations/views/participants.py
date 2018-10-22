@@ -241,6 +241,9 @@ def manage_events(request):
             for event_id in events_id:
                 event = MainEvent.objects.get(id=event_id)
                 p, created  = MainParticipation.objects.get_or_create(participant=participant, event=event)
+                if participant.cr_approved == True:
+                    p.cr_approved = True
+                    p.save()
 
         if data['action'] == 'remove':
             not_removed = []
@@ -266,6 +269,7 @@ def manage_events(request):
     added_list = [participation for participation in MainParticipation.objects.filter(participant=participant)]
     added_events = [p.event for p in added_list]
     not_added_list = [event for event in MainEvent.objects.all() if event not in added_events]
+    
     return render(request, 'registrations/manage_events.html', {'added_list':added_list, 'not_added_list':not_added_list, 'participant':participant})
 
 @login_required

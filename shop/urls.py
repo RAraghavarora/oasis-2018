@@ -9,7 +9,7 @@ from shop.views import misc_views
 app_name="shop"
 
 urlpatterns = [
-    url('transfer/', ewallet_views.Transfer.as_view(), name="transfer"),
+    url(r'transfer/', ewallet_views.Transfer.as_view(), name="transfer"),
     url(r'^add-money/$', ewallet_views.AddMoney.as_view(), name="AddMoney" ),
     url(r'^add-moneyresponse-ios/', ewallet_views.AddMoneyResponseIOS.as_view(), name="AddMoneyResponseIOS"),
     url(r'^add-moneyresponse-web/', ewallet_views.AddMoneyResponseWeb.as_view(), name="AddMoneyResponseWeb"),
@@ -28,7 +28,7 @@ urlpatterns = [
 
     # NOTE: these endpoints, despite being "GET" endpoints, require a POST request. This is agreed to be a terrible thing but it was due to lack of time, and lots of pressure
     # will be improved upon in WalletX.
-    url('place-order/', orders_views.PlaceOrder.as_view(), name="place-order"),
+    url(r'place-order/', orders_views.PlaceOrder.as_view(), name="place-order"),
     url(r'^get-orders/$', orders_views.GetOrders.as_view(), name='get-orders'),
     url(r'^get-tickets/$', orders_views.GetTickets.as_view(), name='get-tickets'),
     url(r'^consume-tickets/$', orders_views.ConsumeTickets.as_view(), name='consume-tickets'),
