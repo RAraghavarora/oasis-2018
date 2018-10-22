@@ -92,7 +92,7 @@ def update_database():
                 participant.save()
                 ''' Yipppeeee!! Now I am registered. '''
             except:
-                print('Participant {} doesn\'t exist - {}'.format(participant.email, format.name))
+                print('Participant {} doesn\'t exist - {}'.format(email, name))
 
         return 'All entries upto {} updated successfully.'.format(len(table_data))
 
