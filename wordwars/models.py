@@ -6,11 +6,8 @@ def question_image_path(instance, filename):
 	import string
 	from random import choice
 	chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' + '0123456789'
-<<<<<<< HEAD
 	return '/wordwars/questions/'+ ''.join(choice(chars) for _ in range(8))
-=======
-	return 'media/wordwars/questions/'+ ''.join(choice(chars) for _ in range(8))
->>>>>>> parent of be1a923... Revert "Merge branch 'test' into 'master'"
+
 
 class Player(models.Model):
 	email = models.EmailField(unique=True)
