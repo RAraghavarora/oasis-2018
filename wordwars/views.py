@@ -123,7 +123,7 @@ def rulespage(request):
 
 
 def rules(request):
-	rules_ = os.path.join(BASE_DIR, 'media/wordwars/Instructions.docx')
+	rules_ = os.path.join(BASE_DIR, 'backend_media/wordwars/Instructions.docx')
 	doc = open(rules_, 'rb')
 	response = HttpResponse(content_type='application/doc', content=doc)
 	response['Content-Disposition'] = 'attachment; filename="Detailed Instructions.docx"'
