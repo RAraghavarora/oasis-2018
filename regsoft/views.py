@@ -51,7 +51,8 @@ def generate_group_code(group):
     if encoded is not None:
         return encoded
     group_ida = "%04d" % int(group_id)
-    college_code = ''.join(get_group_leader(group).college.name.split(' '))
+    group_leader = get_group_leader(group)
+    college_code = ''.join(group_leader.college.name.split(' '))
     if len(college_code)<4:
         college_code += str(0)*(4-len(college_code))
     group.group_code = college_code + group_ida
@@ -128,20 +129,12 @@ def firewallz_approval(request, c_id):
                 return render(request, 'registrations/message.html', context)
             part.firewallz_passed=True
             part.group = group
-            part.save() 
+            part.save()
         encoded = generate_group_code(group)
         group.save()
         part_list = Participant.objects.filter(id__in=id_list)
         return redirect(reverse('regsoft:get_group_list', kwargs={'g_id':group.id}))
-<<<<<<< HEAD
-    print(Group)
-    try:
-        groups_passed = [group for group in Group.objects.all() if get_group_leader(group).college == college]
-    except:
-        groups_passed = []
-=======
     groups_passed = [group for group in Group.objects.all() if get_group_leader(group) and get_group_leader(group).college == college]
->>>>>>> 7bc59735764a7a827fca10e2b6b5dd28e00dd794
     unapproved_list = college.participant_set.filter(pcr_final=True, firewallz_passed=False, is_guest=False)
     return render(request, 'regsoft/firewallz_approval.html', {'groups_passed':groups_passed, 'unapproved_list':unapproved_list, 'college':college})
 
@@ -199,7 +192,6 @@ def add_guest(request):
     elif request.method == 'POST':
         data = request.POST.dict()
         email = data['email']
-        print(data)
         if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
             messages.warning(request,'Please enter a valid email address.')
             return redirect(request.META.get('HTTP_REFERER'))
@@ -220,7 +212,7 @@ def add_guest(request):
                 messages.warning(request, 'Please enter a valid phone number')
                 return redirect(request.META.get('HTTP_REFERER'))
 
-            participant.name = str(data['name'])
+            participant.name = ' '.join(str(data['name']).strip().split())
             participant.gender = str(data['gender'])
             participant.city = str(data['city'])
             participant.email = str(data['email'])
@@ -238,16 +230,11 @@ def add_guest(request):
             participant.save()
             participant.firewallz_passed = True
             
-            # ems_code = str(participant.college.id).rjust(3,'0') + str(participant.id).rjust(4,'0')
-            # participant.ems_code = ems_code
-            # participant.save()ss
             username = participant.name.split(' ')[0] + str(participant.id)
-            print(participant.id)
             password = ''.join(choice(chars) for i in range(8)) #random alphanumeric password of length 8
             user = User.objects.create_user(username=username, password=password)
             participant.user = user
             participant.save() # Barcode will automatically be generated and assigned. Django Signals
-            print(participant.user.username)
             
             #sendgrid email body is written in a separate file called send_grid.py
             email_class = send_grid.add_guest() 
@@ -260,7 +247,6 @@ def add_guest(request):
             try:
                 mail = Mail(email_class.from_email,email_class.subject,to_email,content)
                 response = send_grid.sg.client.mail.send.post(request_body = mail.get())
-                print("EMAIL SENT")
             except:
                 participant.user = None
                 participant.save()
@@ -319,7 +305,6 @@ def add_participant(request):
                 pass
             try:
                 events = data.getlist('events')
-                print(events)
             except:
                 pass
             participant = Participant()
@@ -342,8 +327,7 @@ def add_participant(request):
             participant.pcr_approved = True
             participant.save()
             participant.pcr_final = True
-            # ems_code = str(participant.college.id).rjust(3,'0') + str(participant.id).rjust(4,'0')
-            # participant.ems_code = ems_code
+
             username = participant.name.split(' ')[0] + str(participant.id)
             password = ''.join(choice(chars) for _ in range(8)) #random alphanumeric password of length 8
             user = User.objects.create_user(username=username, password=password)
@@ -397,7 +381,10 @@ def add_participant(request):
 
 @staff_member_required
 def recnacc_home(request):
-    rows = [{'data':[group.group_code, get_group_leader(group).name, get_group_leader(group).college.name, get_group_leader(group).phone,group.created_time, group.participant_set.filter(controlz=True).count(), group.participant_set.filter(controlz=True, acco=True, checkout_group=None).count(), group.participant_set.filter(checkout_group__isnull=False).count()], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:allocate_participants', kwargs={'g_id':group.id})), 'title':'Allocate Participants'}]} for group in Group.objects.all().order_by('-created_time')]
+    try:
+        rows = [{'data':[group.group_code, get_group_leader(group).name, get_group_leader(group).college.name, get_group_leader(group).phone,group.created_time, group.participant_set.filter(controlz=True).count(), group.participant_set.filter(controlz=True, acco=True, checkout_group=None).count(), group.participant_set.filter(checkout_group__isnull=False).count()], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:allocate_participants', kwargs={'g_id':group.id})), 'title':'Allocate Participants'}]} for group in Group.objects.all().order_by('-created_time')]
+    except:
+        rows =[]        
 
     title='Groups that have passed Firewallz'
     headings = ['Group Code', 'Group Leader', 'College', 'Gleader phone', 'Firewallz passed time', 'Total controlz passed','Total alloted', 'Checkout','View Participants']
@@ -656,9 +643,7 @@ def master_checkout(request):
 @staff_member_required
 def checkout_groups(request, c_id):
     college = get_object_or_404(College, id=c_id)
-    print(CheckoutGroup.objects.all())
     ck_group_list = [ck_group for ck_group in CheckoutGroup.objects.all() if ck_group.participant_set.all()[0].college == college]
-    print(ck_group_list)
     rows = [{'data':[ck_group.participant_set.all().count(), ck_group.created_time, ck_group.amount_retained], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:ck_group_details', kwargs={'ck_id':ck_group.id})), 'title':'View Details'}]} for ck_group in ck_group_list]
     headings = ['Participant Count', 'Time of Checkout', 'Amount Retained', 'View Details']
     title = 'Checkout groups from ' + college.name
