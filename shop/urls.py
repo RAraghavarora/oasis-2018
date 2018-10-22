@@ -24,6 +24,8 @@ urlpatterns = [
     url(r'^stalls/client/orders/$', stalls_views.StallOrdersList.as_view(), name = 'stall-orders'),
     url(r'^stalls/client/order-response/$', stalls_views.StallOrderStatus.as_view(), name = 'stall-order-status'),
 
+    url(r'^orders/show-otp/$', orders_views.ShowOTP.as_view(), name = 'show-otp'),
+
     # NOTE: these endpoints, despite being "GET" endpoints, require a POST request. This is agreed to be a terrible thing but it was due to lack of time, and lots of pressure
     # will be improved upon in WalletX.
     url('place-order/', orders_views.PlaceOrder.as_view(), name="place-order"),
