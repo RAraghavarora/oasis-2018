@@ -74,10 +74,15 @@ def select_college_rep(request,id):
 
         if data['submit']=='delete':
             part=Participant.objects.get(id=part_id)
+            part.is_cr=False
+            if part.paid or part.controlz_paid:
+                part.save()
+                return messages.warning(request, 'This participant has already paid. So, this participant can only be removed from College Rep Position. But he/she would still remain PCr approved.')
+                return redirect(request.META.get('HTTP_REFERER'))
             user=part.user
             user.delete()
             part.user=None
-            part.is_cr=False
+            
             part.cr_approved=False
             part.pcr_approved = False
             part.save()
@@ -255,15 +260,14 @@ def approve_participations(request,id):
             message="Profile verified"
         elif data['submit']=='disapprove':
             for participation in MainParticipation.objects.filter(id__in=part_list):
+                participant = participation.participant
+                if participant.paid or participant.controlz_paid:
+                    messages.warning(request, 'A participant who has paid can not be disapproved. Contact DVM if much of an issue.')
+                    return redirect(request.META.get('HTTP_REFERER'))
                 participation.pcr_approved=False
                 participation.save()
-                participant=participation.participant
-                list_particpation=[]
-                for part in MainParticipation.objects.filter(participant=participant):
-                    if(not part.pcr_approved):
-                        list_particpation.append(part)
-                if all(list_particpation):   #Still not sure about it's working
-                    participant.pcr_approved=False
+                if MainParticipation.objects.filter(participant=participant, pcr_approved=True).count()==0:
+                    participant.pcr_approved = False 
                     participant.save()
             message="Events successfully unconfirmed"
         messages.success(request,message)
@@ -313,10 +317,11 @@ def verify_profile(request,part_id):
 		messages.warning(request, message)
 		return redirect(request.META.get('HTTP_REFERER'))'''
     participations=part.mainparticipation_set.all()
-    events_confirmed = [{'event':p.event,'cr_approved':p.cr_approved, 'id':p.id} for p in participations.filter(pcr_approved=True)]
-    events_unconfirmed = [{'event':p.event, 'cr_approved': p.cr_approved, 'id':p.id} for p in participations.filter(pcr_approved=False)]
-    return render(request, 'pcradmin/verify_profile.html',
-	{ 'part':part, 'confirmed':events_confirmed, 'unconfirmed':events_unconfirmed})
+    events_confirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=True)]
+    events_unconfirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=False)]
+    context = { 'part':part, 'confirmed':events_confirmed, 'unconfirmed':events_unconfirmed}
+    print(context)
+    return render(request, 'pcradmin/verify_profile.html',context)
 
 @staff_member_required
 def add_college(request):
@@ -741,7 +746,7 @@ def final_email_send(request, eg_id):
             break
     # if _dir=='':
     #     return 
-    doc_name = _dir + 'letterhead.pdf'
+    doc_name = _dir + 'final_list.pdf'
     pdf = create_final_pdf(eg_id, doc_name, _dir)
 
     #sendgrid email sending code
@@ -864,25 +869,25 @@ def create_final_pdf(eg_id, response, _dir):
     for part in email_group.participant_set.all():
         events = ''
         for participation in MainParticipation.objects.filter(participant=part, pcr_approved=True):
-            events += participation.event.name + ', '
+            events += participation.event.name + '\n'
         events = events[:-2]
         amount = how_much_paid(part)
         data.append((part.name, events, amount))
 
-    table_with_style = Table(data, [3 * inch, 1.5 * inch, inch])
+    table_with_style = Table(data, [2 * inch, 2.5 * inch, inch])
 
     table_with_style.setStyle(TableStyle([
         ('FONT', (0, 0), (-1, -1), 'Helvetica'),
         ('FONT', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, -1), 8),
         ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-        ('BOX', (0, 0), (-1, 0), 0.25, colors.green),
+        ('BOX', (0, 0), (-1, -1), 0.25, colors.green),
         ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
     ]))
 
 
-    doc.build([Spacer(1, 0.5 * inch),table_with_style,im])
-    watermark_name = _dir + 'Unused.pdf' #Change the watermark
+    doc.build([Spacer(1, 0.5 * inch),table_with_style])
+    watermark_name = _dir + 'letterhead.pdf' #Change the watermark
     output_file = PdfFileWriter()
     input_file = PdfFileReader(open(response, "rb"))
     page_count = input_file.getNumPages()

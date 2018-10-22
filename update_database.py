@@ -77,8 +77,8 @@ def update_database():
             name= entry[0]
             phone = int(entry[2])
             college = entry[3]
-            clg, created = College.objects.get_or_create(name=college)
-            participant, created = Participant.objects.get_or_create(name=name, email=email, phone=phone, college=clg)
+            # clg, created = College.objects.get_or_create(name=college)
+            # participant, created = Participant.objects.get_or_create(name=name, email=email, phone=phone, college=clg)
             participant = Participant.objects.get(email=email)
             
             if amount == 1000:
