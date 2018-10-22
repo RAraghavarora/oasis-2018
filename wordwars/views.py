@@ -264,7 +264,7 @@ def edit_question(request,q_id):
         messages.success(request, 'Question edited successfully')
         return redirect('wordwars:all_questions')
     return render(request,'wordwars/edit_question.html',{'question':question})
-
+#track
 
 @staff_member_required
 def player_status(request):
