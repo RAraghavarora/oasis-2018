@@ -84,23 +84,33 @@ class StallOrderStatus(APIView):
 	status_dict = {long_form : short_form for short_form, long_form in OrderFragment.STATUS}
 	status_responses = ["Accepted", "Declined", "Ready", "Finished"]
 
+	def sendNotification(self, registration_token):
+		message = messaging.Message(
+		    data = {
+		        "Notification" : "Your Order is Ready!!"
+		    },
+		    token = registration_token,
+		)
+		try:
+			response = messaging.send(message)
+		except Exception as e:
+			print(e)
+
 
 	#Accepts stall's response to OrderFragment
 	def post(self, request):
-		try:	
-			order_fragment_id = request.data['order_fragment']
+		try:
+			order_fragment = OrderFragment.objects.get(id = request.data['order_fragment'])
 			order_status = request.data['order_status'].title()
 		except KeyError as missing:
 			msg = {"message": "The following field is missing: {}".format(missing)}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
-		except Exception as e:
-			msg = {"message" : "Don't Know."}
-
-		try:
-			order_fragment = OrderFragment.objects.get(id = order_fragment_id)
 		except OrderFragment.DoesNotExist:
 			msg = {"message" : "Order Fragment doesn't exist."}
 			return Response(status = status.HTTP_404_NOT_FOUND)
+		except Exception:
+			msg = {"message" : "Something seems to have gone wrong."}
+			return Response(status = status.HTTP_400_BAD_REQUEST)
 
 		if not order_fragment.stall.user == request.user:
 			msg = {"message": "Permission Denied!"}
@@ -109,6 +119,13 @@ class StallOrderStatus(APIView):
 		if not order_status in self.status_responses:
 			msg = {"message": "order_status response not recognized."}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
+
+		# if order_status == "Ready":
+		# 	try:
+		# 		registration_token = order_fragment.order.customer.registration_token
+		# 	except:
+		# 		pass
+		# 	self.sendNotification(registration_token)
 
 		#Stalls transfer money
 		if order_status == 'Finished':
