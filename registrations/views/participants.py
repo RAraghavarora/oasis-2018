@@ -40,7 +40,10 @@ def index(request):
 
     if request.method=='POST':
         data = json.loads(request.body.decode('utf8').replace("'", '"'))
-        recaptcha_response = data['reCaptcha']
+        try:
+            recaptcha_response = data['reCaptcha']
+        except:
+            return JsonResponse({'status':0, 'message':'Recaptcha missing'})
         data_1={
             'secret' : keyconfig.google_recaptcha_secret_key,
             'response' : recaptcha_response
