@@ -77,15 +77,16 @@ def update_database():
                     participant.controlz_paid = True
 
                 participant.save()
-            except:
-                print('Participant {} doesn\'t exist - {}'.format(email, name))
+            except Exception as error:
+                print(error)
+                print('Participant {} not updated- {}'.format(email, name))
 
-        return 'All entries upto {} updated successfully.'.format(len(table_data))
+        return 'All entries upto {} updated successfully.'.format(index+1)
 
 
     except Exception as error:
         print(error)
-        return "There was an error in updating database. {} entries from the top updated.".format(index)
+        return "There was an error in updating database. {} entries from the top updated.".format(index+1)
 
 if __name__ == '__main__':
 	print(str(datetime.datetime.now())+ " : Starting Database Updation Script...")
