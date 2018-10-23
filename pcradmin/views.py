@@ -237,7 +237,7 @@ def how_much_paid(part):
 def approve_participations(request,id):
     
     try:
-        college=College.objects.filter(id=id)
+        college=College.objects.get(id=id)
         if not college:
             messages.warning(request,'No such college. Please check again. ')
             return redirect(request.META.get('HTTP_REFERER'))

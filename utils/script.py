@@ -1,14 +1,15 @@
 import csv
 from shop.models import *
+from django.contrib.auth.models import User
 from oasis2018.settings import BASE_DIR
 
 
 with open(BASE_DIR + '/utils/data.csv') as cfile:
- ew = csv.reader(cfile, delimiter=',')
- for r in ew:
-  try:
-   s=Stall.objects.get(name=r[-1])
-  except:
-  	u, c = User.objects.get_or_create(username=r[-1])
-  	s = Stall.objects.create(user=u, name=r[-1])
-  ItemClass.objects.create(name=r[0], stall=s, price=r[1], )
+	reader = csv.reader(cfile, delimiter=',')
+	for row in reader:
+		try:
+			stall = Stall.objects.get(name=row[-1])
+		except Stall.DoesNotExist:
+			user, created = User.objects.get_or_create(username=row[-1])
+			stall = Stall.objects.create(user=user, name=row[-1])
+		ItemClass.objects.create(name=row[0], stall=stall, price=row[1], )

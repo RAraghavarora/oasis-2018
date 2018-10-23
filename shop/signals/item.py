@@ -15,7 +15,7 @@ def itemClassFirebaseUpdate(sender, **kwargs):
     db = firestore.client()
     data = ItemClassSerializer(kwargs["instance"]).data
     #collection = db.collection("Stall #{}".format(kwargs["instance"].stall.user.id))
-    collection = db.collection("Stall #{}".format(kwargs["instance"].stall.user.id))
+    collection = db.collection(str(kwargs["instance"].stall.user.id))
     collection.document("ItemClass #{}".format(kwargs["instance"].id)).set(data)
 
 
