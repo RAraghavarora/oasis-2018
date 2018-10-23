@@ -12,4 +12,4 @@ with open(BASE_DIR + '/utils/data.csv') as cfile:
 		except Stall.DoesNotExist:
 			user, created = User.objects.get_or_create(username=row[-1])
 			stall = Stall.objects.create(user=user, name=row[-1])
-	ItemClass.objects.create(name=row[0], stall=stall, price=row[1], )
+		ItemClass.objects.create(name=row[0], stall=stall, price=row[1], )
