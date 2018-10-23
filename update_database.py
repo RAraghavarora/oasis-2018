@@ -81,7 +81,7 @@ def update_database():
                 print(error)
                 print('Participant {} not updated- {}'.format(email, name))
 
-        return 'All entries upto {} updated successfully.'.format(index)
+        return 'All entries upto {} updated successfully.'.format(index+1)
 
 
     except Exception as error:
