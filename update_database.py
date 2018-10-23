@@ -86,7 +86,7 @@ def update_database():
 
     except Exception as error:
         print(error)
-        return "There was an error in updating database. {} entries from the top updated.".format(index)
+        return "There was an error in updating database. {} entries from the top updated.".format(index+1)
 
 if __name__ == '__main__':
 	print(str(datetime.datetime.now())+ " : Starting Database Updation Script...")
