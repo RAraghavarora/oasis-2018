@@ -1,8 +1,9 @@
 import csv
 from shop.models import *
+from oasis2018.settings import BASE_DIR
 
 
-with open('/home/divyam/data.csv') as cfile:
+with open(BASE_DIR + '/utils/data.csv') as cfile:
  ew = csv.reader(cfile, delimiter=',')
  for r in ew:
   try:
