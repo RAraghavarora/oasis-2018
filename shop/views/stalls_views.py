@@ -120,3 +120,54 @@ class StallOrderStatus(APIView):
 		msg = {"message" : "Request Successful"}
 		return Response(msg, status = status.HTTP_200_OK)
 		
+
+class SwitchItemAvailability(APIView):
+
+	permission_classes = (IsAuthenticated, TokenVerification)
+
+	def post(self, request):
+		try:
+			item_id = request.data["item_id"]
+			available = request.data["available"]
+			item = ItemClass.objects.get(pk = item_id)
+		except KeyError as missing:
+			msg = {"message" : "The following field was missing: {}".format(missing)}
+			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
+		except ItemClass.DoesNotExist:
+			msg = {"message" : "Item doesn't exist."}
+			return Response(msg, status = status.HTTP_404_NOT_FOUND)
+
+		try:
+			stall = request.user.stall
+			print(stall)
+			print(item.stall)
+			if not item.stall == stall:
+				raise Exception
+		except:
+			msg = {"message" : "Restricted Access."}
+			return Response(msg, status = status.HTTP_403_FORBIDDEN)
+
+		item.is_available = available
+		item.save()
+
+		msg = {"message" : "Request Successful!"}
+		return Response(msg, status = status.HTTP_200_OK)
+
+
+class SwitchStall(APIView):
+
+	def post(self, request):
+		try:
+			available = request.data["available"]
+			stall = request.user.stall
+		except KeyError as missing:
+			msg = {"message" : "The following field was missing: {}".format(missing)}
+			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
+
+		items = stall.menu.all()
+		for item in items:
+			item.is_available = available
+			item.save()
+
+		msg = {"message" : "Request Succesful"}
+		return Response(msg, status = status.HTTP_200_OK)

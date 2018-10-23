@@ -43,15 +43,11 @@ class Transfer(APIView):
 
 	def post(self, request, format=None):
 			data = request.data
-			print(data)
 			try:
-				target_user = User.objects.get(id=data["target_user"])
-				print(target_user)
-			
+				target_user = User.objects.get(id=data["target_user"])			
 			except KeyError as missing:
 				msg = {"message": "missing the following field: {}".format(missing)}
-				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
-			
+				return Response(msg, status=status.HTTP_400_BAD_REQUEST)			
 			except:
 				try:	
 					target_user = decString(data["target_user"])[0]
@@ -62,7 +58,6 @@ class Transfer(APIView):
 			try:
 				source = request.user.wallet
 				target = Wallet.objects.get(user=target_user)
-				print(source, target)
 
 				if source == target:
 					return Response({"message": "You can't transfer money to yourself."}, status=status.HTTP_403_FORBIDDEN)
