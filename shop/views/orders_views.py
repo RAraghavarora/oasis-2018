@@ -30,7 +30,7 @@ class PlaceOrder(APIView):
     def generate_otp(self):
         return randint(1000, 9999)
 
-    @csrf_exempt ### REMOVE THIS SOON
+    @csrf_exempt
     def post(self, request, format=None):
         """
             Part 1:
@@ -176,7 +176,7 @@ class ShowOTP(APIView):
 
         if not order_frag.status in self.acceptable_status:
             msg = {"message" : "Cannot view  the order status"}
-            return Response(msg, status = status.HTTP_400_BAD_REQUEST)            
+            return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
         order_frag.show_otp = True
         order_frag.save()
@@ -225,6 +225,8 @@ class ConsumeTickets(APIView):
         try:
             organization = request.user.organization # note: model found in the events app
             name = organization.name
+            if organization.disabled:
+                raise Organization.DoesNotExist
         except Organization.DoesNotExist:
             return Response({"message": "User is not an organization (club/dept)."}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -240,18 +242,21 @@ class ConsumeTickets(APIView):
             tickets = get_object_or_404(Tickets, user=user, prof_show=show)
 
             if show not in organization.shows.all():
-                return Response({"message": "Invalid user, only members of {} are allowed to control tickets for this show.".format(show.organization)}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({"message": "Invalid user, only members of {} are allowed to control tickets for this show.".format(show.organizations.all())}, status=status.HTTP_401_UNAUTHORIZED)
 
             consume = request.data["consume"]
 
             max_count = tickets.count
             if(consume > max_count):
-                return Response({"success": False, "max_tickets": max_count})
+                if any([tickets.consumed > 0, tickets.count > 0]):
+                    return Response({"success": False, "max_tickets": max_count, "x-status": 1})
+                return Response({"success": False, "max_tickets": max_count, "x-status": 2}) # the scanee has never bought tickets for this show before
             if consume < 1:
-                return Response({"success": False, "message": "Number of tickets can't be less than 1", "max_tickets": max_count})
+                return Response({"success": False, "message": "Number of tickets can't be less than 1", "max_tickets": max_count, "x-status": -1})
             tickets.count -= consume
+            tickets.consumed += consume
             tickets.save()
-            return Response({"success": True, "remaining_tickets": tickets.count})
+            return Response({"success": True, "remaining_tickets": tickets.count, "x-status": 0})
 
         except KeyError as ke:
             return Response({"success": False, "message": "missing field: {}".format(ke)}, status=status.HTTP_400_BAD_REQUEST)

@@ -82,7 +82,7 @@ class MainProfShow(models.Model):
     venue = models.CharField(max_length=100, default='TBA')
     contact = models.CharField(max_length=140, default='')
     price = models.IntegerField(default=0)
-    organization = models.ForeignKey("Organization", null=True, default=None, related_name="shows")
+    organizations = models.ManyToManyField("Organization", default=None, related_name="shows")
 
     def __str__(self):
         return self.name + '-prof show'
@@ -109,7 +109,7 @@ class Organization(models.Model):
     name = models.CharField(max_length=50, null=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=False)
     disabled = models.BooleanField(default=False)
-    # shows: a foreignkey from the MainProfShow model.
+    # shows: a manytomany relation from the MainProfShow model.
 
     def __str__(self):
         return self.name
