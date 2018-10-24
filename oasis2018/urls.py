@@ -15,8 +15,9 @@ urlpatterns = [
     url(r'^regsoft/', include('regsoft.urls')),
     url(r'^preregistration/',include('preregistration.urls')),
     url(r'^shop/', include('shop.urls')),
+    url(r'^wordwars/', include("wordwars.urls")),    
     url(r'^ems/', include('ems.urls')),
-    url(r'^wordwars/', include("wordwars.urls")),
+    url(r'^storewebapp/', include("storewebapp.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

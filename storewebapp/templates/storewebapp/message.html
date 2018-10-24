@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    {% load static %}
+    
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>APOGEE '18' | The Cybernetic Vision</title>
+    <!-- Favicon-->
+
+    <link rel="shortcut icon" href="{% static 'storewebapp/assets/img/favicon.ico'%}" type="image/x-icon">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+
+    <!-- Bootstrap Core Css -->
+    <link href="{% static 'storewebapp/plugins/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+
+    <!-- Waves Effect Css -->
+    <link href="{% static 'storewebapp/plugins/node-waves/waves.css' %}" rel="stylesheet" />
+
+    <!-- Custom Css -->
+    <link href="{% static 'storewebapp/css/style.css' %}" rel="stylesheet">
+</head>
+
+<body class="four-zero-four">
+    <label style="display: flex; flex-direction: column; width: 100%; justify-content: center; text-align: center">
+        <h1 style="color: red">{{error_heading}}</h1>
+        <h3>{{message}}</h3>
+        <div class="button-place" style="margin-top: 20px;">
+            <a href="{{url}}" class="btn btn-default btn-lg waves-effect">GO TO PREVIOUS PAGE</a>
+        </div>
+    </label>
+    {% comment %} <div class="four-zero-four-container">
+        <div class="error-code" style="font-size: 20px">{{error_heading}}</div>
+        <div class="error-message">{{message}}</div>
+        <div class="button-place">
+            <a href="{{url}}" class="btn btn-default btn-lg waves-effect">GO TO PREVIOUS PAGE</a>
+        </div>
+    </div> {% endcomment %}
+
+    <!-- Jquery Core Js -->
+    <script src="{% static 'storewebapp/plugins/jquery/jquery.min.js' %}"></script>
+    
+    <!-- Bootstrap Core Js -->
+    <script src="{% static 'storewebapp/plugins/bootstrap/js/bootstrap.js' %}"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="{% static 'storewebapp/plugins/node-waves/waves.js' %}"></script>
+</body>
+
+</html>

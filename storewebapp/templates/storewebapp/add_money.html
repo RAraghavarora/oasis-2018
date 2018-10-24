@@ -1,0 +1,106 @@
+{% extends 'storewebapp/base.html' %}
+
+{% block body %}
+{% if messages %}
+<div class="body">
+{% for message in messages %}
+<div class="alert alert-info alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+    {{message}}
+</div>
+{% endfor %}
+</div>
+{% endif %}
+<div class="row clearfix" style="margin: 0">
+<div class="card" style="margin: 0 -15px 10px -15px">
+    <div class="header">
+        <h2 id="add-money-msg">Add Money</h2>
+    </div>
+
+    <div class="body" id="add-money-body">
+            <label for="amount">Amount</label>
+            <div class="form-group">
+                <div>
+                    <input type="number" id="amount" class="form-control" placeholder="Amount" name="amount">
+                </div>
+            </div>
+            <br>
+            <button class="btn btn-primary m-t-15 waves-effect" value="swd" name="type" style="width: 100%" id="add-money-swd">Add Money from SWD Account</button>
+			<!-- <button class="btn btn-primary m-t-15 waves-effect" style="width: 100%" id="add-money-mojo">Add Money (Debit/Credit Card/ UPI)</button> -->
+        </div>
+    </div>
+</div>
+</div>
+<script>
+	var getAmount = function() { return Number(document.getElementById("amount").value.trim());}
+  var makeFetchRequest = function(is_swd) {
+	var amount = Number(getAmount());
+    return fetch(BASE_URL + "/add-money/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "wallet-token": "asdf",
+                "authorization": "JWT " + localStorage.getItem("user_token"),
+                "x-origin": "Web",
+            }, 
+        body: JSON.stringify({amount: amount, is_swd: is_swd})
+      }).then(function(data){
+        return processResponse(data);
+      });
+  }
+
+  isBhikari = false;
+	/*document.getElementById("add-money-mojo").addEventListener("click", function() {
+    if(getAmount() <= 10) {
+      isBhikari = true;
+      return Materialize.toast("Please enter an amount greater than Rs.10", 5000);
+      // return Materialize.toast("Bhikhari aur daal bc", 5000);
+    }
+      makeFetchRequest(false)
+      .then(function(parsedRes) {
+        console.log(parsedRes);
+        if(parsedRes.status !== 200){ 
+          Materialize.toast(parsedRes.json.message, 5000);
+          // Materialize.toast("Kat gya bc", 5000);
+        }
+        else if(!parsedRes.json.url) {
+          Materialize.toast(parsedRes.json.message, 5000);
+          // Materialize.toast("Nahi denge url", 5000);
+         }
+        else {
+          window.location.href = parsedRes.json.url;
+        }
+      }).catch(function(err) {
+        console.log(err);	
+      });
+	});*/
+
+  document.getElementById("add-money-swd").addEventListener("click", function() {
+    showLoadingSpinner(true);
+	  if(Number(getAmount()) === 0) {
+      showLoadingSpinner(false);
+      return Materialize.toast("Please enter a valid amount", 5000);
+    }
+    makeFetchRequest(true).then(function(parsedRes) {
+      console.log(parsedRes);
+      showLoadingSpinner(false);
+      if (parsedRes.status === 200) {
+        Materialize.toast("Rs. " + getAmount() + " added to wallet!", 5000);
+      }
+      else {
+        Materialize.toast(parsedRes.json.message, 5000);
+      }
+      document.getElementById("amount").value = "";
+    })
+  });
+
+  if(Number(localStorage.getItem("is_bitsian")) !== 1) {
+    document.getElementById("add-money-body").style.display = "none";
+    document.getElementById("add-money-msg").textContent = "Show the QR code at the counter";
+    document.getElementById("add-money-msg").style.textAlign = "center";
+
+  }
+
+
+</script>
+{% endblock %}
