@@ -78,7 +78,7 @@ class ShopTests(TestCase):
                 2. a jwt, qr code and id are returned in the response """
 
         client = RequestsClient()
-        headers = {"Wallet-Token": "asdf", "Content-Type": "application/json"}
+        headers = {"Wallet-Token": WALLET_TOKEN, "Content-Type": "application/json"}
 
         data = {"username": "wong", "password": "asdfghjkl", "is_bitsian": False}
         response = client.post("http://testserver/shop/auth/", json=data, headers=headers)
