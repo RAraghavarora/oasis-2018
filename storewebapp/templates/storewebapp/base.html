@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>WALLET | OASIS'18</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+
+    <link href="{% static 'storewebapp/plugins/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+
+    <link href="{% static 'storewebapp/plugins/node-waves/waves.css' %}" rel="stylesheet" />
+
+    <!-- <link href="{% static 'storewebapp/plugins/animate-css/animate.css' %}" rel="stylesheet" /> -->
+    <link href="{% static 'storewebapp/plugins/bootstrap-select/css/bootstrap-select.css' %}" rel="stylesheet" />
+
+    <!-- <link href="{% static 'storewebapp/plugins/morrisjs/morris.css' %}" rel="stylesheet" /> -->
+    <link href="{% static 'storewebapp/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css' %}" rel="stylesheet">
+
+    <link href="{% static 'storewebapp/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'storewebapp/css/materialize.min.css' %}" rel="stylesheet">
+    <link rel="shortcut icon" href="{% static 'storewebapp/img/Oasis-Logo.jpg' %}" type="image/x-icon">
+    {% block head %}
+    {% endblock %}
+    <link href="{% static 'storewebapp/css/themes/all-themes.css' %}" rel="stylesheet" />
+    <link rel="shortcut icon" href="{% static 'storewebapp/img/Oasis-Logo.jpg' %}">
+
+    <style>
+        #qr img {
+            height: 300px;
+            width: 300px;
+        }
+
+        #qr_toggle:hover, .add-cart:hover, .incr-prod:hover, .decr-prod:hover {
+            cursor: pointer;
+        }
+
+        .stall-name-cart {
+            background: #c6c6c6 !important;
+        }
+
+        /* .stall-name-cart th {
+            color: black !important;
+        } */
+
+        .ticket {
+            border: 1px solid #ccc;
+            padding: 7px 10px;
+            max-width: 500px;
+        }
+
+        .ticket label {
+            display: flex;
+        }
+
+        .ticket label h5 {
+            margin: 0;
+            text-transform: uppercase;
+            color: #404040;
+        }
+
+        .ticket label h4 {
+            margin: 0;
+            color: #000;
+        }
+
+        .js-right-sidebar {
+            margin-top: 0 !important;
+        }
+
+        .bars::before, .bars::after {
+            top: 4px !important;
+        }
+
+        .user-info {
+            background-color: #000;
+            background-image: url("{% static 'storewebapp/img/side-logo.png' %}");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 80%;
+        }
+
+        .otp-stuff:hover {
+          cursor: pointer;
+        }
+
+        /* #pending-orders-table th {
+          text-align: center;
+        } */
+
+        @media all and (max-width: 600px) {
+            .navbar-brand {
+                padding-top: 11px !important;
+            }
+        }
+
+		#loading-spinner {
+			height: 100%;
+			width: 100%;
+			position: absolute;
+			background-color: rgba(0, 0, 0, 0.1);
+			top: 0;
+			z-index: 100;
+			display: none;
+			transition: opacity 0.3s ease-in-out;
+			justify-content: center;
+			align-items: center;
+		}
+    </style>
+
+    <!-- firebase -->
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-firestore.js"></script>
+
+    <script src="{% static 'storewebapp/js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'storewebapp/js/materialize.min.js' %}"></script>
+    <script src="{% static 'storewebapp/js/qrcode.js' %}"></script>
+    <script src="{% static 'storewebapp/js/common.js' %}"></script>
+</head>
+
+<body class="theme-cyan">
+    <div class="page-loader-wrapper">
+        <div class="loader">
+            <div class="preloader">
+                <div class="spinner-layer pl-red">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+            <p>Loading...</p>
+        </div>
+    </div>
+    <!-- #END# Page Loader -->
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+    <!-- #END# Overlay For Sidebars -->
+    <!-- Top Bar -->
+    <nav class="navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false" style="display: none"></a>
+                <a href="javascript:void(0);" class="bars"></a>
+                <a class="navbar-brand" href="#">OASIS 2018 Wallet</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="pull-right"><a href="javascript:void(0);" class="js-right-sidebar" data-close="true"><i class="material-icons">more_vert</i></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- #Top Bar -->
+    <section>
+        <!-- Left Sidebar -->
+        <aside id="leftsidebar" class="sidebar">
+            <!-- User Info -->
+            <div class="user-info">
+                <div class="info-container">
+                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><strong></strong></div>
+                    <div class="email"></div>
+                    <!-- <div class="btn-group user-helper-dropdown">
+                        <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
+                        <ul class="dropdown-menu pull-right">
+                            <li><a href="#"><i class="material-icons">person</i>Contacts</a></li>
+                            <li role="seperator" class="divider"></li>
+                            <li><a onclick = "signOut()"><i class="material-icons">input</i>Sign Out</a></li>
+                        </ul>
+                    </div> -->
+                </div>
+            </div>
+            <!-- #User Info -->
+            <!-- Menu -->
+            <div class="menu">
+                <ul class="list">
+                    <li class="header">MAIN NAVIGATION</li>
+                    <li class="active">
+                        <a href="{% url 'storewebapp:profile' %}">
+                            <span>Home</span>
+                        </a>
+
+                    </li>
+                    <li class="active">
+                        <a href="{% url 'storewebapp:add_money' %}">
+                            <span>Add Money</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="{% url 'storewebapp:send_money' %}">
+                            <span>Send Money</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="{% url 'storewebapp:prof_show_details' %}">
+                            <span>ProfShows signed</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="{% url 'storewebapp:view_cart' %}">
+                            <span>View Cart</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="{% url 'storewebapp:show_transactions' %}">
+                            <span>Show Past Transactions</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a onclick = "signOut()">
+                            <span>Sign Out</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- #Menu -->
+            <!-- Footer -->
+            <div class="legal">
+                <div class="copyright">
+                    &copy; for OASIS'18  <a target = "_blank" href="https://bits-dvm.org/">DVM, BITS Pilani</a>
+                </div>
+                <div class="version">
+                    <b>Thanks, </b> AdminBSB
+                </div>
+            </div>
+            <!-- #Footer -->
+        </aside>
+        <!-- #END# Left Sidebar -->
+        <!-- Right Sidebar -->
+        <aside id="rightsidebar" class="right-sidebar">
+            <!-- <ul class="nav nav-tabs tab-nav-right" role="tablist">
+                <li role="presentation" class="active"><a href="#settings" data-toggle="tab">SETTINGS</a></li>
+            </ul> -->
+            <div class="tab-content">
+
+                <div role="tabpanel" class="tab-pane fade in active in active" id="settings">
+                    <div class="demo-settings">
+                        <p>GENERAL LINKS</p>
+                        <ul class="setting-list">
+                            <li>
+                                <a class="btn btn-block bg-blue waves-effect" target="_blank" href="https://bits-oasis.org">Go to the main site</a>
+                            </li>
+                        </ul>
+                        <p>OPTIONS</p>
+                        <ul class="setting-list">
+                            <li>
+                                <a class="btn btn-block bg-blue waves-effect" onclick="signOut()">SIGNOUT</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <!-- #END# Right Sidebar -->
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <a href="{% url 'storewebapp:profile' %}"><img src="{% static 'storewebapp/img/back.png' %}" /></a>
+            <!-- Just for Bhavika and not for Alanckrit bhaiya but vo hila lenge ise dekhke-->
+            <div class="block-header" style="margin: 10px -10px">
+                <h2>DASHBOARD</h2>
+            </div>
+            {% block body %}
+            {% endblock %}
+            </div>
+        </div>
+    </section>
+	<section id="loading-spinner">
+		<div class="preloader-wrapper big active">
+			<div class="spinner-layer spinner-blue-only">
+			  <div class="circle-clipper left">
+				<div class="circle"></div>
+			  </div>
+			  <div class="gap-patch">
+        		<div class="circle"></div>
+			  </div>
+			  <div class="circle-clipper right">
+				<div class="circle"></div>
+			  </div>
+			</div>
+  		</div>
+	</section>
+
+    <!-- Jquery Core Js -->
+    <script src="{% static 'storewebapp/plugins/jquery/jquery.min.js' %}"></script>
+
+    <!-- Bootstrap Core Js -->
+    <script src="{% static 'storewebapp/plugins/bootstrap/js/bootstrap.js' %}"></script>
+
+    <!-- Select Plugin Js -->
+    <script src="{% static 'storewebapp/plugins/bootstrap-select/js/bootstrap-select.js' %}"></script>
+
+    <!-- Slimscroll Plugin Js -->
+    <script src="{% static 'storewebapp/plugins/jquery-slimscroll/jquery.slimscroll.js' %}"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="{% static 'storewebapp/plugins/node-waves/waves.js' %}"></script>
+    <!-- <script src="{% static 'storewebapp/js/materialize.min.js' %}"></script> -->
+
+
+    <script src="{% static 'storewebapp/plugins/jquery-countto/jquery.countTo.js' %}"></script>
+    
+ 
+    <script src="{% static 'storewebapp/js/pages/index.js' %}"></script>
+
+    <!-- Demo Js -->
+    <script src="{% static 'storewebapp/js/demo.js' %}"></script>
+    
+        <!-- Jquery DataTable Plugin Js -->
+    <script src="{% static 'storewebapp/plugins/jquery-datatable/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'storewebapp/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js' %}"></script>
+    <script src="{% static 'storewebapp/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'storewebapp/plugins/jquery-datatable/extensions/export/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'storewebapp/plugins/jquery-datatable/extensions/export/jszip.min.js' %}"></script>
+    <script src="{% static 'storewebapp/plugins/jquery-datatable/extensions/export/pdfmake.min.js' %}"></script>
+    <script src="{% static 'storewebapp/plugins/jquery-datatable/extensions/export/vfs_fonts.js' %}"></script>
+    <script src="{% static 'storewebapp/plugins/jquery-datatable/extensions/export/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'storewebapp/plugins/jquery-datatable/extensions/export/buttons.print.min.js' %}"></script>
+    <script src="{% static 'storewebapp/js/pages/tables/jquery-datatable.js' %}"></script>
+    <script src="{% static 'storewebapp/js/firebase.js' %}"></script>
+    <script src="{% static 'storewebapp/js/admin.js' %}"></script>
+    <script src="{% static 'storewebapp/js/demo.js' %}"></script>
+    <script src="{% static 'storewebapp/js/script.js' %}"></script>
+    
+    <script>
+
+        var userToken = localStorage.getItem("user_token");
+
+        if (!userToken) {
+            window.location.href = "/storewebapp";
+        }
+
+		function showLoadingSpinner(show) {
+			var loadingSpinner = document.getElementById("loading-spinner");
+			var display = show ? "flex" : "none";
+			loadingSpinner.style.display = display;
+		}
+
+        function signOut () {
+            localStorage.removeItem("user_token");
+            localStorage.removeItem("user_id");
+            localStorage.removeItem("qr_code");
+
+            window.location.href = "/storewebapp";
+        }
+
+		/*var isBitsian = Number(localStorage.getItem('is_bitsian'))
+		if(!isBitsian) {
+			document.getElementById('add-money-li').style.display = "none";
+		}*/
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,216 @@
+{% extends "storewebapp/base.html" %}
+{% block body %}
+{% load storewebapp_tags %}
+
+<div class="card" style="margin: 0 -10px">
+    <div class="header" style="padding: 10px">
+        <h2>
+            Products in Cart (Amount = &#8377;<span id = "cart-total-price"></span>)
+        </h2>
+    </div>
+	<div class="body" style="padding: 0">
+	<form action="{% url 'storewebapp:view_cart'%}" method="post">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover dataTable">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id = "cart-table">
+                </tbody>
+            </table>
+        </div>
+        <!-- <center>
+                <button type="submit" class="btn-danger  m-l-20 bg-pink btn-lg waves-effect" style="margin: 0">Remove</button>
+        </center> -->
+    </form>
+    <center>
+        <a class="btn-success m-l-20 bg-cyan btn-lg waves-effect" style="margin: 10px 0" id="checkout-btn">Checkout</a>
+    </center>
+    </div>
+</div>
+<script>
+    var cart = localStorage.getItem("cart");
+
+    function renderCart (cart) {
+      document.getElementById("cart-table").innerHTML = "";
+      var totalPrice = 0;
+
+      if (cart) {
+          jsonCart = JSON.parse(cart);
+
+          for (stall_id in jsonCart) {
+              var trStallName = document.createElement("tr");
+              trStallName.setAttribute("class", "stall-name-cart");
+              trStallName.innerHTML = "<th colspan = '4'>" + jsonCart[stall_id].name + "</th";
+
+              document.getElementById("cart-table").appendChild(trStallName);
+
+              var cartItems = jsonCart[stall_id].items;
+              for (var i = 0; i < cartItems.length; i++) {
+                  var tr = document.createElement("tr");
+                  tr.innerHTML = "<td>" + cartItems[i].name + "<br>&#8377;" + cartItems[i].price + "</td><td>" + cartItems[i].qty + "</td><td>&#8377;" + (cartItems[i].price*cartItems[i].qty) + "</td><td></td>";
+
+                  var tdName = document.createElement("td");
+                  tdName.innerHTML = cartItems[i].name + "<br>&#8377;" + cartItems[i].price
+
+                  var tdQuantity = document.createElement("td");
+                  tdQuantity.setAttribute("style", "display: flex; flex-direction: row; align-items: center;");
+                  tdQuantity.innerHTML = '<div><i class = "material-icons incr-prod" onclick = "increaseQuantitiy(this, '+ cartItems[i].price +', '+ stall_id +', '+ i +')">add_circle_outline</i></div><div class = "prod-quantity" style = "height: 100%; padding: 0 10px;">' + cartItems[i].qty + '</div><div><i class = "material-icons decr-prod" onclick = "decreaseQuantity(this, '+ cartItems[i].price +', '+ stall_id +', '+ i +')">remove_circle_outline</i></div>'
+
+                  var tdPrice = document.createElement("td");
+                  tdPrice.innerHTML = "&#8377;<span>" + (cartItems[i].price*cartItems[i].qty) + "</span>";
+
+                  var tdDelete = document.createElement("td");
+                  tdDelete.innerHTML = '<div><i class = "material-icons decr-prod" onclick = "deleteItem(this, '+ stall_id +', ' + i +')">delete</i></div>';
+
+                  totalPrice += (cartItems[i].price*cartItems[i].qty);
+
+                  tr.innerHTML = tdName.outerHTML + tdQuantity.outerHTML + tdPrice.outerHTML + tdDelete.outerHTML;
+                  document.getElementById("cart-table").appendChild(tr);
+              }
+          }
+
+          document.getElementById("cart-total-price").innerHTML = totalPrice;
+          localStorage.setItem("totalPrice", totalPrice);
+      }
+    }
+
+    // first render
+    renderCart(cart);
+
+    function increaseQuantitiy (elem, itemPrice, stall_id, itemIndex) {
+        var cart = localStorage.getItem("cart");
+        var currQuantity = parseInt(elem.parentElement.parentElement.childNodes[1].innerHTML);
+        var MAX = 1000;
+
+        if (currQuantity === MAX) {
+            Materialize.toast("Maximum quantity reached.");
+        }
+        else {
+            Materialize.Toast.removeAll();
+            // elem.parentElement.parentElement.childNodes[1].innerHTML = currQuantity+1;
+
+            // var priceElem = elem.parentElement.parentElement.parentElement.childNodes[2].childNodes[1];
+            // var newPrice = parseInt(priceElem.innerHTML) +  + itemPrice;
+            // priceElem.innerHTML = newPrice;
+
+            // totalPrice += itemPrice;
+            // document.getElementById("cart-total-price").innerHTML = totalPrice;
+
+            var jsonCart = JSON.parse(cart);
+            jsonCart[stall_id].items[itemIndex].qty = (currQuantity+1);
+            localStorage.setItem("cart", JSON.stringify(jsonCart));
+            renderCart(JSON.stringify(jsonCart));
+        }
+    }
+
+    function decreaseQuantity (elem, itemPrice, stall_id, itemIndex) {
+        var cart = localStorage.getItem("cart");
+        var currQuantity = parseInt(elem.parentElement.parentElement.childNodes[1].innerHTML);
+
+        if (currQuantity === 1) {
+            Materialize.toast("Minimum quantity reached.");
+        }
+        else {
+            // Materialize.Toast.removeAll();
+            // elem.parentElement.parentElement.childNodes[1].innerHTML = currQuantity-1;
+
+            // var priceElem = elem.parentElement.parentElement.parentElement.childNodes[2].childNodes[1];
+            // var newPrice = parseInt(priceElem.innerHTML) - itemPrice;
+            // priceElem.innerHTML = newPrice;
+
+            // totalPrice -= itemPrice;
+            // document.getElementById("cart-total-price").innerHTML = totalPrice;
+
+            var jsonCart = JSON.parse(cart);
+            jsonCart[stall_id].items[itemIndex].qty = (currQuantity-1);
+            localStorage.setItem("cart", JSON.stringify(jsonCart));
+            renderCart(JSON.stringify(jsonCart));
+        }
+    }
+
+    function deleteItem (elem, stall_id, itemIndex) {
+        var tr = elem.parentElement.parentElement.parentElement;
+        tr.parentElement.removeChild(tr);
+
+        var cart = localStorage.getItem("cart");
+        var jsonCart = JSON.parse(cart);
+        jsonCart[stall_id].items.splice(itemIndex, 1);
+
+        if (jsonCart[stall_id].items.length <= 0) {
+            delete jsonCart[stall_id];
+        }
+        localStorage.setItem("cart", JSON.stringify(jsonCart));
+
+        // console.log(JSON.stringify(jsonCart));
+        renderCart(JSON.stringify(jsonCart));
+    }
+
+	function orderDateTime() {
+		var d = new Date();
+    return d.toLocaleDateString() + " at " + d.toLocaleTimeString();
+	}
+	
+
+	function placeOrder() {
+		var order = localStorage.getItem("cart");
+		if(order == null || order == "{}") {
+			return Materialize.toast("Please add some item to the cart", 5000);	
+			showLoadingSpinner(false);
+		}
+    var totalPrice = parseInt(localStorage.getItem("totalPrice"));
+		var orderObj = {
+			order: JSON.parse(order), 
+			date: orderDateTime(),
+      price: totalPrice,
+		}
+		
+		console.log(JSON.stringify(orderObj));
+
+		fetch(BASE_URL + "/place-order/", {
+			method: 'post', 
+			body: JSON.stringify(orderObj),
+			headers: {
+				authorization: "JWT " + localStorage.getItem('user_token'),
+				"wallet-token": "asdf",
+				"Content-Type": "application/json",
+			}
+		}).then( function(res) {
+			return processResponse(res);	
+		}).then( function(parsedRes) {
+			showLoadingSpinner(false);
+			console.log(parsedRes);	
+			if(parsedRes.status === 200) { 
+				localStorage.removeItem("cart");
+				window.location.href = "/storewebapp/profile/";
+			}
+			else if(parsedRes.status === 400) {
+				Materialize.toast(parsedRes.json.message);	
+			}
+			else {
+				Materialize.toast("Unknown error occured. Contact support.", 5000);	
+			}
+			
+		}).catch(function(err){
+			showLoadingSpinner(false);
+			console.log(err);
+			Materialize.toast("Unknown error occured. Contact support.", 5000);	
+		});
+	}
+
+	document.getElementById('checkout-btn').addEventListener("click", function() {
+		var order = localStorage.getItem("cart");
+		if(order == null || order == "{}") {
+			return Materialize.toast("Please add some item to the cart", 5000);	
+		}
+		showLoadingSpinner(true);
+		placeOrder();
+	});
+
+</script>
+{% endblock %}
