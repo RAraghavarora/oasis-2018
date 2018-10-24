@@ -37,4 +37,6 @@ urlpatterns = [
 
     url(r'^get-profile/$', misc_views.GetProfile.as_view(), name='get-profile'),
     url(r'^get-profshows/$', misc_views.GetProfShows.as_view(), name="get-profshows"),
+
+    url(r'^debug/info/$', misc_views.AppDebugInfo.as_view(), name="debug-info"),
 ]

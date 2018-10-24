@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
+from shop.models.debug import DebugInfo
 from shop.permissions import TokenVerification
 from registrations.models import Bitsian
 from events.models import MainProfShow
@@ -53,3 +54,29 @@ class GetProfShows(APIView):
             for show in MainProfShow.objects.all():
                 shows.append(MainProfShowSerializer(show).data)
             return Response({"shows": shows})
+
+
+class AppDebugInfo(APIView):
+
+    permission_classes = (TokenVerification,)
+
+    identity_dict = {long_form : short_form for short_form, long_form in DebugInfo.IDENTITY}
+
+    def post(self, request):
+        try:
+            debug_info = request.data["debug_info"]
+            identity = request.data["identity"].title()
+        except KeyError as missing:
+            msg = {"message" : "The following field was missing: {}".format(missing)}
+            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            identity = self.identity_dict[identity]
+        except KeyError:
+            msg = {"message" : "Wrong Identity."}
+            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+
+        DebugInfo.objects.create(identity=identity, debug_info=debug_info)
+
+        msg = {"message" : "Request Successful."}
+        return Response(msg, status=status.HTTP_200_OK)
