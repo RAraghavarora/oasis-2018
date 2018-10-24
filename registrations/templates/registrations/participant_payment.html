@@ -43,7 +43,7 @@
                                 </tr>
                             </tfoot>
                             <tbody>
-                                {% if not participant.paid %}
+                                {% if not participant.paid or not participant.is_bus_paid %}
                                 <tr>
                                     <td>
                                         Rs 300
@@ -62,7 +62,15 @@
                                         <label for="2"></label>
                                     </td>
                                 </tr>
-                                {% elif participant.paid and not participant.controlz_paid %}
+                                <tr>                                    <td>
+                                        Pay for bus 
+                                    </td>
+                                    <td>
+                                        <input name="key" type="radio" id="4" value="4"/>
+                                        <label for="4"></label>
+                                    </td>
+                                </tr>
+                                {% elif participant.paid and not participant.controlz_paid or not participant.is_bus_paid %}
                                 <tr>
                                     <td>
                                         Rs 700
@@ -70,6 +78,15 @@
                                     <td>
                                         <input name="key" type="radio" id="3" value="3"/>
                                         <label for="3"></label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Pay for bus 
+                                    </td>
+                                    <td>
+                                        <input name="key" type="radio" id="4" value="4"/>
+                                        <label for="4"></label>
                                     </td>
                                 </tr>
                                 {% endif %}
