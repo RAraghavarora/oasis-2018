@@ -1,4 +1,4 @@
-var BASE_URL = "http://test.bits-oasis.org/2018/shop";
+var BASE_URL = "https://bits-oasis.org/2018/shop";
 
 function processResponse (response) {
     var status = response.status;

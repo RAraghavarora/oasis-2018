@@ -40,7 +40,8 @@ def autoAddWalletBitsian(sender, **kwargs):
                 balance = Balance.objects.create(wallet=wallet)
                 wallet.balance = balance
                 wallet.save()
-    except:
+    except Exception as e:
+        print(e)
         time.sleep(1)
         autoAddWalletBitsian(sender, **kwargs)
 

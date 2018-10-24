@@ -12,6 +12,9 @@ from shop.models.order import OrderFragment
 from shop.permissions import TokenVerification
 from shop.serializers import ItemClassSerializer, StallSerializer, OrderFragmentSerializer
 
+from firebase_admin import firestore, messaging
+
+import datetime
 
 class StallsList(APIView):
 
@@ -84,15 +87,35 @@ class StallOrderStatus(APIView):
 	status_dict = {long_form : short_form for short_form, long_form in OrderFragment.STATUS}
 	status_responses = ["Accepted", "Declined", "Ready", "Finished"]
 
-	def sendNotification(self, registration_token):
+	def sendNotification(self, pk, registration_token, order_status):
+		title = 'Order Status: {}'.format(order_status)
+		body = 'This is a notification.'
+
+		db = firestore.client()
+		data = {
+			"title" : title,
+			"body" : body
+		}
+
+		col_str = "User #{}".format(pk)
+		collection = db.collection(col_str)
+		doc_string = "Notifications"
+		doc_ref = collection.document(doc_string)
+		doc_ref.set({
+			str(datetime.datetime.now()) : str(data)
+		})
+
 		message = messaging.Message(
-		    data = {
-		        "Notification" : "Your Order is Ready!!"
-		    },
+		    notification = messaging.Notification(
+		        title = title,
+		        body = body,
+		    ),
 		    token = registration_token,
 		)
 		try:
 			response = messaging.send(message)
+			print(response)
+
 		except Exception as e:
 			print(e)
 
@@ -120,12 +143,12 @@ class StallOrderStatus(APIView):
 			msg = {"message": "order_status response not recognized."}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
-		# if order_status == "Ready":
-		# 	try:
-		# 		registration_token = order_fragment.order.customer.registration_token
-		# 	except:
-		# 		pass
-		# 	self.sendNotification(registration_token)
+		try:
+			registration_token = order_fragment.order.customer.registration_token
+			pk = order_fragment.order.customer.id
+		except:
+			pass
+		self.sendNotification(pk, registration_token, order_status)
 
 		#Stalls transfer money
 		if order_status == 'Finished':
