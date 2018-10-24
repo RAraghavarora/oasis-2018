@@ -1,0 +1,102 @@
+
+<html>
+    <head>
+        <title>OASIS WALLET 2018</title>
+        {% load static %}
+        <meta name = "viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+        <meta charset="utf-8">
+        <meta name="copyright" content="Copyright Â© 2018 Department Of Visual Media, BITS Pilani">
+        <meta name="author" content="Department Of Visual Media, BITS Pilani">
+        <!-- <meta name="google-signin-scope" content="profile email"> -->
+        <meta name="google-signin-client_id" content="563920200402-chepn5acpejf0bac9v6on3a8pdvmvvg0.apps.googleusercontent.com">
+        
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css?family=Viga" rel="stylesheet">
+        <link href="{% static 'storewebapp/css/materialize.min.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'mechanix/css/style.css' %}">
+        <link rel="shortcut icon" href="{% static 'storewebapp/img/Oasis-Logo.jpg' %}">
+        <style>
+            .ribbon {
+                background: #00BCD4;
+            }
+        </style>
+    
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <script src="{% static 'storewebapp/js/common.js' %}"></script>
+    </head>
+    
+    <body>
+        <div class = "wrapper">
+            <div class = "form">
+                <div class = "ribbon">OASIS'18 WALLET
+                </div>
+                <div style="height: 100vh; width: 100vw; display: flex; flex-direction: column; justify-content: center; align-items: center;"><h2>Login with your BITS Mail:</h2><div class="g-signin2" data-onsuccess="onSignIn"></div></div>
+                </div>
+                <form name = "myform" action = "{% url 'storewebapp:bitsian_login' %}" method='POST'>
+                    <input id = "temp-input" type="text" name="id_token">
+                </form>
+        </div>
+    </body>
+    
+    <script src = "{% static 'storewebapp/js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'storewebapp/js/materialize.min.js' %}"></script>
+    <script src = "{% static 'storewebapp/js/script.js' %}"></script>
+    <script>
+            window.onbeforeunload = function(e){
+                gapi.auth2.getAuthInstance().signOut();
+              };
+            window.onload = function() {
+                var auth2 = gapi.auth2.getAuthInstance();
+                auth2.signOut();
+            }
+
+            function onSignIn(googleUser) {
+                var oauth_token = googleUser.getAuthResponse().id_token;
+
+                var bitsianOuthBody = {
+                    is_bitsian: true,
+                    id_token: oauth_token
+                };
+
+                console.log(oauth_token);
+
+                if (oauth_token) {
+                    fetch(BASE_URL + "/auth/", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "wallet-token": "asdf"
+                        },
+                        body: JSON.stringify(bitsianOuthBody)
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    })
+                    .then(function (res) { return processResponse(res); })
+                    .then(function (parsedRes) {
+                        if (parsedRes.status === 200) {
+                            localStorage.setItem("qr_code", parsedRes.json.qr_code);
+                            localStorage.setItem("user_token", parsedRes.json.token);
+                            localStorage.setItem("user_id", parsedRes.json.user_id);
+                            localStorage.setItem("is_bitsian", "1");
+
+                            window.location.href = "/storewebapp/profile/";
+                        }
+                        else if (parsedRes.status === 404) {
+                            Materialize.toast(parsedRes.json.message, 5000);
+                            console.log(parsedRes);
+                        }
+                        else {
+                            Materialize.toast("Some error ocurred. Contact the administrators.");
+                            console.log(parsedRes);
+                        }
+                    });
+                }
+                else {
+                    Materialize.toast("Error with google login", 5000);
+                }
+            }
+
+    </script>
+    </html>
+    

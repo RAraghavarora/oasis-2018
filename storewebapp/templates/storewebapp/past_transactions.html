@@ -1,0 +1,143 @@
+{% extends 'storewebapp/base.html' %}
+{% load static %}
+
+{% block body %}
+
+
+<div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card" style="margin: 0 -15px">
+                <div class="header" style="padding: 0">
+                    <h2>
+                        {{table.title}}
+                        {% if time %}
+                            on {{time}}
+                        {% endif %}
+                    </h2>
+                </div>
+                <div class="body" style="padding: 0">
+                    <div class="table-responsive">
+                        
+                        <table class="table table-bordered table-striped table-hover dataTable" id="processed-orders-table" style="margin: 0">
+                            <thead>
+                                <tr>
+									<th>Item Name</th>
+									<th>Item Price</th>
+									<th>Item Quantity</th>
+									<th>Status</th>
+								</tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    {% comment %} <label onclick="window.history.back()" style="display: block; margin: 10px 0 20px 0; text-decoration: underline">Go Back</label> {% endcomment %}
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+	fetch(BASE_URL + "/get-orders/", {
+		headers: {
+			"Content-Type": "application/json",
+			authorization: "JWT " + localStorage.getItem('user_token'),
+			"wallet-token": "asdf"
+		}	
+	})
+		.then(function(res) {return processResponse(res);})
+		.then(function(parsedRes) {
+			console.log(parsedRes);
+			var orders = parsedRes.json.orders;
+			var stalls = localStorage.getItem("stalls");
+
+			var stallsObj = JSON.parse(stalls);
+			var stallsData = [];
+			for(stall in stallsObj) {
+				stallsData.push({
+					stallId: stall,
+					stallName: stallsObj[stall].name,
+					processedOrders: []
+				});
+			}
+
+			//console.log(stallsData);
+
+
+
+			//console.log(orders);
+			orders.forEach(function(order) {
+				order.fragment_ids.forEach(function(fragment) {
+					if(fragment.status !== "F" && fragment.status !== "D") return;
+				
+					var currentStall = stallsData.filter(function(stall){return stall.stallId == fragment.stall_id})[0];
+
+					for(var stallId in order.order){
+						if (stallId == fragment.stall_id) {
+							order.order[stallId].items.forEach(function(item) {
+								//console.log(item);
+								var pushable = {
+									name: item.name, 
+									price: item.price,
+									qty : item.qty,
+									status: {A: "Accepted", F: "Finished", P: "Pending", D: "Declined", R: "Ready"}[fragment.status],
+									fragmentId : fragment.id,
+								}			
+								//console.log(pushable);
+								currentStall.processedOrders.push(pushable);
+							});	
+						}
+					}
+
+
+				});	
+			});
+			console.log(stallsData);
+
+
+			var table = document.querySelector("#processed-orders-table tbody");
+			stallsData.forEach(function(stall){
+
+				if(!stall.processedOrders.length) return;
+
+				var stallHeading = document.createElement('tr');
+				stallHeading.classList.add("stall-name-cart");
+				var stallHeadingData = document.createElement('th');
+				stallHeadingData.setAttribute("colspan", "4");
+				var stallHeadingText = document.createTextNode(stall.stallName);
+				stallHeadingData.append(stallHeadingText);
+				stallHeading.append(stallHeadingData);
+				table.append(stallHeading);
+
+				var orderDOMArray = stall.processedOrders.map(function(order) {
+					var tableRow = document.createElement("tr");
+					function createTd(name) {
+						var td = document.createElement("td");
+						td.append(document.createTextNode(name));
+						return td;
+					}
+					tableRow.append(createTd(order.name));
+					tableRow.append(createTd(order.price));
+					tableRow.append(createTd(order.qty));
+
+					var statusEl = createTd(order.status);
+					statusEl.style.fontWeight = "bolder";
+					console.log(order.status);
+					var fun = {
+							el: statusEl, 
+							Pending:  function(){this.el.style.color = "#ff6f00"},
+							Accepted: function(){this.el.style.color = "#00c853"},
+							Declined: function(){this.el.style.color = "#f44336"},
+							Finished: function(){this.el.style.color = "#00c853"},
+							Ready: function(){this.el.style.color = "#00c853"},
+					}[order.status]();
+					tableRow.append(statusEl);
+
+					order.el = statusEl;
+
+					return tableRow;
+				});
+
+				orderDOMArray.forEach(function(el) {table.append(el)});
+			});
+		}).catch(function(err) {console.log(err)});
+</script>
+{% endblock %}

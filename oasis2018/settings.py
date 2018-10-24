@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'shop.apps.ShopConfig',
     'ems.apps.EmsConfig',
     'wordwars',
+    'storewebapp',
 ]
 
 MIDDLEWARE = [
