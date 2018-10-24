@@ -70,6 +70,7 @@ class Tickets(models.Model):
 	prof_show = models.ForeignKey(MainProfShow, null=True, on_delete=models.SET_NULL, related_name="tickets")
 	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tickets")
 	count = models.SmallIntegerField(default=0, blank=True)
+	consumed = models.SmallIntegerField(default=0, blank=True)
 
 	def __str__(self):
 		try:

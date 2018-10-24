@@ -240,12 +240,19 @@ def payment(request):
         if key == 1:
             amount = 300
             programId = 9381
+            subProgramName = 'Registration'
         elif key == 2:
             amount = 1000
             programId = 9183
+            subProgramName = 'Registration'
         elif key == 3:
             amount = 700
             programId = 9382
+            subProgramName = 'Registration'
+        elif key == 4:
+            amount = 500
+            programId = 9396
+            subProgramName = 'Oasis SU Bus Payment'
         part_list = Participant.objects.filter(id__in=data.getlist('part_list'), pcr_approved=True)
         # print(part_list)
         group = PaymentGroup()
@@ -293,7 +300,7 @@ def payment(request):
                 {
                     "programId":programId,
                     "programName":"Oasis 2018 Registrations",
-                    "subProgramName":"Registration",
+                    "subProgramName":subProgramName,
                     "fare":amount,
                     "attendees":attendees
                 }
