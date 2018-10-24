@@ -1,0 +1,130 @@
+{% extends "regsoft/base2.html" %}
+{% block body %}
+<div class="card">
+    <div class="header">
+        <h2>
+            Tender Inventory
+        </h2>
+    </div>
+	<div class="body">
+	{% csrf_token %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover dataTable">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <tr>
+                        <td>comments</td>
+                        <td>{{inventory.comments}}</td>
+                    </tr>
+                    <tr>
+                        <td>blankets</td>
+                        <td>{{inventory.blankets}}</td>
+                    </tr>
+                    <tr>
+                        <td>mattress</td>
+                        <td>{{inventory.mattress}}</td>
+                    </tr>
+                    <tr>    
+                        <td>tents</td>
+                        <td>{{inventory.tents}}</td>
+                    </tr>
+                    <tr>
+                        <td>pillows</td>
+                        <td>{{inventory.pillows}}</td>
+                    </tr>
+                    <tr>
+                        <td>spikes</td>
+                        <td>{{inventory.spikes}}</td>
+                    </tr>
+                    <tr>
+                        <td>bedsheets</td>
+                        <td>{{inventory.bedsheets}}</td>
+                    </tr>
+                    <tr>
+                        <td>quilts</td>
+                        <td>{{inventory.quilts}}</td>
+                    </tr>
+                    <tr>
+                        <td>buckets</td>
+                        <td>{{inventory.buckets}}</td>
+                    </tr>
+                    <tr>
+                        <td>mugs</td>
+                        <td>{{inventory.mugs}}</td>
+                    </tr>
+                    <tr>
+                        <td>fans</td>
+                        <td>{{inventory.fans}}</td>
+                    </tr>
+                    <tr>
+                        <td>tables</td>
+                        <td>{{inventory.tables}}</td>
+                    </tr>
+                    <tr>
+                        <td>table_cloths</td>
+                        <td>{{inventory.cloths}}</td>
+                    </tr>
+                    <tr>
+                        <td>chairs</td>
+                        <td>{{inventory.chairs}}</td>
+                    </tr>
+                    <tr>
+                        <td>red_carpets</td>
+                        <td>{{inventory.red_carpets}}</td>
+                    </tr>
+                    <tr>
+                        <td>green_carpets</td>
+                        <td>{{inventory.green_carpets}}</td>
+                    </tr>
+                    <tr>
+                        <td>curtains</td>
+                        <td>{{inventory.curtains}}</td>
+                    </tr>
+                    <tr>
+                        <td>halogen_lamps</td>
+                        <td>{{inventory.halogen_lamps}}</td>
+                    </tr>
+                    <tr>
+                        <td>sodium_lamps</td>
+                        <td>{{inventory.sodium_lamps}}</td>
+                    </tr>
+                    <tr>
+                        <td>item1</td>
+                        <td>{{inventory.item1}}</td>
+                    </tr>
+                    <tr>
+                        <td>item2</td>
+                        <td>{{inventory.item2}}</td>
+                    </tr>
+                    <tr>
+                        <td>item3</td>
+                        <td>{{inventory.item3}}</td>
+                    </tr>
+                    <tr>
+                        <td>item4</td>
+                        <td>{{inventory.item4}}</td>
+                    </tr>
+                    <tr>
+                        <td>item5</td>
+                        <td>{{inventory.item5}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <input type="hidden" value="approve" name="action">
+        </div>
+	</form>
+    </div>
+</div>
+
+{% endblock %}

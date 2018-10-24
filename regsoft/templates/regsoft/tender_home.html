@@ -1,0 +1,39 @@
+{% extends "regsoft/base2.html" %}
+{% block body %}
+<div class="card">
+    <div class="header">
+        <h1>{{name}}</h1>
+        <h2>
+            Choose an option
+        </h2>
+    </div>
+    <div class="body">
+    {% csrf_token %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover dataTable">
+                <tbody>
+                    <tr>
+                        <td>New Entry</a></td>
+                        <td><a href="{% url 'regsoft:tender_new_entry' %}"> Click Here </a></td>
+                    </tr>
+                    <tr>
+                        <td>Return Items</a></td>
+                        <td><a href="{% url 'regsoft:tender_remove_entry' %}"> Click Here </a></td>
+                    </tr>
+                    <tr>    
+                        <td>View Status</a></td>
+                        <td><a href="{% url 'regsoft:tender_view_status' %}"> Click Here </a></td>
+                    </tr>
+                    <tr>
+                        <td>Download Sheet</a></td>
+                        <td><a href="{% url 'regsoft:tender_form' %}"> Click Here </a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <input type="hidden" value="approve" name="action">
+        </div>
+    </form>
+    </div>
+</div>
+
+{% endblock %}

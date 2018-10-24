@@ -390,7 +390,11 @@ def forgot_password(request):
 @login_required
 @csrf_exempt
 def payment(request):
-    participant = Participant.objects.get(user=request.user)
+    try:
+        participant = Participant.objects.get(user=request.user)
+    except:
+        messages.warning(request, 'Participant doesn\'t exist.')
+        return redirect(request.META.get('HTTP_REFERER'))
     if not participant.pcr_approved:
         context = {
         'error_heading': "Invalid Access",

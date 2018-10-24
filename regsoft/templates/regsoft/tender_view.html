@@ -1,0 +1,38 @@
+{% extends 'regsoft/base2.html' %}
+
+{% block body %}
+{% if messages %}
+<div class="body">
+{% for message in messages %}
+<div class="alert alert-info alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+    {{message}}
+</div>
+{% endfor %}
+</div>
+{% endif %}
+<form method="POST" action="{% url 'regsoft:tender_view_status' %}">
+    {% csrf_token %}
+<div class="row clearfix">
+<div class="card">
+    <div class="header">
+        <h2>
+            {{name}} Form
+        </h2>
+    </div>
+        <label for="location">Location</label>
+            <div class="form-group">
+                <select class="form-control show-tick" name="location" data-live-search="true">
+                    {% for location in locations %}
+                        <option value={{location.id}}>{{location}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary m-t-15 waves-effect">Submit</button>
+        </div>
+    </div>
+</div>
+</div>
+</form>
+{% endblock %}
