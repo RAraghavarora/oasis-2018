@@ -1,0 +1,214 @@
+{% extends "storewebapp/base.html" %}
+{% load storewebapp_tags %}
+{% block body %}
+
+<div class="card" style="margin: 0 -10px">
+    <div class="header" style="padding: 10px">
+        <h2>
+            Stall Name
+        </h2>
+    </div>
+	<div class="body" style="padding: 0">
+	<form method="post">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover dataTable">
+                <thead>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id = "products-list">
+
+                </tbody>
+            </table>
+        </div>
+	</form>
+    </div>
+</div>
+
+<script>
+    var stall_id = location.pathname.split('/')[3],
+        availableProds = [];
+
+    fetch(BASE_URL + "/stalls/" + stall_id + "/", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "wallet-token": "asdf",
+            "authorization": "JWT " + localStorage.getItem("user_token")
+        }
+    })
+    .catch(function (err) {
+        console.log(err);
+        Materialize.toast("Error fetching products");
+    })
+    .then(function (res) { return processResponse(res); })
+    .then(function (parsedRes) {
+        var products = parsedRes.json;
+
+        for (var i = 0; i < products.length; i++) {
+            if (products[i].is_available) {
+                availableProds[availableProds.length] = products[i];
+
+                var tr = document.createElement("tr");
+
+                var tdProd = document.createElement("td");
+                tdProd.innerHTML = '<div style = "font-size: 120%; font-weight: bold;">'+ products[i].name +'</div><div>&#8377; ' + products[i].price + '</div>';
+
+                var tdQuantity = document.createElement("td");
+                tdQuantity.setAttribute("style", "display: flex; flex-direction: row; align-items: center;");
+                tdQuantity.innerHTML = '<div><i class = "material-icons incr-prod" onclick = "increaseQuantitiy('+ i +')">add_circle_outline</i></div>                            <div class = "prod-quantity" style = "height: 100%; padding: 0 10px;">0</div>                            <div><i class = "material-icons decr-prod" onclick = "decreaseQuantity('+ i +')">remove_circle_outline</i></div>';
+
+                var tdAdd = document.createElement("td");
+                tdAdd.innerHTML = '<i class="material-icons add-cart" onclick = "addToCart(' + i + ')">add_shopping_cart</i>';
+
+                tr.innerHTML += tdProd.outerHTML + tdQuantity.outerHTML + tdAdd.outerHTML;
+
+                document.getElementById("products-list").appendChild(tr);
+            }
+        }
+    });
+
+    function increaseQuantitiy (index) {
+        var currQuantity = parseInt(document.getElementsByClassName("prod-quantity")[index].innerHTML);
+        var MAX = 5000;
+
+        if (currQuantity === MAX) {
+            Materialize.toast("Maximum quantity reached.");
+        }
+        else {
+            document.getElementsByClassName("prod-quantity")[index].innerHTML = currQuantity+1;
+        }
+    }
+
+    function decreaseQuantity (index) {
+        var currQuantity = parseInt(document.getElementsByClassName("prod-quantity")[index].innerHTML);
+
+        if (currQuantity === 0) {
+            Materialize.toast("Minimum quantity reached.");
+        }
+        else {
+            document.getElementsByClassName("prod-quantity")[index].innerHTML = currQuantity-1;
+        }
+    }
+
+    function fetchStallsData (stallsLocalData) {
+        return new Promise (function (resolve, reject) {
+            if (stallsLocalData) {
+                resolve(JSON.parse(stallsLocalData));
+            }
+            else {
+                fetch(BASE_URL + "/stalls/", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "wallet-token": "asdf"
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
+                })
+                .then(function (res) { return processResponse(res);})
+                .then(function (parsedRes) {
+                    var stalls = parsedRes.json,
+                        stallsLocalData = {};
+
+                    for (var i = 0; i < stalls.length; i++) {
+                        stallsLocalData[stalls[i].id] = {
+                            name: stalls[i].name
+                        };
+                    }
+                    localStorage.setItem("stalls", JSON.stringify(stallsLocalData));
+                    stallsLocalData = localStorage.getItem("stalls");
+
+                    resolve(JSON.parse(stallsLocalData));
+                });
+            }
+        })
+    }
+
+    function addToCart (index) {
+        var cart = localStorage.getItem("cart"),
+            stallsLocalData = localStorage.getItem("stalls");
+
+        var currQuantity = parseInt(document.getElementsByClassName("prod-quantity")[index].innerHTML);
+
+        if (currQuantity > 0) {
+            Materialize.Toast.removeAll();
+
+            fetchStallsData(stallsLocalData)
+            .catch(function (err) {
+                console.log(err);
+            })
+            .then(function (stalls) {
+                if (cart) {
+                    var jsonCart = JSON.parse(cart);
+                    if (jsonCart[stall_id]) {
+                        var itemsOfStall = jsonCart[stall_id].items;
+
+                        // console.log(availableProds[index]);
+                        var isItemInCart = false;
+                        for (var j = 0; j < itemsOfStall.length; j++) {
+                            if (itemsOfStall[j].id === availableProds[index].id) {
+                                isItemInCart = true;
+                                break;
+                            }
+                        }
+
+                        if (isItemInCart) {
+                            Materialize.toast(availableProds[index].name + " already present in cart. Go to the cart to increase the quantity.");
+                        }
+                        else {
+                            jsonCart[stall_id].items[jsonCart[stall_id].items.length] = {
+                                id: availableProds[index].id,
+                                name: availableProds[index].name,
+                                price: availableProds[index].price,
+                                qty: currQuantity
+                            }
+
+                            localStorage.setItem("cart", JSON.stringify(jsonCart));
+                            Materialize.toast(availableProds[index].name + " successfully added to the cart");
+                            console.log(localStorage.getItem("cart"));
+                        }
+                    }
+                    else {
+                        addNewStallToCart(jsonCart, stalls,  stall_id, availableProds, index, currQuantity);
+                        localStorage.setItem("cart", JSON.stringify(jsonCart));
+                        Materialize.toast(availableProds[index].name + " successfully added to the cart");
+                        console.log(localStorage.getItem("cart"));
+                    }
+                }
+                else {
+                    var newCart = {};
+                    addNewStallToCart(newCart, stalls, stall_id, availableProds, index, currQuantity);
+                    localStorage.setItem("cart", JSON.stringify(newCart));
+                    Materialize.toast(availableProds[index].name + " successfully added to the cart");
+                    console.log(localStorage.getItem("cart"));
+                }
+            });
+        }
+        else {
+            Materialize.toast("Please set the quantity before adding to cart");
+        }
+
+        document.getElementsByClassName("prod-quantity")[index].innerHTML = "0";
+    }
+
+    function addNewStallToCart (cart, stalls, stall_id, availableProds, index, currQuantity) {
+        cart[stall_id] = {
+            name: stalls[stall_id].name,
+            items: [
+                {
+                    id: availableProds[index].id,
+                    name: availableProds[index].name,
+                    price: availableProds[index].price,
+                    qty: currQuantity
+                }
+            ]
+        }
+    }
+
+</script>
+
+{% endblock %}
