@@ -20,6 +20,8 @@ import string
 from pcradmin.views import get_cr_name, get_pcr_number
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+
 
 import sendgrid
 from sendgrid.helpers.mail import *
@@ -962,3 +964,575 @@ def contacts(request):
 def user_logout(request):
     logout(request)
     return redirect('regsoft:index')
+
+
+# ********************************** INVENTORY VIEWS **********************************
+
+@staff_member_required
+def dashboard(request):
+    return render(request, 'regsoft/index.html')
+
+
+@staff_member_required
+def dc_login(request):
+    if request.method == 'GET':
+        return render(request, 'regsoft/dc_login.html')
+
+    if request.method == 'POST':
+        print(request.POST)
+        try:
+            id = request.POST['uniqueid']
+        except:
+            messages.warning(request,'Please provide a unique id')
+            return redirect(request.META.get('HTTP_REFERER')) 
+        try:
+            dc = DC.objects.get(uniqueid = id)
+        except:
+            messages.warning(request,'Invalid unique id')
+            return redirect(request.META.get('HTTP_REFERER')) 
+        
+        return render(request, 'regsoft/dc_home.html', {'dc':dc})
+
+@staff_member_required
+def dc_new_entry(request, dc_id):
+    if request.method == 'GET':
+        try:
+            dc = DC.objects.get(id = dc_id)
+        except:
+            context = {
+                'error_heading': "Error",
+                'message': "Club/Department does not exist",
+                'url':request.build_absolute_uri(reverse('regsoft:dc_login'))
+                }
+            return render(request, 'registrations/message.html', context)
+        return render(request, 'regsoft/dc_new_form.html', context={'dc':dc})
+
+    else:
+        data = request.POST
+        print(data)
+        try:
+            dc = DC.objects.get(id = dc_id)
+        except:
+            context = {
+                'error_heading': "Error",
+                'message': "Club/Department does not exist",
+                'url':request.build_absolute_uri(reverse('regsoft:dc_login'))
+                }
+            return render(request, 'registrations/message.html', context)
+        try:
+            inventory = DC_Inventory.objects.get(dc=dc)
+            inventory.comments = data['comment']
+            try:
+                inventory.blankets += int(data['blankets'])
+                inventory.mattress += int(data['mattresses'])
+                inventory.tents += int(data['tents'])
+                inventory.pillows += int(data['pillows'])
+                inventory.spikes += int(data['spikes'])
+                inventory.bedsheets += int(data['bedsheets'])
+                inventory.quilts += int(data['quilts'])
+                inventory.buckets += int(data['buckets'])
+                inventory.mugs += int(data['mugs'])
+                inventory.fans += int(data['fans'])
+                inventory.tables += int(data['tables'])
+                inventory.table_cloths += int(data['table_cloths'])
+                inventory.chairs += int(data['chairs'])
+                inventory.red_carpets += int(data['red_carpets'])
+                inventory.green_carpets += int(data['green_carpets'])
+                inventory.curtains += int(data['curtains'])
+                inventory.halogen_lamps += int(data['halogen_lamps'])
+                inventory.sodium_lamps += int(data['sodium_lamps'])
+                inventory.item1 += int(data['item1'])
+                inventory.item2 += int(data['item2'])
+                inventory.item3 += int(data['item3'])
+                inventory.item4 += int(data['item4'])
+                inventory.item5 += int(data['item5'])
+                inventory.save()
+            except Exception as e:
+                print(e)
+                messages.warning(request,'Please Enter data in proper format')
+                return redirect(request.META.get('HTTP_REFERER')) 
+
+        except:
+            inventory = DC_Inventory.objects.create(dc = dc)
+            inventory.comments = data['comment']
+            try:
+                inventory.blankets = int(data['blankets'])
+                inventory.mattress = int(data['mattresses'])
+                inventory.tents = int(data['tents'])
+                inventory.pillows = int(data['pillows'])
+                inventory.spikes = int(data['spikes'])
+                inventory.bedsheets = int(data['bedsheets'])
+                inventory.quilts = int(data['quilts'])
+                inventory.buckets = int(data['buckets'])
+                inventory.mugs = int(data['mugs'])
+                inventory.fans = int(data['fans'])
+                inventory.tables = int(data['tables'])
+                inventory.table_cloths = int(data['table_cloths'])
+                inventory.chairs = int(data['chairs'])
+                inventory.red_carpets = int(data['red_carpets'])
+                inventory.green_carpets = int(data['green_carpets'])
+                inventory.curtains = int(data['curtains'])
+                inventory.halogen_lamps = int(data['halogen_lamps'])
+                inventory.sodium_lamps = int(data['sodium_lamps'])
+                inventory.item1 = int(data['item1'])
+                inventory.item2 = int(data['item2'])
+                inventory.item3 = int(data['item3'])
+                inventory.item4 = int(data['item4'])
+                inventory.item5 = int(data['item5'])
+                inventory.save()
+            except Exception as e:
+                print(e)
+                messages.warning(request,'Please Enter data in proper format')
+                return redirect(request.META.get('HTTP_REFERER')) 
+
+
+        context = {
+            'error_heading': "Successfully Added",
+            'message': "Inventory items added",
+            'url':request.build_absolute_uri(reverse('regsoft:dc_login'))
+            }
+        return render(request, 'registrations/message.html', context)
+
+@staff_member_required
+def dc_remove_entry(request, dc_id):
+    if request.method == 'GET':
+        try:
+            dc = DC.objects.get(id = dc_id)
+        except:
+            context = {
+                'error_heading': "Error",
+                'message': "Club/Department does not exist",
+                'url':request.build_absolute_uri(reverse('regsoft:dc_login'))
+                }
+            return render(request, 'registrations/message.html', context)
+        return render(request, 'regsoft/dc_remove_form.html', context={'dc':dc})
+
+    else:
+        data = request.POST
+        try:
+            dc = DC.objects.get(id = dc_id)
+        except:
+            context = {
+                'error_heading': "Error",
+                'message': "Club/Department does not exist",
+                'url':request.build_absolute_uri(reverse('regsoft:dc_login'))
+                }
+            return render(request, 'registrations/message.html', context)
+        try:
+            inventory = DC_Inventory.objects.get(dc=dc)
+            inventory.comments = data['comment']
+            try:
+                inventory.blankets -= int(data['blankets'])
+                inventory.mattress -= int(data['mattresses'])
+                inventory.tents -= int(data['tents'])
+                inventory.pillows -= int(data['pillows'])
+                inventory.spikes -= int(data['spikes'])
+                inventory.bedsheets -= int(data['bedsheets'])
+                inventory.quilts -= int(data['quilts'])
+                inventory.buckets -= int(data['buckets'])
+                inventory.mugs -= int(data['mugs'])
+                inventory.fans -= int(data['fans'])
+                inventory.tables -= int(data['tables'])
+                inventory.table_cloths -= int(data['table_cloths'])
+                inventory.chairs -= int(data['chairs'])
+                inventory.red_carpets -= int(data['red_carpets'])
+                inventory.green_carpets -= int(data['green_carpets'])
+                inventory.curtains -= int(data['curtains'])
+                inventory.halogen_lamps -= int(data['halogen_lamps'])
+                inventory.sodium_lamps -= int(data['sodium_lamps'])
+                inventory.item1 -= int(data['item1'])
+                inventory.item2 -= int(data['item2'])
+                inventory.item3 -= int(data['item3'])
+                inventory.item4 -= int(data['item4'])
+                inventory.item5 -= int(data['item5'])
+                inventory.save()
+            
+            except:
+                messages.warning(request,'Please Enter data in proper format')
+                return redirect(request.META.get('HTTP_REFERER'))
+        
+        except:
+            context = {
+                'error_heading': "Error",
+                'message': "Inventory does not exist",
+                'url':request.build_absolute_uri(reverse('regsoft:dc_login'))
+                }
+            return render(request, 'registrations/message.html', context)
+        
+        context = {
+            'error_heading': "Successfully Updated",
+            'message': "Inventory items updated",
+            'url':request.build_absolute_uri(reverse('regsoft:dc_login'))
+            }
+        return render(request, 'registrations/message.html', context)
+
+
+@staff_member_required
+def dc_view_status(request, dc_id):
+    try:
+        dc = DC.objects.get(id = dc_id)
+    except:
+        context = {
+            'error_heading': "Error",
+            'message': "Club/Department does not exist",
+            'url':request.build_absolute_uri(reverse('regsoft:dc_login'))
+            }
+        return render(request, 'registrations/message.html', context)
+    try:
+        inventory = DC_Inventory.objects.get(dc = dc)
+    except:
+        context = {
+            'error_heading': "No Inventory",
+            'message': "Inventory does not exist",
+            'url':request.build_absolute_uri(reverse('regsoft:dc_login'))
+            }
+        return render(request, 'registrations/message.html', context)
+
+    context = {'inventory':inventory}
+    return render(request, 'regsoft/view_dc.html',context)
+
+@staff_member_required
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect('/')
+
+@staff_member_required
+def tender_home(request):
+    return render(request, 'regsoft/tender_home.html',{'name':'Tender'})
+
+@staff_member_required
+def tender_new_entry(request):
+    if request.method == 'GET':
+        try:
+            loc = Location.objects.filter(tender = True)
+        except Exception as e:
+            print(e)
+            messages.warning(request,'Invalid locations')
+            return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'regsoft/tender_new_form.html', {'locations':loc,'name':"Tender"})
+
+    else:
+        data = request.POST
+        print(data)
+        try:
+            loc = Location.objects.get(id = data['location'])
+        except Exception as e:
+            print(e)
+            messages.warning(request,'Invalid location')
+            return redirect(request.META.get('HTTP_REFERER'))
+        try:
+            inventory = Inventory.objects.get(location = loc)
+            inventory.comments = data['comment']
+            try:
+                inventory.blankets += int(data['blankets'])
+                inventory.mattress += int(data['mattresses'])
+                inventory.tents += int(data['tents'])
+                inventory.pillows += int(data['pillows'])
+                inventory.spikes += int(data['spikes'])
+                inventory.bedsheets += int(data['bedsheets'])
+                inventory.quilts += int(data['quilts'])
+                inventory.buckets += int(data['buckets'])
+                inventory.mugs += int(data['mugs'])
+                inventory.fans += int(data['fans'])
+                inventory.tables += int(data['tables'])
+                inventory.table_cloths += int(data['table_cloths'])
+                inventory.chairs += int(data['chairs'])
+                inventory.red_carpets += int(data['red_carpets'])
+                inventory.green_carpets += int(data['green_carpets'])
+                inventory.curtains += int(data['curtains'])
+                inventory.halogen_lamps += int(data['halogen_lamps'])
+                inventory.sodium_lamps += int(data['sodium_lamps'])
+                inventory.item1 += int(data['item1'])
+                inventory.item2 += int(data['item2'])
+                inventory.item3 += int(data['item3'])
+                inventory.item4 += int(data['item4'])
+                inventory.item5 += int(data['item5'])
+                inventory.save()
+            except Exception as e:
+                print(e)
+                messages.warning(request,'Please Enter data in proper format')
+                return redirect(request.META.get('HTTP_REFERER'))
+        except:
+            inventory = Inventory.objects.create(location = loc)
+            inventory.comments = data['comment']
+            try:
+                inventory.blankets = int(data['blankets'])
+                inventory.mattress = int(data['mattresses'])
+                inventory.tents = int(data['tents'])
+                inventory.pillows = int(data['pillows'])
+                inventory.spikes = int(data['spikes'])
+                inventory.bedsheets = int(data['bedsheets'])
+                inventory.quilts = int(data['quilts'])
+                inventory.buckets = int(data['buckets'])
+                inventory.mugs = int(data['mugs'])
+                inventory.fans = int(data['fans'])
+                inventory.tables = int(data['tables'])
+                inventory.table_cloths = int(data['table_cloths'])
+                inventory.chairs = int(data['chairs'])
+                inventory.red_carpets = int(data['red_carpets'])
+                inventory.green_carpets = int(data['green_carpets'])
+                inventory.curtains = int(data['curtains'])
+                inventory.halogen_lamps = int(data['halogen_lamps'])
+                inventory.sodium_lamps = int(data['sodium_lamps'])
+                inventory.item1 = int(data['item1'])
+                inventory.item2 = int(data['item2'])
+                inventory.item3 = int(data['item3'])
+                inventory.item4 = int(data['item4'])
+                inventory.item5 = int(data['item5'])
+                inventory.save()
+            except:
+                messages.warning(request,'Please Enter data in proper format')
+                return redirect(request.META.get('HTTP_REFERER')) 
+
+        context = {
+            'error_heading': "Successfully Added",
+            'message': "Inventory items added",
+            'url':request.build_absolute_uri(reverse('regsoft:tender_home'))
+            }
+        return render(request, 'registrations/message.html', context)
+
+@staff_member_required
+def tender_remove_entry(request):
+    if request.method == 'GET':
+        loc = Location.objects.filter(tender = True)
+        return render(request, 'regsoft/tender_remove_form.html', {'locations':loc})
+    else:
+        data = request.POST
+        try:
+            loc = Location.objects.get(id = data['location'])
+        except:
+            messages.warning(request,'Invalid location')
+            return redirect(request.META.get('HTTP_REFERER'))
+        try:
+            inventory = Inventory.objects.get(location=loc)
+            inventory.comments = data['comment']
+            try:
+                inventory.blankets -= int(data['blankets'])
+                inventory.mattress -= int(data['mattresses'])
+                inventory.tents -= int(data['tents'])
+                inventory.pillows -= int(data['pillows'])
+                inventory.spikes -= int(data['spikes'])
+                inventory.bedsheets -= int(data['bedsheets'])
+                inventory.quilts -= int(data['quilts'])
+                inventory.buckets -= int(data['buckets'])
+                inventory.mugs -= int(data['mugs'])
+                inventory.fans -= int(data['fans'])
+                inventory.tables -= int(data['tables'])
+                inventory.table_cloths -= int(data['table_cloths'])
+                inventory.chairs -= int(data['chairs'])
+                inventory.red_carpets -= int(data['red_carpets'])
+                inventory.green_carpets -= int(data['green_carpets'])
+                inventory.curtains -= int(data['curtains'])
+                inventory.halogen_lamps -= int(data['halogen_lamps'])
+                inventory.sodium_lamps -= int(data['sodium_lamps'])
+                inventory.item1 -= int(data['item1'])
+                inventory.item2 -= int(data['item2'])
+                inventory.item3 -= int(data['item3'])
+                inventory.item4 -= int(data['item4'])
+                inventory.item5 -= int(data['item5'])
+                inventory.save()
+            except:
+                messages.warning(request,'Please Enter data in proper format')
+                return redirect(request.META.get('HTTP_REFERER'))
+        
+        except Exception as e:
+            print(e)
+            context = {
+                'error_heading': "Error",
+                'message': "Inventory does not exist",
+                'url':request.build_absolute_uri(reverse('regsoft:tender_home'))
+                }
+            return render(request, 'registrations/message.html', context)
+
+        context = {
+            'error_heading': "Successfully Updated",
+            'message': "Inventory items updated",
+            'url':request.build_absolute_uri(reverse('regsoft:tender_home'))
+            }
+        return render(request, 'registrations/message.html', context)
+
+
+@staff_member_required
+def tender_view_status(request):
+    if request.method == 'GET':
+        loc = Location.objects.filter(tender = True)
+        return render(request, 'regsoft/tender_view.html', {'locations':loc,'name':'tender'})
+    else:
+        try:
+            loc = Location.objects.get(id = request.POST['location'])
+        except:
+            messages.warning(request,'Invalid location')
+            return redirect(request.META.get('HTTP_REFERER'))
+        try:
+            inventory = Inventory.objects.get(location = loc)
+            return render(request, 'regsoft/tender_view_status.html', {'inventory':inventory})
+        except:
+            messages.warning(request,'Inventory does not exist')
+            return redirect(request.META.get('HTTP_REFERER'))
+
+@staff_member_required
+def mattress_home(request):
+    return render(request, 'regsoft/mattress_home.html', {'name':'Mattress'})
+
+@staff_member_required
+def mattress_new_entry(request):
+    if request.method == 'GET':
+        loc = Location.objects.filter(tender = False)
+        return render(request, 'regsoft/mattress_new_form.html', {'locations':loc,'name':'Mattress'})
+
+    else:
+        data = request.POST
+        try:
+            loc = Location.objects.get(id = request.POST['location'])
+        except Exception as e:
+            print(e)
+            messages.warning(request,'Invalid location')
+            return redirect(request.META.get('HTTP_REFERER'))
+        try:
+            inventory = Inventory.objects.get(location = loc)
+            inventory.comments = data['comment']
+            try:
+                inventory.blankets += int(data['blankets'])
+                inventory.mattress += int(data['mattresses'])
+                inventory.tents += int(data['tents'])
+                inventory.pillows += int(data['pillows'])
+                inventory.spikes += int(data['spikes'])
+                inventory.bedsheets += int(data['bedsheets'])
+                inventory.quilts += int(data['quilts'])
+                inventory.buckets += int(data['buckets'])
+                inventory.mugs += int(data['mugs'])
+                inventory.fans += int(data['fans'])
+                inventory.tables += int(data['tables'])
+                inventory.table_cloths += int(data['table_cloths'])
+                inventory.chairs += int(data['chairs'])
+                inventory.red_carpets += int(data['red_carpets'])
+                inventory.green_carpets += int(data['green_carpets'])
+                inventory.curtains += int(data['curtains'])
+                inventory.halogen_lamps += int(data['halogen_lamps'])
+                inventory.sodium_lamps += int(data['sodium_lamps'])
+                inventory.item1 += int(data['item1'])
+                inventory.item2 += int(data['item2'])
+                inventory.item3 += int(data['item3'])
+                inventory.item4 += int(data['item4'])
+                inventory.item5 += int(data['item5'])
+                inventory.save()
+            except:
+                messages.warning(request,'Please Enter data in proper format')
+                return redirect(request.META.get('HTTP_REFERER'))
+        except:
+            inventory = Inventory.objects.create(location = loc)
+            inventory.comments = data['comment']
+            try:
+                inventory.blankets = int(data['blankets'])
+                inventory.mattress = int(data['mattresses'])
+                inventory.tents = int(data['tents'])
+                inventory.pillows = int(data['pillows'])
+                inventory.spikes = int(data['spikes'])
+                inventory.bedsheets = int(data['bedsheets'])
+                inventory.quilts = int(data['quilts'])
+                inventory.buckets = int(data['buckets'])
+                inventory.mugs = int(data['mugs'])
+                inventory.fans = int(data['fans'])
+                inventory.tables = int(data['tables'])
+                inventory.table_cloths = int(data['table_cloths'])
+                inventory.chairs = int(data['chairs'])
+                inventory.red_carpets = int(data['red_carpets'])
+                inventory.green_carpets = int(data['green_carpets'])
+                inventory.curtains = int(data['curtains'])
+                inventory.halogen_lamps = int(data['halogen_lamps'])
+                inventory.sodium_lamps = int(data['sodium_lamps'])
+                inventory.item1 = int(data['item1'])
+                inventory.item2 = int(data['item2'])
+                inventory.item3 = int(data['item3'])
+                inventory.item4 = int(data['item4'])
+                inventory.item5 = int(data['item5'])
+                inventory.save()
+            except:
+                messages.warning(request,'Please Enter data in proper format')
+                return redirect(request.META.get('HTTP_REFERER')) 
+
+        context = {
+            'error_heading': "Successfully Added",
+            'message': "Inventory items added",
+            'url':request.build_absolute_uri(reverse('regsoft:mattress_home'))
+            }
+        return render(request, 'registrations/message.html', context)
+
+@staff_member_required
+def mattress_remove_entry(request):
+    if request.method == 'GET':
+        loc = Location.objects.filter(tender = False)
+        return render(request, 'regsoft/mattress_remove_form.html', {'locations':loc})
+    else:
+        data = request.POST
+        try:
+            loc = Location.objects.get(id = data['location'])
+        except:
+            messages.warning(request,'Invalid location')
+            return redirect(request.META.get('HTTP_REFERER'))
+        try:
+            inventory = Inventory.objects.get(location = loc)
+            inventory.comments = data['comment']
+            try:
+                inventory.blankets -= int(data['blankets'])
+                inventory.mattress -= int(data['mattresses'])
+                inventory.tents -= int(data['tents'])
+                inventory.pillows -= int(data['pillows'])
+                inventory.spikes -= int(data['spikes'])
+                inventory.bedsheets -= int(data['bedsheets'])
+                inventory.quilts -= int(data['quilts'])
+                inventory.buckets -= int(data['buckets'])
+                inventory.mugs -= int(data['mugs'])
+                inventory.fans -= int(data['fans'])
+                inventory.tables -= int(data['tables'])
+                inventory.table_cloths -= int(data['table_cloths'])
+                inventory.chairs -= int(data['chairs'])
+                inventory.red_carpets -= int(data['red_carpets'])
+                inventory.green_carpets -= int(data['green_carpets'])
+                inventory.curtains -= int(data['curtains'])
+                inventory.halogen_lamps -= int(data['halogen_lamps'])
+                inventory.sodium_lamps -= int(data['sodium_lamps'])
+                inventory.item1 -= int(data['item1'])
+                inventory.item2 -= int(data['item2'])
+                inventory.item3 -= int(data['item3'])
+                inventory.item4 -= int(data['item4'])
+                inventory.item5 -= int(data['item5'])
+                inventory.save()
+            except:
+                messages.warning(request,'Please Enter data in proper format')
+                return redirect(request.META.get('HTTP_REFERER'))
+        
+        except:
+            context = {
+                'error_heading': "Error",
+                'message': "Inventory does not exist",
+                'url':request.build_absolute_uri(reverse('regsoft:mattress_home'))
+                }
+            return render(request, 'registrations/message.html', context)
+        context = {
+            'error_heading': "Successfully Updated",
+            'message': "Inventory items updated",
+            'url':request.build_absolute_uri(reverse('regsoft:mattress_home'))
+            }
+        return render(request, 'registrations/message.html', context)
+
+@staff_member_required
+def mattress_view_status(request):
+    if request.method == 'GET':
+        loc = Location.objects.filter(tender = False)
+        return render(request, 'regsoft/tender_view.html', {'locations':loc,'name':'Mattress'})
+    else:
+        try:
+            loc = Location.objects.get(id = request.POST['location'])
+        except:
+            messages.warning(request,'Invalid location')
+            return redirect(request.META.get('HTTP_REFERER'))
+        try:
+            inventory = Inventory.objects.get(location = Location)
+            return render(request, 'regsoft/tender_view_status.html', {'location':loc})
+            
+        except:
+            messages.warning(request,'Inventory does not exist')
+            return redirect(request.META.get('HTTP_REFERER'))
+def tender_new_form(request):
+    return HttpResponse('hello')
