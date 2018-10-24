@@ -39,6 +39,13 @@ class PlaceOrder(APIView):
             If any item is unavailable, bounce back the entire order, the
             frontend team shouldn't let it get this far.
 
+            NOTE: special considerations have to be given to prof show tickets
+
+            Ticket Vendor stall
+            sells tickets by name but these are normal items/itemclasses
+            but we also get or create the Ticket instance during the place-order call
+            and increment count as needed after performing extra checks on availability
+
             Part 2:
             Figure out how much the Order costs, test to see if the customer
             has enough funds. Then if not, delete the entire Order, and return
@@ -60,6 +67,7 @@ class PlaceOrder(APIView):
 
         flag = True
         unavailable = []
+        tickets_actions = []
 
         for stall_id, stall in data.items():
             try:
@@ -87,9 +95,22 @@ class PlaceOrder(APIView):
                     order.delete()
                     return Response({"message": msg}, status = status.HTTP_404_NOT_FOUND)
 
-                if not itemclass.is_available:
-                    unavailable.append(itemclass.id)
-                    flag = False
+                if stall_instance.name == "Ticket Vendor":
+                    try:
+                        show = MainProfShow.objects.get(name=itemclass.name)
+                        if any([not itemclass.is_available, itemclass.stock < qty]):
+                            raise MainProfShow.DoesNotExist
+                        if flag:
+                            tickets, _ = Tickets.objects.get_or_create(user=request.user, prof_show=show)
+                            tickets_actions.append([tickets, show, itemclass, qty])
+                    except MainProfShow.DoesNotExist:
+                        unavailable.append(itemclass.id)
+                        flag = False
+
+                else:
+                    if not itemclass.is_available:
+                        unavailable.append(itemclass.id)
+                        flag = False
 
                 if flag:
                     fragment.items.create(itemclass=itemclass, quantity=item["qty"], order=fragment)
@@ -118,6 +139,11 @@ class PlaceOrder(APIView):
             # Create transaction instances and deduct money from the user right
             # away. Then later, once the order has been complete, the stall
             # will receive its money.
+            # The Ticket Vendor must, however, receive their money right away
+            if fragment.stall.name == "Ticket Vendor":
+                fragment.status = OrderFragment.FINISHED
+                fragment.stall.user.wallet.balance.add(transfers=fragment.calculateSubTotal())
+                fragment.save()
             Transaction.objects.create(
                                         amount=fragment.calculateSubTotal(),
                                         transfer_to=fragment.stall.user.wallet,
@@ -126,6 +152,18 @@ class PlaceOrder(APIView):
                                     )
         customer.balance.deduct(net_cost)
         fragments = [{"id": fragment.id, "stall_id": fragment.stall.id} for fragment in order.fragments.all()]
+
+        for action in tickets_actions:
+            ticket = action[0]
+            show = action[1]
+            itemclass = action[2]
+            qty = action[3]
+            ticket.count += qty
+            show.tickets_sold += qty
+            itemclass.stock -= qty
+            ticket.save()
+            show.save()
+            itemclass.save()
 
         return Response({"order_id": order.id, "fragments_ids": fragments, "cost": net_cost})
 

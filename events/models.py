@@ -82,6 +82,7 @@ class MainProfShow(models.Model):
     venue = models.CharField(max_length=100, default='TBA')
     contact = models.CharField(max_length=140, default='')
     price = models.IntegerField(default=0)
+    tickets_sold = models.IntegerField(default=0)
     organizations = models.ManyToManyField("Organization", default=None, related_name="shows")
 
     def __str__(self):
