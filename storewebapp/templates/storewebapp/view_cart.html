@@ -187,7 +187,7 @@
 			console.log(parsedRes);	
 			if(parsedRes.status === 200) { 
 				localStorage.removeItem("cart");
-				window.location.href = "/storewebapp/profile/";
+				window.location.href = "2018/storewebapp/profile/";
 			}
 			else if(parsedRes.status === 400) {
 				Materialize.toast(parsedRes.json.message);	
