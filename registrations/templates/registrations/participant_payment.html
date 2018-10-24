@@ -1,102 +1,98 @@
-{% extends 'registrations/base.html' %}
-{% load static %}
-
-{% block body %}
+{% extends 'registrations/base.html' %} {% load static %} {% block body %}
 
 <div class="row clearfix">
     <form action="{% url 'registrations:make_payment' %}" method="post">
-        {% csrf_token %}   
-    <div class="card">
-                <div class="header">
-                    <h2>
-                        {% if participant.paid and not participant.controlz_paid %}
-                        Make Payment (You have already paid Rs 300 so pay only Rs 700)
-                        {% elif participant.controlz_paid %}
-                        Payment Complete
-                        {% else %}
-                        Make Payment
-                        {% endif %}
-                    </h2>
-                </div>
-                <div class="body">
-                    <div class="table-responsive">
-                        
-                        <table class="table table-bordered table-striped table-hover dataTable">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Payment Method    
-                                    </th>
-                                    <th>    
-                                        Select
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                    <th>
-                                        Payment Method    
-                                    </th>
-                                    <th>    
-                                        Select
-                                    </th>
-                                </tr>
-                            </tfoot>
-                            <tbody>
-                                {% if not participant.paid or not participant.is_bus_paid %}
-                                <tr>
-                                    <td>
-                                        Rs 300
-                                    </td>
-                                    <td>
-                                        <input name="key" type="radio" id="1" value="1"/>
-                                        <label for="1"></label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Rs 1000 
-                                    </td>
-                                    <td>
-                                        <input name="key" type="radio" id="2" value="2"/>
-                                        <label for="2"></label>
-                                    </td>
-                                </tr>
-                                <tr>                                    <td>
-                                        Pay for bus 
-                                    </td>
-                                    <td>
-                                        <input name="key" type="radio" id="4" value="4"/>
-                                        <label for="4"></label>
-                                    </td>
-                                </tr>
-                                {% elif participant.paid and not participant.controlz_paid or not participant.is_bus_paid %}
-                                <tr>
-                                    <td>
-                                        Rs 700
-                                    </td>
-                                    <td>
-                                        <input name="key" type="radio" id="3" value="3"/>
-                                        <label for="3"></label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Pay for bus 
-                                    </td>
-                                    <td>
-                                        <input name="key" type="radio" id="4" value="4"/>
-                                        <label for="4"></label>
-                                    </td>
-                                </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
-                        <button type="submit" class="btn btn-primary btn-lg m-l-15 waves-effect">Make payment</button>
-                    </div>
-                    
-                </div>
+        {% csrf_token %}
+        <div class="card">
+            <div class="header">
+                <h2>
+                    {% if participant.paid and not participant.controlz_paid %} Make Payment (You have already paid Rs 300 so pay only Rs 700)
+                </h2>
             </div>
+            <div class="body">
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-striped table-hover dataTable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Payment Amount
+                                </th>
+                                <th>
+                                    Select
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if not participant.paid %}
+                            <tr>
+                                <td>
+                                    Rs 300
+                                </td>
+                                <td>
+                                    <input name="key" type="radio" id="1" value="1" />
+                                    <label for="1"></label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Rs 1000
+                                </td>
+                                <td>
+                                    <input name="key" type="radio" id="2" value="2" />
+                                    <label for="2"></label>
+                                </td>
+                            </tr>
+                            {% elif participant.paid and not participant.controlz_paid %}
+                            <tr>
+                                <td>
+                                    Rs 700
+                                </td>
+                                <td>
+                                    <input name="key" type="radio" id="3" value="3" />
+                                    <label for="3"></label>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                    <h2> {% elif participant.controlz_paid %} Payment Complete {% else %} Make Payment {% endif %}</h2>
+
+                    <br>
+                    <h4>Bus Payment</h4>
+                    {% if not participant.is_bus_paid %}
+                    <table class="table table-bordered table-striped table-hover dataTable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Payment Amount
+                                </th>
+                                <th>
+                                    Select
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td>
+                                    Rs 500
+                                </td>
+                                <td>
+                                    <input name="key" type="radio" id="4" value="4" />
+                                    <label for="4"></label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <h5> You have already paid for Bus Services. (Fees - Rs. 500)</h5>
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary btn-lg m-l-15 waves-effect">Make payment</button>
+                </div>
+
+            </div>
+        </div>
     </form>
 </div>
 
