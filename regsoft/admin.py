@@ -8,3 +8,8 @@ admin.site.register(Bhavan)
 admin.site.register(Room)
 admin.site.register(Bill)
 admin.site.register(Note)
+admin.site.register(Location)
+admin.site.register(DC)
+admin.site.register(Inventory)
+admin.site.register(DC_Inventory)
+

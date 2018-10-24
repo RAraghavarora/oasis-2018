@@ -46,5 +46,32 @@ urlpatterns=[
 	url(r'^controlz/print_bill/(?P<b_id>\d+)/?$', views.print_bill, name='print_bill'),
 	url(r'^profile_card_group/(?P<g_id>\d+)/?$',views.get_profile_card_group, name = 'get_profile_card_group'),
 
-	url(r'^logout$',views.user_logout, name = 'logout')
+	url(r'^logout$',views.user_logout, name = 'logout'),
+
+	### INVENTORY ###
+	url(r'inventory/?$', views.dashboard, name='dashboard'),
+	url(r'inventory/tenderform/?$', views.tender_new_form, name='tender_form'),
+	url(r'inventory/dc_login/?$', views.dc_login, name='dc_login'),
+	url(r'inventory/dc_new_entry/(?P<dc_id>\d+)/?$', views.dc_new_entry, name='dc_new_entry'),
+	url(r'inventory/dc_remove_entry/(?P<dc_id>\d+)/?$', views.dc_remove_entry, name='dc_remove_entry'),
+	url(r'inventory/dc_view_status/(?P<dc_id>\d+)/?$', views.dc_view_status, name='dc_view_status'),
+
+	url(r'inventory/tender_home/?$', views.tender_home, name='tender_home'),
+	url(r'inventory/tender_new_form/?$', views.tender_new_entry, name='tender_new_entry'),
+	url(r'inventory/tender_remove_form/?$', views.tender_remove_entry, name='tender_remove_entry'),
+	url(r'inventory/tender_view_status/?$', views.tender_view_status, name='tender_view_status'),
+
+	url(r'inventory/mattress_home/?$', views.mattress_home, name='mattress_home'),
+	url(r'inventory/mattress_new_entry/?$', views.mattress_new_entry, name='mattress_new_entry'),
+	url(r'inventory/mattress_remove_entry/?$', views.mattress_remove_entry, name='mattress_remove_entry'),
+	url(r'inventory/mattress_view_status/?$', views.mattress_view_status, name='mattress_view_status'),
+
+
+	url(r'inventory/logout/?$', views.user_logout, name='user_logout'),
+
+
+
+
+
+
 ]
