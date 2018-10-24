@@ -7,6 +7,7 @@
             <div class="header">
                 <h2>
                     {% if participant.paid and not participant.controlz_paid %} Make Payment (You have already paid Rs 300 so pay only Rs 700)
+                    {% elif participant.controlz_paid %} Payment Complete {% else %} Make Payment {% endif %}
                 </h2>
             </div>
             <div class="body">
@@ -23,6 +24,7 @@
                                 </th>
                             </tr>
                         </thead>
+
                         <tbody>
                             {% if not participant.paid %}
                             <tr>
@@ -56,7 +58,6 @@
                             {% endif %}
                         </tbody>
                     </table>
-                    <h2> {% elif participant.controlz_paid %} Payment Complete {% else %} Make Payment {% endif %}</h2>
 
                     <br>
                     <h4>Bus Payment</h4>
