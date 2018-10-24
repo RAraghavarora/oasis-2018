@@ -59,18 +59,26 @@ class Transfer(APIView):
 				source = request.user.wallet
 				target = Wallet.objects.get(user=target_user)
 
-				if source == target:
-					return Response({"message": "You can't transfer money to yourself."}, status=status.HTTP_403_FORBIDDEN)
-				amount = data["amount"]
-				if amount < 0:
-					return Response({"message": "transfered amount cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
-				source.transferTo(target, amount, transfertype="transfer")
-				msg = {"message": "Request successful!"}
-				return Response(msg, status=status.HTTP_200_OK)
-	
 			except Wallet.DoesNotExist:
 				msg = {"message": "Wallet does not exist"}
 				return Response(msg, status=status.HTTP_404_NOT_FOUND)
+
+			if not source.profile == target.profile:
+				msg = {"message" : "Invalid action. You can only transfer money to a {}".format(source.get_profile_display().title())}
+				return Response(msg, status = status.HTTP_403_FORBIDDEN)
+
+			if source == target:
+				return Response({"message": "You can't transfer money to yourself."}, status=status.HTTP_403_FORBIDDEN)
+
+			amount = data["amount"]
+			if amount < 0:
+				return Response({"message": "transfered amount cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
+
+			source.transferTo(target, amount, transfertype="transfer")
+
+			msg = {"message": "Request successful!"}
+			return Response(msg, status=status.HTTP_200_OK)
+	
 
 
 class AddMoney(APIView):

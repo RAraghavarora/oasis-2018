@@ -53,20 +53,12 @@ class Authentication(APIView):
 
 
 	def post(self, request, format=None):
-		#Checks if Authentication requester if bitsian, participant or stall.
 		try:
 			is_bitsian = request.data['is_bitsian']
-			is_stall = False
-
-		except KeyError:
-			try:
-				is_stall = request.data['is_stall']
-				is_bitsian = False
-
-			except KeyError:
-				msg = {"message": "Missing the identity field."}
-				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
-
+			#registration_token = request.data['registration_token']
+		except KeyError as missing:
+			msg = {"message": "The following field was missing: {}".format(missing)}
+			return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
 		#Bitsian Authentication is done through Google OAuth
 		if is_bitsian:
@@ -96,18 +88,13 @@ class Authentication(APIView):
 			try:
 				bitsian = Bitsian.objects.get(email=email)
 			except Exception as e:
-				msg = "Bitsian associated with {} not in SWD list, for security reasons you will need to contact the DVM.".format(email)
+				msg = "Contact the administrators.".format(email)
 				return Response({"message": msg}, status=status.HTTP_404_NOT_FOUND)
 
 			#Checks if user exist creates if doesn't.
 			username = email.split('@')[0]
 			try:
 				user = User.objects.get(username=username)
-				try:
-					qr_code = user.bitsian.barcode
-				except:
-					qr_code = None
-
 			except ObjectDoesNotExist:
 				user = User.objects.create(username=username, email=email)
 				bitsian.user = user
@@ -135,19 +122,21 @@ class Authentication(APIView):
 				msg = {'message' : "Incorrect Authentication Credentials or User doesn't exist"}
 				return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
-			if not is_stall:
-				try:
-					qr_code = user.participant.barcode
-				except:
-					qr_code = None
-
+		try:
+			qr_code = user.bitsian.barcode
+		except:
+			try:
+				qr_code = user.participant.barcode
+			except:
+				qr_code = None
 
 		#Checks if wallet exists
 		try:
-			wallet = Wallet.objects.get(user=user)
+			wallet = Wallet.objects.get(user=user)			
 			if not wallet:
 				raise Wallet.DoesNotExist
-
+			# wallet.registration_token = registration_token
+			# wallet.save()
 		except Wallet.DoesNotExist:
 			msg = {'message' : 'Contact the administrators'}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
