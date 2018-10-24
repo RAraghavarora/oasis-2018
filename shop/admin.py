@@ -7,7 +7,7 @@ from shop.models.item import ItemClass, ItemInstance, Tickets
 from shop.models.order import Order, OrderFragment
 from shop.models.stall import Stall
 from shop.models.teller import Teller
-from shop.models.debug import DebugInfo
+
 
 class ItemInstanceInLine(admin.TabularInline):
     model = ItemInstance
@@ -49,4 +49,3 @@ admin.site.register(ItemClass, ItemClassAdmin)
 admin.site.register(ItemInstance)
 admin.site.register(Tickets)
 admin.site.register(Teller)
-admin.site.register(DebugInfo)
