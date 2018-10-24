@@ -35,7 +35,7 @@
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "wallet-token": "asdf",
+            "wallet-token": WALLET_TOKEN,
             "authorization": "JWT " + localStorage.getItem("user_token")
         }
     })
@@ -103,7 +103,7 @@
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
-                        "wallet-token": "asdf"
+                        "wallet-token": WALLET_TOKEN
                     }
                 })
                 .catch(function (err) {
