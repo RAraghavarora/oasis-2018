@@ -68,6 +68,10 @@ def update_database():
             college = entry[3]
             try:
                 participant = Participant.objects.get(email=email)
+                participant.cr_approved=True
+                participant.pcr_approved=True
+                participant.email_verified = True
+
                 if amount == 1000:
                     participant.paid = True
                     participant.controlz_paid = True
@@ -75,6 +79,8 @@ def update_database():
                     participant.paid = True
                 elif amount == 700:
                     participant.controlz_paid = True
+                elif amount == 500:
+                    participant.is_bus_paid = True
 
                 participant.save()
             except Exception as error:
