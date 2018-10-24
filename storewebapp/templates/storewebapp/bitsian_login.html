@@ -13,7 +13,7 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300" rel="stylesheet"> 
         <link href="https://fonts.googleapis.com/css?family=Viga" rel="stylesheet">
         <link href="{% static 'storewebapp/css/materialize.min.css' %}" rel="stylesheet">
-        <link rel="stylesheet" href="{% static 'mechanix/css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'storewebapp/css/bits-login/style.css' %}">
         <link rel="shortcut icon" href="{% static 'storewebapp/img/Oasis-Logo.jpg' %}">
         <style>
             .ribbon {
@@ -65,7 +65,7 @@
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            "wallet-token": "asdf"
+                            "wallet-token": WALLET_TOKEN
                         },
                         body: JSON.stringify(bitsianOuthBody)
                     })

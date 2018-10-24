@@ -177,7 +177,7 @@
 			body: JSON.stringify(orderObj),
 			headers: {
 				authorization: "JWT " + localStorage.getItem('user_token'),
-				"wallet-token": "asdf",
+				"wallet-token": WALLET_TOKEN,
 				"Content-Type": "application/json",
 			}
 		}).then( function(res) {

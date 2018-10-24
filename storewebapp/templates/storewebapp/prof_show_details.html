@@ -42,7 +42,7 @@
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "wallet-token": "asdf",
+            "wallet-token": WALLET_TOKEN,
             "authorization": "JWT " + localStorage.getItem("user_token")
         },
         body: JSON.stringify(ticketsReqBody)
