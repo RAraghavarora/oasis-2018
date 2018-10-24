@@ -408,12 +408,19 @@ def payment(request):
         if int(request.POST['key']) == 1:
             amount = 300
             programId = 9381
+            subProgramName = 'Registration'
         elif int(request.POST['key']) == 2:
             amount = 1000
             programId = 9183
+            subProgramName = 'Registration'
         elif int(request.POST['key']) == 3:
             amount = 700
             programId = 9382
+            subProgramName = 'Registration'
+        elif int(request.POST['key']) == 4:
+            amount = 500
+            programId = 9396
+            subProgramName = 'Oasis SU Bus Payment'
         else:
             return redirect(request.META.get('HTTP_REFERER'))
         name = participant.name
@@ -441,7 +448,7 @@ def payment(request):
                 {
                     "programId":programId,
                     "programName":"Oasis 2018 Registrations",
-                    "subProgramName":"Registration",
+                    "subProgramName":subProgramName,
                     "fare":amount,
                     "attendees":[
                         {
