@@ -641,7 +641,7 @@ def checkout(request,c_id):
         encoded=generate_ckgroup_code(checkout_group)
         checkout_group.save()
         return redirect(reverse('regsoft:checkout_groups',kwargs={'c_id':college.id}))
-    participant_list=Participant.objects.filter(acco=True)
+    participant_list=Participant.objects.filter(acco=True, college=college)
     return render(request, 'regsoft/checkout.html', {'college':college, 'part_list':participant_list})
 
 @staff_member_required
