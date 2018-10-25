@@ -20,16 +20,19 @@
             Department/Club login
         </h2>
     </div>
-        <label for="uniqueid">Enter Unique ID</label>
-            <div class="form-group">
-                <div class="form-line">
-                    <input type="text" id="uniqueid" class="form-control" placeholder="uniqueid" name="uniqueid">
-                </div>
-            </div>
-            <br>
-            <button type="submit" class="btn btn-primary m-t-15 waves-effect">Add</button>
+    
+    <label for="location">Location</label>
+        <div class="form-group">
+            <select class="form-control show-tick" name="dc" data-live-search="true">
+                <option value="" selected disabled hidden>Choose a club/department</option>
+                {% for dc in dc_list %}
+                    <option value={{dc.id}}>{{dc.name}}</option>
+                {% endfor %}
+            </select>
         </div>
-    </div>
+        <br>
+        <button type="submit" class="btn btn-primary m-t-15 waves-effect">Add</button>
+        
 </div>
 </div>
 </form>

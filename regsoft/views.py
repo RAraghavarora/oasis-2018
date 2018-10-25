@@ -985,17 +985,18 @@ def dashboard(request):
 @staff_member_required
 def dc_login(request):
     if request.method == 'GET':
-        return render(request, 'regsoft/dc_login.html')
+        dc_list = DC.objects.all()
+        return render(request, 'regsoft/dc_login.html',{'dc_list':dc_list})
 
     if request.method == 'POST':
         print(request.POST)
         try:
-            id = request.POST['uniqueid']
+            id = request.POST['dc']
         except:
-            messages.warning(request,'Please provide a unique id')
+            messages.warning(request,'Please select a club/department')
             return redirect(request.META.get('HTTP_REFERER')) 
         try:
-            dc = DC.objects.get(uniqueid = id)
+            dc = DC.objects.get(id = id)
         except:
             messages.warning(request,'Invalid unique id')
             return redirect(request.META.get('HTTP_REFERER')) 
@@ -1034,7 +1035,6 @@ def dc_new_entry(request, dc_id):
             try:
                 inventory.blankets += int(data['blankets'])
                 inventory.mattress += int(data['mattresses'])
-                inventory.tents += int(data['tents'])
                 inventory.pillows += int(data['pillows'])
                 inventory.spikes += int(data['spikes'])
                 inventory.bedsheets += int(data['bedsheets'])
@@ -1042,6 +1042,10 @@ def dc_new_entry(request, dc_id):
                 inventory.buckets += int(data['buckets'])
                 inventory.mugs += int(data['mugs'])
                 inventory.fans += int(data['fans'])
+                inventory.bulbs += int(data['bulbs'])
+                inventory.water_campers += int(data['watercampers'])
+                inventory.water_drums += int(data['waterdrums'])
+                inventory.waste_drums += int(data['waste_drums'])
                 inventory.tables += int(data['tables'])
                 inventory.table_cloths += int(data['table_cloths'])
                 inventory.chairs += int(data['chairs'])
@@ -1050,6 +1054,12 @@ def dc_new_entry(request, dc_id):
                 inventory.curtains += int(data['curtains'])
                 inventory.halogen_lamps += int(data['halogen_lamps'])
                 inventory.sodium_lamps += int(data['sodium_lamps'])
+                inventory.iron_poles += int(data['iron_poles'])
+                inventory.paper_rolls += int(data['paper_rolls'])
+                inventory.bamboo_poles += int(data['bamboo_poles'])
+                inventory.ropes += int(data['ropes'])
+                inventory.wires += int(data['wires'])
+                inventory.tents += int(data['tents'])
                 inventory.item1 += int(data['item1'])
                 inventory.item2 += int(data['item2'])
                 inventory.item3 += int(data['item3'])
@@ -1067,7 +1077,6 @@ def dc_new_entry(request, dc_id):
             try:
                 inventory.blankets = int(data['blankets'])
                 inventory.mattress = int(data['mattresses'])
-                inventory.tents = int(data['tents'])
                 inventory.pillows = int(data['pillows'])
                 inventory.spikes = int(data['spikes'])
                 inventory.bedsheets = int(data['bedsheets'])
@@ -1075,6 +1084,10 @@ def dc_new_entry(request, dc_id):
                 inventory.buckets = int(data['buckets'])
                 inventory.mugs = int(data['mugs'])
                 inventory.fans = int(data['fans'])
+                inventory.bulbs = int(data['bulbs'])
+                inventory.water_campers = int(data['watercampers'])
+                inventory.water_drums = int(data['waterdrums'])
+                inventory.waste_drums = int(data['waste_drums'])
                 inventory.tables = int(data['tables'])
                 inventory.table_cloths = int(data['table_cloths'])
                 inventory.chairs = int(data['chairs'])
@@ -1083,6 +1096,12 @@ def dc_new_entry(request, dc_id):
                 inventory.curtains = int(data['curtains'])
                 inventory.halogen_lamps = int(data['halogen_lamps'])
                 inventory.sodium_lamps = int(data['sodium_lamps'])
+                inventory.iron_poles = int(data['iron_poles'])
+                inventory.paper_rolls = int(data['paper_rolls'])
+                inventory.bamboo_poles = int(data['bamboo_poles'])
+                inventory.ropes = int(data['ropes'])
+                inventory.wires = int(data['wires'])
+                inventory.tents = int(data['tents'])
                 inventory.item1 = int(data['item1'])
                 inventory.item2 = int(data['item2'])
                 inventory.item3 = int(data['item3'])
@@ -1095,12 +1114,8 @@ def dc_new_entry(request, dc_id):
                 return redirect(request.META.get('HTTP_REFERER')) 
 
 
-        context = {
-            'error_heading': "Successfully Added",
-            'message': "Inventory items added",
-            'url':request.build_absolute_uri(reverse('regsoft:dc_login'))
-            }
-        return render(request, 'registrations/message.html', context)
+        messages.warning(request,'Successfully Added')
+        return redirect(request.META.get('HTTP_REFERER')) 
 
 @staff_member_required
 def dc_remove_entry(request, dc_id):
@@ -1114,7 +1129,12 @@ def dc_remove_entry(request, dc_id):
                 'url':request.build_absolute_uri(reverse('regsoft:dc_login'))
                 }
             return render(request, 'registrations/message.html', context)
-        return render(request, 'regsoft/dc_remove_form.html', context={'dc':dc})
+        try:
+            inventory = DC_Inventory.objects.get(dc = dc)
+        except:
+            messages.warning(request,'Inventory for the selected option does not exist')
+            return redirect(request.META.get('HTTP_REFERER'))
+        return render(request, 'regsoft/dc_remove_form.html', context={'dc':dc,'inventory':inventory})
 
     else:
         data = request.POST
@@ -1133,7 +1153,6 @@ def dc_remove_entry(request, dc_id):
             try:
                 inventory.blankets -= int(data['blankets'])
                 inventory.mattress -= int(data['mattresses'])
-                inventory.tents -= int(data['tents'])
                 inventory.pillows -= int(data['pillows'])
                 inventory.spikes -= int(data['spikes'])
                 inventory.bedsheets -= int(data['bedsheets'])
@@ -1141,6 +1160,10 @@ def dc_remove_entry(request, dc_id):
                 inventory.buckets -= int(data['buckets'])
                 inventory.mugs -= int(data['mugs'])
                 inventory.fans -= int(data['fans'])
+                inventory.bulbs -= int(data['bulbs'])
+                inventory.water_campers -= int(data['watercampers'])
+                inventory.water_drums -= int(data['waterdrums'])
+                inventory.waste_drums -= int(data['waste_drums'])
                 inventory.tables -= int(data['tables'])
                 inventory.table_cloths -= int(data['table_cloths'])
                 inventory.chairs -= int(data['chairs'])
@@ -1149,6 +1172,12 @@ def dc_remove_entry(request, dc_id):
                 inventory.curtains -= int(data['curtains'])
                 inventory.halogen_lamps -= int(data['halogen_lamps'])
                 inventory.sodium_lamps -= int(data['sodium_lamps'])
+                inventory.iron_poles -= int(data['iron_poles'])
+                inventory.paper_rolls -= int(data['paper_rolls'])
+                inventory.bamboo_poles -= int(data['bamboo_poles'])
+                inventory.ropes -= int(data['ropes'])
+                inventory.wires -= int(data['wires'])
+                inventory.tents -= int(data['tents'])
                 inventory.item1 -= int(data['item1'])
                 inventory.item2 -= int(data['item2'])
                 inventory.item3 -= int(data['item3'])
@@ -1168,12 +1197,8 @@ def dc_remove_entry(request, dc_id):
                 }
             return render(request, 'registrations/message.html', context)
         
-        context = {
-            'error_heading': "Successfully Updated",
-            'message': "Inventory items updated",
-            'url':request.build_absolute_uri(reverse('regsoft:dc_login'))
-            }
-        return render(request, 'registrations/message.html', context)
+        messages.warning(request,'Successfully Returned')
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 @staff_member_required
@@ -1235,7 +1260,6 @@ def tender_new_entry(request):
             try:
                 inventory.blankets += int(data['blankets'])
                 inventory.mattress += int(data['mattresses'])
-                inventory.tents += int(data['tents'])
                 inventory.pillows += int(data['pillows'])
                 inventory.spikes += int(data['spikes'])
                 inventory.bedsheets += int(data['bedsheets'])
@@ -1243,6 +1267,10 @@ def tender_new_entry(request):
                 inventory.buckets += int(data['buckets'])
                 inventory.mugs += int(data['mugs'])
                 inventory.fans += int(data['fans'])
+                inventory.bulbs += int(data['bulbs'])
+                inventory.water_campers += int(data['watercampers'])
+                inventory.water_drums += int(data['waterdrums'])
+                inventory.waste_drums += int(data['waste_drums'])
                 inventory.tables += int(data['tables'])
                 inventory.table_cloths += int(data['table_cloths'])
                 inventory.chairs += int(data['chairs'])
@@ -1251,6 +1279,12 @@ def tender_new_entry(request):
                 inventory.curtains += int(data['curtains'])
                 inventory.halogen_lamps += int(data['halogen_lamps'])
                 inventory.sodium_lamps += int(data['sodium_lamps'])
+                inventory.iron_poles += int(data['iron_poles'])
+                inventory.paper_rolls += int(data['paper_rolls'])
+                inventory.bamboo_poles += int(data['bamboo_poles'])
+                inventory.ropes += int(data['ropes'])
+                inventory.wires += int(data['wires'])
+                inventory.tents += int(data['tents'])
                 inventory.item1 += int(data['item1'])
                 inventory.item2 += int(data['item2'])
                 inventory.item3 += int(data['item3'])
@@ -1267,7 +1301,6 @@ def tender_new_entry(request):
             try:
                 inventory.blankets = int(data['blankets'])
                 inventory.mattress = int(data['mattresses'])
-                inventory.tents = int(data['tents'])
                 inventory.pillows = int(data['pillows'])
                 inventory.spikes = int(data['spikes'])
                 inventory.bedsheets = int(data['bedsheets'])
@@ -1275,6 +1308,10 @@ def tender_new_entry(request):
                 inventory.buckets = int(data['buckets'])
                 inventory.mugs = int(data['mugs'])
                 inventory.fans = int(data['fans'])
+                inventory.bulbs = int(data['bulbs'])
+                inventory.water_campers = int(data['watercampers'])
+                inventory.water_drums = int(data['waterdrums'])
+                inventory.waste_drums = int(data['waste_drums'])
                 inventory.tables = int(data['tables'])
                 inventory.table_cloths = int(data['table_cloths'])
                 inventory.chairs = int(data['chairs'])
@@ -1283,6 +1320,12 @@ def tender_new_entry(request):
                 inventory.curtains = int(data['curtains'])
                 inventory.halogen_lamps = int(data['halogen_lamps'])
                 inventory.sodium_lamps = int(data['sodium_lamps'])
+                inventory.iron_poles = int(data['iron_poles'])
+                inventory.paper_rolls = int(data['paper_rolls'])
+                inventory.bamboo_poles = int(data['bamboo_poles'])
+                inventory.ropes = int(data['ropes'])
+                inventory.wires = int(data['wires'])
+                inventory.tents = int(data['tents'])
                 inventory.item1 = int(data['item1'])
                 inventory.item2 = int(data['item2'])
                 inventory.item3 = int(data['item3'])
@@ -1318,7 +1361,6 @@ def tender_remove_entry(request):
             try:
                 inventory.blankets -= int(data['blankets'])
                 inventory.mattress -= int(data['mattresses'])
-                inventory.tents -= int(data['tents'])
                 inventory.pillows -= int(data['pillows'])
                 inventory.spikes -= int(data['spikes'])
                 inventory.bedsheets -= int(data['bedsheets'])
@@ -1326,6 +1368,10 @@ def tender_remove_entry(request):
                 inventory.buckets -= int(data['buckets'])
                 inventory.mugs -= int(data['mugs'])
                 inventory.fans -= int(data['fans'])
+                inventory.bulbs -= int(data['bulbs'])
+                inventory.water_campers -= int(data['watercampers'])
+                inventory.water_drums -= int(data['waterdrums'])
+                inventory.waste_drums -= int(data['waste_drums'])
                 inventory.tables -= int(data['tables'])
                 inventory.table_cloths -= int(data['table_cloths'])
                 inventory.chairs -= int(data['chairs'])
@@ -1334,6 +1380,12 @@ def tender_remove_entry(request):
                 inventory.curtains -= int(data['curtains'])
                 inventory.halogen_lamps -= int(data['halogen_lamps'])
                 inventory.sodium_lamps -= int(data['sodium_lamps'])
+                inventory.iron_poles -= int(data['iron_poles'])
+                inventory.paper_rolls -= int(data['paper_rolls'])
+                inventory.bamboo_poles -= int(data['bamboo_poles'])
+                inventory.ropes -= int(data['ropes'])
+                inventory.wires -= int(data['wires'])
+                inventory.tents -= int(data['tents'])
                 inventory.item1 -= int(data['item1'])
                 inventory.item2 -= int(data['item2'])
                 inventory.item3 -= int(data['item3'])
@@ -1403,7 +1455,6 @@ def mattress_new_entry(request):
             try:
                 inventory.blankets += int(data['blankets'])
                 inventory.mattress += int(data['mattresses'])
-                inventory.tents += int(data['tents'])
                 inventory.pillows += int(data['pillows'])
                 inventory.spikes += int(data['spikes'])
                 inventory.bedsheets += int(data['bedsheets'])
@@ -1411,6 +1462,10 @@ def mattress_new_entry(request):
                 inventory.buckets += int(data['buckets'])
                 inventory.mugs += int(data['mugs'])
                 inventory.fans += int(data['fans'])
+                inventory.bulbs += int(data['bulbs'])
+                inventory.water_campers += int(data['watercampers'])
+                inventory.water_drums += int(data['waterdrums'])
+                inventory.waste_drums += int(data['waste_drums'])
                 inventory.tables += int(data['tables'])
                 inventory.table_cloths += int(data['table_cloths'])
                 inventory.chairs += int(data['chairs'])
@@ -1419,6 +1474,12 @@ def mattress_new_entry(request):
                 inventory.curtains += int(data['curtains'])
                 inventory.halogen_lamps += int(data['halogen_lamps'])
                 inventory.sodium_lamps += int(data['sodium_lamps'])
+                inventory.iron_poles += int(data['iron_poles'])
+                inventory.paper_rolls += int(data['paper_rolls'])
+                inventory.bamboo_poles += int(data['bamboo_poles'])
+                inventory.ropes += int(data['ropes'])
+                inventory.wires += int(data['wires'])
+                inventory.tents += int(data['tents'])
                 inventory.item1 += int(data['item1'])
                 inventory.item2 += int(data['item2'])
                 inventory.item3 += int(data['item3'])
@@ -1434,7 +1495,6 @@ def mattress_new_entry(request):
             try:
                 inventory.blankets = int(data['blankets'])
                 inventory.mattress = int(data['mattresses'])
-                inventory.tents = int(data['tents'])
                 inventory.pillows = int(data['pillows'])
                 inventory.spikes = int(data['spikes'])
                 inventory.bedsheets = int(data['bedsheets'])
@@ -1442,6 +1502,10 @@ def mattress_new_entry(request):
                 inventory.buckets = int(data['buckets'])
                 inventory.mugs = int(data['mugs'])
                 inventory.fans = int(data['fans'])
+                inventory.bulbs = int(data['bulbs'])
+                inventory.water_campers = int(data['watercampers'])
+                inventory.water_drums = int(data['water_drums'])
+                inventory.waste_drums = int(data['waste_drums'])
                 inventory.tables = int(data['tables'])
                 inventory.table_cloths = int(data['table_cloths'])
                 inventory.chairs = int(data['chairs'])
@@ -1450,6 +1514,12 @@ def mattress_new_entry(request):
                 inventory.curtains = int(data['curtains'])
                 inventory.halogen_lamps = int(data['halogen_lamps'])
                 inventory.sodium_lamps = int(data['sodium_lamps'])
+                inventory.iron_poles = int(data['iron_poles'])
+                inventory.paper_rolls = int(data['paper_rolls'])
+                inventory.bamboo_poles = int(data['bamboo_poles'])
+                inventory.ropes = int(data['ropes'])
+                inventory.wires = int(data['wires'])
+                inventory.tents = int(data['tents'])
                 inventory.item1 = int(data['item1'])
                 inventory.item2 = int(data['item2'])
                 inventory.item3 = int(data['item3'])
@@ -1485,7 +1555,6 @@ def mattress_remove_entry(request):
             try:
                 inventory.blankets -= int(data['blankets'])
                 inventory.mattress -= int(data['mattresses'])
-                inventory.tents -= int(data['tents'])
                 inventory.pillows -= int(data['pillows'])
                 inventory.spikes -= int(data['spikes'])
                 inventory.bedsheets -= int(data['bedsheets'])
@@ -1493,6 +1562,10 @@ def mattress_remove_entry(request):
                 inventory.buckets -= int(data['buckets'])
                 inventory.mugs -= int(data['mugs'])
                 inventory.fans -= int(data['fans'])
+                inventory.bulbs -= int(data['bulbs'])
+                inventory.water_campers -= int(data['watercampers'])
+                inventory.water_drums -= int(data['water_drums'])
+                inventory.waste_drums -= int(data['waste_drums'])
                 inventory.tables -= int(data['tables'])
                 inventory.table_cloths -= int(data['table_cloths'])
                 inventory.chairs -= int(data['chairs'])
@@ -1501,6 +1574,12 @@ def mattress_remove_entry(request):
                 inventory.curtains -= int(data['curtains'])
                 inventory.halogen_lamps -= int(data['halogen_lamps'])
                 inventory.sodium_lamps -= int(data['sodium_lamps'])
+                inventory.iron_poles -= int(data['iron_poles'])
+                inventory.paper_rolls -= int(data['paper_rolls'])
+                inventory.bamboo_poles -= int(data['bamboo_poles'])
+                inventory.ropes -= int(data['ropes'])
+                inventory.wires -= int(data['wires'])
+                inventory.tents -= int(data['tents'])
                 inventory.item1 -= int(data['item1'])
                 inventory.item2 -= int(data['item2'])
                 inventory.item3 -= int(data['item3'])
@@ -1545,3 +1624,27 @@ def mattress_view_status(request):
             return redirect(request.META.get('HTTP_REFERER'))
 def tender_new_form(request):
     return HttpResponse('hello')
+
+def excel(request):
+    from openpyxl import Workbook
+    wb = Workbook(write_only = True)
+    ws = wb.create_sheet()
+    headings = [
+        'Location',
+        'Comments',
+        'Blankets',
+        'Mattress',
+        'Pillows',
+        'Spikes',
+        'Bedsheets',
+        'Quilts',
+        'Buckets',
+        'Mugs',
+        'Fans',
+        'Bulbs',
+        'Tables',
+        'Table Cloths',
+        'Chairs',
+        'Curtains',
+        
+    ]
