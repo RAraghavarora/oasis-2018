@@ -266,9 +266,9 @@ def approve_participations(request,id):
         elif data['submit']=='disapprove':
             for participation in MainParticipation.objects.filter(id__in=part_list):
                 participant = participation.participant
-                if participant.paid or participant.controlz_paid:
-                    messages.warning(request, 'A participant who has paid can not be disapproved. Contact DVM if much of an issue.')
-                    return redirect(request.META.get('HTTP_REFERER'))
+                # if participant.paid or participant.controlz_paid:
+                #     messages.warning(request, 'A participant who has paid can not be disapproved. Contact DVM if much of an issue.')
+                #     return redirect(request.META.get('HTTP_REFERER'))
                 participation.pcr_approved=False
                 participation.save()
                 if MainParticipation.objects.filter(participant=participant, pcr_approved=True).count()==0:
