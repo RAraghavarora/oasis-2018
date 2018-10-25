@@ -266,9 +266,9 @@ def approve_participations(request,id):
         elif data['submit']=='disapprove':
             for participation in MainParticipation.objects.filter(id__in=part_list):
                 participant = participation.participant
-                if participant.paid or participant.controlz_paid:
-                    messages.warning(request, 'A participant who has paid can not be disapproved. Contact DVM if much of an issue.')
-                    return redirect(request.META.get('HTTP_REFERER'))
+                # if participant.paid or participant.controlz_paid:
+                #     messages.warning(request, 'A participant who has paid can not be disapproved. Contact DVM if much of an issue.')
+                #     return redirect(request.META.get('HTTP_REFERER'))
                 participation.pcr_approved=False
                 participation.save()
                 if MainParticipation.objects.filter(participant=participant, pcr_approved=True).count()==0:
@@ -838,7 +838,8 @@ pcr@bits-oasis.org
             response = sg.client.mail.send.post(request_body=mail.get())
             if response.status_code%100!=2:
                 raise Exception
-            messages.warning(request, 'Email sent to ', participant.name)
+            message = 'Email sent to '+str(participant.name)
+            messages.warning(request, message)
             participant.pcr_final = True
             participant.save()
 
