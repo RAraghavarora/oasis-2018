@@ -80,7 +80,7 @@
                             localStorage.setItem("user_id", parsedRes.json.user_id);
                             localStorage.setItem("is_bitsian", "1");
 
-                            window.location.href = "2018/storewebapp/profile/";
+                            window.location.href = "/profile/";
                         }
                         else if (parsedRes.status === 404) {
                             Materialize.toast(parsedRes.json.message, 5000);
