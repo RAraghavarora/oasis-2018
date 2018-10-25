@@ -1,29 +1,27 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
 
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.reverse import reverse
 
 from shop.models.wallet import Wallet
 from shop.permissions import TokenVerification
+from shop.models.transaction import Transaction
+from registrations.models import Participant,Bitsian
+from rest_framework.renderers import TemplateHTMLRenderer
+from utils.wallet_qrcode import decString
 
 import json, requests
 from instamojo_wrapper import Instamojo
-from rest_framework.reverse import reverse
+from firebase_admin import firestore
 
 from oasis2018.settings_config.keyconfig import *
-
-from registrations.models import Participant,Bitsian
-from django.contrib.auth.models import User
-from shop.models.transaction import Transaction
-from firebase_admin import firestore
-from rest_framework.renderers import TemplateHTMLRenderer
-
-from utils.wallet_qrcode import decString
-
 
 try:
 	if SERVER:
@@ -46,23 +44,41 @@ class Transfer(APIView):
 	def post(self, request, format=None):
 			data = request.data
 			try:
-				source = request.user.wallet
-				target_user = User.objects.get(id=data["target_user"])
-				target = Wallet.objects.get(user=target_user)
-				if source == target:
-					return Response({"message": "You can't transfer money to yourself."}, status=status.HTTP_403_FORBIDDEN)
-				amount = data["amount"]
-				if amount < 0:
-					return Response({"message": "transfered amount cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
-				source.transferTo(target, amount, transfertype="transfer")
-				msg = {"message": "successful!"}
-				return Response(msg, status=status.HTTP_200_OK)
+				target_user = User.objects.get(id=data["target_user"])			
 			except KeyError as missing:
 				msg = {"message": "missing the following field: {}".format(missing)}
-				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+				return Response(msg, status=status.HTTP_400_BAD_REQUEST)			
+			except:
+				try:	
+					target_user = decString(data["target_user"])[0]
+					target_user = User.objects.get(id=target_user)
+				except:
+					msg = {"message" : "Invalid request!"}
+					return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+			try:
+				source = request.user.wallet
+				target = Wallet.objects.get(user=target_user)
+
 			except Wallet.DoesNotExist:
 				msg = {"message": "Wallet does not exist"}
 				return Response(msg, status=status.HTTP_404_NOT_FOUND)
+
+			if not source.profile == target.profile:
+				msg = {"message" : "Invalid action. You can only transfer money to a {}".format(source.get_profile_display().title())}
+				return Response(msg, status = status.HTTP_403_FORBIDDEN)
+
+			if source == target:
+				return Response({"message": "You can't transfer money to yourself."}, status=status.HTTP_403_FORBIDDEN)
+
+			amount = data["amount"]
+			if amount < 0:
+				return Response({"message": "transfered amount cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
+
+			source.transferTo(target, amount, transfertype="transfer")
+
+			msg = {"message": "Request successful!"}
+			return Response(msg, status=status.HTTP_200_OK)
+	
 
 
 class AddMoney(APIView):

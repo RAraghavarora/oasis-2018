@@ -123,7 +123,7 @@ def rulespage(request):
 
 
 def rules(request):
-	rules_ = os.path.join(BASE_DIR, 'media/wordwars/Instructions.docx')
+	rules_ = os.path.join(BASE_DIR, 'backend_media/wordwars/Instructions.docx')
 	doc = open(rules_, 'rb')
 	response = HttpResponse(content_type='application/doc', content=doc)
 	response['Content-Disposition'] = 'attachment; filename="Detailed Instructions.docx"'
@@ -264,7 +264,7 @@ def edit_question(request,q_id):
         messages.success(request, 'Question edited successfully')
         return redirect('wordwars:all_questions')
     return render(request,'wordwars/edit_question.html',{'question':question})
-
+#track
 
 @staff_member_required
 def player_status(request):

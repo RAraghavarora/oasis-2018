@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -7,7 +6,6 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_jwt.settings import api_settings
 
 from registrations.models import Bitsian
 from shop.models.wallet import Wallet
@@ -16,31 +14,22 @@ from shop.permissions import TokenVerification
 from shop.models import Teller
 from events.models import Organization
 
+from rest_framework_jwt.settings import api_settings
+
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
+
 from random import choice
 import string
-from google.auth.transport import requests as google_requests
-
-#google oauth client side
-from google.oauth2 import id_token
 
 
 class Authentication(APIView):
 
 	permission_classes = (TokenVerification,)
 
-
-	PASS_CHARS = string.ascii_letters + string.digits
-	for i in '0oO1QlLiI':
-		PASS_CHARS = PASS_CHARS.replace(i,'')
-
-	# CLIENT_ID_ios = "157934063064-et3fmi6jlivnr6h70q2rnegik50aqj3g.apps.googleusercontent.com"
 	CLIENT_ID_ios = "157934063064-mjdsg5k85qdj13mkuo5bk82iq9q3r9ua.apps.googleusercontent.com"
 	CLIENT_ID_web = "563920200402-chepn5acpejf0bac9v6on3a8pdvmvvg0.apps.googleusercontent.com"
 	CLIENT_ID_android = "157934063064-et3fmi6jlivnr6h70q2rnegik50aqj3g.apps.googleusercontent.com"
-
-
-	def generate_random_password(self):
-		return ''.join(choice(self.PASS_CHARS) for _ in xrange(8))
 
 
 	def get_jwt(self, user):
@@ -53,20 +42,12 @@ class Authentication(APIView):
 
 
 	def post(self, request, format=None):
-		#Checks if Authentication requester if bitsian, participant or stall.
 		try:
 			is_bitsian = request.data['is_bitsian']
-			is_stall = False
-
-		except KeyError:
-			try:
-				is_stall = request.data['is_stall']
-				is_bitsian = False
-
-			except KeyError:
-				msg = {"message": "Missing the identity field."}
-				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
-
+			#registration_token = request.data['registration_token']
+		except KeyError as missing:
+			msg = {"message": "The following field was missing: {}".format(missing)}
+			return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
 		#Bitsian Authentication is done through Google OAuth
 		if is_bitsian:
@@ -96,18 +77,13 @@ class Authentication(APIView):
 			try:
 				bitsian = Bitsian.objects.get(email=email)
 			except Exception as e:
-				msg = "Bitsian associated with {} not in SWD list, for security reasons you will need to contact the DVM.".format(email)
+				msg = "Contact the administrators.".format(email)
 				return Response({"message": msg}, status=status.HTTP_404_NOT_FOUND)
 
 			#Checks if user exist creates if doesn't.
 			username = email.split('@')[0]
 			try:
 				user = User.objects.get(username=username)
-				try:
-					qr_code = user.bitsian.barcode
-				except:
-					qr_code = None
-
 			except ObjectDoesNotExist:
 				user = User.objects.create(username=username, email=email)
 				bitsian.user = user
@@ -135,19 +111,21 @@ class Authentication(APIView):
 				msg = {'message' : "Incorrect Authentication Credentials or User doesn't exist"}
 				return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
-			if not is_stall:
-				try:
-					qr_code = user.participant.barcode
-				except:
-					qr_code = None
-
+		try:
+			qr_code = user.bitsian.barcode
+		except:
+			try:
+				qr_code = user.participant.barcode
+			except:
+				qr_code = None
 
 		#Checks if wallet exists
 		try:
-			wallet = Wallet.objects.get(user=user)
+			wallet = Wallet.objects.get(user=user)			
 			if not wallet:
 				raise Wallet.DoesNotExist
-
+			# wallet.registration_token = registration_token
+			# wallet.save()
 		except Wallet.DoesNotExist:
 			msg = {'message' : 'Contact the administrators'}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
