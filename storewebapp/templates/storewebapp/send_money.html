@@ -70,7 +70,7 @@
                 Materialize.toast("Rs. " + amount + " sent successfully.", 5000);
             }
             else {
-                Materialize.toast(parsedRes.message, 5000);
+                Materialize.toast(parsedRes.json.message, 5000);
             }
         })
     }
