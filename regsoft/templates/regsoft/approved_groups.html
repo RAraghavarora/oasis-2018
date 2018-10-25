@@ -39,7 +39,7 @@
                         <td>{{i.college}}</td>
                         <td>{{i.group| participant_count}}</td>
                         <td>{{i.group.created_time}}</td>
-                        <td>{{i.group_code}}</td>
+                        <td>{{i.group.group_code}}</td>
                         <td>{{i.group|get_gleader_name}}</td>
                         <td><a href="{% url 'regsoft:get_group_list' i.group.id %}">View Details</a></td>
                     </tr>
