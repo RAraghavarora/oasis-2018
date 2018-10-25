@@ -79,7 +79,7 @@ class Tickets(models.Model):
 			try:
 				profile = self.user.participant
 			except:
-				profile = self.user.id
+				return "#{}'s tickets for {} : {}".format(self.user.id, self.prof_show.name, self.count)
 		return "{}'s tickets for {} : {}".format(profile.name, self.prof_show.name, self.count)
 
 	class Meta:
