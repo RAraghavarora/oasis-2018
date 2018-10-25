@@ -87,9 +87,18 @@ class PlaceOrder(APIView):
                     order.delete()
                     return Response({"message": msg}, status = status.HTTP_404_NOT_FOUND)
 
+
                 if not itemclass.is_available:
                     unavailable.append(itemclass.id)
                     flag = False
+
+                if stall.name == "Mess":
+                    if qty < itemclass.stock:
+                        msg = {"message" : "Not enough stock."}
+                        return Reponse(msg, status=status.HTTP_404_NOT_FOUND)
+                    elif flag:
+                        itemclass.stock -= qty
+                        itemclass.save()
 
                 if flag:
                     fragment.items.create(itemclass=itemclass, quantity=item["qty"], order=fragment)
