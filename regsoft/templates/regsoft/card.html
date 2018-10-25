@@ -84,8 +84,7 @@
         <div style="flex: 2; padding: 2mm; padding-right: 1mm">
           <span><b>{{part.name}}</b><label>{{part.college.name}}</label></span>
           <span style="font-size: 3mm">Events: {{part|get_events_list}}</span>
-          <span><label>Barcode: {{part.barcode}}</label>
-            <!-- <label>EMS Code: {{part.ems_code}}</label></span> -->
+          <span><label>Barcode: {{part.barcode}}</label><label>EMS Code: {{part.ems_code}}</label></span>
         </div>
       </div>
       {% endfor %}
