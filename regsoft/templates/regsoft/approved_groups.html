@@ -1,0 +1,52 @@
+{% extends "regsoft/base.html" %}
+{% block body %}
+{% load regsoft_tags %}
+<div class="card">
+    <div class="header">
+        <h2>
+            Confirmed Groups
+        </h2>
+    </div>
+	<div class="body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover dataTable js-exportable">
+                <thead>
+                    <tr>
+                        <th>Sr No</th>
+                        <th>College</th>
+                        <th>Participant Count</th>
+                        <th>Passed Time</th>
+                        <th>Group Code</th>
+                        <th>Group Leader</th>
+                        <th>View Details</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Sr No</th>
+                        <th>College</th>
+                        <th>Participant Count</th>
+                        <th>Passed Time</th>
+                        <th>Group Code</th>
+                        <th>Group Leader</th>
+                        <th>View Details</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                	{% for i in data %}
+                    <tr>
+                        <td>Group {{i.group.id}}</td>
+                        <td>{{i.college}}</td>
+                        <td>{{i.group| participant_count}}</td>
+                        <td>{{i.group.created_time}}</td>
+                        <td>{{i.group_code}}</td>
+                        <td>{{i.group|get_gleader_name}}</td>
+                        <td><a href="{% url 'regsoft:get_group_list' i.group.id %}">View Details</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

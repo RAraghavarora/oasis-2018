@@ -1,5 +1,4 @@
 var BASE_URL = "https://bits-oasis.org/2018/shop";
-var WALLET_TOKEN = "3i8nscPBqqQA2W4h";
 
 function processResponse (response) {
     var status = response.status;
