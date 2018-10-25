@@ -23,6 +23,8 @@ urlpatterns = [
     url(r'^stalls/(?P<stall_id>\d+)/$', stalls_views.ProductsList.as_view(), name = 'products'),
     url(r'^stalls/client/orders/$', stalls_views.StallOrdersList.as_view(), name = 'stall-orders'),
     url(r'^stalls/client/order-response/$', stalls_views.StallOrderStatus.as_view(), name = 'stall-order-status'),
+    url(r'^stalls/client/switch/item/$', stalls_views.SwitchItemAvailability.as_view(), name = 'stall-switch-item'),
+    url(r'^stalls/client/switch/$', stalls_views.SwitchStall.as_view(), name = 'stall-switch'),
 
     url(r'^orders/show-otp/$', orders_views.ShowOTP.as_view(), name = 'show-otp'),
 
