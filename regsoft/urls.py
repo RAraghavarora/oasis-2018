@@ -60,13 +60,20 @@ urlpatterns=[
 
 	url(r'inventory/tender_home/?$', views.tender_home, name='tender_home'),
 	url(r'inventory/tender_new_form/?$', views.tender_new_entry, name='tender_new_entry'),
-	url(r'inventory/tender_remove_form/?$', views.tender_remove_entry, name='tender_remove_entry'),
+	url(r'inventory/tender_return/$',views.tender_remove_home, name='tender_remove_home'),
+	url(r'inventory/tender_in/$',views.tender_in, name='tender_in'),
+	url(r'inventory/tender_remove_form/(?P<l_id>\d+)/?$', views.tender_remove_entry, name='tender_remove_entry'),
 	url(r'inventory/tender_view_status/?$', views.tender_view_status, name='tender_view_status'),
 
 	url(r'inventory/mattress_home/?$', views.mattress_home, name='mattress_home'),
 	url(r'inventory/mattress_new_entry/?$', views.mattress_new_entry, name='mattress_new_entry'),
-	url(r'inventory/mattress_remove_entry/?$', views.mattress_remove_entry, name='mattress_remove_entry'),
+	url(r'inventory/mattress_return_home/?$', views.mattress_return_home, name='mattress_return_home'),
+	url(r'inventory/mattress_in/?$', views.mattress_in, name='mattress_in'),
+	url(r'inventory/mattress_remove_entry/(?P<l_id>\d+)/?$', views.mattress_remove_entry, name='mattress_remove_entry'),
 	url(r'inventory/mattress_view_status/?$', views.mattress_view_status, name='mattress_view_status'),
+
+	url(r'inventory/excel/?$', views.excel, name='excel'),
+
 
 
 	url(r'inventory/logout/?$', views.user_logout, name='user_logout'),
