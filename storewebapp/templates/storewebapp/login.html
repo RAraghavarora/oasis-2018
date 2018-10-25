@@ -133,7 +133,7 @@
                 else if (parsedRes.status === 200 && parsedRes.json.token) {
                     signinMsg.classList.add("alert", "alert-success");
                     signinMsg.innerHTML = "Successful authentication! Please wait...";
-                    window.location.href = "/profile";
+                    window.location.href = "{% url 'storewebapp:profile' %}";
                     localStorage.setItem("user_token", parsedRes.json.token);
                     localStorage.setItem("user_id", parsedRes.json.user_id);
                     localStorage.setItem("is_bitsian", "0");

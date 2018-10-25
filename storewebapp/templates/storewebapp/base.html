@@ -332,7 +332,7 @@
         var userToken = localStorage.getItem("user_token");
 
         if (!userToken) {
-            window.location.href = "/storewebapp";
+            window.location.href = "{% url 'storewebapp:home' %}";
         }
 
 		function showLoadingSpinner(show) {
@@ -346,7 +346,7 @@
             localStorage.removeItem("user_id");
             localStorage.removeItem("qr_code");
 
-            window.location.href = "/storewebapp";
+            window.location.href = "{% url 'storewebapp:home' %}";
         }
 
 		/*var isBitsian = Number(localStorage.getItem('is_bitsian'))
