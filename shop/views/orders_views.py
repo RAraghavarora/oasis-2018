@@ -85,7 +85,9 @@ class PlaceOrder(APIView):
             for item in stall["items"]:
                 try:
                     itemclass = ItemClass.objects.get(id=item["id"])
-                    qty = item["qty"]
+                    qty = int(item["qty"])
+                    if qty < 0:
+                        raise ValueError
                 except KeyError as missing:
                     msg = {"message" : "The following field was missing: {}".format(missing)}
                     order.delete()
@@ -94,6 +96,10 @@ class PlaceOrder(APIView):
                     msg = "Item with the following id doesn't exist: {}".format(item["id"])
                     order.delete()
                     return Response({"message": msg}, status = status.HTTP_404_NOT_FOUND)
+                except ValueError:
+                    msg = {"message" : "Wrong values."}
+                    order.delete()
+                    return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
                 if stall_instance.name == "Ticket Vendor":
                     try:
@@ -111,6 +117,15 @@ class PlaceOrder(APIView):
                     if not itemclass.is_available:
                         unavailable.append(itemclass.id)
                         flag = False
+                
+                #Name of the stalls for Mess will be stored as: "XYZ Mess"
+                if stall_instance.name[-4:].title() == "Mess":
+                    if qty > itemclass.stock:
+                        msg = {"message" : "Not enough stock."}
+                        return Response(msg, status=status.HTTP_404_NOT_FOUND)
+                    elif flag:
+                        itemclass.stock -= qty
+                        itemclass.save()
 
                 if flag:
                     fragment.items.create(itemclass=itemclass, quantity=item["qty"], order=fragment)
