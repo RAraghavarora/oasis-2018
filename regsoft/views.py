@@ -1236,10 +1236,6 @@ def dc_view_status(request, dc_id):
     context = {'inventory':inventory}
     return render(request, 'regsoft/view_dc.html',context)
 
-@staff_member_required
-def user_logout(request):
-    logout(request)
-    return HttpResponseRedirect('/')
 
 @staff_member_required
 def tender_home(request):

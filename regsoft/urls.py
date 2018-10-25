@@ -76,11 +76,6 @@ urlpatterns=[
 
 
 
-	url(r'inventory/logout/?$', views.user_logout, name='user_logout'),
-
-
-
-
 
 
 ]
