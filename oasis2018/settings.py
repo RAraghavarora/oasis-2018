@@ -163,7 +163,7 @@ GOOGLE_RECAPTCHA_SECRET_KEY = keyconfig.google_recaptcha_secret_key
 GOOGLE_RECAPTCHA_SITE_KEY = keyconfig.google_recaptcha_site_key
 
 
-APPEND_SLASH = False
+# APPEND_SLASH = False
 
 LOGIN_URL = '/2018/registrations/login/'
 # LOGOUT_REDIRECT_URL = '/registrations/login/'

@@ -236,7 +236,13 @@ def how_much_paid(part):
 @staff_member_required
 def approve_participations(request,id):
     
-    college=get_object_or_404(College,id=id)
+    try:
+        college=College.objects.filter(id=id)
+        if not college:
+            messages.warning(request,'No such college. Please check again. ')
+            return redirect(request.META.get('HTTP_REFERER'))
+    except:
+        pass    
     try:
         cr=Participant.objects.get(college=college,is_cr=True)
     except:
@@ -245,7 +251,6 @@ def approve_participations(request,id):
     
     if request.method=='POST':
         data=request.POST
-        print(data)
         try:
             part_list=data.getlist('data')
         except:
@@ -271,8 +276,9 @@ def approve_participations(request,id):
                     participant.save()
             message="Events successfully unconfirmed"
         messages.success(request,message)
-    approved=MainParticipation.objects.filter(pcr_approved=True,participant__college=college,cr_approved=True)
-    disapproved=MainParticipation.objects.filter(pcr_approved=False,participant__college=college,cr_approved=True)
+    approved=MainParticipation.objects.filter(pcr_approved=True,participant__college=college,participant__cr_approved=True)
+    disapproved=MainParticipation.objects.filter(participant__cr_approved = True, pcr_approved=False,participant__college=college)
+
     return render(request, 'pcradmin/approve_participations.html', {'approved':approved, 'disapproved':disapproved, 'cr':cr})
 
 @staff_member_required
@@ -290,7 +296,6 @@ def verify_profile(request,part_id):
         try:
             data=(request.POST)
             data1 = dict(data)
-            print(data)
         except:
             messages.warning(request,'Please select an event')
             return redirect(request.META.get('HTTP_REFERER'))
@@ -320,7 +325,6 @@ def verify_profile(request,part_id):
     events_confirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=True)]
     events_unconfirmed = [{'event':p.event, 'id':p.id} for p in participations.filter(pcr_approved=False)]
     context = { 'part':part, 'confirmed':events_confirmed, 'unconfirmed':events_unconfirmed}
-    print(context)
     return render(request, 'pcradmin/verify_profile.html',context)
 
 @staff_member_required
@@ -438,7 +442,6 @@ def stats(request, order=None):
             participants = event.participant_set.all()
             if participants.count()>0:
                 male_participants = participants.filter(gender = 'male')
-                print(male_participants)
                 female_participants = participants.filter(gender = 'female')
                 display_data = {
                     'data': [
@@ -589,6 +592,7 @@ def master_stats(request):
         except:
             pass
         if not colleges and not events:
+            messages.warning(request, 'Please select atleast one college or one event.')
             return redirect(request.META.get('HTTP_REFERRER'))
         rows = []
         if colleges[0]!='' and events[0]!='':
@@ -780,7 +784,7 @@ def final_email_send(request, eg_id):
 Hello %s!
 Greetings from BITS Pilani!
 
-It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 31st to November 4th.
+It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 27th to October 31st.
 
 This is to confirm your participation at OASIS '18.
 We would be really happy to see your college represented at our fest.
@@ -806,7 +810,7 @@ pcr@bits-oasis.org
 Hello %s!
 Greetings from BITS Pilani!
 
-It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 31st to November 4th.
+It gives me immense pleasure in inviting your institute to the 48th edition of OASIS, the annual cultural fest of Birla Institute of Technology & Science, Pilani, India. This year, OASIS will be held from October 27th to October 31st.
 
 This is to confirm your participation at OASIS '18.
 We would be really happy to see your college represented at our fest.
@@ -834,13 +838,11 @@ pcr@bits-oasis.org
             response = sg.client.mail.send.post(request_body=mail.get())
             if response.status_code%100!=2:
                 raise Exception
-            print('done')
             messages.warning(request, 'Email sent to ', participant.name)
             participant.pcr_final = True
             participant.save()
 
         except Exception as e:
-            print(str(e))
             messages.warning(request, 'Error sending email')
     return redirect(reverse('pcradmin:final_confirmation', kwargs={'c_id': college.id}))
 

@@ -89,11 +89,6 @@ def Data(request):
 class Info(APIView):
 
     def get(self, request):
-        print("Request Received")
         categories = Category.objects.all()
-        print("CATEGORIES")
-        print(categories)
         serializer = CategorySerializer(categories, many = True)
-        print("SERIALIZER")
-        print(serializer.data)
         return Response(serializer.data, status = status.HTTP_200_OK)

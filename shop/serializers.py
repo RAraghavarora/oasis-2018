@@ -49,7 +49,8 @@ class OrderFragmentSerializer(serializers.ModelSerializer):
 		       item = {
 		       "id" : item_instance.itemclass.id,
 		       "name" : item_instance.itemclass.name,
-		       "qty" : item_instance.quantity
+		       "qty" : item_instance.quantity,
+		       "price" : item_instance.itemclass.price
 		       }
 		       items_list.append(item)
 		return items_list
@@ -63,7 +64,7 @@ class OrderFragmentSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = OrderFragment
-		fields = ('id', 'order', 'customer', 'status', 'items_list', 'timestamp', 'stall_id', 'otp', 'show_otp')
+		fields = ('id', 'order', 'customer', 'status', 'items_list', 'timestamp', 'stall_id', 'otp', 'show_otp',)
 
 
 class NestedOrderSerializer(serializers.ModelSerializer):

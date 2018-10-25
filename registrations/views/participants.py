@@ -39,11 +39,7 @@ def index(request):
 
 
     if request.method=='POST':
-        print("post request")
-        print("******** POST ***********")
         data = json.loads(request.body.decode('utf8').replace("'", '"'))
-        print(request.body)
-        print (data)
         recaptcha_response = data['reCaptcha']
         data_1={
             'secret' : keyconfig.google_recaptcha_secret_key,
@@ -53,7 +49,6 @@ def index(request):
         
         result=r.json()
         if not result['success']:
-            print(result)
             return JsonResponse({'status':0, 'message':'Invalid Recaptcha. Try Again'})
         if len(data['phone'])!=10:
             return JsonResponse({'status':0,'message':'Please enter a valid contact number.'})
@@ -114,19 +109,15 @@ def index(request):
             to_email = Email(send_to)
             verify_email_url = str(request.build_absolute_uri(reverse("registrations:index"))) + 'email_confirm/' + \
             generate_email_token(Participant.objects.get(email=send_to)) + '/'
-            print('Email url \t',verify_email_url)
             mail.body = mail.body%(name.title(), verify_email_url)
             content = Content('text/html', mail.body)
             # 
-            print(data['events'][0])
             try:
                 mail_1 = Mail(mail.from_email, mail.subject, to_email, content)
                 response = send_grid.sg.client.mail.send.post(request_body = mail_1.get())
                 if response.status_code%100!=2:
                     raise Exception
-                print(response)
             except Exception as e:
-                print("\t",e)
                 participant.delete()
                 return JsonResponse({'status':0, 'message':'Error sending email. Please try again.'})
             
@@ -136,7 +127,6 @@ def index(request):
     
     if request.user.is_authenticated():
         user = request.user
-        print(user)
         try:
             participant = Participant.objects.get(user=user)
             participation_set = MainParticipation.objects.filter(participant=participant)
@@ -147,9 +137,6 @@ def index(request):
             pass
 
 
-    print("get request")
-    print("****** PRINTING *******")
-#   print("just printed :)")
     colleges = College.objects.all()
     c_names = [college.name for college in colleges]
     events = [{'name':event.name,'id':event.id} for event in MainEvent.objects.all() ]
@@ -213,7 +200,6 @@ def home(request):
 
 def email_confirm(request,token):
     member = authenticate_email_token(token)
-    print("EMAIL CONFIRM")
     if member:
         context = {
         'error_heading': 'Email verified',
@@ -241,6 +227,9 @@ def manage_events(request):
             for event_id in events_id:
                 event = MainEvent.objects.get(id=event_id)
                 p, created  = MainParticipation.objects.get_or_create(participant=participant, event=event)
+                if participant.cr_approved == True:
+                    p.cr_approved = True
+                    p.save()
 
         if data['action'] == 'remove':
             not_removed = []
@@ -248,7 +237,6 @@ def manage_events(request):
                 events_id = data.getlist('events_id')
             except:
                 return redirect(request.META.get('HTTP_REFERER'))
-            print(events_id)
             for event_id in events_id:
                 try:
                     event = MainEvent.objects.get(id=event_id)
@@ -258,14 +246,13 @@ def manage_events(request):
                     else:
                         not_removed.append(participation)
                 except Exception as e:
-                    print(e)
                     pass
-                print(not_removed)
             if len(not_removed) != 0:
                 return render(request, 'remove.html', {'events':not_removed})
     added_list = [participation for participation in MainParticipation.objects.filter(participant=participant)]
     added_events = [p.event for p in added_list]
     not_added_list = [event for event in MainEvent.objects.all() if event not in added_events]
+    
     return render(request, 'registrations/manage_events.html', {'added_list':added_list, 'not_added_list':not_added_list, 'participant':participant})
 
 @login_required
@@ -297,7 +284,6 @@ def return_qr(request):
 def forgot_password(request):
     if(request.method=='POST'):
         data = request.POST
-        print(data)
         email = data['email']
         if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
             return JsonResponse({'status':0, 'message':'Please enter a valid email address.'})
@@ -321,7 +307,6 @@ def forgot_password(request):
                 response = send_grid.sg.client.mail.send.post(request_body = mail.get())
                 if response.status_code%100!=2:
                     raise Exception
-                print("EMAIL SENT")
             except:
                 context = {
                     'status': 0,
@@ -337,7 +322,6 @@ def forgot_password(request):
             return render(request, 'registrations/message.html', context)
 
         except Exception as e:
-            print(e)
             context = {
                     'error_heading': "Invalid Email",
                     'message': "Sorry, your email is not registered. Please register again.",
@@ -404,7 +388,6 @@ def forgot_password(request):
 @csrf_exempt
 def payment(request):
     participant = Participant.objects.get(user=request.user)
-    # print(participant)
     if not participant.pcr_approved:
         context = {
         'error_heading': "Invalid Access",
@@ -415,10 +398,8 @@ def payment(request):
     if request.method=='GET':
         return render(request, 'registrations/participant_payment.html', {'participant':participant})
     if request.method == 'POST':
-        print("***********")
         try:
             key = request.POST['key']
-            # print(key)
         except:
             return redirect('registrations:make_payment')
         if int(request.POST['key']) == 1:
@@ -478,7 +459,6 @@ def payment(request):
         status_code_2 = book_response.status_code
         # if status_code_2==200:
         json_ob_2 = json.loads(book_response.text)
-        print(json_ob_2)
         
         page = json_ob_2['pgUrl']
         # response = api.payment_request_create(
@@ -490,17 +470,12 @@ def payment(request):
         #     phone = phone,
         #     redirect_url = request.build_absolute_uri(reverse("registrations:payment_response"))
         # )
-        # print(response)
-        # print(response['payment_request']['status'])
-        # print(email)
-        # print(response['payment_request']['longurl'])
         
         try:
             # url = response['payment_request']['longurl']
             url = page
             return HttpResponseRedirect(url)
         except Exception as e:
-            print(e)
             context = {
             'error_heading': "Payment error",
             'message': "An error was encountered while processing the request. Please contact PCr, BITS, Pilani.",
@@ -518,7 +493,6 @@ def payment_response(request):
         headers = {'X-Api-Key': keyconfig.INSTA_API_KEY_test, 'X-Auth-Token': keyconfig.AUTH_TOKEN_test}
         r = requests.get('https://test.instamojo.com/api/1.1/payment-requests/'+str(payid), headers=headers)
     json_ob = r.json()
-    print(json_ob)
     if (json_ob['success']):
         payment_request = json_ob['payment_request']
         purpose = payment_request['purpose']
@@ -528,9 +502,6 @@ def payment_response(request):
             group_id = int(purpose.split(' ')[1])
             payment_group = PaymentGroup.objects.get(id=group_id)
             count = payment_group.participant_set.all().count()
-            print("COUNT=",count)
-            print("A/C=",amount/count)
-            print(payment_group.participant_set.all())
             if (amount/count) == 1000:
                 for part in payment_group.participant_set.all():
                     part.controlz_paid = True
@@ -544,12 +515,10 @@ def payment_response(request):
 
             elif (amount/count) == 300:
                 for part in payment_group.participant_set.all():
-                    print(part.name,end="\n\n")
                     part.paid = True
                     part.save()
 
         except Exception as e:     
-            print(e)
             email = payment_request['email']
             participant = Participant.objects.get(email=email)
             if amount == 1000:

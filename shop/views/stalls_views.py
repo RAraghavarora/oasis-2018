@@ -57,19 +57,21 @@ class StallOrdersList(APIView):
 		except:
 			return Response(status = status.HTTP_401_UNAUTHORIZED)
 
-
 		orders_pending = OrderFragment.objects.filter(stall = stall, status = OrderFragment.PENDING).order_by('order__timestamp')
 		orders_accepted = OrderFragment.objects.filter(stall = stall, status = OrderFragment.ACCEPTED).order_by('order__timestamp')
+		orders_ready = OrderFragment.objects.filter(stall = stall, status = OrderFragment.READY).order_by('order__timestamp')
 		orders_finished = OrderFragment.objects.filter(stall = stall, status = OrderFragment.FINISHED).order_by('order__timestamp')
 
 		serializer_pending = OrderFragmentSerializer(orders_pending, many = True)
 		serializer_accepted = OrderFragmentSerializer(orders_accepted, many = True)
+		serializer_ready = OrderFragmentSerializer(orders_ready, many = True)
 		serializer_finished = OrderFragmentSerializer(orders_finished, many = True)
 
 		serializer_data = {
 			"pending" : serializer_pending.data,
 			"accepted" : serializer_accepted.data,
-			"finished" : serializer_finished.data
+			"finished" : serializer_finished.data,
+			"ready" : serializer_ready.data
 		}
 
 		return Response(serializer_data, status = status.HTTP_200_OK)
@@ -85,13 +87,16 @@ class StallOrderStatus(APIView):
 
 	#Accepts stall's response to OrderFragment
 	def post(self, request):
-		try:
+		try:	
 			order_fragment_id = request.data['order_fragment']
 			order_status = request.data['order_status'].title()
 		except KeyError as missing:
 			msg = {"message": "The following field is missing: {}".format(missing)}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
-
+		else:
+			msg = {"message" : "Don't know."}
+			return Response(msg, status = status.HTTP_400_BAD_REQUEST)			
+		
 		try:
 			order_fragment = OrderFragment.objects.get(id = order_fragment_id)
 		except OrderFragment.DoesNotExist:
@@ -115,3 +120,4 @@ class StallOrderStatus(APIView):
 		order_fragment.save()
 		msg = {"message" : "Request Successful"}
 		return Response(msg, status = status.HTTP_200_OK)
+		

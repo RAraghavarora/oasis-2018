@@ -41,23 +41,13 @@ def update_database():
 
         url = 'https://www.thecollegefever.com/v1/analytics/eventanalytics?id=4148'
         response = requests.get(url=url, headers=headers, cookies=cookies)
-        # print(response.status_code)
-        # print(response.text)
         json_ob2 = json.loads(response.text)
-        # print(json_ob2)
         html_data = json_ob2['reportHtml']
-        # print(html_data)
-        # print(type(html_data))
 
         raw_body_data = BeautifulSoup(html_data, features='html.parser')("tbody")
-        # print(type(raw_body_data))
-        # print(raw_body_data)
         body_data = str(raw_body_data).strip('[')[:-1]
-        # print(type(body_data))
-        # print(body_data)
         table_data = [[cell.text for cell in row("td")]
                                 for row in BeautifulSoup(body_data, features='html.parser')("tr")]
-        # print(table_data)
         '''
         #########   Sample table_data <class: 'list'> List Type Object  ########
         [
@@ -73,12 +63,9 @@ def update_database():
         for index, entry in enumerate(table_data):
             email = entry[1]
             amount = int(float(entry[6]))
-            # print(type(amount))
             name= entry[0]
             phone = int(entry[2])
             college = entry[3]
-            # clg, created = College.objects.get_or_create(name=college)
-            # participant, created = Participant.objects.get_or_create(name=name, email=email, phone=phone, college=clg)
             try:
                 participant = Participant.objects.get(email=email)
                 if amount == 1000:
@@ -90,16 +77,16 @@ def update_database():
                     participant.controlz_paid = True
 
                 participant.save()
-                ''' Yipppeeee!! Now I am registered. '''
-            except:
-                print('Participant {} doesn\'t exist - {}'.format(email, name))
+            except Exception as error:
+                print(error)
+                print('Participant {} not updated- {}'.format(email, name))
 
-        return 'All entries upto {} updated successfully.'.format(len(table_data))
+        return 'All entries upto {} updated successfully.'.format(index)
 
 
     except Exception as error:
         print(error)
-        return "There was an error in updating database. {} entries from the top updated.".format(index)
+        return "There was an error in updating database. {} entries from the top updated.".format(index+1)
 
 if __name__ == '__main__':
 	print(str(datetime.datetime.now())+ " : Starting Database Updation Script...")

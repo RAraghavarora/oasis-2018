@@ -159,7 +159,7 @@ def get_group_list(request, g_id):
         leader = get_group_leader(group)
         if group.participant_set.count == 0:
             group.delete()
-        return redirect(reverse('regsoft:firewallz_approval', kwargs={'c_id':leader.college.id}))
+        return redirect(reverse('regsoft:get_group_list', kwargs={'g_id':g_id}))
     participant_list = group.participant_set.all()
     return render(request, 'regsoft/group_list.html', {'participant_list':participant_list, 'group':group})
 
@@ -358,7 +358,6 @@ def add_participant(request):
             try:
                 mail = Mail(email_class.from_email,email_class.subject,to_email,content)
                 response = send_grid.sg.client.mail.send.post(request_body = mail.get())
-                print("EMAIL SENT")
             except:
                 participant.user = None
                 participant.save()
@@ -589,7 +588,6 @@ def generate_ckgroup_code(group):
     if encoded is not None:
         return encoded
     group_ida = "%04d" % int(group_id)
-    print("\n PARTCI \n",group.participant_set.all())
     college_code = ''.join(group.participant_set.all()[0].college.name.split(' '))
     if len(college_code)<4:
         college_code += str(0)*(4-len(college_code))
@@ -685,6 +683,7 @@ def controlz_home(request):
     for group in Group.objects.all():
         code = group.group_code
         group_leader = get_group_leader(group)
+        print(group_leader)
         leader_name = group_leader.name
         leader_college = group_leader.college.name
         leader_phone = group_leader.phone
@@ -927,6 +926,7 @@ def generate_recnacc_list(request):
                     part.room.bhavan, 
                     400], 
                 'link':[]})
+        amount = (len(id_list))*400
         c_rows.append({'data':['Total', '','','','','','',amount]})
         table = {
             'title':'Participant list for RecNAcc from ' + part.college.name,
@@ -938,7 +938,6 @@ def generate_recnacc_list(request):
 @staff_member_required
 def get_profile_card(request):
     rows = [{'data':[part.name, part.phone, part.email, part.gender, get_event_string(part)], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:get_profile_card_participant', kwargs={'p_id':part.id})), 'title':'Get profile card'}]} for part in Participant.objects.filter(Q(pcr_final=True) | Q(is_guest=True))]
-    print(rows[0]['link'])
     headings = ['Name', 'Phone', 'Email', 'Gender', 'Events', 'Get profile card']
     title = 'Generate Profile Card'
     table = {
