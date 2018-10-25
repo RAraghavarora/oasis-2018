@@ -1,5 +1,5 @@
 var BASE_URL = "https://bits-oasis.org/2018/shop";
-var WALLET_TOKEN = "3i8nscPBqqQA2W4h";
+var WALLET_TOKEN ="asdf";
 function processResponse (response) {
     var status = response.status;
     var json = response.json();
