@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -7,7 +6,6 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_jwt.settings import api_settings
 
 from registrations.models import Bitsian
 from shop.models.wallet import Wallet
@@ -16,31 +14,22 @@ from shop.permissions import TokenVerification
 from shop.models import Teller
 from events.models import Organization
 
+from rest_framework_jwt.settings import api_settings
+
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
+
 from random import choice
 import string
-from google.auth.transport import requests as google_requests
-
-#google oauth client side
-from google.oauth2 import id_token
 
 
 class Authentication(APIView):
 
 	permission_classes = (TokenVerification,)
 
-
-	PASS_CHARS = string.ascii_letters + string.digits
-	for i in '0oO1QlLiI':
-		PASS_CHARS = PASS_CHARS.replace(i,'')
-
-	# CLIENT_ID_ios = "157934063064-et3fmi6jlivnr6h70q2rnegik50aqj3g.apps.googleusercontent.com"
 	CLIENT_ID_ios = "157934063064-mjdsg5k85qdj13mkuo5bk82iq9q3r9ua.apps.googleusercontent.com"
 	CLIENT_ID_web = "563920200402-chepn5acpejf0bac9v6on3a8pdvmvvg0.apps.googleusercontent.com"
 	CLIENT_ID_android = "157934063064-et3fmi6jlivnr6h70q2rnegik50aqj3g.apps.googleusercontent.com"
-
-
-	def generate_random_password(self):
-		return ''.join(choice(self.PASS_CHARS) for _ in xrange(8))
 
 
 	def get_jwt(self, user):
