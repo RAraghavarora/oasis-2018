@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 class TokenVerification(BasePermission):
 
-	WALLET_TOKEN = '3i8nscPBqqQA2W4h'
+	WALLET_TOKEN = 'asdf'
 
 	def has_permission(self, request, view):
 		try:

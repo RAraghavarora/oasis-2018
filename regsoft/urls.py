@@ -14,6 +14,8 @@ urlpatterns=[
 	url(r'^firewallz/remove_guests/?$', views.remove_guests, name='remove_guests'),
 	url(r'^firewallz/add_participant/?$', views.add_participant, name='add_participant'),
 	url(r'^firewallz/delete_group/(?P<g_id>\d+)/?$', views.delete_group, name='delete_group'),
+	url(r'^firewallz/approved_groups/?$', views.approved_groups, name='approved_groups'),
+
 
     ###Recnacc###
     url(r'^recnacc/?$', views.recnacc_home, name='recnacc_home'),
