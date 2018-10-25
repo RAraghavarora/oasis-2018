@@ -30,8 +30,8 @@ class RegsoftMiddleware(object):
 
         if 'logout' not in request.path:
 
-            if 'inventory' in request.path and request.user.username != 'recnacc':
-                return render(request, 'registrations/message.html', {'message':message, 'error_heading':error_heading, 'url':url})
+            if 'inventory' in request.path and request.user.username == 'recnacc':
+                return None
 
             if request.user.username not in request.path:
                 return render(request, 'registrations/message.html', {'message':message, 'error_heading':error_heading, 'url':url})
