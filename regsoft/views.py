@@ -504,8 +504,8 @@ def manage_vacancies(request,r_id):
     if request.method=='POST':
         data=request.POST
         try:
-            vacancy = data["vacancy"]
-            capacity = data["capacity"]
+            vacancy = int(data["vacancy"])
+            capacity = int(data["capacity"])
         except KeyError as missing:
             messages.warning(request,'Please enter both vacancy and capacity.')
             return redirect(reverse('regsoft:room_details'))
