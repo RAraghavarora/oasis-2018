@@ -25,6 +25,7 @@ except ImportError:
 import datetime
 
 from registrations.models import Participant, College
+from events.models import *
 
 def update_database():
 

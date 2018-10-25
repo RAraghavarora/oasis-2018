@@ -35,6 +35,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Events</th>
+                        <th>Code</th>
                         <th>Group Leader</th>
                         <th>Select</th>
                     </tr>
@@ -43,6 +44,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Events</th>
+                        <th>Code</th>
                         <th>Group Leader</th>
                         <th>Select</th>
                     </tr>
@@ -52,6 +54,7 @@
                     <tr>
                         <td>{{i.name}}</td>
                         <td>{{i|get_events_list}}</td>
+                        <td>{{i.id}}_{{i.group_id}}_{{i.college.id}}</td>
                         <td>{{group | get_gleader_name }}</td>
                         <td>
                         	<input type="checkbox" name="id_list" id="{{i.id}}" value="{{i.id}}">
