@@ -838,7 +838,8 @@ pcr@bits-oasis.org
             response = sg.client.mail.send.post(request_body=mail.get())
             if response.status_code%100!=2:
                 raise Exception
-            messages.warning(request, 'Email sent to ', participant.name)
+            message = 'Email sent to '+str(participant.name)
+            messages.warning(request, message)
             participant.pcr_final = True
             participant.save()
 
