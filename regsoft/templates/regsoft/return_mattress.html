@@ -1,0 +1,39 @@
+{% extends 'regsoft/base2.html' %}
+
+{% block body %}
+{% if messages %}
+<div class="body">
+{% for message in messages %}
+<div class="alert alert-info alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+    {{message}}
+</div>
+{% endfor %}
+</div>
+{% endif %}
+<form method="POST" action="{% url 'regsoft:mattress_in'  %}">
+    {% csrf_token %}
+<div class="row clearfix">
+<div class="card">
+    <div class="header">
+        <h2>
+            Return Mattress Items
+        </h2>
+    </div>
+    
+    <label for="location">Location</label>
+        <div class="form-group">
+            <select class="form-control show-tick" name="location" data-live-search="true">
+                <option value="" selected disabled hidden>Choose a Location</option>
+                {% for loc in loc_list %}
+                    <option value={{loc.id}}>{{loc.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary m-t-15 waves-effect">Submit</button>
+        
+</div>
+</div>
+</form>
+{% endblock %}

@@ -1236,10 +1236,6 @@ def dc_view_status(request, dc_id):
     context = {'inventory':inventory}
     return render(request, 'regsoft/view_dc.html',context)
 
-@staff_member_required
-def user_logout(request):
-    logout(request)
-    return HttpResponseRedirect('/')
 
 @staff_member_required
 def tender_home(request):
@@ -1347,28 +1343,70 @@ def tender_new_entry(request):
                 messages.warning(request,'Please Enter data in proper format')
                 return redirect(request.META.get('HTTP_REFERER')) 
 
-        context = {
-            'error_heading': "Successfully Added",
-            'message': "Inventory items added",
-            'url':request.build_absolute_uri(reverse('regsoft:tender_home'))
-            }
-        return render(request, 'registrations/message.html', context)
+        messages.warning(request,'Successfully Added')
+        return redirect(request.META.get('HTTP_REFERER'))
 
 @staff_member_required
-def tender_remove_entry(request):
+def tender_remove_home(request):
+    loc = Location.objects.filter(tender = True)
+    return render(request, 'regsoft/return_home.html',{'loc_list':loc})
+
+def tender_in(request):
+    if request.method == 'POST':
+        try:
+            id = request.POST['location']
+        except Exception as e:
+            print(e)
+            context = {
+            'error_heading': "Error",
+            'message': "Location does not exist",
+            'url':request.build_absolute_uri(reverse('regsoft:tender_home'))
+            }
+            return render(request, 'registrations/message.html', context)
+        try:
+            inventory = Inventory.objects.get(location = Location.objects.get(id=id))
+        except Exception as e:
+            print(e)
+            context = {
+                'error_heading': "Error",
+                'message': "Inventory does not exist",
+                'url':request.build_absolute_uri(reverse('regsoft:tender_home'))
+            }
+            return render(request, 'registrations/message.html', context)
+        return redirect('regsoft:tender_remove_entry', l_id=id )
+
+
+@staff_member_required
+def tender_remove_entry(request, l_id):
     if request.method == 'GET':
-        loc = Location.objects.filter(tender = True)
-        return render(request, 'regsoft/tender_remove_form.html', {'locations':loc})
+        try:
+            loc = Location.objects.filter(id = l_id)
+        except:
+            context = {
+            'error_heading': "Error",
+            'message': "Location does not exist",
+            'url':request.build_absolute_uri(reverse('regsoft:tender_home'))
+            }
+            return render(request, 'registrations/message.html', context)
+        try:
+            inventory = Inventory.objects.get(location = loc)
+        except:
+            context = {
+            'error_heading': "Error",
+            'message': "Inventory does not exist",
+            'url':request.build_absolute_uri(reverse('regsoft:tender_home'))
+            }
+            return render(request, 'registrations/message.html', context)
+        return render(request, 'regsoft/tender_remove_form.html', {'locations':loc,'inventory':inventory,'id':l_id})
     else:
         data = request.POST
         try:
-            loc = Location.objects.get(id = data['location'])
+            loc = Location.objects.get(id = l_id)
         except:
             messages.warning(request,'Invalid location')
             return redirect(request.META.get('HTTP_REFERER'))
         try:
             inventory = Inventory.objects.get(location=loc)
-            inventory.comments = data['comment']
             try:
                 inventory.blankets -= int(data['blankets'])
                 inventory.mattress -= int(data['mattresses'])
@@ -1416,12 +1454,8 @@ def tender_remove_entry(request):
                 }
             return render(request, 'registrations/message.html', context)
 
-        context = {
-            'error_heading': "Successfully Updated",
-            'message': "Inventory items updated",
-            'url':request.build_absolute_uri(reverse('regsoft:tender_home'))
-            }
-        return render(request, 'registrations/message.html', context)
+        messages.warning(request,'Successfully Updated')
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 @staff_member_required
@@ -1541,18 +1575,42 @@ def mattress_new_entry(request):
                 messages.warning(request,'Please Enter data in proper format')
                 return redirect(request.META.get('HTTP_REFERER')) 
 
+        messages.warning(request,'Successfully Added')
+        return redirect(request.META.get('HTTP_REFERER'))
+
+@staff_member_required
+def mattress_return_home(request):
+    loc = Location.objects.filter(tender = False)
+    return render(request, 'regsoft/return_mattress.html',{'loc_list':loc})
+
+@staff_member_required
+def mattress_in(request):
+    try:
+        id = request.POST['location']
+    except:
         context = {
-            'error_heading': "Successfully Added",
-            'message': "Inventory items added",
+            'error_heading': "Error",
+            'message': "Location does not exist",
             'url':request.build_absolute_uri(reverse('regsoft:mattress_home'))
             }
         return render(request, 'registrations/message.html', context)
+    return redirect('regsoft:mattress_remove_entry', l_id=id)
+
 
 @staff_member_required
-def mattress_remove_entry(request):
+def mattress_remove_entry(request,l_id):
     if request.method == 'GET':
         loc = Location.objects.filter(tender = False)
-        return render(request, 'regsoft/mattress_remove_form.html', {'locations':loc})
+        try:
+            inventory = Inventory.objects.get(id=l_id)
+        except:
+            context = {
+            'error_heading': "Error",
+            'message': "Location does not exist",
+            'url':request.build_absolute_uri(reverse('regsoft:mattress_home'))
+            }
+            return render(request, 'registrations/message.html', context)
+        return render(request, 'regsoft/mattress_remove_form.html', {'locations':loc,'inventory':inventory,'id':l_id})
     else:
         data = request.POST
         try:
@@ -1575,7 +1633,7 @@ def mattress_remove_entry(request):
                 inventory.fans -= int(data['fans'])
                 inventory.bulbs -= int(data['bulbs'])
                 inventory.water_campers -= int(data['watercampers'])
-                inventory.water_drums -= int(data['water_drums'])
+                inventory.water_drums -= int(data['waterdrums'])
                 inventory.waste_drums -= int(data['waste_drums'])
                 inventory.tables -= int(data['tables'])
                 inventory.table_cloths -= int(data['table_cloths'])
@@ -1597,7 +1655,8 @@ def mattress_remove_entry(request):
                 inventory.item4 -= int(data['item4'])
                 inventory.item5 -= int(data['item5'])
                 inventory.save()
-            except:
+            except Exception as e:
+                print(e)
                 messages.warning(request,'Please Enter data in proper format')
                 return redirect(request.META.get('HTTP_REFERER'))
         
@@ -1608,12 +1667,9 @@ def mattress_remove_entry(request):
                 'url':request.build_absolute_uri(reverse('regsoft:mattress_home'))
                 }
             return render(request, 'registrations/message.html', context)
-        context = {
-            'error_heading': "Successfully Updated",
-            'message': "Inventory items updated",
-            'url':request.build_absolute_uri(reverse('regsoft:mattress_home'))
-            }
-        return render(request, 'registrations/message.html', context)
+        
+        messages.warning(request,'Successfully Updated')
+        return redirect(request.META.get('HTTP_REFERER'))
 
 @staff_member_required
 def mattress_view_status(request):
@@ -1653,9 +1709,72 @@ def excel(request):
         'Mugs',
         'Fans',
         'Bulbs',
+        'water_campers',
+        'water_drums',
+        'waste_drums',
         'Tables',
         'Table Cloths',
         'Chairs',
         'Curtains',
-        
-    ]
+        'Halogen lamps',
+        'Sodium Lamps',
+        'Tents',
+        'Iron Poles',
+        'Paper Rolls',
+        'Bamboo Poles',
+        'Ropes',
+        'Wires',
+        'Item 1',
+        'Item 2',
+        'Item 3',
+        'Item 4',
+        'Item 5'
+        ]
+    ws.append(headings)
+    for location in Location.objects.all():
+        try:
+            inventory = Inventory.objects.get(location=location)
+        except:
+            continue
+        items = [
+            location.name,
+            inventory.comments,
+            inventory.blankets,
+            inventory.mattress,
+            inventory.pillows,
+            inventory.spikes,
+            inventory.bedsheets,
+            inventory.quilts,
+            inventory.buckets,
+            inventory.mugs,
+            inventory.fans,
+            inventory.bulbs,
+            inventory.water_campers,
+            inventory.water_drums,
+            inventory.waste_drums,
+            inventory.tables,
+            inventory.table_cloths,
+            inventory.chairs,
+            inventory.curtains,
+            inventory.halogen_lamps,
+            inventory.sodium_lamps,
+            inventory.tents,
+            inventory.iron_poles,
+            inventory.paper_rolls,
+            inventory.bamboo_poles,
+            inventory.ropes,
+            inventory.wires,
+            inventory.item1,
+            inventory.item2,
+            inventory.item3,
+            inventory.item4,
+            inventory.item5
+        ]
+        ws.append(items)
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=mydata.xlsx'
+
+    wb.save(response)
+
+    return response
