@@ -36,7 +36,7 @@ class Authentication(APIView):
 	# CLIENT_ID_ios = "157934063064-et3fmi6jlivnr6h70q2rnegik50aqj3g.apps.googleusercontent.com"
 	CLIENT_ID_ios = "157934063064-mjdsg5k85qdj13mkuo5bk82iq9q3r9ua.apps.googleusercontent.com"
 	CLIENT_ID_web = "563920200402-chepn5acpejf0bac9v6on3a8pdvmvvg0.apps.googleusercontent.com"
-	CLIENT_ID_android = "157934063064-et3fmi6jlivnr6h70q2rnegik50aqj3g.apps.googleusercontent.com"
+	CLIENT_ID_android = "874822981163-s4pu562m5cgmcmjev3i6p852b1og8trm.apps.googleusercontent.com"
 
 
 	def generate_random_password(self):

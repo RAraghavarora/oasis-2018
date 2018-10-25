@@ -117,7 +117,7 @@
             console.log(parsedRes.json.message);
         }
         else if (parsedRes.status === 200) {
-            // document.getElementById("curr-balance").innerHTML = parsedRes.json.balance;
+            document.getElementById("curr-balance").innerHTML = parsedRes.json.balance;
 
             localStorage.setItem("qr_code", parsedRes.json.qr_code);
 
@@ -185,16 +185,18 @@
     });
 
     // initial balance fetch
-    db.collection("User #" + userId).doc("Balance").get().then(function (snap) {
-        var data = snap.data();
-        document.getElementById("curr-balance").innerHTML = data.cash + data.instamojo + data.swd + data.transfers;
-    });
+    // db.collection("User #" + userId).doc("Balance").get().then(function (snap) {
+    //     var data = snap.data();
+    //     document.getElementById("curr-balance").innerHTML = data.cash + data.instamojo + data.swd + data.transfers;
+    // });
 
     // balance real time update
-    db.collection("User #" + userId).doc("Balance").onSnapshot(function (snap) {
-        var data = snap.data();
-        document.getElementById("curr-balance").innerHTML = data.cash + data.instamojo + data.swd + data.transfers;
-    });
+    // db.collection("User #" + userId).doc("Balance").onSnapshot(function (snap) {
+    //     var data = snap.data();
+    //     document.getElementById("curr-balance").innerHTML = data.cash + data.instamojo + data.swd + data.transfers;
+    // });
+
+    //YE FIREBASE KA CODE HAI BSDK UPAR
 
 	/*fetch(BASE_URL + "/get-orders/", {
 		headers: {

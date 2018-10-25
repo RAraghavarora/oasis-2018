@@ -474,12 +474,12 @@ def recnacc_group_list(request,c_id):
 
     complete_table={
         'rows':complete_rows,
-        'headings':['Created Time','GroupLeader Name','Total','Alloted','Manage'],
+        'headings':['Created Time','GroupLeader Name','Total Control Passed','Alloted','Manage'],
         'title':'Completely alloted groups from '+college.name
     }
     incomplete_table={
         'rows':incomplete_rows,
-        'headings':['Created Time','GroupLeader Name','Total','Alloted','Manage'],
+        'headings':['Created Time','GroupLeader Name','Total Control Passed','Alloted','Manage'],
         'title':'Incompletely alloted groups from '+college.name
     }
     return render(request,'regsoft/tables.html',{'tables':[complete_table,incomplete_table],'college':college})
@@ -504,27 +504,38 @@ def manage_vacancies(request,r_id):
     if request.method=='POST':
         data=request.POST
         try:
+            vacancy = int(data["vacancy"])
+            capacity = int(data["capacity"])
+        except KeyError as missing:
+            messages.warning(request,'Please enter both vacancy and capacity.')
+            return redirect(reverse('regsoft:room_details'))
+        if vacancy > capacity:
+            messages.warning(request,'Vacancy cannot be greater than capacity.')
+            return redirect(reverse('regsoft:room_details'))
+        room.vacancy = vacancy
+        room.capacity = capacity
+        room.save()      
+        try:
             note=data['note']
+            re_note=Note()
+            re_note.note=note
+            re_note.room=room
+            re_note.save()
         except:
-            messages.warning(request,'Please add a note.')
-        try:
-            room.vacancy=data['vacancy']
-            room.save()
-        except:
-            pass
-        try:
-            capacity=room.capacity
-            vacancy=int(data['capacity'])-capacity
-            room.vacancy=int(data['vacancy'])+vacancy
-            room.capacity=data['capacity']
-            room.save()
-        except:
-            pass
-
-        re_note=Note()
-        re_note.note=note
-        re_note.room=room
-        re_note.save()
+            messages.warning(request,'Please add a note.')      
+        # try:
+        #     room.vacancy=data['vacancy']
+        #     room.save()
+        # except:
+        #     pass
+        # try:
+        #     capacity=room.capacity
+        #     vacancy=int(data['capacity'])-capacity
+        #     room.vacancy=int(data['vacancy'])+vacancy
+        #     room.capacity=data['capacity']
+        #     room.save()
+        # except:
+        #     pass
         return redirect(reverse('regsoft:room_details'))
     else:
         notes=room.note_set.all()
@@ -630,7 +641,7 @@ def checkout(request,c_id):
         encoded=generate_ckgroup_code(checkout_group)
         checkout_group.save()
         return redirect(reverse('regsoft:checkout_groups',kwargs={'c_id':college.id}))
-    participant_list=Participant.objects.filter(acco=True)
+    participant_list=Participant.objects.filter(acco=True, college=college)
     return render(request, 'regsoft/checkout.html', {'college':college, 'part_list':participant_list})
 
 @staff_member_required
