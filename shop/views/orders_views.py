@@ -284,7 +284,7 @@ class ConsumeTickets(APIView):
             try:
                 tickets = Tickets.objects.get(user=user, prof_show=show)
             except:
-                return Response({"success": False, "max_tickets": max_count, "x-status": 2}) # the scanee has never bought tickets for this show before
+                return Response({"success": False, "max_tickets": 0, "x-status": 2}) # the scanee has never bought tickets for this show before
 
             if show not in organization.shows.all():
                 return Response({"message": "Invalid user, only members of {} are allowed to control tickets for this show.".format(show.organizations.all())}, status=status.HTTP_401_UNAUTHORIZED)
