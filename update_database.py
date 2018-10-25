@@ -25,6 +25,7 @@ except ImportError:
 import datetime
 
 from registrations.models import Participant, College
+from events.models import *
 
 def update_database():
 
@@ -71,6 +72,10 @@ def update_database():
                 participant.cr_approved=True
                 participant.pcr_approved=True
                 participant.email_verified = True
+                for x in MainParticipation.objects.filter(participant=participant):
+                    x.pcr_approved=True
+                    x.cr_approved=True
+                    x.save()
 
                 if amount == 1000:
                     participant.paid = True
