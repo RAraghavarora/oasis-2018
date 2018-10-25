@@ -44,15 +44,13 @@ class Authentication(APIView):
 	def post(self, request, format=None):
 		try:
 			is_bitsian = request.data['is_bitsian']
-			registration_token = request.data['registration_token']
+			# registration_token = request.data['registration_token']
 		except KeyError as missing:
 			msg = {"message": "The following field was missing: {}".format(missing)}
 			return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
-		#Bitsian Authentication is done through Google OAuth
+		#Bitsian Authentication
 		if is_bitsian:
-			#Checks if Google OAuth token has been provided
-			#The frontend gets this token when the user logs in using Google OAuth
 			try:
 				token = request.data['id_token']
 
@@ -60,7 +58,6 @@ class Authentication(APIView):
 				msg = {"message": "The following field is missing: {}".format(missing)}
 				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
-			#Verifies bitsian using Google Client-Side API
 			try:
 				idinfo = id_token.verify_oauth2_token(token, google_requests.Request())
 				if idinfo['aud'] not in [self.CLIENT_ID_web, self.CLIENT_ID_ios, self.CLIENT_ID_android]:
@@ -72,7 +69,6 @@ class Authentication(APIView):
 			if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
 				return Response({'message': 'Invalid user'}, status=status.HTTP_404_NOT_FOUND)
 
-			#Checks if Bitsian exists, return 404 if doesn't.
 			email = idinfo['email']
 			try:
 				bitsian = Bitsian.objects.get(email=email)
@@ -80,7 +76,6 @@ class Authentication(APIView):
 				msg = "Contact the administrators.".format(email)
 				return Response({"message": msg}, status=status.HTTP_404_NOT_FOUND)
 
-			#Checks if user exist creates if doesn't.
 			username = email.split('@')[0]
 			try:
 				user = User.objects.get(username=username)
@@ -89,9 +84,8 @@ class Authentication(APIView):
 				bitsian.user = user
 				bitsian.save()
 
-		#Stall and Participant Authentication is done using django authentication
+		#Stall and Participant Authentication
 		else:
-			#Checks for fields username and password
 			try:
 				username = request.data['username']
 				password = request.data['password']
@@ -100,7 +94,6 @@ class Authentication(APIView):
 				msg = {'message' : "Authentication credentials weren't provided"}
 				return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
-			#Authenticates the user
 			try:
 				user = authenticate(username = username, password = password)
 
@@ -124,8 +117,8 @@ class Authentication(APIView):
 			wallet = Wallet.objects.get(user=user)			
 			if not wallet:
 				raise Wallet.DoesNotExist
-			wallet.registration_token = registration_token
-			wallet.save()
+			# wallet.registration_token = registration_token
+			# wallet.save()
 		except Wallet.DoesNotExist:
 			msg = {'message' : 'Contact the administrators'}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
