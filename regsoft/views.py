@@ -378,6 +378,15 @@ def add_participant(request):
             }
             return render(request, 'registrations/message.html', context)
     
+
+@staff_member_required
+def approved_groups(request):
+    groups_passed = Group.objects.all()
+    colleges = [get_group_leader(group).college for group in Group.objects.all()]
+    data = [{'college': college, "group": group} for (college, group) in zip(colleges, groups_passed)]
+    return render(request, 'regsoft/approved_groups.html', {'data':data})
+
+
 # #########Recnacc#########
 
 @staff_member_required
