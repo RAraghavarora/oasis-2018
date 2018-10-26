@@ -8,6 +8,7 @@ class Stall(models.Model):
     name = models.CharField(max_length=20)
     description = models.TextField(default="", blank=True)
     phone = models.BigIntegerField(default=0)
+    closed = models.BooleanField(default=False)
 	# menu: ItemClasses
 	# orders: OrderFragments
 
