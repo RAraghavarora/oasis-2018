@@ -10,6 +10,7 @@ from shop.permissions import TokenVerification
 from registrations.models import Bitsian
 from events.models import MainProfShow
 from events.serializers import MainProfShowSerializer
+from shop.models.debug import DebugInfo
 
 
 class GetProfile(APIView):
