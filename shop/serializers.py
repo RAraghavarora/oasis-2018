@@ -99,4 +99,4 @@ class StallSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Stall
-		fields = ('id', 'name', 'description',)
+		fields = ('id', 'name', 'description', 'closed')
