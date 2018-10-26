@@ -59,7 +59,6 @@ class Transfer(APIView):
 			try:
 				source = request.user.wallet
 				target = Wallet.objects.get(user=target_user)
-
 			except Wallet.DoesNotExist:
 				msg = {"message": "Wallet does not exist"}
 				return Response(msg, status=status.HTTP_404_NOT_FOUND)
@@ -71,7 +70,6 @@ class Transfer(APIView):
 			if source == target:
 				return Response({"message": "You can't transfer money to yourself."}, status=status.HTTP_403_FORBIDDEN)
 
-			amount = data["amount"]
 			if amount < 0:
 				return Response({"message": "transfered amount cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
 
