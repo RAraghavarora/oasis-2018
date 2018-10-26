@@ -45,6 +45,7 @@ class Transfer(APIView):
 			data = request.data
 			try:
 				target_user = User.objects.get(id=data["target_user"])
+				amount = data["amount"]
 			except KeyError as missing:
 				msg = {"message": "missing the following field: {}".format(missing)}
 				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
