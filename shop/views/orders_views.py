@@ -13,11 +13,10 @@ from rest_framework.permissions import IsAuthenticated
 
 from shop.models.order import Order, OrderFragment
 from shop.models.stall import Stall
-from shop.models.wallet import Wallet
 from shop.models.item import ItemClass, ItemInstance, Tickets
-from shop.models.transaction import Transaction, TicketTransaction
+from shop.models.transaction import Transaction
 from shop.permissions import TokenVerification
-# from utils.wallet_qrcode import decString
+from utils.wallet_qrcode import decString
 from events.models import MainProfShow, Organization
 
 from random import randint
@@ -118,7 +117,7 @@ class PlaceOrder(APIView):
                     if not itemclass.is_available:
                         unavailable.append(itemclass.id)
                         flag = False
-
+                
                 #Name of the stalls for Mess will be stored as: "XYZ Mess"
                 if stall_instance.name[-4:].title() == "Mess":
                     if qty > itemclass.stock:
@@ -247,14 +246,8 @@ class GetTickets(APIView):
     @csrf_exempt
     def post(self, request):
         qr_code = request.data["qr_code"]
-        # user_id = decString(qr_code)[0]        # a custom function from utils.wallet_qrcode
-        # user = get_object_or_404(User, id=user_id)
-        try:
-            user = Wallet.objects.get(uuid=qr_code).user
-        except Exception as e:
-            print(e)
-            return Response({"message": "user does not exist."}, status=status.HTTP_404_NOT_FOUND)
-
+        user_id = decString(qr_code)[0]        # a custom function from utils.wallet_qrcode
+        user = get_object_or_404(User, id=user_id)
 
         try:
             tickets = {"tickets": []}
@@ -274,7 +267,7 @@ class ConsumeTickets(APIView):
     """ The endpoint which is called for scanning and deducting tickets.
         sample request:
             {
-                "qr_code": "a8a2c8c8-d8ba-432f-ba67-fc946cf0536a",
+                "qr_code": "gAAAAABbpxxqQKmaLjQdoCWlbwif6WNzbvZgjiemu8qG7-UhaCAW6DMaEQROYMRX5A10X_wDnxcDNRnn4QS49CVOVCme8Gu3vCIvKNwDhWEwmw995nMGl0U=OASIS18",
                 "consume": 3,
                 "show_id": 1
            }
@@ -296,13 +289,11 @@ class ConsumeTickets(APIView):
         try:
             try:
                 qr_code = request.data["qr_code"]
-                #user_id = int(decString(qr_code)[0])
+                user_id = int(decString(qr_code)[0])
             except:
                 return Response({"message": "invalid qr_code"}, status=status.HTTP_404_NOT_FOUND)
 
-            #user = get_object_or_404(User, id=user_id)
-            wallet = get_object_or_404(Wallet, uuid=qr_code)
-            user = wallet.user
+            user = get_object_or_404(User, id=user_id)
             show = get_object_or_404(MainProfShow, id=request.data["show_id"])
 
             try:
@@ -325,9 +316,6 @@ class ConsumeTickets(APIView):
             tickets.count -= consume
             tickets.consumed += consume
             tickets.save()
-
-            TicketTransaction.objects.create(tickets=tickets, num=consume)
-
             return Response({"success": True, "remaining_tickets": tickets.count, "x-status": 0})
 
         except KeyError as ke:
