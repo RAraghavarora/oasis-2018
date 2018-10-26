@@ -87,7 +87,7 @@ def generate_qr_code(data):
 	from PIL import Image
 
 	part_code = qrcode.make(data)
-	part_code = part_code.resize([30, 30])
+	part_code = part_code.resize([115, 115])
 	# import qrcode.image.svg
 	# from PIL import Image
 	# part_code =
