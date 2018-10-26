@@ -848,9 +848,9 @@ def get_amount(participant):
     if participant.controlz_paid and participant.paid:
         return 0
     elif participant.paid:
-        return 700
+        return 750
     else:
-        return 1000
+        return 1050
 
 @staff_member_required
 def print_bill(request,b_id):
