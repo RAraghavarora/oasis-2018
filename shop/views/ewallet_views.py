@@ -60,7 +60,7 @@ class Transfer(APIView):
 					return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 			try:
 				source = request.user.wallet
-				target = Wallet.objects.get(user=target_user)6
+				target = Wallet.objects.get(user=target_user)
 			except Wallet.DoesNotExist:
 				msg = {"message": "Wallet does not exist"}
 				return Response(msg, status=status.HTTP_404_NOT_FOUND)
