@@ -87,37 +87,37 @@ class StallOrderStatus(APIView):
 	status_dict = {long_form : short_form for short_form, long_form in OrderFragment.STATUS}
 	status_responses = ["Accepted", "Declined", "Ready", "Finished"]
 
-	# def sendNotification(self, pk, registration_token, order_status):
-	# 	title = 'Order Status: {}'.format(order_status)
-	# 	body = 'This is a notification.'
+	def sendNotification(self, pk, registration_token, order_status):
+		title = 'Order Status: {}'.format(order_status)
+		body = 'Order Status: {}'.format(order_status)
 
-	# 	db = firestore.client()
-	# 	data = {
-	# 		"title" : title,
-	# 		"body" : body
-	# 	}
+		db = firestore.client()
+		data = {
+			"title" : title,
+			"body" : body
+		}
 
-	# 	col_str = "User #{}".format(pk)
-	# 	collection = db.collection(col_str)
-	# 	doc_string = "Notifications"
-	# 	doc_ref = collection.document(doc_string)
-	# 	doc_ref.set({
-	# 		str(datetime.datetime.now()) : str(data)
-	# 	})
+		col_str = "User #{}".format(pk)
+		collection = db.collection(col_str)
+		doc_string = "Notifications"
+		doc_ref = collection.document(doc_string)
+		doc_ref.set({
+			str(datetime.datetime.now()) : str(data)
+		})
 
-	# 	message = messaging.Message(
-	# 	    notification = messaging.Notification(
-	# 	        title = title,
-	# 	        body = body,
-	# 	    ),
-	# 	    token = registration_token,
-	# 	)
-	# 	try:
-	# 		response = messaging.send(message)
-	# 		print(response)
+		message = messaging.Message(
+		    notification = messaging.Notification(
+		        title = title,
+		        body = body,
+		    ),
+		    token = registration_token,
+		)
+		try:
+			response = messaging.send(message)
+			print(response)
 
-	# 	except Exception as e:
-	# 		print(e)
+		except Exception as e:
+			print(e)
 
 
 	#Accepts stall's response to OrderFragment
@@ -143,12 +143,12 @@ class StallOrderStatus(APIView):
 			msg = {"message": "order_status response not recognized."}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
-		# try:
-		# 	registration_token = order_fragment.order.customer.registration_token
-		# 	pk = order_fragment.order.customer.id
-		# except:
-		# 	pass
-		# self.sendNotification(pk, registration_token, order_status)
+		try:
+			registration_token = order_fragment.order.customer.registration_token
+			pk = order_fragment.order.customer.id
+		except:
+			pass
+		self.sendNotification(pk, registration_token, order_status)
 
 		#Money transferred to Stalls
 		if order_status == 'Finished':

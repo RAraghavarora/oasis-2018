@@ -54,7 +54,7 @@ class Authentication(APIView):
 	def post(self, request, format=None):
 		try:
 			is_bitsian = request.data['is_bitsian']
-			# registration_token = request.data['registration_token']
+			registration_token = request.data['registration_token']
 		except KeyError as missing:
 			msg = {"message": "The following field was missing: {}".format(missing)}
 			return Response(msg, status=status.HTTP_400_BAD_REQUEST)
@@ -127,8 +127,8 @@ class Authentication(APIView):
 			wallet = Wallet.objects.get(user=user)
 			if not wallet:
 				raise Wallet.DoesNotExist
-			# wallet.registration_token = registration_token
-			# wallet.save()
+			wallet.registration_token = registration_token
+			wallet.save()
 		except Wallet.DoesNotExist:
 			msg = {'message' : 'Contact the administrators'}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
