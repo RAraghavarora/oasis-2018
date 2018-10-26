@@ -29,7 +29,8 @@ class Authentication(APIView):
 
 	CLIENT_ID_ios = "157934063064-mjdsg5k85qdj13mkuo5bk82iq9q3r9ua.apps.googleusercontent.com"
 	CLIENT_ID_web = "563920200402-chepn5acpejf0bac9v6on3a8pdvmvvg0.apps.googleusercontent.com"
-	CLIENT_ID_android = "874822981163-s4pu562m5cgmcmjev3i6p852b1og8trm.apps.googleusercontent.com"
+	# CLIENT_ID_android = "874822981163-s4pu562m5cgmcmjev3i6p852b1og8trm.apps.googleusercontent.com"
+	CLIENT_ID_android = "157934063064-2039thes6b2pcuj2bi43f30km8h8e1i0.apps.googleusercontent.com"
 
 
 	def get_jwt(self, user):
