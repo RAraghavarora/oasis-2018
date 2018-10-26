@@ -1,12 +1,13 @@
 import json
 import time
 
-
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_delete
 from rest_framework.renderers import JSONRenderer
 
+from oasis2018 import settings
 from firebase_admin import firestore
+from utils.firestore_issue_mail import send_mail
 
 from shop.models.balance import Balance
 from shop.serializers import BalanceSerializer
@@ -26,9 +27,16 @@ def balanceFirebaseUpdate(sender, **kwargs):
             id_str = "User #{}".format(kwargs["instance"].wallet.user.id)
         collection = db.collection(id_str)
         collection.document("Balance").set(data)
-    except:
+    except Exception as e:
         time.sleep(1)
-        balanceFirebaseUpdate(sender, **kwargs)
+        if "iteration" not in kwargs.keys():
+            kwargs["iteration"] = 1
+        kwargs["iteration"] += 1
+        if kwargs["iteration"] < 10:
+            balanceFirebaseUpdate(sender, **kwargs)
+        elif settings.SERVER:
+            ### SOME SERIOUS ISSUE HAS OCCURRED WITH FIRESTORE
+            send_mail(e, "Balance", "Update", BalanceSerializer(kwargs["instance"]).data)
 
 
 @receiver(pre_delete, sender=Balance)
@@ -44,6 +52,12 @@ def balanceFirebaseDelete(sender, **kwargs):
             id_str = "User #{}".format(kwargs["instance"].wallet.user.id)
         collection = db.collection(id_str)
         collection.document("Balance").delete()
-    except:
+    except Exception as e:
         time.sleep(1)
-        balanceFirebaseDelete(sender, **kwargs)
+        if "iteration" not in kwargs.keys():
+            kwargs["iteration"] = 1
+        kwargs["iteration"] += 1
+        if kwargs["iteration"] < 10:
+            balanceFirebaseDelete(sender, **kwargs)
+        elif settings.SERVER:
+            send_mail(e, "Balance", "Delete", BalanceSerializer(kwargs["instance"]).data)
