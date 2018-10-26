@@ -53,7 +53,6 @@ class Authentication(APIView):
 		if is_bitsian:
 			try:
 				token = request.data['id_token']
-
 			except KeyError as missing:
 				msg = {"message": "The following field is missing: {}".format(missing)}
 				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
@@ -62,7 +61,6 @@ class Authentication(APIView):
 				idinfo = id_token.verify_oauth2_token(token, google_requests.Request())
 				if idinfo['aud'] not in [self.CLIENT_ID_web, self.CLIENT_ID_ios, self.CLIENT_ID_android]:
 					raise ValueError('Could not verify audience: {}'.format(idinfo['aud']))
-
 			except Exception as e:
 				return Response({'message' : str(e)})
 
