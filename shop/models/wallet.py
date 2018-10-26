@@ -23,7 +23,7 @@ class Wallet(models.Model):
 
 	user = models.OneToOneField(User, related_name = 'wallet', on_delete=models.SET_NULL, null=True)
 	uuid = models.UUIDField(default=uuid_pylib.uuid4, editable=False)
-	registration_token = models.CharField(max_length = 500, default = "")
+	registration_token = models.CharField(max_length = 500, null=True)
 	phone = models.BigIntegerField(default=0)
 	balance = models.OneToOneField("Balance", on_delete=models.CASCADE, blank=True, null=True, related_name="wallet")
 	profile = models.CharField(max_length=1, choices=PROFILES)
