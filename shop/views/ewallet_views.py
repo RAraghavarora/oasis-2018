@@ -45,9 +45,13 @@ class Transfer(APIView):
 			data = request.data
 			try:
 				target_user = User.objects.get(id=data["target_user"])			
+				amount = int(data["amount"])
 			except KeyError as missing:
 				msg = {"message": "missing the following field: {}".format(missing)}
 				return Response(msg, status=status.HTTP_400_BAD_REQUEST)			
+			except ValueError:
+				msg = {"message" : "Values not in the right format."}
+				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 			except:
 				try:	
 					target_user = decString(data["target_user"])[0]
@@ -58,7 +62,6 @@ class Transfer(APIView):
 			try:
 				source = request.user.wallet
 				target = Wallet.objects.get(user=target_user)
-
 			except Wallet.DoesNotExist:
 				msg = {"message": "Wallet does not exist"}
 				return Response(msg, status=status.HTTP_404_NOT_FOUND)
@@ -70,7 +73,6 @@ class Transfer(APIView):
 			if source == target:
 				return Response({"message": "You can't transfer money to yourself."}, status=status.HTTP_403_FORBIDDEN)
 
-			amount = data["amount"]
 			if amount < 0:
 				return Response({"message": "transfered amount cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
 
