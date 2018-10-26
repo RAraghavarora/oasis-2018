@@ -6,7 +6,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from shop.models.debug import DebugInfo
 from shop.permissions import TokenVerification
 from registrations.models import Bitsian
 from events.models import MainProfShow
