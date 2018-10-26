@@ -83,8 +83,9 @@ def resize_uploaded_image(buf, height, width):
 
 def generate_qr_code(data):
 	import qrcode
-	import qrcode.image.svg
-	from PIL import Image
+	# import qrcode.image.svg
+	# from PIL import Image
 	part_code = qrcode.make(data)
+	part_code = part_code.resize([5000,5000])
 	# part_code = 
 	return part_code
