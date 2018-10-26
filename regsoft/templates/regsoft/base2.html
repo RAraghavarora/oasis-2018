@@ -80,7 +80,7 @@
                         <ul class="dropdown-menu pull-right">
                             <li><a href="#"><i class="material-icons">person</i>Contacts</a></li>
                             <li role="seperator" class="divider"></li>
-                            <li><a href="{% url 'registrations:logout' %}"><i class="material-icons">input</i>Sign Out</a></li>
+                            <li><a href="{% url 'regsoft:logout' %}"><i class="material-icons">input</i>Sign Out</a></li>
                         </ul>
                     </div>
                 </div>
@@ -114,7 +114,7 @@
                         </a>
                     </li>
                     <li class="active">
-                        <a href="{% url 'regsoft:user_logout' %}">
+                        <a href="{% url 'regsoft:logout' %}">
                             <span>Logout</span>
                         </a>
                     </li>
@@ -164,8 +164,7 @@
                             <li>
                                 <span>Logout</span>
                                 <div class="switch">
-                                    <label><input type="checkbox" onclick='window.location.assign("{% url ' pcradmin:user-logout
-                                            ' %}")' checked><span class="lever"></span></label>
+                                    <label><input type="checkbox" onclick='window.location.assign("{% url 'regsoft:logout' %}")' checked><span class="lever"></span></label>
                                 </div>
                             </li>
                         </ul>

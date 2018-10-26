@@ -11,7 +11,7 @@
 {% endfor %}
 </div>
 {% endif %}
-<form method="POST" action="{% url 'regsoft:mattress_remove_entry' %}">
+<form method="POST" action="{% url 'regsoft:mattress_remove_entry' l_id=id %}">
     {% csrf_token %}
 <div class="row clearfix">
 <div class="card">
@@ -37,196 +37,610 @@
             <label for="blankets">Number of blankets</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="blankets" class="form-control" placeholder="Number of blankets" name="blankets" value=0>
+                    <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-hover dataTable">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="number" max="{{inventory.blankets}}" min=0 id="blankets" class="form-control" placeholder="Number of blankets" name="blankets" value=0>
+                                </td>
+                                <td>
+                                    {{inventory.blankets}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
                 </div>
             </div>
             <label for="mattresses">Number of mattresses</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="mattresses" class="form-control" placeholder="Number of mattresses" name="mattresses" value=0>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover dataTable">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="number" min=0 max="{{inventory.mattress}}" id="mattresses" class="form-control" placeholder="Number of mattresses" name="mattresses" value=0>
+                                    </td>
+                                    <td>
+                                        {{inventory.mattress}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <label for="pillows">Number of pillows</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="pillows" class="form-control" placeholder="Number of pillows" name="pillows" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" min=0 max="{{inventory.pillows}}" id="pillows" class="form-control" placeholder="Number of pillows" name="pillows" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.pillows}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="spikes">Number of spikes</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="spikes" class="form-control" placeholder="Number of spikes" name="spikes" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" min=0 max="{{inventory.spikes}}" id="spikes" class="form-control" placeholder="Number of spikes" name="spikes" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.spikes}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="bedsheets">Number of bedsheets</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="bedsheets" class="form-control" placeholder="Number of bedsheets" name="bedsheets" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.bedsheets}}" min=0 id="bedsheets" class="form-control" placeholder="Number of bedsheets" name="bedsheets" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.bedsheets}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="quilts">Number of quilts</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="quilts" class="form-control" placeholder="Number of quilts" name="quilts" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.quilts}}" min=0 id="quilts" class="form-control" placeholder="Number of quilts" name="quilts" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.quilts}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="buckets">Number of buckets</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="buckets" class="form-control" placeholder="Number of buckets" name="buckets" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.buckets}}" min=0 id="buckets" class="form-control" placeholder="Number of buckets" name="buckets" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.buckets}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="mugs">Number of mugs</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="mugs" class="form-control" placeholder="Number of mugs" name="mugs" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.mugs}}" min=0 id="mugs" class="form-control" placeholder="Number of mugs" name="mugs" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.mugs}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="fans">Number of fans</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="fans" class="form-control" placeholder="Number of fans" name="fans" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.fans}}" min=0 id="fans" class="form-control" placeholder="Number of fans" name="fans" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.fans}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="bulbs">Number of bulbs</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="bulbs" class="form-control" placeholder="Number of bulbs" name="bulbs" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.bulbs}}" min=0 id="bulbs" class="form-control" placeholder="Number of bulbs" name="bulbs" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.bulbs}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="watercampers">Number of Water Campers</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="watercampers" class="form-control" placeholder="Number of water campers" name="watercampers" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.water_campers}}" min=0 id="watercampers" class="form-control" placeholder="Number of watercampers" name="watercampers" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.water_campers}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="waterdrums">Number of water drums</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="waterdrums" class="form-control" placeholder="Number of water drums" name="waterdrums" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" min=0 max="{{inventory.water_drums}}" id="waterdrums" class="form-control" placeholder="Number of waterdrums" name="waterdrums" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.water_drums}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="waste_drums">Number of Waste Drums</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="waste_drums" class="form-control" placeholder="Number of waste_drums" name="waste_drums" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.waste_drums}}" min=0 id="waste_drums" class="form-control" placeholder="Number of waste_drums" name="waste_drums" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.waste_drums}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="tables">Number of tables</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="tables" class="form-control" placeholder="Number of tables" name="tables" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.tables}}" min=0 id="tables" class="form-control" placeholder="Number of tables" name="tables" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.tables}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="table_cloths">Number of table cloths</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="table_cloths" class="form-control" placeholder="Number of table cloths" name="table_cloths" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.table_cloths}}" min=0 id="table_cloths" class="form-control" placeholder="Number of table cloths" name="table_cloths" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.table_cloths}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="chairs">Number of chairs</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="chairs" class="form-control" placeholder="Number of chairs" name="chairs" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.chairs}}" min=0 id="chairs" class="form-control" placeholder="Number of chairs" name="chairs" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.chairs}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="red_carpets">Number of red carpets</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="red_carpets" class="form-control" placeholder="Number of red carpets" name="red_carpets" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.red_carpets}}" min=0 id="red_carpets" class="form-control" placeholder="Number of red_carpets" name="red_carpets" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.red_carpets}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="green_carpets">Number of green carpets</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="green_carpets" class="form-control" placeholder="Number of green carpets" name="green_carpets" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.green_carpets}}" min=0 id="green carpets" class="form-control" placeholder="Number of green_carpets" name="green_carpets" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.green_carpets}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="curtains">Number of curtains</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="curtains" class="form-control" placeholder="Number of curtains" name="curtains" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.curtains}}" min=0 id="curtains" class="form-control" placeholder="Number of curtains" name="curtains" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.curtains}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             
             <label for="halogen_lamps">Number of halogen lamps</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="halogen_lamps" class="form-control" placeholder="Number of halogen lamps" name="halogen_lamps" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.halogen_lamps}}" min=0 id="halogens_lamps" class="form-control" placeholder="Number of halogen lamps" name="halogen_lamps" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.halogen_lamps}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="sodium_lamps">Number of sodium lamps</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="sodium_lamps" class="form-control" placeholder="Number of sodium lamps" name="sodium_lamps" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.sodium_lamps}}" min=0 id="sodium_lamps" class="form-control" placeholder="Number of sodium_lamps" name="sodium_lamps" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.sodium_lamps}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>  
             <label for="tents">Number of tents</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="tents" class="form-control" placeholder="Number of tents" name="tents" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.tents}}" min=0 id="tents" class="form-control" placeholder="Number of tents" name="tents" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.tents}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="iron_poles">Number of iron poles</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="iron_poles" class="form-control" placeholder="Number of iron poles" name="iron_poles" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.iron_poles}}" min=0 id="iron_poles" class="form-control" placeholder="Number of iron poles" name="iron_poles" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.iron_poles}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="paper_rolls">Number of paper rolls</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="paper_rolls" class="form-control" placeholder="Number of paper rolls" name="paper_rolls" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.paper_rolls}}" min=0 id="paper_rolls" class="form-control" placeholder="Number of paper rolls" name="paper_rolls" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.paper_rolls}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="bamboo_poles">Number of bamboopoles</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="bamboo_poles" class="form-control" placeholder="Number of bamboo poles" name="bamboo_poles" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.bamboo_poles}}" min=0 id="bamboo_poles" class="form-control" placeholder="Number of bamboo_poles" name="bamboo_poles" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.bamboo_poles}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="ropes">Number of ropes</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="ropes" class="form-control" placeholder="Number of ropes" name="ropes" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.ropes}}" min=0 id="ropes" class="form-control" placeholder="Number of ropes" name="ropes" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.ropes}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="wires">Number of wires</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="wires" class="form-control" placeholder="Number of wires" name="wires" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.wires}}" min=0 id="wires" class="form-control" placeholder="Number of wires" name="wires" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.wires}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="item1">Number of item 1</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="item1" class="form-control" placeholder="Number of item 1" name="item1" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" max="{{inventory.item1}}" min=0 id="item1" class="form-control" placeholder="Number of item1" name="item1" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.item1}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="item2">Number of item 2</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="item2" class="form-control" placeholder="Number of item 2" name="item2" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" min=0 max="{{inventory.item2}}" id="item2" class="form-control" placeholder="Number of item2" name="item2" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.item2}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="item3">Number of item 3</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="item3" class="form-control" placeholder="Number of item 3" name="item3" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" min=0 id="item3" max="{{inventory.item3}}" class="form-control" placeholder="Number of item3" name="item3" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.item3}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="item4">Number of item 4</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="item4" class="form-control" placeholder="Number of item 4" name="item4" value=0>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" min=0 id="item4"  max="{{inventory.item4}}" class="form-control" placeholder="Number of item4" name="item4" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.item4}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
             </div>
             <label for="item5">Number of item 5</label>
             <div class="form-group">
                 <div class="form-line">
-                    <input type="number" min=0 id="item5" class="form-control" placeholder="Number of item 5" name="item5" value=0>
-                </div>
-            </div>
+                        <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover dataTable">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" min=0 id="item5"  max="{{inventory.item5}}" class="form-control" placeholder="Number of item5" name="item5" value=0>
+                                            </td>
+                                            <td>
+                                                {{inventory.item5}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
             <br>
             <button type="submit" class="btn btn-primary m-t-15 waves-effect">Add</button>

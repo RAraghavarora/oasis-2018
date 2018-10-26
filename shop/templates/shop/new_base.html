@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>RegSoft | Oasis'18</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+
+    <link href="{% static 'pcradmin/plugins/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+
+    <link href="{% static 'pcradmin/plugins/node-waves/waves.css' %}" rel="stylesheet" />
+
+    <link href="{% static 'pcradmin/plugins/animate-css/animate.css' %}" rel="stylesheet" />
+    <link href="{% static 'pcradmin/plugins/bootstrap-select/css/bootstrap-select.css' %}" rel="stylesheet" />
+
+    <!-- <link href="{% static 'pcradmin/plugins/morrisjs/morris.css' %}" rel="stylesheet" /> -->
+    <link href="{% static 'pcradmin/plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css' %}" rel="stylesheet">
+
+    <link href="{% static 'pcradmin/css/style.css' %}" rel="stylesheet">
+    <!-- <link href="{% static 'pcradmin/css/materialize.min.css' %}" rel="stylesheet"> -->
+
+    {% block head %} {% endblock %}
+    <link href="{% static 'pcradmin/css/themes/all-themes.css' %}" rel="stylesheet" />
+    <link rel="shortcut icon" href="{% static 'pcradmin/images/Oasis-Logo.png' %}">
+
+</head>
+
+<body class="theme-{% navbar_color request.user.username %}">
+    <div class="page-loader-wrapper">
+        <div class="loader">
+            <div class="preloader">
+                <div class="spinner-layer pl-red">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+            <p>Loading...</p>
+        </div>
+    </div>
+    <!-- #END# Page Loader -->
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+    <!-- #END# Overlay For Sidebars -->
+    <!-- Top Bar
+   
+
+    <!-- Jquery Core Js -->
+    <script src="{% static 'pcradmin/plugins/jquery/jquery.min.js' %}"></script>
+
+    <!-- Bootstrap Core Js -->
+    <script src="{% static 'pcradmin/plugins/bootstrap/js/bootstrap.js' %}"></script>
+
+    <!-- Select Plugin Js -->
+    <script src="{% static 'pcradmin/plugins/bootstrap-select/js/bootstrap-select.js' %}"></script>
+
+    <!-- Slimscroll Plugin Js -->
+    <script src="{% static 'pcradmin/plugins/jquery-slimscroll/jquery.slimscroll.js' %}"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="{% static 'pcradmin/plugins/node-waves/waves.js' %}"></script>
+    <!-- <script src="{% static 'pcradmin/js/materialize.min.js' %}"></script> -->
+
+
+    <script src="{% static 'pcradmin/plugins/jquery-countto/jquery.countTo.js' %}"></script>
+
+
+    <script src="{% static 'pcradmin/js/pages/index.js' %}"></script>
+
+    <!-- Demo Js -->
+    <script src="{% static 'pcradmin/js/demo.js' %}"></script>
+
+    <!-- Jquery DataTable Plugin Js -->
+    <script src="{% static 'pcradmin/plugins/jquery-datatable/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'pcradmin/plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js' %}"></script>
+    <script src="{% static 'pcradmin/plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'pcradmin/plugins/jquery-datatable/extensions/export/buttons.flash.min.js' %}"></script>
+    <script src="{% static 'pcradmin/plugins/jquery-datatable/extensions/export/jszip.min.js' %}"></script>
+    <script src="{% static 'pcradmin/plugins/jquery-datatable/extensions/export/pdfmake.min.js' %}"></script>
+    <script src="{% static 'pcradmin/plugins/jquery-datatable/extensions/export/vfs_fonts.js' %}"></script>
+    <script src="{% static 'pcradmin/plugins/jquery-datatable/extensions/export/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'pcradmin/plugins/jquery-datatable/extensions/export/buttons.print.min.js' %}"></script>
+    <script src="{% static 'pcradmin/js/pages/tables/jquery-datatable.js' %}"></script>
+
+    <script src="{% static 'pcradmin/js/admin.js' %}"></script>
+    <script src="{% static 'pcradmin/js/demo.js' %}"></script>
+    <script src="{% static 'pcradmin/js/script.js' %}"></script>
+
+</body>
+
+</html>
