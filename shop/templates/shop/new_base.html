@@ -2,11 +2,11 @@
 <html>
 
 <head>
-    {% load static %} {% load pcradmin_tags %}
+    {% load static %} 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>PCrAdmin | Oasis'18</title>
+    <title>Data | Oasis'18</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
 
@@ -55,7 +55,6 @@
             <div class="navbar-header">
                 <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                 <a href="javascript:void(0);" class="bars"></a>
-                <a class="navbar-brand" href="{% url 'pcradmin:index' %}">PCrAdmin | Oasis'18</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -80,7 +79,7 @@
                         <ul class="dropdown-menu pull-right">
                             <li><a href="#"><i class="material-icons">person</i>Contacts</a></li>
                             <li role="seperator" class="divider"></li>
-                            <li><a href="{% url 'pcradmin:user-logout' %}"><i class="material-icons">input</i>Sign Out</a></li>
+                            <!-- <li><a href="{% url 'pcradmin:user-logout' %}"><i class="material-icons">input</i>Sign Out</a></li> -->
                         </ul>
                     </div>
                 </div>
@@ -92,60 +91,11 @@
                 <ul class="list">
                     <li class="header">MAIN NAVIGATION</li>
                     <li class="active">
-                        <a href="{% url 'pcradmin:index' %}">
+                        <!-- <a href="{% url 'pcradmin:index' %}"> -->
                             <i class="material-icons">home</i>
                             <span>Home</span>
                         </a>
 
-                    </li>
-                    <li class="active">
-                        <a href="{% url 'pcradmin:college' %}">
-                            <!-- <i class="material-icons">home</i> -->
-                            <span>Colleges</span>
-                        </a>
-                    </li>
-                    <li class="active">
-                        <a href="{% url 'pcradmin:add_college' %}">
-                            <span>Add College</span>
-                        </a>
-                    </li>
-
-                    <li class="active">
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <span>Statistics</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li>
-                                <a href="{% url 'pcradmin:stats' 'collegewise' %}"><span>Collegewise</span></a>
-                            </li>
-                            <li>
-                                <a href="{% url 'pcradmin:stats' 'eventwise' %}"><span>Eventwise</span></a>
-                            </li>
-                            <li>
-                                <a href="{% url 'pcradmin:stats' 'paidwise' %}"><span>Paymentwise</span></a>
-                            </li>
-                            <li>
-                                <a href="{% url 'pcradmin:master_stats' %}"><span>Master Stats</span></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="active">
-                        <a href="{% url 'pcradmin:view_final' %}">
-                            <span>Final Confirmation</span>
-                        </a>
-                    </li>
-                    <li class="header">LABELS</li>
-                    <li>
-                        <a href="{% url 'pcradmin:contacts' %}">
-                            <i class="material-icons col-amber">donut_large</i>
-                            <span>Contacts</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);">
-                            <i class="material-icons col-light-blue">donut_large</i>
-                            <span>Information</span>
-                        </a>
                     </li>
                 </ul>
             </div>
@@ -189,8 +139,8 @@
                             <li>
                                 <span>Logout</span>
                                 <div class="switch">
-                                    <label><input type="checkbox" onclick='window.location.assign("{% url ' pcradmin:user-logout
-                                            ' %}") checked><span class="lever"></span></label>
+                                    <label><input type="checkbox" onclick='window.location.assign("{% url ' shop:user-logout
+                                            ' %}")' checked><span class="lever"></span></label>
                                 </div>
                             </li>
                         </ul>
@@ -205,7 +155,7 @@
             <div class="block-header">
                 <h2>DASHBOARD</h2>
             </div>
-            {% show_tags %} {% block body %} {% endblock %}
+            {% block body %} {% endblock %}
         </div>
         </div>
     </section>

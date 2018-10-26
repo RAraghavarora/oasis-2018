@@ -16,6 +16,9 @@ urlpatterns = [
 	url(r'^final_confirmation?/$', views.view_final, name='view_final'),
 	url(r'^final_email/(?P<eg_id>\d+)/?$', views.final_email, name='final_email'),
 	url(r'^final_email_send/(?P<eg_id>\d+)/?$', views.final_email_send, name='final_email_send'),
+	
+	url(r'^final_email_send_2/(?P<c_id>\d+)/?$', views.final_email_send_2, name='final_email_send_2'),
+	url(r'final_email_resend',views.final_email_resend,name='final_email_resend'),
 	url(r'^download_pdf/(?P<eg_id>\d+)/?$', views.download_pdf, name='download_pdf'),
 	url(r'^final_confirmation/(?P<c_id>\d+)/?$', views.final_confirmation, name='final_confirmation'),
 	url(r'^master_stats/?$', views.master_stats, name='master_stats'),
