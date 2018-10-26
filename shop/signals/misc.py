@@ -14,7 +14,7 @@ def stallFirebaseUpdate(sender, **kwargs):
     try:
         db = firestore.client()
         data = StallSerializer(kwargs["instance"]).data
-        collection = db.collection("Stall #{}".format(kwargs["instance"].user.id))
+        collection = db.collection(str(kwargs["instance"].stall.name))
         collection.document("Meta Data").set(data)
     except Exception as e:
         time.sleep(1)
@@ -32,7 +32,7 @@ def stallFirebaseDelete(sender, **kwargs):
     try:
         db = firestore.client()
         data = StallSerializer(kwargs["instance"]).data
-        collection = db.collection("Stall #{}".format(kwargs["instance"].user.id))
+        collection = db.collection(str(kwargs["instance"].stall.name))
         collection.document("Meta Data").delete()
     except Exception as e:
         time.sleep(1)

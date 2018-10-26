@@ -19,7 +19,6 @@ def balanceFirebaseUpdate(sender, **kwargs):
         db = firestore.client()
         data = BalanceSerializer(kwargs["instance"]).data
         if kwargs["instance"].wallet.profile == "S":
-            # id_str = "Stall #{}".format(kwargs["instance"].wallet.user.id)
             id_str = kwargs["instance"].wallet.user.stall.name
         elif kwargs["instance"].wallet.profile == "T":
             id_str = "Teller #{}".format(kwargs["instance"].wallet.user.id)
@@ -44,7 +43,6 @@ def balanceFirebaseDelete(sender, **kwargs):
     try:
         db = firestore.client()
         if kwargs["instance"].wallet.profile == "S":
-            # id_str = "Stall #{}".format(kwargs["instance"].wallet.user.id)
             id_str = kwargs["instance"].wallet.user.stall.name
         elif kwargs["instance"].wallet.profile == "T":
             id_str = "Teller #{}".format(kwargs["instance"].wallet.user.id)

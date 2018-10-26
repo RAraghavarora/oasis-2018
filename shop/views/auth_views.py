@@ -33,11 +33,9 @@ class Authentication(APIView):
 	for i in '0oO1QlLiI':
 		PASS_CHARS = PASS_CHARS.replace(i,'')
 
-	# CLIENT_ID_ios = "157934063064-et3fmi6jlivnr6h70q2rnegik50aqj3g.apps.googleusercontent.com"
-	CLIENT_ID_ios = "157934063064-mjdsg5k85qdj13mkuo5bk82iq9q3r9ua.apps.googleusercontent.com"
+	CLIENT_ID_ios = "1092654567586-te8sginoqsofeno6trqf4fg84jkmi3n6.apps.googleusercontent.com"
 	CLIENT_ID_web = "563920200402-chepn5acpejf0bac9v6on3a8pdvmvvg0.apps.googleusercontent.com"
-	# CLIENT_ID_android = "874822981163-s4pu562m5cgmcmjev3i6p852b1og8trm.apps.googleusercontent.com"
-	CLIENT_ID_android = "157934063064-2039thes6b2pcuj2bi43f30km8h8e1i0.apps.googleusercontent.com"
+	CLIENT_ID_android = "1092654567586-sk32bqq1rdgp8d4v3b1q3kh7ub31lkdr.apps.googleusercontent.com"
 
 
 	def generate_random_password(self):
