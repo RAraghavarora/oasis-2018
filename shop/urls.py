@@ -5,7 +5,7 @@ from shop.views import ewallet_views
 from shop.views import orders_views
 from shop.views import stalls_views
 from shop.views import misc_views
-from shop.views import data_profshow
+
 app_name="shop"
 
 urlpatterns = [
@@ -37,8 +37,4 @@ urlpatterns = [
 
     url(r'^get-profile/$', misc_views.GetProfile.as_view(), name='get-profile'),
     url(r'^get-profshows/$', misc_views.GetProfShows.as_view(), name="get-profshows"),
-
-    url(r'^debug/info/$', misc_views.AppDebugInfo.as_view(), name="debug-info"),
-    url(r'^profshowdata/$', data_profshow.get_data, name="profshowdata"),
-
 ]

@@ -1,14 +1,13 @@
 import json
 import time
 
-from oasis2018 import settings
+from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_delete
 from rest_framework.renderers import JSONRenderer
 
 from firebase_admin import firestore
 
-from utils.firestore_issue_mail import send_mail
 from shop.models.order import Order, OrderFragment
 from shop.serializers import OrderSerializer, OrderFragmentSerializer
 
@@ -29,15 +28,9 @@ def orderFragmentFirebaseUpdate(sender, **kwargs):
         collection = db.collection(col_str)
         doc_string = "OrderFragment #{}".format(kwargs["instance"].id)
         collection.document(doc_string).set(data)
-    except Exception as e:
+    except:
         time.sleep(1)
-        if "iteration" not in kwargs.keys():
-            kwargs["iteration"] = 1
-        kwargs["iteration"] += 1
-        if kwargs["iteration"] < 10:
-            orderFragmentFirebaseUpdate(sender, **kwargs)
-        elif settings.SERVER:
-            send_mail(e, "OrderFragment", "Update", OrderFragmentSerializer(kwargs["instance"]).data)
+        orderFragmentFirebaseUpdate(sender, **kwargs)
 
 
 @receiver(pre_delete, sender=OrderFragment)
@@ -55,12 +48,6 @@ def orderFragmentFirebaseDelete(sender, **kwargs):
         collection = db.collection(col_str)
         doc_string = "OrderFragment #{}".format(kwargs["instance"].id)
         collection.document(doc_string).delete()
-    except Exception as e:
+    except:
         time.sleep(1)
-        if "iteration" not in kwargs.keys():
-            kwargs["iteration"] = 1
-        kwargs["iteration"] += 1
-        if kwargs["iteration"] < 10:
-            orderFragmentFirebaseUpdate(sender, **kwargs)
-        elif settings.SERVER:
-            send_mail(e, "OrderFragment", "Delete", OrderFragmentSerializer(kwargs["instance"]).data)
+        orderFragmentFirebaseDelete(sender, **kwargs)
