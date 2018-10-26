@@ -6,16 +6,17 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import login, logout
 
 
-# @staff_member_required
-# def user_logout(request):
-# 	logout(request)
-# 	return HttpResponse("You are logged out")
+@staff_member_required
+def user_logout(request):
+ 	logout(request)
+ 	return HttpResponse("You are logged out")
 
 @staff_member_required
 def get_data(request):
     profsigned_list=[profs for profs in Tickets.objects.all() if profs.count!=0]
     print(profsigned_list)
-    rows=[{'data':[shows.user.participant.name,shows.prof_show,shows.tickettransaction.get(tickets=shows).timestamp,profsigned_list.tickettransaction.get(tickets=shows).num]} for shows in profsigned_list]
+
+    rows=[{'data':[shows.user.participant.name,shows.prof_show,shows.tickettransaction.get(tickets=shows).timestamp,shows.tickettransaction.get(tickets=shows).num]} for shows in profsigned_list]
     headings=['Participant Name','Prof Show Signed','Timestamp','Tickets Consumed']
     title='Data'
     table = {
@@ -24,3 +25,4 @@ def get_data(request):
         'title':title
     }
     return render(request, 'shop/tables.html', {'tables':[table,]})
+
