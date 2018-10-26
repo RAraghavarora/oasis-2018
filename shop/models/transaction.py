@@ -33,7 +33,7 @@ class Transaction(models.Model):
 
 class TicketTransaction(models.Model):
 	timestamp = models.DateTimeField(auto_now=True)
-	tickets = models.ForeignKey("Tickets", on_delete=models.SET_NULL, null=True)
+	tickets = models.ForeignKey("Tickets", on_delete=models.SET_NULL, null=True,related_name='tickettransaction')
 	num = models.PositiveIntegerField(default=0)
 
 	def __str__(self):

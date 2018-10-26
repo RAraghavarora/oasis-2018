@@ -15,8 +15,8 @@ from django.contrib.auth import login, logout
 def get_data(request):
     profsigned_list=[profs for profs in Tickets.objects.all() if profs.count!=0]
     print(profsigned_list)
-    rows=[{'data':[profsigned_list.user.participant.name,profsigned_list.prof_show,]
-    headings=['Participant Name','Prof Show Signed',]
+    rows=[{'data':[shows.user.participant.name,shows.prof_show,shows.tickettransaction.get(tickets=shows).timestamp,profsigned_list.tickettransaction.get(tickets=shows).num]} for shows in profsigned_list]
+    headings=['Participant Name','Prof Show Signed','Timestamp','Tickets Consumed']
     title='Data'
     table = {
         'rows':rows,

@@ -2,11 +2,11 @@
 <html>
 
 <head>
-    {% load static %}
+    {% load static %} 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>RegSoft | Oasis'18</title>
+    <title>Data | Oasis'18</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
 
@@ -29,7 +29,7 @@
 
 </head>
 
-<body class="theme-{% navbar_color request.user.username %}">
+<body class="theme-cyan">
     <div class="page-loader-wrapper">
         <div class="loader">
             <div class="preloader">
@@ -49,8 +49,116 @@
     <!-- Overlay For Sidebars -->
     <div class="overlay"></div>
     <!-- #END# Overlay For Sidebars -->
-    <!-- Top Bar
-   
+    <!-- Top Bar -->
+    <nav class="navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
+                <a href="javascript:void(0);" class="bars"></a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="pull-right"><a href="javascript:void(0);" class="js-right-sidebar" data-close="true"><i class="material-icons">more_vert</i></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- #Top Bar -->
+    <section>
+        <!-- Left Sidebar -->
+        <aside id="leftsidebar" class="sidebar">
+            <!-- User Info -->
+            <div class="user-info">
+
+                <div class="info-container">
+                    <br><br><br>
+                    <!-- <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><strong>{{request.user.username}}</strong></div> -->
+                    <!-- <div class="email">{{request.user.email}}</div> -->
+                    <div class="btn-group user-helper-dropdown">
+                        <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
+                        <ul class="dropdown-menu pull-right">
+                            <li><a href="#"><i class="material-icons">person</i>Contacts</a></li>
+                            <li role="seperator" class="divider"></li>
+                            <!-- <li><a href="{% url 'pcradmin:user-logout' %}"><i class="material-icons">input</i>Sign Out</a></li> -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- #User Info -->
+            <!-- Menu -->
+            <div class="menu" style="background-color:white">
+
+                <ul class="list">
+                    <li class="header">MAIN NAVIGATION</li>
+                    <li class="active">
+                        <!-- <a href="{% url 'pcradmin:index' %}"> -->
+                            <i class="material-icons">home</i>
+                            <span>Home</span>
+                        </a>
+
+                    </li>
+                </ul>
+            </div>
+            <!-- #Menu -->
+            <!-- Footer -->
+            <div class="legal">
+                <div class="copyright">
+                    &copy; for OASIS'18 <a href="javascript:void(0);">DVM, BITS Pilani</a>
+                </div>
+                <div class="version">
+                    <b>Thanks, </b> AdminBSB
+                </div>
+            </div>
+            <!-- #Footer -->
+        </aside>
+        <!-- #END# Left Sidebar -->
+        <!-- Right Sidebar -->
+        <aside id="rightsidebar" class="right-sidebar">
+            <ul class="nav nav-tabs tab-nav-right" role="tablist">
+                <li role="presentation" class="active"><a href="#settings" data-toggle="tab">SETTINGS</a></li>
+            </ul>
+            <div class="tab-content">
+
+                <div role="tabpanel" class="tab-pane fade in active in active" id="settings">
+                    <div class="demo-settings">
+                        <p>GENERAL LINKS</p>
+                        <ul class="setting-list">
+                            <li>
+                                <a class="btn btn-block bg-blue waves-effect" href="https://bits-oasis.org">Go to the main
+                                    site
+                                </a>
+                            </li>
+                            <li>
+                                <a class="btn btn-block bg-blue waves-effect" href="https://bits-oasis.org/2018/admin">Admin
+                                    Login
+                                </a>
+                            </li>
+                        </ul>
+                        <p>ACCOUNT SETTINGS</p>
+                        <ul class="setting-list">
+                            <li>
+                                <span>Logout</span>
+                                <div class="switch">
+                                    <label><input type="checkbox" onclick='window.location.assign("{% url ' pcradmin:user-logout
+                                            ' %}")' checked><span class="lever"></span></label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <!-- #END# Right Sidebar -->
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="block-header">
+                <h2>DASHBOARD</h2>
+            </div>
+            {% block body %} {% endblock %}
+        </div>
+        </div>
+    </section>
 
     <!-- Jquery Core Js -->
     <script src="{% static 'pcradmin/plugins/jquery/jquery.min.js' %}"></script>
