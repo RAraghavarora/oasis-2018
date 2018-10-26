@@ -25,7 +25,7 @@ def orderFragmentFirebaseUpdate(sender, **kwargs):
         collection.document(doc_string).set(data)
 
         # col_str = "Stall #{}".format(kwargs["instance"].stall.user.id)
-        col_str = str(kwargs["instance"].stall.name)
+        col_str = str(kwargs["instance"].stall.user.username)
         collection = db.collection(col_str)
         doc_string = "OrderFragment #{}".format(kwargs["instance"].id)
         collection.document(doc_string).set(data)
@@ -51,7 +51,7 @@ def orderFragmentFirebaseDelete(sender, **kwargs):
         collection.document(doc_string).delete()
 
         #col_str = "Stall #{}".format(kwargs["instance"].stall.user.id)
-        col_str = str(kwargs["instance"].stall.name)
+        col_str = str(kwargs["instance"].stall.user.username)
         collection = db.collection(col_str)
         doc_string = "OrderFragment #{}".format(kwargs["instance"].id)
         collection.document(doc_string).delete()
