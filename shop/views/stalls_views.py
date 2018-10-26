@@ -96,6 +96,8 @@ class StallOrderStatus(APIView):
 			body = "Contact the Stall for details."
 		if order_status == "Ready":
 			body = "Check OTP in Orders Section."
+		if order_status == "Finished":
+			return
 		
 		db = firestore.client()
 		data = {
@@ -119,7 +121,7 @@ class StallOrderStatus(APIView):
 		    ),
 		    token = registration_token,
 		)
-		
+
 		try:
 			response = messaging.send(message)
 			print(response)
@@ -152,10 +154,12 @@ class StallOrderStatus(APIView):
 
 		try:
 			registration_token = order_fragment.order.customer.registration_token
+			if registration_token == None:
+				raise Exception
 			pk = order_fragment.order.customer.id
+			self.sendNotification(pk, registration_token, order_status)
 		except:
 			pass
-		self.sendNotification(pk, registration_token, order_status)
 
 		#Money transferred to Stalls
 		if order_status == 'Finished':
