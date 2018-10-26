@@ -79,6 +79,7 @@ def firewallz_home(request):
     rows = []
     for college in college_list:
         name = college.name
+        # print(college)
         cr = college.participant_set.get(college=college, is_cr=True).name
         total_final = college.participant_set.filter(pcr_final=True).count()
         firewallz_passed = college.participant_set.filter(pcr_final=True, firewallz_passed=True).count()
