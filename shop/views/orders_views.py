@@ -196,7 +196,7 @@ class GetOrders(APIView):
             data = dict()
             data["order_id"] = order.id
             data["price"] = order.calculateTotal()
-            data["date"] = order.getDateString()
+            data["date"] = order.timestamp
             data["fragment_ids"] = [{"stall_id": fragment.stall.id, "status": fragment.status, "id": fragment.id} for fragment in order.fragments.all()]
             data["order"] = dict()
             for fragment in order.fragments.all():
