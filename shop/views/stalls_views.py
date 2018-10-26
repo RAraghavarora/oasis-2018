@@ -169,8 +169,6 @@ class SwitchItemAvailability(APIView):
 		try:
 			item_id = request.data["item_id"]
 			available = request.data["available"]
-			if not isinstance(available, bool):
-				raise ValueError
 			item = ItemClass.objects.get(pk = item_id)
 		except KeyError as missing:
 			msg = {"message" : "The following field was missing: {}".format(missing)}
@@ -178,12 +176,11 @@ class SwitchItemAvailability(APIView):
 		except ItemClass.DoesNotExist:
 			msg = {"message" : "Item doesn't exist."}
 			return Response(msg, status = status.HTTP_404_NOT_FOUND)
-		except ValueError:
-			msg = {"message" : "Incorrectly formatted values."}
-			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
 		try:
 			stall = request.user.stall
+			print(stall)
+			print(item.stall)
 			if not item.stall == stall:
 				raise Exception
 		except:
@@ -203,13 +200,8 @@ class SwitchStall(APIView):
 		try:
 			available = request.data["available"]
 			stall = request.user.stall
-			if not isinstance(available, bool):
-				raise ValueError
 		except KeyError as missing:
 			msg = {"message" : "The following field was missing: {}".format(missing)}
-			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
-		except ValueError:
-			msg = {"message" : "Incorrectly formatted values."}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
 		items = stall.menu.all()

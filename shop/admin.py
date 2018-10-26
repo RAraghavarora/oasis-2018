@@ -39,14 +39,6 @@ class BalanceAdmin(admin.ModelAdmin):
 class OrderFragmentAdmin(admin.ModelAdmin):
     inlines = [ItemInstanceInLine]
 
-
-class TicketTransactionInLine(admin.TabularInline):
-    model = TicketTransaction
-    extra = 1
-
-class TicketAdmin(admin.ModelAdmin):
-    inlines=[TicketTransactionInLine]
-
 admin.site.register(Wallet)
 admin.site.register(Balance, BalanceAdmin)
 admin.site.register(Transaction)
@@ -55,7 +47,5 @@ admin.site.register(OrderFragment, OrderFragmentAdmin)
 admin.site.register(Stall)
 admin.site.register(ItemClass, ItemClassAdmin)
 admin.site.register(ItemInstance)
-admin.site.register(Tickets,TicketAdmin)
+admin.site.register(Tickets)
 admin.site.register(Teller)
-admin.site.register(DebugInfo)
-admin.site.register(TicketTransaction)

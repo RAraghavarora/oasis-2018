@@ -15,7 +15,7 @@ class Balance(models.Model):
 	# wallet: Wallet
 
 	def __str__(self):
-		return "User: {}; Balance: {}/{}/{}/{}".format(self.wallet.user.username, self.swd, self.cash, self.instamojo, self.transfers)
+		return "Balance: {}/{}/{}/{}".format(self.swd, self.cash, self.instamojo, self.transfers)
 
 	def _getTotal(self):
 		return self.swd + self.cash + self.instamojo + self.transfers
