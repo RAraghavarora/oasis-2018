@@ -20,7 +20,7 @@ def generate_email_token(participant):
 	participant.email_token = token
 	participant.save()
 
-	return token 
+	return token
 
 def authenticate_email_token(token):
 	'''
@@ -43,7 +43,7 @@ def resize_uploaded_image(buf, height, width):
 	'''
 	To resize the uploaded image
 	'''
-	
+
 	import StringIO
 	from PIL import Image
 	image = Image.open(buf)
@@ -86,5 +86,8 @@ def generate_qr_code(data):
 	import qrcode.image.svg
 	from PIL import Image
 	part_code = qrcode.make(data)
-	# part_code = 
+	part_code = part_code.resize([30, 30])
+	# import qrcode.image.svg
+	# from PIL import Image
+	# part_code =
 	return part_code
