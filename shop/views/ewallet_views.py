@@ -15,7 +15,7 @@ from shop.permissions import TokenVerification
 from shop.models.transaction import Transaction
 from registrations.models import Participant,Bitsian
 from rest_framework.renderers import TemplateHTMLRenderer
-# from utils.wallet_qrcode import decString
+from utils.wallet_qrcode import decString
 
 import json, requests
 from instamojo_wrapper import Instamojo
@@ -44,21 +44,21 @@ class Transfer(APIView):
 	def post(self, request, format=None):
 			data = request.data
 			try:
-				target_user = User.objects.get(id=data["target_user"])
+				target_user = User.objects.get(id=data["target_user"])			
 			except KeyError as missing:
 				msg = {"message": "missing the following field: {}".format(missing)}
-				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+				return Response(msg, status=status.HTTP_400_BAD_REQUEST)			
 			except:
-				try:
-					# target_user = decString(data["target_user"])[0]
-					# target_user = User.objects.get(id=target_user)
-					target_user = Wallet.objects.get(uuid="target_user").user
+				try:	
+					target_user = decString(data["target_user"])[0]
+					target_user = User.objects.get(id=target_user)
 				except:
 					msg = {"message" : "Invalid request!"}
 					return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 			try:
 				source = request.user.wallet
 				target = Wallet.objects.get(user=target_user)
+
 			except Wallet.DoesNotExist:
 				msg = {"message": "Wallet does not exist"}
 				return Response(msg, status=status.HTTP_404_NOT_FOUND)
@@ -70,6 +70,7 @@ class Transfer(APIView):
 			if source == target:
 				return Response({"message": "You can't transfer money to yourself."}, status=status.HTTP_403_FORBIDDEN)
 
+			amount = data["amount"]
 			if amount < 0:
 				return Response({"message": "transfered amount cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -77,7 +78,7 @@ class Transfer(APIView):
 
 			msg = {"message": "Request successful!"}
 			return Response(msg, status=status.HTTP_200_OK)
-
+	
 
 
 class AddMoney(APIView):
@@ -262,31 +263,26 @@ class AddByCash(APIView):
 
 		# try to get the user and their wallet
 
-		# try:
-		# 	user_id = int(decString(qr_code)[0])
-		# except Exception as e:
-		# 	return Response({"message": "Invalid qr_code"}, status=status.HTTP_404_NOT_FOUND)
-		#
-		# try:
-		# 	user = User.objects.get(id=user_id)
-		# except:
-		# 	return Response({"message": "The wallet user does not exist."} ,status=status.HTTP_404_NOT_FOUND)
-		#
-		# try:
-		# 	wallet = user.wallet
-		# except Wallet.DoesNotExist:
-		# 	return Response({"message": "The user's wallet does not exist."} ,status=status.HTTP_404_NOT_FOUND)
+		try:
+			user_id = int(decString(qr_code)[0])
+		except Exception as e:
+			return Response({"message": "Invalid qr_code"}, status=status.HTTP_404_NOT_FOUND)
 
 		try:
-			wallet = Wallet.objects.get(uuid=qr_code)
+			user = User.objects.get(id=user_id)
 		except:
+			return Response({"message": "The wallet user does not exist."} ,status=status.HTTP_404_NOT_FOUND)
+
+		try:
+			wallet = user.wallet
+		except Wallet.DoesNotExist:
 			return Response({"message": "The user's wallet does not exist."} ,status=status.HTTP_404_NOT_FOUND)
 
 		# check if the amount is positive and if so add it to the user and the teller, then return a success message
 		if amount < 0:
 			return Response({"message": "Amount cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
 
-		wallet.balance.add(cash=amount)
+		user.wallet.balance.add(cash=amount)
 		teller.cash_collected += amount
 		teller.save()
 
@@ -295,8 +291,8 @@ class AddByCash(APIView):
 									amount=amount,
 									transfer_type="add",
 									transfer_from=teller.user.wallet,
-									transfer_to=wallet,
+									transfer_to=user.wallet,
 									payment_id=None
 								)
 
-		return Response({"message": "Amount successfully added.", "total": wallet.getTotalBalance()}, status=status.HTTP_200_OK)
+		return Response({"message": "Amount successfully added.", "total": user.wallet.getTotalBalance()}, status=status.HTTP_200_OK)
