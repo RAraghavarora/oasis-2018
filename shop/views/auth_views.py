@@ -54,11 +54,14 @@ class Authentication(APIView):
 	def post(self, request, format=None):
 		try:
 			is_bitsian = request.data['is_bitsian']
-			registration_token = request.data['registration_token']
 		except KeyError as missing:
 			msg = {"message": "The following field was missing: {}".format(missing)}
 			return Response(msg, status=status.HTTP_400_BAD_REQUEST)
-
+		try:
+			registration_token = request.data['registration_token']
+		except:
+			registration_token = "1234"
+		
 		#Bitsian Authentication
 		if is_bitsian:
 			try:
