@@ -13,7 +13,7 @@ class Order(models.Model):
 	facilitate the "many stalls, many items" ordering feature. """
 
 	customer = models.ForeignKey("Wallet", related_name="orders", null=True, on_delete=models.CASCADE)
-	timestamp = models.DateTimeField(auto_now = True)
+	timestamp = models.DateTimeField(default=timezone.now)
 	# fragments: OrderFragments
 
 	def __str__(self):
@@ -42,6 +42,7 @@ class Order(models.Model):
 		hour = ts.hour%12
 		if hour == 0:
 			hour = 12
+		print("%02d/%02d/%02d at %02d:%02d:%02d %s" % (ts.day, ts.month, ts.year, hour, ts.minute, ts.second, period))
 		return "%02d/%02d/%02d at %02d:%02d:%02d %s" % (ts.day, ts.month, ts.year, hour, ts.minute, ts.second, period)
 
 
