@@ -46,7 +46,7 @@ urlpatterns=[
 	url(r'^controlz/bill_details/(?P<b_id>\d+)/?$', views.bill_details, name='bill_details'),
 	url(r'^controlz/delete_bill/(?P<b_id>\d+)/?$', views.delete_bill, name='delete_bill'),
 	url(r'^controlz/print_bill/(?P<b_id>\d+)/?$', views.print_bill, name='print_bill'),
-	url(r'^profile_card_group/(?P<g_id>\d+)/?$',views.get_profile_card_group, name = 'get_profile_card_group'),
+	url(r'^firewallz/profile_card_group/(?P<g_id>\d+)/?$',views.get_profile_card_group, name = 'get_profile_card_group'),
 
 	url(r'^logout$',views.user_logout, name = 'logout'),
 
