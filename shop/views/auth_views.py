@@ -54,7 +54,6 @@ class Authentication(APIView):
 		if is_bitsian:
 			try:
 				token = request.data['id_token']
-
 			except KeyError as missing:
 				msg = {"message": "The following field is missing: {}".format(missing)}
 				return Response(msg, status=status.HTTP_400_BAD_REQUEST)
@@ -63,7 +62,6 @@ class Authentication(APIView):
 				idinfo = id_token.verify_oauth2_token(token, google_requests.Request())
 				if idinfo['aud'] not in [self.CLIENT_ID_web, self.CLIENT_ID_ios, self.CLIENT_ID_android]:
 					raise ValueError('Could not verify audience: {}'.format(idinfo['aud']))
-
 			except Exception as e:
 				return Response({'message' : str(e)})
 
@@ -105,17 +103,19 @@ class Authentication(APIView):
 				msg = {'message' : "Incorrect Authentication Credentials or User doesn't exist"}
 				return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
-		try:
-			qr_code = user.bitsian.barcode
-		except:
-			try:
-				qr_code = user.participant.barcode
-			except:
-				qr_code = None
+		# try:
+		# 	qr_code = user.bitsian.barcode
+		# except:
+		# 	try:
+		# 		qr_code = user.participant.barcode
+		# 	except:
+		# 		qr_code = None
+
+		qr_code = user.wallet.uuid
 
 		#Checks if wallet exists
 		try:
-			wallet = Wallet.objects.get(user=user)			
+			wallet = Wallet.objects.get(user=user)
 			if not wallet:
 				raise Wallet.DoesNotExist
 			# wallet.registration_token = registration_token

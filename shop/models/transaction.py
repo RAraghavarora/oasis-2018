@@ -30,3 +30,11 @@ class Transaction(models.Model):
 	def __str__(self):
 		return "{} from {} to {}".format(self.amount, self.transfer_from,
 											self.transfer_to)
+
+class TicketTransaction(models.Model):
+	timestamp = models.DateTimeField(auto_now=True)
+	tickets = models.ForeignKey("Tickets", on_delete=models.SET_NULL, null=True,related_name='tickettransaction')
+	num = models.PositiveIntegerField(default=0)
+
+	def __str__(self):
+		return "User: {}; Timestamp: {}".format(self.tickets.user.username, self.timestamp)
