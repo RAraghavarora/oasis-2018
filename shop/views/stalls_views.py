@@ -88,13 +88,20 @@ class StallOrderStatus(APIView):
 	status_responses = ["Accepted", "Declined", "Ready", "Finished"]
 
 	def sendNotification(self, pk, registration_token, order_status):
-		title = 'Order Status: {}'.format(order_status)
-		body = 'Order Status: {}'.format(order_status)
+		title = 'Order {}'.format(order_status)
 
+		if order_status == "Accepted":
+			body = "Track your Order in the Orders Section."
+		if order_status == "Declined":
+			body = "Contact the Stall for details."
+		if order_status == "Ready":
+			body = "Check OTP in Orders Section."
+		
 		db = firestore.client()
 		data = {
 			"title" : title,
-			"body" : body
+			"body" : body,
+			"status" : "wallet"
 		}
 
 		col_str = "User #{}".format(pk)
@@ -112,10 +119,10 @@ class StallOrderStatus(APIView):
 		    ),
 		    token = registration_token,
 		)
+		
 		try:
 			response = messaging.send(message)
 			print(response)
-
 		except Exception as e:
 			print(e)
 
