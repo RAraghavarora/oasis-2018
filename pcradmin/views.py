@@ -963,7 +963,7 @@ pcr@bits-oasis.org
 
         except Exception as e:
             messages.warning(request, 'Error sending email')
-    # return redirect(reverse('pcradmin:final_confirmation', kwargs={'c_id': college.id}))
+    return redirect(reverse('pcradmin:final_confirmation', kwargs={'c_id': college.id}))
 
 @staff_member_required
 def download_pdf(request, eg_id):
