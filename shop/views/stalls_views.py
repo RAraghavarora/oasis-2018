@@ -154,6 +154,8 @@ class StallOrderStatus(APIView):
 
 		try:
 			registration_token = order_fragment.order.customer.registration_token
+			if registration_token == None:
+				raise Exception
 			pk = order_fragment.order.customer.id
 			self.sendNotification(pk, registration_token, order_status)
 		except:
