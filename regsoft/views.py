@@ -52,12 +52,14 @@ def generate_group_code(group):
         raise ValueError
     if encoded is not None:
         return encoded
-    group_ida = "%04d" % int(group_id)
+    # group_ida = "%04d" % int(group_id)
     group_leader = get_group_leader(group)
-    college_code = ''.join(group_leader.college.name.split(' '))
-    if len(college_code)<4:
-        college_code += str(0)*(4-len(college_code))
-    group.group_code = college_code + group_ida
+    college_code = ''.join(group_leader.college.name[0:3])
+    # if len(college_code)<4:
+    #     college_code += str(0)*(4-len(college_code))
+    college_code = college_code + str(group.id)
+    group.group_code = college_code
+    # group.group_code = college_code + group_ida
     group.save()
     return encoded
 
