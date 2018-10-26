@@ -15,7 +15,7 @@ from shop.models.order import Order, OrderFragment
 from shop.models.stall import Stall
 from shop.models.wallet import Wallet
 from shop.models.item import ItemClass, ItemInstance, Tickets
-from shop.models.transaction import Transaction
+from shop.models.transaction import Transaction, TicketTransaction
 from shop.permissions import TokenVerification
 # from utils.wallet_qrcode import decString
 from events.models import MainProfShow, Organization
@@ -325,6 +325,9 @@ class ConsumeTickets(APIView):
             tickets.count -= consume
             tickets.consumed += consume
             tickets.save()
+
+            TicketTransaction.objects.create(tickets=tickets, num=consume)
+
             return Response({"success": True, "remaining_tickets": tickets.count, "x-status": 0})
 
         except KeyError as ke:
