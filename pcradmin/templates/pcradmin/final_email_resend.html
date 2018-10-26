@@ -30,7 +30,7 @@
                             {% for i in colleges %}
                             <tr>
                                 <td>{{i.name}}</td>
-                                <td><a href="{% url 'pcradmin:final_email_send_2' c_id={{i.id}} %}">Send Email</a> </td>
+                                <td><a href="{% url 'pcradmin:final_email_send_2' i.id %}">Send Email</a> </td>
                             </tr>
                             {% endfor %}
                         </tbody>
