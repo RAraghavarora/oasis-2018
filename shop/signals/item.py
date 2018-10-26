@@ -18,7 +18,7 @@ def itemClassFirebaseUpdate(sender, **kwargs):
     try:
         db = firestore.client()
         data = ItemClassSerializer(kwargs["instance"]).data
-        collection = db.collection(str(kwargs["instance"].stall.name))
+        collection = db.collection(str(kwargs["instance"].stall.user.username))
         collection.document("ItemClass #{}".format(kwargs["instance"].id)).set(data)
     except Exception as e:
         time.sleep(1)
@@ -35,7 +35,7 @@ def itemClassFirebaseUpdate(sender, **kwargs):
 def itemClassFirebaseDelete(sender, **kwargs):
     try:
         db = firestore.client()
-        collection = db.collection(str(kwargs["instance"].stall.name))
+        collection = db.collection(str(kwargs["instance"].stall.user.username))
         collection.document("ItemClass #{}".format(kwargs["instance"].id)).delete()
     except Exception as e:
         time.sleep(1)
