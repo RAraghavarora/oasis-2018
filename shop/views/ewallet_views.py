@@ -53,7 +53,7 @@ class Transfer(APIView):
 				try:
 					# target_user = decString(data["target_user"])[0]
 					# target_user = User.objects.get(id=target_user)
-					target_user = Wallet.objects.get(uuid="target_user").user
+					target_user = Wallet.objects.get(uuid=data["target_user"]).user
 				except:
 					msg = {"message" : "Invalid request!"}
 					return Response(msg, status=status.HTTP_400_BAD_REQUEST)
