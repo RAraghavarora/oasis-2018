@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from shop.models.wallet import Wallet
 from shop.models.balance import Balance
-from shop.models.transaction import Transaction,TicketTransaction
+from shop.models.transaction import Transaction, TicketTransaction
 from shop.models.item import ItemClass, ItemInstance, Tickets
 from shop.models.order import Order, OrderFragment
 from shop.models.stall import Stall

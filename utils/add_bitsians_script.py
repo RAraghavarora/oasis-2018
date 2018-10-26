@@ -18,5 +18,11 @@ for i in range(2, length):
 	room_no = int(sheet.cell(row=i, column=5).value)
 	bhawan = sheet.cell(row=i, column=6).value
 	print(long_id, email, name, room_no, bhawan)
-	user=User.objects.create(username=long_id)
-	Bitsian.objects.create(user=user, name=name, long_id=long_id, room_no=room_no, bhawan=bhawan, email=email)
+	try:
+		user=User.objects.get(username=email.split('@')[0])
+	except:
+		user=User.objects.create(username=email.split('@')[0])
+	try:
+		Bitsian.objects.get(user=user, name=name, long_id=long_id, room_no=room_no, bhawan=bhawan, email=email)
+	except:
+		Bitsian.objects.create(user=user, name=name, long_id=long_id, room_no=room_no, bhawan=bhawan, email=email)
