@@ -125,7 +125,7 @@ for i in Participant.objects.filter(firewallz_passed=True):
 	try:
 		mail = Mail(from_email, subject, to_email, content)
 		response = sg.client.mail.send.post(request_body=mail.get())
-		print("Email "+i.email)
+		print("Email "+i.email +" "+ str(i))
 	except :
 		print('Error in sending')
 
@@ -140,6 +140,6 @@ for i in Bitsian.objects.all():
 	try:
 		mail = Mail(from_email, subject, to_email, content)
 		response = sg.client.mail.send.post(request_body=mail.get())
-		print("Email "+i.email)
+		print("Email "+i.email+" "+ str(i))
 	except :
 		print 'Error in sending'
