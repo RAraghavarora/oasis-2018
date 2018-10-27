@@ -1,9 +1,11 @@
 import sendgrid
 from sendgrid.helpers.mail import *
 from openpyxl import *
-from registrations.models import *
+#from registrations.models import *
 
-API_KEY = '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'
+#API_KEY = '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'
+#API_KEY='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'
+API_KEY='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'
 body = '''
 <p>Greetings from OASIS 18!</p>
 
@@ -110,10 +112,28 @@ body = '''
 
 <p>Vaibhav Maheshwari&nbsp; &nbsp; &nbsp;+91 9529179518</p>
 
-''' 
+'''
 
 
+list1=['sanchitahuja205@gmail.com','f20170216@pilani.bits-pilani.ac.in']
 
+for i in list1:
+	sg = sendgrid.SendGridAPIClient(apikey=API_KEY)
+	send_to=i.email
+	from_email = Email('no-reply@bits-oasis.org')
+	to_email = Email(send_to)
+	subject = "Official App for OASIS'18"
+	content = Content('text/html', body)
+	try:
+		mail = Mail(from_email, subject, to_email, content)
+		response = sg.client.mail.send.post(request_body=mail.get())
+		print("Email "+str(i))
+	except :
+		print('Error in sending')
+
+
+cnt1=1
+cnt2=1
 
 for i in Participant.objects.filter(firewallz_passed=True):
 	sg = sendgrid.SendGridAPIClient(apikey=API_KEY)
@@ -125,7 +145,8 @@ for i in Participant.objects.filter(firewallz_passed=True):
 	try:
 		mail = Mail(from_email, subject, to_email, content)
 		response = sg.client.mail.send.post(request_body=mail.get())
-		print("Email "+i.email +" "+ str(i))
+		print("Email "+i.email +" "+ str(cnt1))
+		cnt1+=1
 	except :
 		print('Error in sending')
 
@@ -140,6 +161,7 @@ for i in Bitsian.objects.all():
 	try:
 		mail = Mail(from_email, subject, to_email, content)
 		response = sg.client.mail.send.post(request_body=mail.get())
-		print("Email "+i.email+" "+ str(i))
+		print("Email "+i.email+" "+ str(cnt2))
+		cnt2+=1
 	except :
-		print 'Error in sending'
+		print ('Error in sending')
