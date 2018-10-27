@@ -6,6 +6,7 @@ from shop.views import orders_views
 from shop.views import stalls_views
 from shop.views import misc_views
 from shop.views import data_profshow
+from django.views.decorators.csrf import csrf_exempt
 app_name="shop"
 
 urlpatterns = [
@@ -16,7 +17,7 @@ urlpatterns = [
     url(r'^add-moneyresponse-android/', ewallet_views.AddMoneyResponseAndroid.as_view(), name="AddMoneyResponseAndroid"),
     url(r'^ewallet/add-money/$', ewallet_views.AddByCash.as_view(), name="AddByCash"),
 
-    url(r'^auth/$', auth_views.Authentication.as_view(), name = "auth"),
+    url(r'^auth/$', csrf_exempt(auth_views.Authentication.as_view()), name = "auth"),
     url(r'^auth/ot/$', auth_views.OrganizationsAndTellersLogin.as_view(), name="auth-ot"),
 
     url(r'^stalls/$', stalls_views.StallsList.as_view(), name = 'stalls'),

@@ -139,6 +139,7 @@ def firewallz_approval(request, c_id):
         group.save()
         part_list = Participant.objects.filter(id__in=id_list)
         return redirect(reverse('regsoft:get_group_list', kwargs={'g_id':group.id}))
+        
     groups_passed = [group for group in Group.objects.all() if get_group_leader(group) and get_group_leader(group).college == college]
     unapproved_list = college.participant_set.filter(pcr_final=True, firewallz_passed=False, is_guest=False)
     return render(request, 'regsoft/firewallz_approval.html', {'groups_passed':groups_passed, 'unapproved_list':unapproved_list, 'college':college})
