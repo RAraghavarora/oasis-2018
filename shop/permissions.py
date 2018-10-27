@@ -2,9 +2,9 @@ from rest_framework import status
 from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 
-class TokenVerification(BasePermission):
+from oasis2018.settings_config.keyconfig import WALLET_TOKEN
 
-	WALLET_TOKEN = 'asdf'
+class TokenVerification(BasePermission):
 
 	def has_permission(self, request, view):
 		try:

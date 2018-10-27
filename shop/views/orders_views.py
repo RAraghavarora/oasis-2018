@@ -102,7 +102,7 @@ class PlaceOrder(APIView):
                     order.delete()
                     return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
-                if stall_instance.name == "Ticket Vendor":
+                if stall_instance.name == "Prof Shows":
                     try:
                         show = MainProfShow.objects.get(name=itemclass.name)
                         if any([not itemclass.is_available, itemclass.stock < qty]):
