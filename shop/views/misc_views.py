@@ -84,7 +84,7 @@ class AppDebugInfo(APIView):
         return Response(msg, status=status.HTTP_200_OK)
 
 
-@user_passes_test(lambda x: x.is_superuser)
+#@user_passes_test(lambda x: x.is_superuser)
 def viewTransactions(request, uuid):
     wallet = Wallet.objects.get(uuid=uuid)
     context = {}
