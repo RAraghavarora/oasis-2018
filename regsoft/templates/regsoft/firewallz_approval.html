@@ -21,9 +21,19 @@
                 <table class="table table-bordered table-striped table-hover dataTable">
                     <thead>
                         <tr>
+                            <th></th>
+                            <th></th>
+                            <th>
+                                <input type="checkbox" id="selectAll">
+                                <label for="selectAll">Select All</label>
+                            </th>
+                            <th></th>
+                        </tr>
+                        <tr>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Events</th>
+                            <th>Select</th>
                             <th>Group Leader</th>
                         </tr>
                     </thead>
@@ -32,6 +42,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Events</th>
+                            <th>Select</th>
                             <th>Group Leader</th>
                         </tr>
                     </tfoot>
@@ -39,7 +50,7 @@
                         {% for i in unapproved_list %}
                         <tr>
                             <td>{{i.name}}</td>
-                            <td> {{i.email}}</td>
+                            <td>{{ i.email}}</td>
                             <td>{{i|get_events_list}}</td>
                             <td>
                                 <input type="checkbox" name="id_list" id="{{i.id}}" value="{{i.id}}">
