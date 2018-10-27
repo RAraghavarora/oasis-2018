@@ -23,3 +23,6 @@ def fun():
         barcode=username#change this to make a proper one
         Bitsian.objects.get_or_create(barcode=barcode,name=name,long_id=bits_id,gender=sex,bhawan=bhawan,user=user,email=email
         )
+        print("obj"+str(i))
+
+fun()
