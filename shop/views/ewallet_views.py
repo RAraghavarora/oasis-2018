@@ -75,6 +75,9 @@ class Transfer(APIView):
 			if amount < 0:
 				return Response({"message": "transfered amount cannot be negative."}, status=status.HTTP_400_BAD_REQUEST)
 
+			if amount > source.getTotalBalance():
+				return Response({"message": "Insufficient funds."}, status=status.HTTP_200_OK) # status 200 for the iOS app.
+
 			source.transferTo(target, amount, transfertype="transfer")
 
 			msg = {"message": "Request successful!"}
