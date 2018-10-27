@@ -43,6 +43,6 @@ def itemClassFirebaseDelete(sender, **kwargs):
             kwargs["iteration"] = 1
         kwargs["iteration"] += 1
         if kwargs["iteration"] < 10:
-            itemClassFirebaseUpdate(sender, **kwargs)
+            itemClassFirebaseDelete(sender, **kwargs)
         elif settings.SERVER:
             send_mail(e, "ItemClass", "Delete", ItemClassSerializer(kwargs["instance"]).data)
