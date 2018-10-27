@@ -15,6 +15,7 @@ from shop.models.balance import Balance
 from shop.permissions import TokenVerification
 from shop.models import Teller
 from events.models import Organization
+from oasis2018.settings_config.keyconfig import CLIENT_ID_web, CLIENT_ID_ios, CLIENT_ID_android
 
 from random import choice
 import string
@@ -32,11 +33,6 @@ class Authentication(APIView):
 	PASS_CHARS = string.ascii_letters + string.digits
 	for i in '0oO1QlLiI':
 		PASS_CHARS = PASS_CHARS.replace(i,'')
-
-	CLIENT_ID_ios = "1092654567586-te8sginoqsofeno6trqf4fg84jkmi3n6.apps.googleusercontent.com"
-	CLIENT_ID_web = "563920200402-chepn5acpejf0bac9v6on3a8pdvmvvg0.apps.googleusercontent.com"
-	CLIENT_ID_android = "1092654567586-sk32bqq1rdgp8d4v3b1q3kh7ub31lkdr.apps.googleusercontent.com"
-
 
 	def generate_random_password(self):
 		return ''.join(choice(self.PASS_CHARS) for _ in xrange(8))
@@ -69,7 +65,7 @@ class Authentication(APIView):
 
 			try:
 				idinfo = id_token.verify_oauth2_token(token, google_requests.Request())
-				if idinfo['aud'] not in [self.CLIENT_ID_web, self.CLIENT_ID_ios, self.CLIENT_ID_android]:
+				if idinfo['aud'] not in [CLIENT_ID_web, CLIENT_ID_ios, CLIENT_ID_android]:
 					raise ValueError('Could not verify audience: {}'.format(idinfo['aud']))
 			except Exception as e:
 				return Response({'message' : str(e)})

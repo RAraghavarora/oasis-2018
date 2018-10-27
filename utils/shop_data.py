@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from oasis2018.settings import BASE_DIR
 
 
-with open(BASE_DIR + '/utils/data.csv') as cfile:
+with open(BASE_DIR + '/utils/STALLS MENU.csv') as cfile:
 	reader = csv.reader(cfile, delimiter=',')
 	for row in reader:
 		try:

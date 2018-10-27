@@ -102,7 +102,7 @@ class PlaceOrder(APIView):
                     order.delete()
                     return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
-                if stall_instance.name == "Ticket Vendor":
+                if stall_instance.name == "Prof Shows":
                     try:
                         show = MainProfShow.objects.get(name=itemclass.name)
                         if any([not itemclass.is_available, itemclass.stock < qty]):
@@ -156,7 +156,7 @@ class PlaceOrder(APIView):
             # away. Then later, once the order has been complete, the stall
             # will receive its money.
             # The Ticket Vendor must, however, receive their money right away
-            if fragment.stall.name == "Ticket Vendor":
+            if fragment.stall.name == "Prof Shows":
                 fragment.status = OrderFragment.FINISHED
                 fragment.stall.user.wallet.balance.add(transfers=fragment.calculateSubTotal())
                 fragment.save()

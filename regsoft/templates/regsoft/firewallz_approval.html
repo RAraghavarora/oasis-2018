@@ -1,15 +1,11 @@
-{% extends "regsoft/base.html" %}
-{% block body %}
-{% load regsoft_tags %}
-{% if unapproved_list %}
-{% if messages %}
+{% extends "regsoft/base.html" %} {% block body %} {% load regsoft_tags %} {% if unapproved_list %} {% if messages %}
 <div class="body">
-{% for message in messages %}
-<div class="alert alert-info alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-    {{message}}
-</div>
-{% endfor %}
+    {% for message in messages %}
+    <div class="alert alert-info alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        {{message}}
+    </div>
+    {% endfor %}
 </div>
 {% endif %}
 <div class="card">
@@ -18,71 +14,59 @@
             Unconfirmed Participants from {{college.name}}
         </h2>
     </div>
-	<div class="body">
-	<form action="{% url 'regsoft:firewallz_approval' college.id %}" method="post">
-	{% csrf_token %}
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover dataTable">
-                <thead>
-                    <tr>
-                            <th></th>
-                            <th></th>
-                            <th>
-                                <input type="checkbox" id="selectAll">
-                                <label for="selectAll">Select All</label>
-                            </th>
-                            <th></th>
+    <div class="body">
+        <form action="{% url 'regsoft:firewallz_approval' college.id %}" method="post">
+            {% csrf_token %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover dataTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Events</th>
+                            <th>Group Leader</th>
                         </tr>
-                    <tr>
-                        <th>Name</th>
-                        <th>Events</th>
-                        <th>Select</th>
-                        <th>Group Leader</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>Name</th>
-                        <th>Events</th>
-                        <th>Select</th>
-                        <th>Group Leader</th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                	{% for i in unapproved_list %}
-                    <tr>
-                        <td>{{i.name}}</td>
-                        <td>{{i|get_events_list}}</td>
-                        <td>
-                        	<input type="checkbox" name="id_list" id="{{i.id}}" value="{{i.id}}">
-                        	<label for="{{i.id}}"></label>
-                        </td>
-                        <td>
-                        	<input type="radio" name="g_leader_id" id="u_{{i.user.id}}" value="{{i.id}}">
-                        	<label for="u_{{i.user.id}}"></label>
-						</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <input type="hidden" value="confirm" name="action">
-            <button type="submit" class="btn btn-primary btn-lg m-l-15 waves-effect">Confirm</button>
-        </div>
-	</form>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Events</th>
+                            <th>Group Leader</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        {% for i in unapproved_list %}
+                        <tr>
+                            <td>{{i.name}}</td>
+                            <td> {{i.email}}</td>
+                            <td>{{i|get_events_list}}</td>
+                            <td>
+                                <input type="checkbox" name="id_list" id="{{i.id}}" value="{{i.id}}">
+                                <label for="{{i.id}}"></label>
+                            </td>
+                            <td>
+                                <input type="radio" name="g_leader_id" id="u_{{i.user.id}}" value="{{i.id}}">
+                                <label for="u_{{i.user.id}}"></label>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <input type="hidden" value="confirm" name="action">
+                <button type="submit" class="btn btn-primary btn-lg m-l-15 waves-effect">Confirm</button>
+            </div>
+        </form>
     </div>
 </div>
-{% endif %}
-
-
-
-{% if groups_passed %}
+{% endif %} {% if groups_passed %}
 <div class="card">
     <div class="header">
         <h2>
             Confirmed Groups
         </h2>
     </div>
-	<div class="body">
+    <div class="body">
         <div class="table-responsive">
             <table class="table table-bordered table-striped table-hover dataTable js-exportable">
                 <thead>
@@ -106,7 +90,7 @@
                     </tr>
                 </tfoot>
                 <tbody>
-                	{% for i in groups_passed %}
+                    {% for i in groups_passed %}
                     <tr>
                         <td>Group {{i.id}}</td>
                         <td>{{i|participant_count}}</td>
@@ -121,5 +105,4 @@
         </div>
     </div>
 </div>
-{% endif %}
-{% endblock %}
+{% endif %} {% endblock %}
