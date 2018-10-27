@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -46,7 +47,7 @@ class Authentication(APIView):
 
 		return token
 
-
+	@csrf_exempt
 	def post(self, request, format=None):
 		try:
 			is_bitsian = request.data['is_bitsian']
@@ -99,22 +100,25 @@ class Authentication(APIView):
 				return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
 			try:
+				print(username, password)
 				user = authenticate(username = username, password = password)
 
 				if user is None:
 					raise User.DoesNotExist
 
+				if user.participant.firewallz_passed:
+					wallet, created = Wallet.objects.get_or_create(user=user, profile="P")
+					if created:
+						balance = Balance.objects.create(wallet=wallet)
+						wallet.balance = balance
+						wallet.save()
+				else:
+					raise
+
 			except Exception as e:
-				msg = {'message' : "Incorrect Authentication Credentials or User doesn't exist"}
+				msg = {'message' : "Incorrect Authentication Credentials or User doesn't exist, or participant is not firewallz passed."}
 				return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
-		# try:
-		# 	qr_code = user.bitsian.barcode
-		# except:
-		# 	try:
-		# 		qr_code = user.participant.barcode
-		# 	except:
-		# 		qr_code = None
 
 		qr_code = user.wallet.uuid
 

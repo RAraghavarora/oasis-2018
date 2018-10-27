@@ -21,7 +21,7 @@ class ShopConfig(AppConfig):
         from shop.signals.order import orderFragmentFirebaseDelete
         from shop.signals.instawallet import autoAddWalletStall # for adding a wallet to stalls
         from shop.signals.instawallet import autoAddWalletBitsian # for adding a wallet to bitsians
-        from shop.signals.instawallet import autoAddWalletParticipant # for adding a wallet to bitsians
+        #from shop.signals.instawallet import autoAddWalletParticipant # for adding a wallet to bitsians
 
         #Then use Google's API to get setup for communtication with
         #Google Cloud Firestore from the server end.
