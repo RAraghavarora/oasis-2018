@@ -3,7 +3,7 @@ from sendgrid.helpers.mail import *
 from openpyxl import *
 from registrations.models import *
 
-API_KEY = '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'
+API_KEY = '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'
 body = '''
 <p>Greetings from OASIS 18!</p>
 
