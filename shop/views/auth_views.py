@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -46,7 +47,7 @@ class Authentication(APIView):
 
 		return token
 
-
+	@csrf_exempt
 	def post(self, request, format=None):
 		try:
 			is_bitsian = request.data['is_bitsian']
