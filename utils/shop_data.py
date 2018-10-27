@@ -15,5 +15,5 @@ with open(BASE_DIR + '/utils/STALLS MENU.csv') as cfile:
 		except Stall.DoesNotExist:
 			user, created = User.objects.get_or_create(username=row[0])
 			stall = Stall.objects.create(user=user, name=row[0])
-		item = ItemClass.objects.create(name=row[1], stall=stall, price=row[2])
+		item = ItemClass.objects.get_or_create(name=row[1], stall=stall, price=row[2])
 		print(stall, item)
