@@ -115,8 +115,8 @@ class Authentication(APIView):
 						balance = Balance.objects.create(wallet=wallet)
 						wallet.balance = balance
 						wallet.save()
-					else:
-						raise Exception
+				else:
+					raise Exception
 			except Participant.DoesNotExist:
 				try:
 					stall = user.stall
