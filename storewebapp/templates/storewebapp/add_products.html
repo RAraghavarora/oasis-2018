@@ -28,8 +28,9 @@
 </div>
 
 <script>
-    var stall_id = location.pathname.split('/')[3],
-        availableProds = [];
+    var url_arr = location.pathname.split('/');
+    var stall_id = url_arr[url_arr.length - 2];
+    var availableProds = [];
 
     fetch(BASE_URL + "/stalls/" + stall_id + "/", {
         method: "GET",
