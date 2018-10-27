@@ -10,11 +10,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_jwt.settings import api_settings
 
-from registrations.models import Bitsian
+from registrations.models import Bitsian, Participant
 from shop.models.wallet import Wallet
 from shop.models.balance import Balance
 from shop.permissions import TokenVerification
-from shop.models import Teller
+from shop.models.teller import Teller
+from shop.models.stall import Stall
 from events.models import Organization
 from oasis2018.settings_config.keyconfig import CLIENT_ID_web, CLIENT_ID_ios, CLIENT_ID_android
 
@@ -94,31 +95,37 @@ class Authentication(APIView):
 			try:
 				username = request.data['username']
 				password = request.data['password']
-
 			except:
 				msg = {'message' : "Authentication credentials weren't provided"}
 				return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
 			try:
-				print(username, password)
 				user = authenticate(username = username, password = password)
-
 				if user is None:
 					raise User.DoesNotExist
+			except:
+				msg = {'message' : "Incorrect Authentication Credentials."}
+				return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
+			try:
+				participant = user.participant
 				if user.participant.firewallz_passed:
 					wallet, created = Wallet.objects.get_or_create(user=user, profile="P")
 					if created:
 						balance = Balance.objects.create(wallet=wallet)
 						wallet.balance = balance
 						wallet.save()
-				else:
-					raise
-
-			except Exception as e:
-				msg = {'message' : "Incorrect Authentication Credentials or User doesn't exist, or participant is not firewallz passed."}
+					else:
+						raise Exception
+			except Participant.DoesNotExist:
+				try:
+					stall = user.stall
+				except Stall.DoesNotExist:
+					msg = {'message' : "Neither a Stall nor a Participant. Contact the administrators."}
+					return Response(msg, status = status.HTTP_404_NOT_FOUND)
+			except:
+				msg = {'message' : "Participant is not firewallz passes or Something else is wrong."}
 				return Response(msg, status = status.HTTP_404_NOT_FOUND)
-
 
 		qr_code = user.wallet.uuid
 

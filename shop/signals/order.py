@@ -30,6 +30,7 @@ def orderFragmentFirebaseUpdate(sender, **kwargs):
         doc_string = "OrderFragment #{}".format(kwargs["instance"].id)
         collection.document(doc_string).set(data)
     except Exception as e:
+        print(e)
         time.sleep(1)
         if "iteration" not in kwargs.keys():
             kwargs["iteration"] = 1
@@ -56,11 +57,12 @@ def orderFragmentFirebaseDelete(sender, **kwargs):
         doc_string = "OrderFragment #{}".format(kwargs["instance"].id)
         collection.document(doc_string).delete()
     except Exception as e:
+        print(e)
         time.sleep(1)
         if "iteration" not in kwargs.keys():
             kwargs["iteration"] = 1
         kwargs["iteration"] += 1
         if kwargs["iteration"] < 10:
-            orderFragmentFirebaseUpdate(sender, **kwargs)
+            orderFragmentFirebaseDelete(sender, **kwargs)
         elif settings.SERVER:
             send_mail(e, "OrderFragment", "Delete", OrderFragmentSerializer(kwargs["instance"]).data)
