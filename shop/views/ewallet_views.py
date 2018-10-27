@@ -122,6 +122,19 @@ class AddMoney(APIView):
 				except:
 					return Response({"message": "The bitsian has no wallet. Cannot add money as of yet. Please contact the administrators."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 				bitsian_wallet.balance.add(amount,0,0,0)
+
+				teller_wallet = Teller.objects.get(user__username="SWD").wallet
+
+				Transaction.objects.create(
+					amount=amount,
+					transfer_from=teller_wallet,
+					transfer_to=bitsian_wallet,
+					transfer_type="add"
+				)
+
+				teller.cash_collected += amount
+				teller.save()
+
 				return Response({"message": "Money added successfully!"})
 			if amount not in range(10,200000):
 				return Response({"message": "Amount to be added has to be between Rs. 10 and Rs. 2,00,000."})
@@ -141,18 +154,6 @@ class AddMoney(APIView):
 				wallet = profile.user.wallet
 			except:
 				return Response({"message": "The user has no wallet. Cannot add money as of yet."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
-
-			teller_wallet = Teller.objects.get(user__username="SWD").wallet
-
-			Transaction.objects.create(
-				amount=amount,
-				transfer_from=teller_wallet,
-				transfer_to=wallet,
-				transfer_type="add"
-			)
-
-			teller.cash_collected += amount
-			teller.save()
 
 			if origin == "iOS":
 				redirect_url = reverse("shop:AddMoneyResponseIOS",request=request)
