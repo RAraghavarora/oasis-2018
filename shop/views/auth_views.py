@@ -86,7 +86,7 @@ class Authentication(APIView):
 						new_bitsian = Bitsian.objects.create(
 														email=email,
 														long_id=prefix,
-														name="Bitsian"
+														name="Bitsian",
 														user=user
 													)
 				else:
