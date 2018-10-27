@@ -40,6 +40,6 @@ def stallFirebaseDelete(sender, **kwargs):
             kwargs["iteration"] = 1
         kwargs["iteration"] += 1
         if kwargs["iteration"] < 10:
-            stallFirebaseUpdate(sender, **kwargs)
+            stallFirebaseDelete(sender, **kwargs)
         elif settings.SERVER:
             send_mail(e, "Stall", "Delete", StallSerializer(kwargs["instance"]).data)
