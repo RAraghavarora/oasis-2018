@@ -5,7 +5,7 @@ from openpyxl import load_workbook
 import csv
 
 filename = BASE_DIR + "/utils/student_list3.xlsx"
-filename2='/home/sanchit/Downloads/student_list2.xlsx'
+# filename2='/home/sanchit/Downloads/student_list2.xlsx'
 wb = load_workbook(filename=filename)
 sheet = wb["MASTERSHEET"]
 
