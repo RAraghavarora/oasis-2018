@@ -103,11 +103,11 @@ class Authentication(APIView):
 				bitsian.user = user
 				bitsian.save()
 
-	        wallet, created = Wallet.objects.get_or_create(user=user, profile="B")
-	        if created:
-	            balance = Balance.objects.create(wallet=wallet)
-	            wallet.balance = balance
-	            wallet.save()
+			wallet, created = Wallet.objects.get_or_create(user=user, profile="B")
+			if created:
+				balance = Balance.objects.create(wallet=wallet)
+				wallet.balance = balance
+				wallet.save()
 
 
 		#Stall and Participant Authentication
