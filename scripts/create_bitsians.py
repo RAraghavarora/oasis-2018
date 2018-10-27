@@ -7,7 +7,7 @@ wb = load_workbook(_dir + 'MESSLIST.xlsx')
 sheet = wb['Sheet1']
 
 def fun():
-    for i in range(2,100):
+    for i in range(100,1000):
         bits_id=sheet.cell(row=i,column=1).value    
         name=sheet.cell(row=i,column=2).value
         sex=sheet.cell(row=i,column=3).value
