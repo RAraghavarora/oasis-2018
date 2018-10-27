@@ -100,22 +100,25 @@ class Authentication(APIView):
 				return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
 			try:
+				print(username, password)
 				user = authenticate(username = username, password = password)
 
 				if user is None:
 					raise User.DoesNotExist
 
+				if user.participant.firewallz_passed:
+					wallet, created = Wallet.objects.get_or_create(user=user, profile="P")
+					if created:
+						balance = Balance.objects.create(wallet=wallet)
+						wallet.balance = balance
+						wallet.save()
+				else:
+					raise
+
 			except Exception as e:
-				msg = {'message' : "Incorrect Authentication Credentials or User doesn't exist"}
+				msg = {'message' : "Incorrect Authentication Credentials or User doesn't exist, or participant is not firewallz passed."}
 				return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
-		# try:
-		# 	qr_code = user.bitsian.barcode
-		# except:
-		# 	try:
-		# 		qr_code = user.participant.barcode
-		# 	except:
-		# 		qr_code = None
 
 		qr_code = user.wallet.uuid
 
