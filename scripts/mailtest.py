@@ -3,7 +3,7 @@ from sendgrid.helpers.mail import *
 from openpyxl import *
 from registrations.models import *
 
-API_KEY = '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'
+API_KEY = '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'
 body = '''
 <p>Greetings from OASIS 18!</p>
 
@@ -127,7 +127,7 @@ for i in Participant.objects.filter(firewallz_passed=True):
 		response = sg.client.mail.send.post(request_body=mail.get())
 		print("Email "+i.email)
 	except :
-		print 'Error in sending'
+		print('Error in sending')
 
 
 for i in Bitsian.objects.all():
