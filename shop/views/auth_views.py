@@ -76,8 +76,21 @@ class Authentication(APIView):
 				return Response({'message': 'Invalid user'}, status=status.HTTP_404_NOT_FOUND)
 
 			email = idinfo['email']
+			prefix, postfix = email.split("@")
 			try:
-				bitsian = Bitsian.objects.get(email=email)
+				if postfix == "pilani.bits-pilani.ac.in":
+					try:
+						bitsian = Bitsian.objects.get(email=email)
+					except:
+						user = User.objects.get_or_create(username=prefix)
+						new_bitsian = Bitsian.objects.create(
+														email=email,
+														long_id=prefix,
+														name="Bitsian",
+														user=user
+													)
+				else:
+					raise ValueError("invalid email bitsian id.")
 			except Exception as e:
 				msg = "Contact the administrators.".format(email)
 				return Response({"message": msg}, status=status.HTTP_404_NOT_FOUND)
@@ -89,6 +102,13 @@ class Authentication(APIView):
 				user = User.objects.create(username=username, email=email)
 				bitsian.user = user
 				bitsian.save()
+
+	        wallet, created = Wallet.objects.get_or_create(user=user, profile="B")
+	        if created:
+	            balance = Balance.objects.create(wallet=wallet)
+	            wallet.balance = balance
+	            wallet.save()
+
 
 		#Stall and Participant Authentication
 		else:
@@ -124,7 +144,7 @@ class Authentication(APIView):
 					msg = {'message' : "Neither a Stall nor a Participant. Contact the administrators."}
 					return Response(msg, status = status.HTTP_404_NOT_FOUND)
 			except:
-				msg = {'message' : "Participant is not firewallz passes or Something else is wrong."}
+				msg = {'message' : "Participant is not firewallz passed or Something else is wrong."}
 				return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
 		qr_code = user.wallet.uuid
