@@ -5,7 +5,8 @@ from openpyxl import load_workbook
 import csv
 
 filename = BASE_DIR + "/utils/student_list.xlsx"
-wb = load_workbook(filename=filename)
+filename2='/home/sanchit/Downloads/student_list2.xlsx'
+wb = load_workbook(filename=filename2)
 sheet = wb["MASTERSHEET"]
 
 length = len(tuple(sheet.rows))
@@ -13,7 +14,7 @@ length = len(tuple(sheet.rows))
 for i in range(2, length):
 
 	long_id = sheet.cell(row=i, column=2).value
-	email = sheet.cell(row=i, column=3).value
+	email = sheet.cell(row=i, column=10).value
 	name = sheet.cell(row=i, column=4).value.title()
 	room_no = int(sheet.cell(row=i, column=5).value)
 	bhawan = sheet.cell(row=i, column=6).value
