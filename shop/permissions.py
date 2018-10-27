@@ -8,6 +8,6 @@ class TokenVerification(BasePermission):
 
 	def has_permission(self, request, view):
 		try:
-			return request.META['HTTP_WALLET_TOKEN'] == self.WALLET_TOKEN
+			return request.META['HTTP_WALLET_TOKEN'] == WALLET_TOKEN
 		except KeyError:
 			return False
