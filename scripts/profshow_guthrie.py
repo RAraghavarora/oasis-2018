@@ -1,3 +1,4 @@
+from oasis2018.settings import BASE_DIR
 from registrations.models import Bitsian
 from django.contrib.auth.models import User
 from shop.models.item import *
@@ -5,8 +6,8 @@ from events.models import *
 # from shop.models.transaction import *
 from openpyxl import *
 # from random import *
-_dir='/home/sanchit/Downloads/'
-wb = load_workbook(_dir + 'Guthrie Govan signings.xlsx',data_only=True)
+filename = BASE_DIR + "/scripts/Guthrie Govan signings.xlsx"
+wb = load_workbook(filename=filename,data_only=True)
 sheet2=wb['Google form']
 sheet1 = wb['actual']
 
