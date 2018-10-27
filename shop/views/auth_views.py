@@ -116,16 +116,16 @@ class Authentication(APIView):
 						wallet.balance = balance
 						wallet.save()
 					else:
-						raise
+						raise Exception
 			except Participant.DoesNotExist:
 				try:
 					stall = user.stall
 				except Stall.DoesNotExist:
 					msg = {'message' : "Neither a Stall nor a Participant. Contact the administrators."}
 					return Response(msg, status = status.HTTP_404_NOT_FOUND)
-				except:
-					msg = {'message' : "Participant is not firewallz passes or Something else is wrong."}
-					return Response(msg, status = status.HTTP_404_NOT_FOUND)
+			except:
+				msg = {'message' : "Participant is not firewallz passes or Something else is wrong."}
+				return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
 		qr_code = user.wallet.uuid
 
