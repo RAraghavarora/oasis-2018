@@ -65,7 +65,7 @@ class Authentication(APIView):
 
 			try:
 				idinfo = id_token.verify_oauth2_token(token, google_requests.Request())
-				if idinfo['aud'] not in [self.CLIENT_ID_web, self.CLIENT_ID_ios, self.CLIENT_ID_android]:
+				if idinfo['aud'] not in [CLIENT_ID_web, CLIENT_ID_ios, CLIENT_ID_android]:
 					raise ValueError('Could not verify audience: {}'.format(idinfo['aud']))
 			except Exception as e:
 				return Response({'message' : str(e)})
