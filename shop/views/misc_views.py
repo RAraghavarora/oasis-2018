@@ -1,5 +1,6 @@
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -11,8 +12,8 @@ from shop.models.debug import DebugInfo
 from registrations.models import Bitsian
 from events.models import MainProfShow
 from events.serializers import MainProfShowSerializer
-from shop.models.debug import DebugInfo
-
+from shop.models.wallet import Wallet
+from shop.models.transaction import Transaction
 
 class GetProfile(APIView):
 
@@ -81,3 +82,16 @@ class AppDebugInfo(APIView):
 
         msg = {"message" : "Request Successful."}
         return Response(msg, status=status.HTTP_200_OK)
+
+
+@user_passes_test(lambda x: x.is_superuser)
+def viewTransactions(request, uuid):
+    wallet = Wallet.objects.get(uuid=uuid)
+    context = {}
+    context["transactions_in"] = Transaction.objects.filter(transfer_to=wallet)
+    context["transactions_out"] = Transaction.objects.filter(transfer_from=wallet)
+    try:
+        context["name"] = wallet.user.participant.name
+    except:
+        context["name"] = wallet.user.bitsian.name
+    return render(request, "shop/transactions.html", context)
