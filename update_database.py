@@ -63,6 +63,8 @@ def update_database():
         index = 0
         for index, entry in enumerate(table_data):
             email = entry[1]
+            if email=='munira23rox@gmail.com':
+                continue
             amount = int(float(entry[6]))
             name= entry[0]
             phone = int(entry[2])
