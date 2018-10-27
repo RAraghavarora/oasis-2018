@@ -1,10 +1,7 @@
+import os
 from openpyxl import load_workbook
 
-# import os
-# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "oasis2018.settings")
-# import django
-# django.setup()
-
+from oasis2018 import settings
 from shop.models.wallet import Wallet
 from shop.models.balance import Balance
 from registrations.models import Bitsian
@@ -15,10 +12,9 @@ class Verifier():
         self.valid_set = set()
 
     def populate_valid_set(self):
-        wb = load_workbook("/home/hemanth/Desktop/DVM Oasis/oasis-2018/scripts/student_list3.xlsx")
+        wb = load_workbook(os.path.join(settings.BASE_DIR, "scripts/student_list3.xlsx"))
         ws = wb.active
         for i in range(2, 4664, 1):
-            print(ws["J%d" % i].value)
             self.valid_set.add(ws["J%d" % i].value)
 
     def validate_all_bitsians(self):
