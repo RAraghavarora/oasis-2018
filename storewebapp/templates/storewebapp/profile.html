@@ -154,7 +154,8 @@
             td1.innerHTML = stalls[i].name;
 
             var td2 = document.createElement("td");
-            td2.innerHTML = "<a href = '/storewebapp/stalls/"+ stalls[i].id +"/'>View Items</a>";
+            var stallPath = "{% url 'storewebapp:stalls' %}";
+            td2.innerHTML = "<a href = " + stallPath  + stalls[i].id + ">View Items</a>";
 
             tr.appendChild(td1);
             tr.appendChild(td2);

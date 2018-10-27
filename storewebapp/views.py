@@ -3,7 +3,7 @@
 from django.shortcuts import render
 # from registrations.models import *
 #from django.contrib.auth import authenticate, login, logout
-# from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 # from ems.models import *
 # from django.contrib.auth.models import User
 # from registrations.models import *
@@ -1162,3 +1162,5 @@ def view_cart(request):
 # 		except Exception as e:
 # 			print('Error with  ' + b.email)
 
+def dummy_stalls(request):
+	return JsonResponse({})
