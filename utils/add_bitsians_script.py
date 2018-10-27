@@ -4,9 +4,9 @@ from django.contrib.auth.models import User
 from openpyxl import load_workbook
 import csv
 
-filename = BASE_DIR + "/utils/student_list.xlsx"
+filename = BASE_DIR + "/utils/student_list2.xlsx"
 filename2='/home/sanchit/Downloads/student_list2.xlsx'
-wb = load_workbook(filename=filename2)
+wb = load_workbook(filename=filename)
 sheet = wb["MASTERSHEET"]
 
 length = len(tuple(sheet.rows))
