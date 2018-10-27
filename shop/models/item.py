@@ -73,11 +73,16 @@ class Tickets(models.Model):
 	consumed = models.SmallIntegerField(default=0, blank=True)
 
 	def __str__(self):
+		return 'x'
 		try:
 			profile = self.user.bitsian
+			if profile == None:
+				raise ValueError("Profile is None")
 		except:
 			try:
 				profile = self.user.participant
+				if profile == None:
+					raise ValueError("Profile is None")
 			except:
 				return "#{}'s tickets for {} : {}".format(self.user.id, self.prof_show.name, self.count)
 		return "{}'s tickets for {} : {}".format(profile.name, self.prof_show.name, self.count)
