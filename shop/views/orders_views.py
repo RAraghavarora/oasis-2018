@@ -156,7 +156,7 @@ class PlaceOrder(APIView):
             # away. Then later, once the order has been complete, the stall
             # will receive its money.
             # The Ticket Vendor must, however, receive their money right away
-            if fragment.stall.name == "Ticket Vendor":
+            if fragment.stall.name == "Prof Shows":
                 fragment.status = OrderFragment.FINISHED
                 fragment.stall.user.wallet.balance.add(transfers=fragment.calculateSubTotal())
                 fragment.save()
