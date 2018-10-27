@@ -151,6 +151,9 @@ class AddMoney(APIView):
 				transfer_type="add"
 			)
 
+			teller.cash_collected += amount
+			teller.save()
+
 			if origin == "iOS":
 				redirect_url = reverse("shop:AddMoneyResponseIOS",request=request)
 			elif origin == "Web":
