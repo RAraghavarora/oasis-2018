@@ -146,7 +146,15 @@ def firewallz_approval(request, c_id):
 
 @staff_member_required
 def get_group_list(request, g_id):
-    group = get_object_or_404(Group, id=g_id)
+    try:
+        group = get_object_or_404(Group, id=g_id)
+    except:
+        context = {
+            'error_heading': "Error",
+            'message': "Group does not exist",
+            'url':request.build_absolute_uri(reverse('regsoft:firewallz_home'))
+            }
+        return render(request, 'registrations/message.html', context)
     if request.method == 'POST':
         try:
             data = request.POST
@@ -468,7 +476,15 @@ def allocate_participants(request,g_id):
 @staff_member_required
 def recnacc_group_list(request,c_id):
     college=get_object_or_404(College,id=c_id)
-    group_list=[group for group in Group.objects.all() if get_group_leader(group).college==college]
+    try:
+        group_list=[group for group in Group.objects.all() if get_group_leader(group).college==college]
+    except:
+        context = {
+            'error_heading': "Error",
+            'message': "Group leader does not exist",
+            'url':request.build_absolute_uri(reverse('regsoft:recnacc_home'))
+            }
+        return render(request, 'registrations/message.html', context)
     complete_groups = [group for group in group_list if all(part.acco for part in group.participant_set.filter(controlz=True))]
     incomplete_groups=[group for group in group_list if not group in complete_groups]
 
