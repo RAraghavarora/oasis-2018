@@ -39,7 +39,7 @@ def autoAddWalletBitsian(sender, **kwargs):
 
 @receiver(post_save, sender=Participant)
 def autoAddWalletParticipant(sender, **kwargs):
-
+    return
     participant = kwargs["instance"]
 
     if participant.firewallz_passed:
