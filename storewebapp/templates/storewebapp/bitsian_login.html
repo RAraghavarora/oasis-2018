@@ -62,11 +62,12 @@
                 console.log(oauth_token);
 
                 if (oauth_token) {
+                    console.log(WALLET_TOKEN);
                     fetch(BASE_URL + "/auth/", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
-                            "wallet-token": WALLET_TOKEN
+                            "wallet-token": "JQZ6mq68'MYNa&RNMv/4^mA"
                         },
                         body: JSON.stringify(bitsianOuthBody)
                     })
@@ -81,7 +82,7 @@
                             localStorage.setItem("user_id", parsedRes.json.user_id);
                             localStorage.setItem("is_bitsian", "1");
 
-                            window.location.href = "{% url 'storewebapp:profile' %}";
+                            // window.location.href = "{% url 'storewebapp:profile' %}";
                         }
                         else if (parsedRes.status === 404) {
                             Materialize.toast(parsedRes.json.message, 5000);
