@@ -1,11 +1,11 @@
 import sendgrid
 from sendgrid.helpers.mail import *
 from openpyxl import *
-API_KEY = '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'
+from registrations.models import *
 
-send_to = 'webmaster@bits-oasis.org'
-name = 'Arjun Tyagi'
-body = '''<p>Greetings from OASIS 18!</p>
+API_KEY = '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'
+body = '''
+<p>Greetings from OASIS 18!</p>
 
 <p>&nbsp;</p>
 
@@ -74,11 +74,11 @@ body = '''<p>Greetings from OASIS 18!</p>
 
 <p>&nbsp;&nbsp;</p>
 
-<p><em><strong>IOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</strong></em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp;&nbsp;<a href="https://bits-oasis.org/ios/" rel="noreferrer noreferrer noreferrer" target="_blank">https://bits-oasis.org/ios/</a>&nbsp;</p>
+<p><em><strong>IOS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</strong></em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :&nbsp;&nbsp;<a href="https://bits-oasis.org/ios/" rel="noreferrer noreferrer noreferrer" target="_blank">https://bits-oasis.org/ios</a></p>
 
 <p>&nbsp;</p>
 
-<p><strong><em>NON ANDROID / IOS&nbsp; DEVICES (Web Application)</em></strong>&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; :&nbsp;&nbsp;<a href="https://bits-oasis.org/webapp/" rel="noreferrer noreferrer" target="_blank">https://bits-oasis.org/webapp/&nbsp;</a></p>
+<p><strong><em>NON ANDROID / IOS&nbsp; DEVICES (Web Application)</em></strong>&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; :&nbsp;&nbsp;<a href="https://bits-oasis.org/2018/storewebapp/" rel="noreferrer noreferrer" target="_blank">https://bits-oasis.org/2018/storewebapp/&nbsp;</a></p>
 
 <p>&nbsp;</p>
 
@@ -90,7 +90,7 @@ body = '''<p>Greetings from OASIS 18!</p>
 
 <p>&nbsp;</p>
 
-<p><strong><u>Also attached are the instructions on how to use the Official OASIS app and wallet.</u></strong></p>
+<p><strong><u>Link to download the wallet manual :</u>&nbsp;</strong><a href="https://bits-oasis.org/2018main/AppManual.pdf">https://bits-oasis.org/2018main/AppManual.pdf</a></p>
 
 <p>&nbsp;</p>
 
@@ -110,16 +110,36 @@ body = '''<p>Greetings from OASIS 18!</p>
 
 <p>Vaibhav Maheshwari&nbsp; &nbsp; &nbsp;+91 9529179518</p>
 
-</pre>
-''' %(name)
-sg = sendgrid.SendGridAPIClient(apikey=API_KEY)
-from_email = Email('no-reply@bits-oasis.org')
-to_email = Email(send_to)
-subject = "Official App for OASIS'18"
-content = Content('text/html', body)
+''' 
 
-try:
-	mail = Mail(from_email, subject, to_email, content)
-	response = sg.client.mail.send.post(request_body=mail.get())
-except :
-	print 'Error in sending'
+
+
+
+for i in Participant.objects.filter(firewallz_passed=True):
+	sg = sendgrid.SendGridAPIClient(apikey=API_KEY)
+	send_to=i.email
+	from_email = Email('no-reply@bits-oasis.org')
+	to_email = Email(send_to)
+	subject = "Official App for OASIS'18"
+	content = Content('text/html', body)
+	try:
+		mail = Mail(from_email, subject, to_email, content)
+		response = sg.client.mail.send.post(request_body=mail.get())
+		print("Email "+i.email)
+	except :
+		print 'Error in sending'
+
+
+for i in Bitsian.objects.all():
+	sg = sendgrid.SendGridAPIClient(apikey=API_KEY)
+	send_to=i.email
+	from_email = Email('no-reply@bits-oasis.org')
+	to_email = Email(send_to)
+	subject = "Official App for OASIS'18"
+	content = Content('text/html', body)
+	try:
+		mail = Mail(from_email, subject, to_email, content)
+		response = sg.client.mail.send.post(request_body=mail.get())
+		print("Email "+i.email)
+	except :
+		print 'Error in sending'
