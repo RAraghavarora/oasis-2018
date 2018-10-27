@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title> Transactions for {{ name }} </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+<head>
+
+<body>
+<br>
+
+  <table>
+    <thead>
+      <th> From </th>
+      <th> To </th>
+      <th> Type </th>
+      <th> Amount </th>
+      <th> Timestamp </th>
+    </thead>
+
+    <tr rowspan="5">
+      <td><b> Transactions Into </b></td>
+    </tr>
+
+    {% for transaction in transactions_in %}
+    <tr>
+      <td> {{ transaction.transfer_from }} </td>
+      <td> {{ transaction.transfer_to }} </td>
+      <td> {{ transaction.transfer_type }} </td>
+      <td> {{ transaction.amount }} </td>
+      <td> {{ transaction.timestamp }} </td>
+    </tr>
+    {% endfor %}
+
+    <tr rowspan="5">
+      <td><b> Transactions Out </b></td>
+    </tr>
+
+    {% for transaction in transactions_out %}
+    <tr>
+      <td> {{ transaction.transfer_from }} </td>
+      <td> {{ transaction.transfer_to }} </td>
+      <td> {{ transaction.transfer_type }} </td>
+      <td> {{ transaction.amount }} </td>
+      <td> {{ transaction.timestamp }} </td>
+    </tr>
+    {% endfor %}
+
+  </table>
+
+
+<body>
+
+</html>

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -46,7 +47,7 @@ class Authentication(APIView):
 
 		return token
 
-
+	@csrf_exempt
 	def post(self, request, format=None):
 		try:
 			is_bitsian = request.data['is_bitsian']
@@ -88,6 +89,13 @@ class Authentication(APIView):
 				bitsian.user = user
 				bitsian.save()
 
+			# Create the user's wallet if it doesn't exist
+			wallet, created = Wallet.objects.get_or_create(user=user, profile="B")
+	        if created:
+	            balance = Balance.objects.create(wallet=wallet)
+	            wallet.balance = balance
+	            wallet.save()
+
 		#Stall and Participant Authentication
 		else:
 			try:
@@ -108,6 +116,14 @@ class Authentication(APIView):
 				msg = {'message' : "Incorrect Authentication Credentials or User doesn't exist"}
 				return Response(msg, status = status.HTTP_404_NOT_FOUND)
 
+			# create wallet for the user
+			if user.participant.firewallz_passed:
+		        wallet, created = Wallet.objects.get_or_create(user=user, profile="P")
+		        if created:
+		            balance = Balance.objects.create(wallet=wallet)
+		            wallet.balance = balance
+		            wallet.save()
+
 		# try:
 		# 	qr_code = user.bitsian.barcode
 		# except:
@@ -118,7 +134,7 @@ class Authentication(APIView):
 
 		qr_code = user.wallet.uuid
 
-		#Checks if wallet exists
+		# Double Check if wallet exists
 		try:
 			wallet = Wallet.objects.get(user=user)
 			if not wallet:
@@ -162,6 +178,11 @@ class OrganizationsAndTellersLogin(APIView):
 				raise User.DoesNotExist
 			try:
 				user_ext = user.teller
+				wallet, created = Wallet.objects.get_or_create(user=user, profile="T")
+		        if created:
+		            balance = Balance.objects.create(wallet=wallet)
+		            wallet.balance = balance
+		            wallet.save()
 			except Teller.DoesNotExist:
 				try:
 					user_ext = user.organization

@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.views.decorators.csrf import csrf_exempt
 
 from shop.views import auth_views
 from shop.views import ewallet_views
@@ -37,7 +38,7 @@ urlpatterns = [
 
     url(r'^get-profile/$', misc_views.GetProfile.as_view(), name='get-profile'),
     url(r'^get-profshows/$', misc_views.GetProfShows.as_view(), name="get-profshows"),
-
+    url(r'^transactions/view/(?P<uuid>.+)$', misc_views.viewTransactions, name="view-transactions"),
     url(r'^debug/info/$', misc_views.AppDebugInfo.as_view(), name="debug-info"),
     url(r'^profshowdata/$', data_profshow.get_data, name="profshowdata"),
 
