@@ -71,6 +71,7 @@ class Tickets(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tickets")
 	count = models.SmallIntegerField(default=0, blank=True)
 	consumed = models.SmallIntegerField(default=0, blank=True)
+	is_excel_sheet=models.BooleanField(default=False,blank=True)
 
 	def __str__(self):
 		try:

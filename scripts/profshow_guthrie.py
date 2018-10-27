@@ -21,7 +21,7 @@ for i in range(2,length1):
     try:
         bitsian=Bitsian.objects.get(long_id=bits_id1)
         prof_show=MainProfShow.objects.get(id=1)    
-        Tickets.objects.get_or_create(prof_show=prof_show,user=bitsian.user,count=1)
+        Tickets.objects.get_or_create(prof_show=prof_show,user=bitsian.user,count=1,is_excel_sheet=True)
         print("obj1 "+str(i))
     except:
         pass
@@ -31,7 +31,7 @@ for i in range(2,length2):
         bits_id2=bits_id2[:-1]
         bitsian=Bitsian.objects.get(long_id=bits_id2)
         prof_show=MainProfShow.objects.get(id=1)    
-        Tickets.objects.get_or_create(prof_show=prof_show,user=bitsian.user,count=1)
+        Tickets.objects.get_or_create(prof_show=prof_show,user=bitsian.user,count=1,is_excel_sheet=True)
         print("obj2 "+str(i))
     except:
         pass
