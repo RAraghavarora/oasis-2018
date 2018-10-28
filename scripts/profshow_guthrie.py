@@ -18,16 +18,15 @@ length2 = len(tuple(sheet2.rows))
 lista=[]
 listb=[]
 for i in range(2,length1+1):
-    bits_id1=sheet1.cell(row=i,column=2).value
-    lista.append(bits_id1)
+    bitsmail_id1=sheet1.cell(row=i,column=6).value
+    lista.append(bitsmail_id1)
 
 for i in range(2,length2+1):
-    bits_id2=sheet2.cell(row=i,column=4).value
-    bits_id2=bits_id2[:-1]
-    listb.append(bits_id2)
+    bitsmail_id2=sheet2.cell(row=i,column=2).value
+    listb.append(bitsmail_id2)
  
 listfinal=list(set(lista+listb))
-
+print(len(listfinal))
 cnt=0
 for bits_id in listfinal:
     try:
