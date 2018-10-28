@@ -4,7 +4,7 @@
     {% load static %}
     {% load regsoft_tags %}
     <meta charset="utf-8">
-    <title>ID Card</title>
+    <title>QR Code</title>
     <style>
       @font-face {
         font-family: "Azo Sans Regular";
@@ -79,7 +79,8 @@
           <span class="img" style="background-image: url({{url}}?text={{part.user.wallet.uuid}}); background-size: auto auto; margin-top: 0.125cm"></span>
         </div>
         <div style="flex: 2; padding: 2mm; padding-right: 1mm">
-          <span><b>Your QR number is {{qr_no}}</b></span>
+          <span><b>{{part.name}}</b><label>{{part.college.name}}</label>
+            <b><label>{{part.group.group_code}}_{{part.id}}</label></b></span>
           <!-- <span style="font-size: 3mm">Events: {{part|get_events_list}}</span> -->
           <!-- <span><label>Barcode: {{part.barcode}}</label><label>EMS Code: {{part.ems_code}}</label></span> -->
         </div>
