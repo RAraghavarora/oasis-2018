@@ -1832,7 +1832,7 @@ def excel2(request):
         else:
             college = p.college.name
         try:
-            link = 'https://bits-oasis.org/2018/storewebapp/'+str(user.wallet.uuid)
+            link = 'https://bits-oasis.org/2018/storewebapp/qr/'+str(user.wallet.uuid)
         except:
             link=''
         li=[p.name,p.email,college,ticket.count,a,link]
