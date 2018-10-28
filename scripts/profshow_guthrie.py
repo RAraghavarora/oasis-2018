@@ -51,13 +51,12 @@ print(len(listb))
 listfinal=list(set(lista+listb))
 print(len(listfinal))
 
-
+cnt=0
 for bits_id in listfinal:
-    cnt=0
     try:
         
         bitsian=Bitsian.objects.get(long_id=bits_id)
-        profshow=MainProfShow.objects.get(id=1)
+        profshow=MainProfShow.objects.get(id=6)
         Tickets.objects.get_or_create(prof_show=profshow,user=bitsian.user,count=1,is_excel_sheet=True)
         cnt+=1
         print("obj"+str(cnt))
