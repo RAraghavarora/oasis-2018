@@ -153,7 +153,7 @@ class StallOrderStatus(APIView):
 			msg = {"message": "order_status response not recognized."}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
-		if order_status in ["Declined", "Finished"]:
+		if order_fragment.status == order_status:
 			msg = {"message" : "Request Successful"}
 			return Response(msg, status = status.HTTP_200_OK)
 
@@ -178,10 +178,10 @@ class StallOrderStatus(APIView):
 			)
 
 		if request.user.stall.name == "Nirmaan" and order_status == "Accepted":
-			order_status = "Finished"
+			order_status = "Ready"
 
 		#Money transferred to Stalls
-		if order_status == 'Finished':
+		if order_status == 'Ready':
 			balance = request.user.wallet.balance
 			balance.add(transfers = order_fragment.calculateSubTotal())
 			balance.save()
