@@ -161,6 +161,9 @@ class StallOrderStatus(APIView):
 		except:
 			pass
 
+		if request.user.stall.name == "Nirmaan" and order_status == "Accepted":
+			order_status = "Finished"
+
 		#Money transferred to Stalls
 		if order_status == 'Finished':
 			request.user.wallet.balance.add(transfers = order_fragment.calculateSubTotal())
