@@ -1802,15 +1802,14 @@ def excel(request):
 
 def excel2(request):
     from shop.models.item import Tickets
-    from registrations.models import *
     from openpyxl import Workbook
     wb = Workbook(write_only = True)
     ws = wb.create_sheet()
     headings = [
         'Name',
-        'EMail'.
+        'EMail',
         'College',
-        'No. of Tickets'
+        'No. of Tickets',
         'Qr code number'
         ]
     ws.append(headings)
