@@ -7,7 +7,7 @@ wb = load_workbook(_dir + 'MESSLIST.xlsx')
 sheet = wb['Sheet1']
 
 def fun():
-    for i in range(2,100):
+    for i in range(1,1000):
         bits_id=sheet.cell(row=i,column=1).value    
         name=sheet.cell(row=i,column=2).value
         sex=sheet.cell(row=i,column=3).value
@@ -23,3 +23,6 @@ def fun():
         barcode=username#change this to make a proper one
         Bitsian.objects.get_or_create(barcode=barcode,name=name,long_id=bits_id,gender=sex,bhawan=bhawan,user=user,email=email
         )
+        print("obj"+str(i))
+
+fun()

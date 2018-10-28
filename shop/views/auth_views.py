@@ -169,46 +169,46 @@ class Authentication(APIView):
 
 class OrganizationsAndTellersLogin(APIView):
 
-	def get(self, request):
-		""" Let the client know which fields are required. """
-		data = {"fields_required": ["username", "password"], "number_of_fields": 2}
-		return Response(data)
+    def get(self, request):
+        """ Let the client know which fields are required. """
+        data = {"fields_required": ["username", "password"], "number_of_fields": 2}
+        return Response(data)
 
-	def post(self, request):
-		""" Perform certain checks (see inline comments),
-			then return a jwt for the user. """
+    def post(self, request):
+        """ Perform certain checks (see inline comments),
+            then return a jwt for the user. """
 
-		# first check for all keys
-		try:
-			username = request.data["username"]
-			password = request.data["password"]
-		except KeyError as missing:
-			msg = {"message": "Missing the following field: \"{}\".".format(missing)}
-			return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+        # first check for all keys
+        try:
+            username = request.data["username"]
+            password = request.data["password"]
+        except KeyError as missing:
+            msg = {"message": "Missing the following field: \"{}\".".format(missing)}
+            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
-		# check to see if such a user exists
-		try:
-			user = authenticate(username=username, password=password)
-			if user == None:
-				raise User.DoesNotExist
-			try:
-				user_ext = user.teller
-			except Teller.DoesNotExist:
-				try:
-					user_ext = user.organization
-				except Organization.DoesNotExist:
-					raise User.DoesNotExist
-		except User.DoesNotExist:
-			return Response({"message": "Invalid/non-existant user."}, status=status.HTTP_401_UNAUTHORIZED)
+        # check to see if such a user exists
+        try:
+            user = authenticate(username=username, password=password)
+            if user == None:
+                raise User.DoesNotExist
+            try:
+                user_ext = user.teller
+            except Teller.DoesNotExist:
+                try:
+                    user_ext = user.organization
+                except Organization.DoesNotExist:
+                    raise User.DoesNotExist
+        except User.DoesNotExist:
+            return Response({"message": "Invalid/non-existant user."}, status=status.HTTP_401_UNAUTHORIZED)
 
-		# make sure that the user is not disabled
-		if user_ext.disabled:
-			return Response({"message": "User has been disabled."}, status=status.HTTP_401_UNAUTHORIZED)
+        # make sure that the user is not disabled
+        if user_ext.disabled:
+            return Response({"message": "User has been disabled."}, status=status.HTTP_401_UNAUTHORIZED)
 
-		# if everything checks out, then return the jwt.
-		jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-		jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-		payload = jwt_payload_handler(user)
-		token = jwt_encode_handler(payload)
+        # if everything checks out, then return the jwt.
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+        payload = jwt_payload_handler(user)
+        token = jwt_encode_handler(payload)
 
-		return Response({"jwt": token, "message": "authentication successful."}, status=status.HTTP_200_OK)
+        return Response({"jwt": token, "message": "authentication successful."}, status=status.HTTP_200_OK)
