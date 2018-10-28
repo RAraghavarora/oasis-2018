@@ -129,6 +129,7 @@ It is mandatory to carry&nbsp;<strong>BITSIAN ID</strong>&nbsp;cards along with 
 
 a = MainProfShow.objects.get(name__icontains = 'Guthrie')
 c = 1
+b = 1
 for t in a.tickets.all():
     try:
         p = Participant.objects.get(user = t.user)
@@ -140,9 +141,10 @@ for t in a.tickets.all():
     u_uid = p.user.wallet.uuid
     subject = "QR Code for English Prof Show OASIS 2018"
     url = 'https://bits-oasis.org/storewebapp/qr/'+str(u_uid)
-    body = body.format(p.name,t.count,str(c),url)
+    body = body.format(p.name,str(t.count),str(c),url)
     content = Content('text/html', body)
-    c+=1
+    c+=t.count
+    b+=1
     print(c)
     try:
         mail = Mail(from_email, subject, to_email, content)
