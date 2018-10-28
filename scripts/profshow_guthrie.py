@@ -15,26 +15,59 @@ sheet1 = wb['actual']
 
 length1 = len(tuple(sheet1.rows))
 length2 = len(tuple(sheet2.rows))
+lista=[]
+listb=[]
 for i in range(2,length1):
     bits_id1=sheet1.cell(row=i,column=2).value
-    #print(bits_id1)
-    try:
-        bitsian=Bitsian.objects.get(long_id=bits_id1)
-        prof_show=MainProfShow.objects.get(id=1)    
-        Tickets.objects.get_or_create(prof_show=prof_show,user=bitsian.user,count=1,is_excel_sheet=True)
-        print("obj1 "+str(i))
-    except:
-        pass
+    lista.append(bits_id1)
+#     try:
+#         bitsian=Bitsian.objects.get(long_id=bits_id1)
+#         prof_show=MainProfShow.objects.get(id=1)    
+#         Tickets.objects.get_or_create(prof_show=prof_show,user=bitsian.user,count=1,is_excel_sheet=True)
+#         print("obj1 "+str(i))
+#     except:
+#         pass
 for i in range(2,length2):
+    bits_id2=sheet2.cell(row=i,column=4).value
+    bits_id2=bits_id2[:-1]
+    listb.append(bits_id2)
+#         
+#     try:
+#         bits_id2=sheet2.cell(row=i,column=4).value
+#         bits_id2=bits_id2[:-1]
+#         bitsian=Bitsian.objects.get(long_id=bits_id2)
+#         prof_show=MainProfShow.objects.get(id=1)    
+#         Tickets.objects.get_or_create(prof_show=prof_show,user=bitsian.user,count=1,is_excel_sheet=True)
+#         print("obj2 "+str(i))
+#     except:
+#         pass
+list1=[]
+#print(lista)
+
+#print(list1) 
+print(len(list1))
+print(len(lista))
+print(len(listb))
+listfinal=list(set(lista+listb))
+print(len(listfinal))
+
+
+for bits_id in listfinal:
+    cnt=0
     try:
-        bits_id2=sheet2.cell(row=i,column=4).value
-        bits_id2=bits_id2[:-1]
-        bitsian=Bitsian.objects.get(long_id=bits_id2)
-        prof_show=MainProfShow.objects.get(id=1)    
-        Tickets.objects.get_or_create(prof_show=prof_show,user=bitsian.user,count=1,is_excel_sheet=True)
-        print("obj2 "+str(i))
+        
+        bitsian=Bitsian.objects.get(long_id=bits_id)
+        profshow=MainProfShow.objects.get(id=1)
+        Tickets.objects.get_or_create(prof_show=profshow,user=bitsian.user,count=1,is_excel_sheet=True)
+        cnt+=1
+        print("obj"+str(cnt))
+    
     except:
         pass
+
+
+
+
 
     
     
