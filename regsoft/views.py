@@ -1814,23 +1814,23 @@ def excel2(request):
         ]
     ws.append(headings)
 
-    prof_show = MainProfShow.objects.get(name=='Guthrie')
-    tickets = Ticket.objects.filter(prof_show)
+    prof_show = MainProfShow.objects.get(name__icontains='Guthrie')
+    tickets = Tickets.objects.filter(prof_show=prof_show)
     users = [ticket.user for ticket in tickets]
     a=1
 
     for user,ticket in zip(users,tickets):
         try:
-            a=Bitsian.objects.get(user = user)
+            p=Bitsian.objects.get(user = user)
             bitsian = True
         except:
-            a=Participant.objects.get(user=user)
+            p=Participant.objects.get(user=user)
             bitsian=False
         if bitsian:
             college = "BITS"
         else:
-            college = a.college
-        li=[a.name,a.email,a.college,ticket.count,a]
+            college = p.college.name
+        li=[p.name,p.email,college,ticket.count,a]
         a+=ticket.count
         ws.append(li)
 
