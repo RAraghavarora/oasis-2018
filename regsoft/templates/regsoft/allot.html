@@ -83,6 +83,7 @@
                                 </th>
                             </tr>
                         <tr>
+                            <th>S. No.</th>
                             <th>Participant</th>
                             <th>Gender</th>
                             <th>Event(s)</th>
@@ -94,6 +95,7 @@
                     </thead>
                     <tfoot>
                         <tr>
+                            <th>S. No.</th>
                             <th>Participant</th>
                             <th>Gender</th>
                             <th>Event(s)</th>
@@ -106,6 +108,7 @@
                     <tbody>
                     	{% for i in unalloted %}
                         <tr>
+                            <td>{{forloop.counter}}</td>
                             <td>{{i.name}}</td>
                             <td>{{i.gender}}</td>
                             <td>{{i | get_events_list}}</td>

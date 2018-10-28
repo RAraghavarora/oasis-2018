@@ -403,9 +403,8 @@ def approved_groups(request):
 
 @staff_member_required
 def recnacc_home(request):
-    try:
-        i=1
-        rows = [{'data':[i,group.group_code, get_group_leader(group).name, get_group_leader(group).college.name, get_group_leader(group).phone,group.created_time, group.participant_set.filter(controlz=True).count(), group.participant_set.filter(controlz=True, acco=True, checkout_group=None).count(), group.participant_set.filter(checkout_group__isnull=False).count()], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:allocate_participants', kwargs={'g_id':group.id})), 'title':'Allocate Participants'}]} for group in Group.objects.all().order_by('-created_time')]
+    try:    
+        rows = [{'data':[group.group_code, get_group_leader(group).name, get_group_leader(group).college.name, get_group_leader(group).phone,group.created_time, group.participant_set.filter(controlz=True).count(), group.participant_set.filter(controlz=True, acco=True, checkout_group=None).count(), group.participant_set.filter(checkout_group__isnull=False).count()], 'link':[{'url':request.build_absolute_uri(reverse('regsoft:allocate_participants', kwargs={'g_id':group.id})), 'title':'Allocate Participants'}]} for group in Group.objects.all().order_by('-created_time')]
     except:
         rows =[]        
 
@@ -582,16 +581,17 @@ def group_vs_bhavan(request):
     rows = []
     for group in Group.objects.all():
         if group.participant_set.filter(acco=True):
-            bhavans = []
+            rooms = []
             for part in group.participant_set.filter(acco=True):
                 
-                if not part.room.bhavan in bhavans:
-                    bhavans.append(part.room.bhavan)
-            for bhavan in bhavans:
-                rows.append({'data':[bhavan.name,get_group_leader(group).college.name,group.group_code, get_group_leader(group).name, group.participant_set.filter(acco=True, room__bhavan=bhavan).count(), get_group_leader(group).phone],'link':[]})
+                if not part.room in rooms:
+                    room = part.room 
+                    rooms.append(room)
+            for room in rooms:
+                rows.append({'data':[room,get_group_leader(group).college.name,group.group_code, get_group_leader(group).name, group.participant_set.filter(acco=True, room=room).count(), get_group_leader(group).phone],'link':[]})
     table = {
         'rows':rows,
-        'headings':['Bhavan','College','Group Code', 'Group Leader', 'Number of participants in bhavan', 'Group Leader Phone'],
+        'headings':['Room','College','Group Code', 'Group Leader', 'Number of participants in bhavan', 'Group Leader Phone'],
         'title':'Group vs Bhavans'
     }
     return render(request, 'regsoft/tables.html', {'tables':[table,]})
