@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html>
 {% load static %}
+
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>WALLET | OASIS'18</title>
     <link rel="shortcut icon" href="{% static 'storewebapp/img/Oasis-Logo.jpg' %}">
-    <meta name = "viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-	<meta charset="utf-8">
-	<meta name="copyright" content="Copyright Â© 2018 Department Of Visual Media, BITS Pilani">
-	<meta name="author" content="Department Of Visual Media, BITS Pilani">
-	<meta name="google-signin-scope" content="profile email">
-	<meta name="google-signin-client_id" content="873252659214-md1pcn2npkm82mu269plbogbhc7ap7r2.apps.googleusercontent.com">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <meta charset="utf-8">
+    <meta name="copyright" content="Copyright Â© 2018 Department Of Visual Media, BITS Pilani">
+    <meta name="author" content="Department Of Visual Media, BITS Pilani">
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="873252659214-md1pcn2npkm82mu269plbogbhc7ap7r2.apps.googleusercontent.com">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
@@ -29,6 +30,20 @@
     <link href="{% static 'storewebapp/css/style.css' %}" rel="stylesheet">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="{% static 'storewebapp/js/common.js' %}"></script>
+    <style>
+        /* .app-buttons div a img {
+            max-width: 40vw;
+        } */
+        @media screen and (max-width: 550px) {
+            /* .app-buttons{
+                flex-direction: column;
+            } */
+            .app-buttons div a img {
+                height: auto !important;
+                width: 40vw;
+            }
+        }
+    </style>
 </head>
 
 <body class="login-page" style="background: #e9e9e9">
@@ -39,9 +54,9 @@
         </div>
         <div class="card" style="position: absolute; top: 50%; transform: translateY(-50%); width: 360px">
             <div class="body">
-                <form id="sign_in" method = "POST">
+                <form id="sign_in" method="POST">
                     <div class="msg">Sign in</div>
-                    <div id = "signin_msg" class='msg'></div>
+                    <div id="signin_msg" class='msg'></div>
                     <div class="input-group">
                         <span class="input-group-addon">
                             <i class="material-icons">person</i>
@@ -55,7 +70,7 @@
                             <i class="material-icons">lock</i>
                         </span>
                         <div class="form-line">
-                            <input type="password" class="form-control" name="password" placeholder="Password" required id="password"> 
+                            <input type="password" class="form-control" name="password" placeholder="Password" required id="password">
                         </div>
                     </div>
                     <div class="row">
@@ -64,13 +79,20 @@
                         </div>
                     </div>
                 </form>
-                <a class="btn btn-block bg-pink waves-effect" href="{% url 'storewebapp:bitsian_login' %}">Sign In using BITSMail</a>
+                <a class="btn btn-block bg-pink waves-effect" href="{% url 'storewebapp:bitsian_login' %}">Sign In using
+                    BITSMail
+                </a>
             </div>
         </div>
-        <div style="position: absolute; bottom: 0; left: 0; right: 0">
+        <div class="app-buttons" style="display: flex; position: absolute; bottom: 0; left: 0; right: 0">
             <div style="width: 250px; height: 100px; width: 100%; position: relative; ">
                 <a href="https://play.google.com/store/apps/details?id=com.dvm.bits_apogee">
-                    <img src="{% static 'storewebapp/img/googleplay.png' %}" style="width: 300px; position: absolute; left: 50%; transform: translateX(-50%)">
+                    <img src="{% static 'storewebapp/img/googleplay.png' %}" style="height: 80px; position: absolute; left: 50%; transform: translateX(-50%)">
+                </a>
+            </div>
+            <div style="width: 250px; height: 100px; width: 100%; position: relative; float:right;">
+                <a href="https://bits-oasis.org/ios">
+                    <img src="{% static 'storewebapp/img/app-store-logo.png' %}" style="height: 80px; position: absolute; left: 50%; transform: translateX(-50%)">
                 </a>
             </div>
         </div>
@@ -111,41 +133,42 @@
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "wallet-token":"JQZ6mq68'MYNa&RNMv/4^mA"
+                    "wallet-token": "JQZ6mq68'MYNa&RNMv/4^mA"
                 },
                 body: JSON.stringify(data)
             })
-            .catch(function (err) {
-                // reject("Error while authenticating! Please try opening the app again.");
-                signinMsg.classList.add("alert", "alert-danger");
-                signinMsg.innerHTML = "Error while authentication! Please try again.";
-                console.log(err);
-            })
-            .then(function(res) { return processResponse(res); })
-            .then(function (parsedRes) {
-                if (parsedRes.status === 404) {
+                .catch(function (err) {
+                    // reject("Error while authenticating! Please try opening the app again.");
                     signinMsg.classList.add("alert", "alert-danger");
-                    signinMsg.innerHTML = "Please enter a valid username and password";
-                }
-                else if (parsedRes.status === 400) {
-                    signinMsg.classList.add("alert", "alert-danger");
-                    signinMsg.innerHTML = parsedRes.json.message;
-                }
-                else if (parsedRes.status === 200 && parsedRes.json.token) {
-                    signinMsg.classList.add("alert", "alert-success");
-                    signinMsg.innerHTML = "Successful authentication! Please wait...";
-                    window.location.href = "{% url 'storewebapp:profile' %}";
-                    localStorage.setItem("user_token", parsedRes.json.token);
-                    localStorage.setItem("user_id", parsedRes.json.user_id);
-                    localStorage.setItem("is_bitsian", "0");
-                }
-                else {
-                    signinMsg.classList.add("alert", "alert-danger");
-                    signinMsg.innerHTML = parsedRes.json.message;
-                }
-            });
+                    signinMsg.innerHTML = "Error while authentication! Please try again.";
+                    console.log(err);
+                })
+                .then(function (res) { return processResponse(res); })
+                .then(function (parsedRes) {
+                    if (parsedRes.status === 404) {
+                        signinMsg.classList.add("alert", "alert-danger");
+                        signinMsg.innerHTML = "Please enter a valid username and password";
+                    }
+                    else if (parsedRes.status === 400) {
+                        signinMsg.classList.add("alert", "alert-danger");
+                        signinMsg.innerHTML = parsedRes.json.message;
+                    }
+                    else if (parsedRes.status === 200 && parsedRes.json.token) {
+                        signinMsg.classList.add("alert", "alert-success");
+                        signinMsg.innerHTML = "Successful authentication! Please wait...";
+                        window.location.href = "{% url 'storewebapp:profile' %}";
+                        localStorage.setItem("user_token", parsedRes.json.token);
+                        localStorage.setItem("user_id", parsedRes.json.user_id);
+                        localStorage.setItem("is_bitsian", "0");
+                    }
+                    else {
+                        signinMsg.classList.add("alert", "alert-danger");
+                        signinMsg.innerHTML = parsedRes.json.message;
+                    }
+                });
         }
     </script>
 </body>
+
 </html>
 <!-- hello -->
