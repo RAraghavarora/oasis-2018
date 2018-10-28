@@ -12,7 +12,9 @@ sg = sendgrid.SendGridAPIClient(apikey=API_KEY) #
 body='''
 <pre>
 Hello {0}!
+
 This mail is regarding your signing for The English ProfShow.
+Please ignore any previous mail. Sorry for inconvenience.
 You have been signed {1} times.
 Also, your QR code number is {2}.
 
@@ -133,6 +135,7 @@ It is mandatory to carry&nbsp;<strong>BITSIAN ID</strong>&nbsp;cards along with 
 a = MainProfShow.objects.get(name__icontains = 'Guthrie')
 c = 1
 b = 1
+
 for t in a.tickets.all():
     try:
         p = Participant.objects.get(user = t.user)
@@ -144,8 +147,8 @@ for t in a.tickets.all():
     u_uid = p.user.wallet.uuid
     subject = "QR Code for English Prof Show OASIS 2018"
     url = 'https://bits-oasis.org/2018/storewebapp/qr/'+str(u_uid)
-    body = body.format(p.name,str(t.count),str(c),url)
-    content = Content('text/html', body)
+    body1 = body.format(p.name,str(t.count),str(c),url)
+    content = Content('text/html', body1)
     c+=t.count
     b+=1
     print(c)
