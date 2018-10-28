@@ -1810,7 +1810,8 @@ def excel2(request):
         'EMail',
         'College',
         'No. of Tickets',
-        'Qr code number'
+        'Qr code number',
+        'link'
         ]
     ws.append(headings)
 
@@ -1830,7 +1831,11 @@ def excel2(request):
             college = "BITS"
         else:
             college = p.college.name
-        li=[p.name,p.email,college,ticket.count,a]
+        try:
+            link = 'https://bits-oasis.org/storewebapp/'+str(user.wallet.uuid)
+        except:
+            link=''
+        li=[p.name,p.email,college,ticket.count,a,link]
         a+=ticket.count
         ws.append(li)
 
