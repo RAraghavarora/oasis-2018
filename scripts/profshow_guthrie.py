@@ -31,7 +31,7 @@ cnt=0
 for bits_id in listfinal:
     try:
         
-        bitsian=Bitsian.objects.get(long_id=bits_id)
+        bitsian=Bitsian.objects.get(email=bits_id)
         profshow=MainProfShow.objects.get(name='Guthrie Govan')
         try:
             t = Tickets.objects.get(prof_show=profshow,user=bitsian.user)
