@@ -1164,3 +1164,17 @@ def view_cart(request):
 
 def dummy_stalls(request):
 	return JsonResponse({})
+
+
+def generate_qr(request,data):
+	import qrcode
+	import qrcode.image.svg
+	from PIL import Image
+	qr = qrcode.make(data)
+	qr = qr.resize([250,250])
+	# import qrcode.image.svg
+	# from PIL import Image
+	# part_code =
+	response = HttpResponse(content_type="image/jpeg")
+	qr.save(response, "JPEG")
+	return response
