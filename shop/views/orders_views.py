@@ -108,8 +108,8 @@ class PlaceOrder(APIView):
                     try:
                         shows = [MainProfShow.objects.get(name=ic) for ic in itemclass.name.split(" + ")]
                         for show in shows:
-                            itemclass = ItemClass.objects.get(name=show.name)
-                            if any([not itemclass.is_available, itemclass.stock < qty]):
+                            ic = ItemClass.objects.get(name=show.name)
+                            if any([not ic.is_available, ic.stock < qty]):
                                 raise MainProfShow.DoesNotExist
                             if flag:
                                 tickets, _ = Tickets.objects.get_or_create(user=request.user, prof_show=show)
@@ -147,6 +147,7 @@ class PlaceOrder(APIView):
 
         # Part 2:
         net_cost = order.calculateTotal()
+        print(net_cost)
         total_balance = request.user.wallet.getTotalBalance()
 
         if total_balance < net_cost:

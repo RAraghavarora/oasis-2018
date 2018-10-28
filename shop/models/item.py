@@ -74,7 +74,7 @@ class Tickets(models.Model):
 	is_excel_sheet=models.BooleanField(default=False,blank=True)
 
 	def __str__(self):
-		return 'x'
+		return "{} - {}".format(self.user.username, self.prof_show)
 		try:
 			profile = self.user.bitsian
 			if profile == None:
