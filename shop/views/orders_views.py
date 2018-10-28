@@ -165,12 +165,14 @@ class PlaceOrder(APIView):
                 fragment.status = OrderFragment.FINISHED
                 fragment.stall.user.wallet.balance.add(transfers=fragment.calculateSubTotal())
                 fragment.save()
-            Transaction.objects.create(
+            t = Transaction.objects.create(
                                         amount=fragment.calculateSubTotal(),
                                         transfer_to=fragment.stall.user.wallet,
                                         transfer_type="buy",
                                         transfer_from=request.user.wallet
                                     )
+            fragment.transaction = t
+            fragment.save()
         customer.balance.deduct(net_cost)
         fragments = [{"id": fragment.id, "stall_id": fragment.stall.id} for fragment in order.fragments.all()]
 
