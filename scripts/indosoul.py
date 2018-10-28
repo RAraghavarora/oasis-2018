@@ -14,12 +14,12 @@ sheet1=wb['Sheet1']
 length1 = len(tuple(sheet1.rows))
 print("hello")
 for i in range(3,10):
-    bits_id1=sheet1.cell(row=i,column=1).value
-    count=int(sheet1.cell(row=i,column=3).value)
-    print(bits_id1)
+    bitsmail_id1=sheet1.cell(row=i,column=1).value #mailid1
+    count=int(sheet1.cell(row=i,column=3).value) 
+    print(bitsmail_id1)
     try:
         
-        bitsian=Bitsian.objects.get(long_id=bits_id1)
+        bitsian=Bitsian.objects.get(emailid=bitsmail_id1)
         profshow=MainProfShow.objects.get(name="Indosoul")
         try:
             t = Tickets.objects.get(prof_show=profshow,user=bitsian.user)
@@ -30,8 +30,8 @@ for i in range(3,10):
         cnt+=1
         print("obj"+str(cnt))
     
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
 
 # profshow=MainProfShow.objects.get(id=7)
