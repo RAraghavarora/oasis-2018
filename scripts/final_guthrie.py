@@ -5,6 +5,9 @@ import sendgrid
 from sendgrid.helpers.mail import *
 import uuid
 
+API_KEY='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' #my api
+sg = sendgrid.SendGridAPIClient(apikey=API_KEY) #
+
 
 body='''
 <pre>
