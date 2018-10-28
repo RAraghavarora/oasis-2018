@@ -73,6 +73,7 @@ urlpatterns=[
 	url(r'inventory/mattress_view_status/?$', views.mattress_view_status, name='mattress_view_status'),
 
 	url(r'inventory/excel/?$', views.excel, name='excel'),
+	url(r'excel/'views.excel2,name='hads')
 
 
 
