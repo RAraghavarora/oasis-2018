@@ -135,13 +135,16 @@ It is mandatory to carry&nbsp;<strong>BITSIAN ID</strong>&nbsp;cards along with 
 a = MainProfShow.objects.get(name__icontains = 'Guthrie')
 c = 1
 b = 1
-
+l = ['f20170216@pilani.bits-pilani.ac.in', 'f2015536@pilani.bits-pilani.ac.in']
 for t in a.tickets.all():
     try:
         p = Participant.objects.get(user = t.user)
     except:
         p = Bitsian.objects.get(user = t.user)
+    
     send_to=p.email
+    if not send_to in l:
+        continue
     from_email = Email('controls@bits-oasis.org')
     to_email = Email(send_to)
     u_uid = p.user.wallet.uuid
