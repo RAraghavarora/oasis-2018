@@ -17,7 +17,7 @@ length1 = len(tuple(sheet1.rows))
 length2 = len(tuple(sheet2.rows))
 lista=[]
 listb=[]
-for i in range(2,length1):
+for i in range(2,length1+1):
     bits_id1=sheet1.cell(row=i,column=2).value
     lista.append(bits_id1)
 #     try:
@@ -27,7 +27,7 @@ for i in range(2,length1):
 #         print("obj1 "+str(i))
 #     except:
 #         pass
-for i in range(2,length2):
+for i in range(2,length2+1):
     bits_id2=sheet2.cell(row=i,column=4).value
     bits_id2=bits_id2[:-1]
     listb.append(bits_id2)

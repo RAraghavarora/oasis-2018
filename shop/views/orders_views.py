@@ -55,6 +55,8 @@ class PlaceOrder(APIView):
 
         """
 
+        ### Needed: extra checks to see it the item belongs to that stall or not
+
         # Part 1:
         try:
             data = request.data["order"]
@@ -104,12 +106,14 @@ class PlaceOrder(APIView):
 
                 if stall_instance.name == "Prof Shows":
                     try:
-                        show = MainProfShow.objects.get(name=itemclass.name)
-                        if any([not itemclass.is_available, itemclass.stock < qty]):
-                            raise MainProfShow.DoesNotExist
-                        if flag:
-                            tickets, _ = Tickets.objects.get_or_create(user=request.user, prof_show=show)
-                            tickets_actions.append([tickets, show, itemclass, qty])
+                        shows = [MainProfShow.objects.get(name=ic) for ic in itemclass.name.split(" + ")]
+                        for show in shows:
+                            itemclass = ItemClass.objects.get(name=show.name)
+                            if any([not itemclass.is_available, itemclass.stock < qty]):
+                                raise MainProfShow.DoesNotExist
+                            if flag:
+                                tickets, _ = Tickets.objects.get_or_create(user=request.user, prof_show=show)
+                                tickets_actions.append([tickets, show, itemclass, qty])
                     except MainProfShow.DoesNotExist:
                         unavailable.append(itemclass.id)
                         flag = False
@@ -169,12 +173,15 @@ class PlaceOrder(APIView):
         customer.balance.deduct(net_cost)
         fragments = [{"id": fragment.id, "stall_id": fragment.stall.id} for fragment in order.fragments.all()]
 
+        print("tickets actions:")
+        print(tickets_actions)
         for action in tickets_actions:
             ticket = action[0]
             show = action[1]
             itemclass = action[2]
             qty = action[3]
             ticket.count += qty
+            print(ticket.count)
             show.tickets_sold += qty
             itemclass.stock -= qty
             ticket.save()
