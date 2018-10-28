@@ -27,4 +27,5 @@ urlpatterns = [
     # url(r'^generate_code/(?P<sg_id>\d+)/$', views.generate_code, name='generate_code'),
     # url(r'^checkout/?$', views.checkout_payment, name="checkout"),
     # url(r'^generate_qr/?$', views.generate_qr, name="generate_qr"),
+    url(r'qr/(?P<data>.+)/$',views.generate_qr,name='qr')
 ]

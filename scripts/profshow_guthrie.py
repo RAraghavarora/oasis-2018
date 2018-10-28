@@ -18,51 +18,36 @@ length2 = len(tuple(sheet2.rows))
 lista=[]
 listb=[]
 for i in range(2,length1+1):
-    bits_id1=sheet1.cell(row=i,column=2).value
-    lista.append(bits_id1)
-#     try:
-#         bitsian=Bitsian.objects.get(long_id=bits_id1)
-#         prof_show=MainProfShow.objects.get(id=1)    
-#         Tickets.objects.get_or_create(prof_show=prof_show,user=bitsian.user,count=1,is_excel_sheet=True)
-#         print("obj1 "+str(i))
-#     except:
-#         pass
-for i in range(2,length2+1):
-    bits_id2=sheet2.cell(row=i,column=4).value
-    bits_id2=bits_id2[:-1]
-    listb.append(bits_id2)
-#         
-#     try:
-#         bits_id2=sheet2.cell(row=i,column=4).value
-#         bits_id2=bits_id2[:-1]
-#         bitsian=Bitsian.objects.get(long_id=bits_id2)
-#         prof_show=MainProfShow.objects.get(id=1)    
-#         Tickets.objects.get_or_create(prof_show=prof_show,user=bitsian.user,count=1,is_excel_sheet=True)
-#         print("obj2 "+str(i))
-#     except:
-#         pass
-list1=[]
-#print(lista)
+    bitsmail_id1=sheet1.cell(row=i,column=6).value
+    lista.append(bitsmail_id1)
 
-#print(list1) 
-print(len(list1))
-print(len(lista))
-print(len(listb))
+for i in range(2,length2+1):
+    bitsmail_id2=sheet2.cell(row=i,column=2).value
+    listb.append(bitsmail_id2)
+ 
 listfinal=list(set(lista+listb))
 print(len(listfinal))
-
 cnt=0
 for bits_id in listfinal:
     try:
         
         bitsian=Bitsian.objects.get(long_id=bits_id)
-        profshow=MainProfShow.objects.get(id=6)
-        Tickets.objects.get_or_create(prof_show=profshow,user=bitsian.user,count=1,is_excel_sheet=True)
+        profshow=MainProfShow.objects.get(name='Guthrie Govan')
+        try:
+            t = Tickets.objects.get(prof_show=profshow,user=bitsian.user)
+            t.count+=1
+            t.save()
+        except:
+            t=Tickets.objects.create(prof_show=profshow,user=bitsian.user, count=1)
+
         cnt+=1
-        print("obj"+str(cnt))
-    
-    except:
+        print(bitsian.user.username,t.count, str(cnt))
+    except (Bitsian.DoesNotExist, MainProfShow.DoesNotExist):
         pass
+    except Exception as e:
+        print(e)
+
+
 
 
 
