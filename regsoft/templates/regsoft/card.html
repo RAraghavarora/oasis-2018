@@ -76,14 +76,10 @@
       <div class="id">
         <img src="{% static 'regsoft/images/user.png' %}" alt="">
         <div style="flex: 1">
-          {% if part.profile_pic %}
-          <span class="img" style="background-image: url({{part.profile_pic.url}}); background-size: cover; margin-bottom: 0.125cm"></span>
-          {% endif %}
           <span class="img" style="background-image: url({{url}}?text={{part.user.wallet.uuid}}); background-size: auto auto; margin-top: 0.125cm"></span>
         </div>
         <div style="flex: 2; padding: 2mm; padding-right: 1mm">
-          <span><b>{{part.name}}</b><label>{{part.college.name}}</label>
-            <b><label>{{part.group.group_code}}_{{part.id}}</label></b></span>
+          <span><b>Your QR number is {{qr_no}}</b></span>
           <!-- <span style="font-size: 3mm">Events: {{part|get_events_list}}</span> -->
           <!-- <span><label>Barcode: {{part.barcode}}</label><label>EMS Code: {{part.ems_code}}</label></span> -->
         </div>
