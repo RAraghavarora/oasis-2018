@@ -311,7 +311,7 @@ class ConsumeTickets(APIView):
             #user = get_object_or_404(User, id=user_id)
             try:
                 wallet = get_object_or_404(Wallet, uuid=qr_code)
-            except ValueError:
+            except:
                 return Response({"message": "invalid qr_code"}, status=status.HTTP_404_NOT_FOUND)
             user = wallet.user
             show = get_object_or_404(MainProfShow, id=request.data["show_id"])
