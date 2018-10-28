@@ -317,6 +317,8 @@ class ConsumeTickets(APIView):
 
             try:
                 tickets = Tickets.objects.get(user=user, prof_show=show)
+                if tickets == None:
+                    raise Tickets.DoesNotExist
             except:
                 return Response({"success": False, "max_tickets": 0, "x-status": 2}) # the scanee has never bought tickets for this show before
 
