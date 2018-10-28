@@ -351,6 +351,36 @@ class N2OTickets(APIView):
 
     permission_classes = (IsAuthenticated, TokenVerification)
 
+    def get(self, request):
+        try:
+            organization = request.user.organization
+            name = organization.name
+            if organization.disabled:
+                raise Organization.DoesNotExist
+        except Organization.DoesNotExist:
+            return Response({"message": "Restricted Access."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if not name == "has":
+            msg = {"message" : "Unauthorized Access. Only HAS is allowed."}
+            return Response(msg, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            prof_show = MainProfShow.objects.get(name="N2O")
+            if prof_show == None:
+                raise MainProfShow.DoesNotExist
+        except MainProfShow.DoesNotExist:
+            msg = {"message": "Prof Show does not exist."}
+            return Response(msg, status=status.HTTP_404_NOT_FOUND)
+
+        count = 0
+        tickets = prof_show.tickets.all()
+        for ticket in tickets:
+            count += ticket.count
+
+        resp = {"count" : count}
+        return Response(resp, status=status.HTTP_200_OK)
+        
+
     def post(self, request):
         ticket_count = 0
         try:
@@ -361,7 +391,7 @@ class N2OTickets(APIView):
         except Organization.DoesNotExist:
             return Response({"message": "Restricted Access."}, status=status.HTTP_401_UNAUTHORIZED)
 
-        if not name == "HAS":
+        if not name == "has":
             msg = {"message" : "Unauthorized Access. Only HAS is allowed."}
             return Response(msg, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -380,7 +410,10 @@ class N2OTickets(APIView):
             return Response(msg, status=status.HTTP_404_NOT_FOUND)
         except Wallet.DoesNotExist:
             msg = {"message": "Invalid qr_code."}
-            return Response(msg, status=status.HTTP_404_NOT_FOUND)
+            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+        except:
+            msg = {"message" : "Badly formed uuid."}
+            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             prof_show = MainProfShow.objects.get(name="N2O")
@@ -396,3 +429,4 @@ class N2OTickets(APIView):
 
         msg = {"message" : "Request Successful!"}
         return Response(msg, status=status.HTTP_200_OK)
+
