@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from shop.models.stall import Stall
 from shop.models.item import ItemClass
 from shop.models.order import OrderFragment
+from shop.models.transaction import Transaction
 from shop.permissions import TokenVerification
 from shop.serializers import ItemClassSerializer, StallSerializer, OrderFragmentSerializer
 
@@ -152,6 +153,10 @@ class StallOrderStatus(APIView):
 			msg = {"message": "order_status response not recognized."}
 			return Response(msg, status = status.HTTP_400_BAD_REQUEST)
 
+		if order_status in ["Declined", "Finished"]:
+			msg = {"message" : "Request Successful"}
+			return Response(msg, status = status.HTTP_200_OK)
+
 		try:
 			registration_token = order_fragment.order.customer.registration_token
 			if registration_token == None:
@@ -161,12 +166,25 @@ class StallOrderStatus(APIView):
 		except:
 			pass
 
+		if order_status == 'Declined':
+			balance = order_fragment.order.customer.balance
+			balance.add(transfers = order_fragment.calculateSubTotal())
+			balance.save()
+			Transaction.objects.create(
+				amount=order_fragment.calculateSubTotal(),
+				transfer_to=order_fragment.order.customer,
+				transfer_type="add",
+				transfer_from=request.user.wallet
+			)
+
 		if request.user.stall.name == "Nirmaan" and order_status == "Accepted":
 			order_status = "Finished"
 
 		#Money transferred to Stalls
 		if order_status == 'Finished':
-			request.user.wallet.balance.add(transfers = order_fragment.calculateSubTotal())
+			balance = request.user.wallet.balance
+			balance.add(transfers = order_fragment.calculateSubTotal())
+			balance.save()
 
 		order_fragment.status = self.status_dict[order_status]
 
