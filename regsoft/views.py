@@ -1890,7 +1890,7 @@ def indo_excel(request):
             link = 'https://bits-oasis.org/2018/storewebapp/qr/'+str(user.wallet.uuid)
         except:
             link=''
-        li=[p.name,p.email,college,ticket.count,a,link]
+        li=[p.name,p.email,college,ticket.count,ticket.qr_no,link]
         a+=ticket.count
         ws.append(li)
 
@@ -1938,7 +1938,7 @@ def shankar_excel(request):
             link = 'https://bits-oasis.org/2018/storewebapp/qr/'+str(user.wallet.uuid)
         except:
             link=''
-        li=[p.name,p.email,college,ticket.count,a,link]
+        li=[p.name,p.email,college,ticket.count,ticket.qr_no,link]
         a+=ticket.count
         ws.append(li)
 
