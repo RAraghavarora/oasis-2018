@@ -1853,3 +1853,98 @@ def excel2(request):
     wb.save(response)
 
     return response
+
+
+def indo_excel(request):
+    from shop.models.item import Tickets
+    from openpyxl import Workbook
+    wb = Workbook(write_only = True)
+    ws = wb.create_sheet()
+    headings = [
+        'Name',
+        'Email',
+        'College',
+        'No. of Tickets',
+        'Qr code number',
+        'link'
+        ]
+    ws.append(headings)
+
+    prof_show = MainProfShow.objects.get(name__icontains='Indosoul')
+    tickets = Tickets.objects.filter(prof_show=prof_show)
+    users = [ticket.user for ticket in tickets]
+    a=1
+
+    for user,ticket in zip(users,tickets):
+        try:
+            p=Bitsian.objects.get(user = user)
+            bitsian = True
+        except:
+            p=Participant.objects.get(user=user)
+            bitsian=False
+        if bitsian:
+            college = "BITS"
+        else:
+            college = p.college.name
+        try:
+            link = 'https://bits-oasis.org/2018/storewebapp/qr/'+str(user.wallet.uuid)
+        except:
+            link=''
+        li=[p.name,p.email,college,ticket.count,a,link]
+        a+=ticket.count
+        ws.append(li)
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=Indo_data.xlsx'
+
+    wb.save(response)
+
+    return response
+
+
+
+def shankar_excel(request):
+    from shop.models.item import Tickets
+    from openpyxl import Workbook
+    wb = Workbook(write_only = True)
+    ws = wb.create_sheet()
+    headings = [
+        'Name',
+        'EMail',
+        'College',
+        'No. of Tickets',
+        'Qr code number',
+        'link'
+        ]
+    ws.append(headings)
+
+    prof_show = MainProfShow.objects.get(name__icontains='Shankar')
+    tickets = Tickets.objects.filter(prof_show=prof_show)
+    users = [ticket.user for ticket in tickets]
+    a=1
+
+    for user,ticket in zip(users,tickets):
+        try:
+            p=Bitsian.objects.get(user = user)
+            bitsian = True
+        except:
+            p=Participant.objects.get(user=user)
+            bitsian=False
+        if bitsian:
+            college = "BITS"
+        else:
+            college = p.college.name
+        try:
+            link = 'https://bits-oasis.org/2018/storewebapp/qr/'+str(user.wallet.uuid)
+        except:
+            link=''
+        li=[p.name,p.email,college,ticket.count,a,link]
+        a+=ticket.count
+        ws.append(li)
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=Shankar_data.xlsx'
+
+    wb.save(response)
+
+    return response

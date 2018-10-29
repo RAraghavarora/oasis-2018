@@ -73,7 +73,9 @@ urlpatterns=[
 	url(r'inventory/mattress_view_status/?$', views.mattress_view_status, name='mattress_view_status'),
 
 	url(r'inventory/excel/?$', views.excel, name='excel'),
-	url(r'excel/',views.excel2,name='hads')
+	url(r'excel/',views.excel2,name='hads'),
+	url(r'indo_excel/',views.indo_excel,name='indo_data'),
+	url(r'shankar_excel/',views.shankar_excel,name='shankar_data')
 
 
 
