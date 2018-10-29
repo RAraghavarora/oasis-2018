@@ -12,7 +12,7 @@ wb = load_workbook(filename=filename)
 print(2)
 sheet = wb["Sheet1"]
 print(3)
-length = 5018
+length = 4662
 print(4)
 profshow = MainProfShow.objects.get(name__icontains='Indosoul')
 print("RAGHAV")
@@ -22,8 +22,7 @@ for i in range(3,length+1):
 	try:
 		name = sheet.cell(row=i,column=2).value
 		long_id = sheet.cell(row=i,column=1).value
-		email = sheet.cell(row=i, column=5).value
-
+		email= sheet.cell(row=i, column=9).value
 		ticket_count = sheet.cell(row=i,column=8).value
 		# print(type(ticket_count))
 		if not ticket_count:

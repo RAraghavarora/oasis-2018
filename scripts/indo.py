@@ -20,7 +20,6 @@ dick = {bitsid: email for email, bitsid in p}
 a=0
 for i in range(3, length+1):
 
-	un= str(sheet.cell(row=i,column=1).value)
 	long_id = sheet.cell(row=i, column=1).value
 	try:
 		l.append(dick[long_id])
@@ -29,5 +28,6 @@ for i in range(3, length+1):
 
 wb.close()
 wb2.close()
-# for i in l:
-# 	print(i)
+print(len(l))
+for i in l:
+	print(i)
