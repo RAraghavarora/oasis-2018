@@ -5,7 +5,7 @@ import sendgrid
 from sendgrid.helpers.mail import *
 import uuid
 
-API_KEY='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' #my api
+API_KEY='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' #raghav's api
 sg = sendgrid.SendGridAPIClient(apikey=API_KEY) #
 
 
@@ -132,7 +132,7 @@ It is mandatory to carry&nbsp;<strong>BITSIAN ID</strong>&nbsp;cards along with 
 '''
 
 
-a = MainProfShow.objects.get(name__icontains = 'Guthrie')
+a = MainProfShow.objects.get(name__icontains = 'Indosoul')
 c = 1
 b = 1
 
@@ -148,6 +148,8 @@ for t in a.tickets.all():
     subject = "QR Code for English Prof Show OASIS 2018"
     url = 'https://bits-oasis.org/2018/storewebapp/qr/'+str(u_uid)
     body1 = body.format(p.name,str(t.count),str(c),url)
+    t.qr_no = c
+    t.save()
     content = Content('text/html', body1)
     c+=t.count
     b+=1

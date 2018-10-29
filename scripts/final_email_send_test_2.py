@@ -4,21 +4,27 @@ from events.models import *
 import sys
 from shop.models.item import Tickets
 from openpyxl import *
-filename='scripts/soul.xlsx'
-wb = load_workbook(filename=filename)
-sheet = wb["Sheet1"]
-length = len(tuple(sheet.rows))
-profshow = MainProfShow.objects.get(name__icontains='Indosoul')
+from oasis2018.settings import BASE_DIR
 
+filename=BASE_DIR + '/scripts/IndoSoul.xlsx'
+print(1)
+wb = load_workbook(filename=filename)
+print(2)
+sheet = wb["Sheet1"]
+print(3)
+length = 5018
+print(4)
+profshow = MainProfShow.objects.get(name__icontains='Indosoul')
+print("RAGHAV")
 # index_count = 0
 sum = 0
-for i in range(1,length+1):
+for i in range(3,length+1):
 	try:
 		name = sheet.cell(row=i,column=2).value
 		long_id = sheet.cell(row=i,column=1).value
 		email = sheet.cell(row=i, column=5).value
 
-		ticket_count = sheet.cell(row=i,column=3).value
+		ticket_count = sheet.cell(row=i,column=8).value
 		# print(type(ticket_count))
 		if not ticket_count:
 			continue
@@ -53,7 +59,9 @@ for i in range(1,length+1):
 			ticket = Tickets.objects.get(prof_show=profshow,user=user)
 			ticket.count+=ticket_count
 			ticket.save()
+			print(i)
 		except:
+			print(i)
 			ticket = Tickets.objects.create(prof_show=profshow, user=user, count = ticket_count)
 		# index_count+=1
 		# print('Object '+str(i))	

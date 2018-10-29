@@ -1,7 +1,7 @@
 import sys
 from openpyxl import *
-filename2='soul.xlsx'
-f1 = 'student_list3.xlsx'
+filename2='scripts/IndoSoul.xlsx'
+f1 = 'scripts/student_list3.xlsx'
 wb = load_workbook(filename=filename2)
 sheet = wb["Sheet1"]
 wb2 = load_workbook(filename=f1)
@@ -18,7 +18,7 @@ for j in range(2, l2+1):
 dick = {bitsid: email for email, bitsid in p}
 #print(len(dick))
 a=0
-for i in range(1, length+1):
+for i in range(3, length+1):
 
 	un= str(sheet.cell(row=i,column=1).value)
 	long_id = sheet.cell(row=i, column=1).value
@@ -29,5 +29,5 @@ for i in range(1, length+1):
 
 wb.close()
 wb2.close()
-for i in l:
-	print(i)
+# for i in l:
+# 	print(i)
