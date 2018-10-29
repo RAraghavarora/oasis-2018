@@ -15,6 +15,11 @@ class ItemInstanceInLine(admin.TabularInline):
     extra = 1
 
 
+class ItemClassInLine(admin.TabularInline):
+    model = ItemClass
+    extra = 1
+
+
 class OrderFragmentInLine(admin.TabularInline):
     model = OrderFragment
     extra = 1
@@ -48,12 +53,16 @@ class TicketTransactionInLine(admin.TabularInline):
 class TicketAdmin(admin.ModelAdmin):
     inlines=[TicketTransactionInLine]
 
+
+class StallAdmin(admin.ModelAdmin):
+    inlines = [ItemClassInLine]
+
 admin.site.register(Wallet)
 admin.site.register(Balance, BalanceAdmin)
 admin.site.register(Transaction)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderFragment, OrderFragmentAdmin)
-admin.site.register(Stall)
+admin.site.register(Stall, StallAdmin)
 admin.site.register(ItemClass, ItemClassAdmin)
 admin.site.register(ItemInstance)
 admin.site.register(Tickets,TicketAdmin)

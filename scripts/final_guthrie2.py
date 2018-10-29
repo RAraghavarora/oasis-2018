@@ -5,7 +5,7 @@ import sendgrid
 from sendgrid.helpers.mail import *
 import uuid
 
-API_KEY='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' #partho's api
+API_KEY='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' #partho's api
 sg = sendgrid.SendGridAPIClient(apikey=API_KEY) #
 
 
@@ -37,14 +37,14 @@ b = 1
 
 for t in a.tickets.all():
     try:
-        p = Bitsian.objects.get(user = t.user)
+        p = Participant.objects.get(user = t.user)
     except:
         continue
         # p = Bitsian.objects.get(user = t.user)
     if p.long_id[3] == '7' or p.long_id[3] == '8':
-        pass
-    else:
         continue
+    else:
+        pass
     send_to=p.email
     from_email = Email('controls@bits-oasis.org')
     to_email = Email(send_to)

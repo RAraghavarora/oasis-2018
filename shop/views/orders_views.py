@@ -179,8 +179,8 @@ class PlaceOrder(APIView):
         print("tickets actions:")
         print(tickets_actions)
         for action in tickets_actions:
-            ticket = action[0]
             show = action[1]
+            ticket = Tickets.objects.get(user=request.user, prof_show=show)
             itemclass = action[2]
             qty = action[3]
             ticket.count += qty
