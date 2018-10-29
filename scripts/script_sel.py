@@ -15,13 +15,24 @@ from shop.models import *
 p1 = MainProfShow.objects.get(name__icontains="shankar")
 p2 = MainProfShow.objects.get(name__icontains="edm")
 
+cnt=0
 with open("scripts/eggs.csv") as f:
     wb = csv.reader(f)
     for row in wb:
         email = row[0]
-        a = int(row[1])
-        b = int(row[2])
-        c = int(row[3])
+        try:
+            a = int(row[1])
+        except:
+            a=0
+        try:
+            b = int(row[2])
+        except:
+            b=0
+        try:
+            c = int(row[3])
+        except:
+            c=0
+
         a+=c
         b+=c
         try:
@@ -46,5 +57,6 @@ with open("scripts/eggs.csv") as f:
                 t.save()
             except:
                 t =  Tickets.objects.create(prof_show=p2, user=user, count = b)
-        
-        
+        cnt+=1
+
+print(cnt)
