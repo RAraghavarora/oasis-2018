@@ -13,9 +13,9 @@ body='''
 <pre>
 <samp>Hello {0}!
 
-This mail is regarding your signing for The Classical ProfShow.
+This mail is regarding your signing for The Hindi ProfShow(Shankar-Ehsaan-Loy).
 
-You have been signed {1} times.
+You have been signed {1} time(s).
 Also, your QR code number is {2}.
 
 Make sure to take a screenshot of your QR which will be necessary at the entrance.
@@ -31,7 +31,8 @@ BITS OASIS 2018</samp>
 '''
 
 
-a = MainProfShow.objects.get(name__icontains = 'Indosoul')
+a = MainProfShow.objects.get(name__icontains = 'shankar')
+# k = MainProfShow.objects.get(name__icontains = 'edm')
 c = 1
 b = 1
 
@@ -44,7 +45,7 @@ for t in a.tickets.all():
     from_email = Email('controls@bits-oasis.org')
     to_email = Email(send_to)
     u_uid = p.user.wallet.uuid
-    subject = "QR Code for Classical Prof Show OASIS 2018"
+    subject = "QR Code for Hindi Prof Show OASIS 2018"
     url = 'https://bits-oasis.org/2018/storewebapp/qr/'+str(u_uid)
     body1 = body.format(p.name,str(t.count),str(c),url)
     t.qr_no = c
