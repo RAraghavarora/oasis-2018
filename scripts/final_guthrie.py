@@ -16,14 +16,13 @@ body='''
 This mail is regarding your signing for The EDM NITE Prof Show.
 
 You have been signed {1} time(s).
-Also, your QR code number is {2}.
 
 Make sure to take a screenshot of your QR which will be necessary at the entrance.
 
 You can get your qr code and profile details on the official OASIS 2018 android and iOS application by using your BITS Mail.
 
 Below is an image of your qrcode which will be required at the entrance.
-You can get your qr code here: {3}.
+You can get your qr code here: {2}.
 
 Controls,
 BITS OASIS 2018</samp>
@@ -46,7 +45,7 @@ for t in a.tickets.all():
     u_uid = p.user.wallet.uuid
     subject = "QR Code for EDM NITE"
     url = 'https://bits-oasis.org/2018/storewebapp/qr/'+str(u_uid)
-    body1 = body.format(p.name,str(t.count),str(c),url)
+    body1 = body.format(p.name,str(t.count),url)
     t.qr_no = c
     t.save()
     content = Content('text/html', body1)
