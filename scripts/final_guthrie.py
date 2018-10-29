@@ -44,7 +44,7 @@ for t in a.tickets.all():
         pass
     else:
         continue
-    send_to=['f20170216@pilani.bits-pilani.ac.in']
+    send_to=p.email
     from_email = Email('controls@bits-oasis.org')
     to_email = Email(send_to)
     u_uid = p.user.wallet.uuid
