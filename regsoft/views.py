@@ -956,6 +956,13 @@ def generate_recnacc_list(request):
         data = request.POST
         id_list = data.getlist('data')
         c_rows = []
+        if len(id_list) == 0:
+            context = {
+                'error_heading': "Error",
+                'message': "Select at least one Participant.",
+                'url':request.build_absolute_uri(reverse('regsoft:controlz_home'))
+                }
+            return render(request, 'registrations/message.html', context)
         for p_id in id_list:
             part = Participant.objects.get(id=p_id)
             c_rows.append({
@@ -971,6 +978,7 @@ def generate_recnacc_list(request):
                 'link':[]})
         amount = (len(id_list))*400
         c_rows.append({'data':['Total', '','','','','','',amount]})
+        
         table = {
             'title':'Participant list for RecNAcc from ' + part.college.name,
             'headings':['Name', 'College', 'Gender', 'CR Name', 'Event(s)', 'Room','Bhavan', 'Caution Deposit'],
