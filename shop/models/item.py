@@ -72,6 +72,7 @@ class Tickets(models.Model):
 	count = models.SmallIntegerField(default=0, blank=True)
 	consumed = models.SmallIntegerField(default=0, blank=True)
 	is_excel_sheet=models.BooleanField(default=False,blank=True)
+	qr_no = models.CharField(null=True, blank = True, max_length = 40)
 
 	def __str__(self):
 		return "{} - {}".format(self.user.username, self.prof_show)
