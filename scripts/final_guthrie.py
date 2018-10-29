@@ -13,7 +13,7 @@ body='''
 <pre>
 <samp>Hello {0}!
 
-This mail is regarding your signing for The Hindi ProfShow(Shankar-Ehsaan-Loy).
+This mail is regarding your signing for The EDM NITE Prof Show.
 
 You have been signed {1} time(s).
 
@@ -30,8 +30,7 @@ BITS OASIS 2018</samp>
 '''
 
 
-a = MainProfShow.objects.get(name__icontains = 'shankar')
-# k = MainProfShow.objects.get(name__icontains = 'edm')
+a = MainProfShow.objects.get(name__icontains = 'EDM')
 c = 1
 b = 1
 
@@ -45,7 +44,7 @@ for t in a.tickets.all():
         pass
     else:
         continue
-    send_to=p.email
+    send_to=['f20170216@pilani.bits-pilani.ac.in']
     from_email = Email('controls@bits-oasis.org')
     to_email = Email(send_to)
     u_uid = p.user.wallet.uuid
