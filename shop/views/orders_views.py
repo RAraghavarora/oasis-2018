@@ -165,12 +165,14 @@ class PlaceOrder(APIView):
                 fragment.status = OrderFragment.FINISHED
                 fragment.stall.user.wallet.balance.add(transfers=fragment.calculateSubTotal())
                 fragment.save()
-            Transaction.objects.create(
+            t = Transaction.objects.create(
                                         amount=fragment.calculateSubTotal(),
                                         transfer_to=fragment.stall.user.wallet,
                                         transfer_type="buy",
                                         transfer_from=request.user.wallet
                                     )
+            fragment.transaction = t
+            fragment.save()
         customer.balance.deduct(net_cost)
         fragments = [{"id": fragment.id, "stall_id": fragment.stall.id} for fragment in order.fragments.all()]
 
@@ -311,7 +313,7 @@ class ConsumeTickets(APIView):
             #user = get_object_or_404(User, id=user_id)
             try:
                 wallet = get_object_or_404(Wallet, uuid=qr_code)
-            except ValueError:
+            except:
                 return Response({"message": "invalid qr_code"}, status=status.HTTP_404_NOT_FOUND)
             user = wallet.user
             show = get_object_or_404(MainProfShow, id=request.data["show_id"])
@@ -345,3 +347,88 @@ class ConsumeTickets(APIView):
 
         except KeyError as ke:
             return Response({"success": False, "message": "missing field: {}".format(ke)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class N2OTickets(APIView):
+
+    permission_classes = (IsAuthenticated, TokenVerification)
+
+    def get(self, request):
+        try:
+            organization = request.user.organization
+            name = organization.name
+            if organization.disabled:
+                raise Organization.DoesNotExist
+        except Organization.DoesNotExist:
+            return Response({"message": "Restricted Access."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if not name == "has":
+            msg = {"message" : "Unauthorized Access. Only HAS is allowed."}
+            return Response(msg, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            prof_show = MainProfShow.objects.get(name="N2O")
+            if prof_show == None:
+                raise MainProfShow.DoesNotExist
+        except MainProfShow.DoesNotExist:
+            msg = {"message": "Prof Show does not exist."}
+            return Response(msg, status=status.HTTP_404_NOT_FOUND)
+
+        count = 0
+        tickets = prof_show.tickets.all()
+        for ticket in tickets:
+            count += ticket.count
+
+        resp = {"count" : count}
+        return Response(resp, status=status.HTTP_200_OK)
+        
+
+    def post(self, request):
+        ticket_count = 0
+        try:
+            organization = request.user.organization
+            name = organization.name
+            if organization.disabled:
+                raise Organization.DoesNotExist
+        except Organization.DoesNotExist:
+            return Response({"message": "Restricted Access."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if not name == "has":
+            msg = {"message" : "Unauthorized Access. Only HAS is allowed."}
+            return Response(msg, status=status.HTTP_401_UNAUTHORIZED)
+
+        data = request.data
+        try:
+            qr_code = data["qr_code"]
+            ticket_count = data["ticket_count"]
+        except KeyError as missing:
+            msg = {"message" : "The following field was missing: {}".format(missing)}
+            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = Wallet.objects.get(uuid=qr_code).user
+        except User.DoesNotExist:
+            msg = {"message": "User doesn't exist."}
+            return Response(msg, status=status.HTTP_404_NOT_FOUND)
+        except Wallet.DoesNotExist:
+            msg = {"message": "Invalid qr_code."}
+            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+        except:
+            msg = {"message" : "Badly formed uuid."}
+            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            prof_show = MainProfShow.objects.get(name="N2O")
+            if prof_show == None:
+                raise MainProfShow.DoesNotExist
+        except MainProfShow.DoesNotExist:
+            msg = {"message": "Prof Show does not exist."}
+            return Response(msg, status=status.HTTP_404_NOT_FOUND)
+
+        tickets, _ = Tickets.objects.get_or_create(prof_show=prof_show, user=user)
+        tickets.count += ticket_count
+        tickets.save()
+
+        msg = {"message" : "Request Successful!"}
+        return Response(msg, status=status.HTTP_200_OK)
+

@@ -956,6 +956,13 @@ def generate_recnacc_list(request):
         data = request.POST
         id_list = data.getlist('data')
         c_rows = []
+        if len(id_list) == 0:
+            context = {
+                'error_heading': "Error",
+                'message': "Select at least one Participant.",
+                'url':request.build_absolute_uri(reverse('regsoft:controlz_home'))
+                }
+            return render(request, 'registrations/message.html', context)
         for p_id in id_list:
             part = Participant.objects.get(id=p_id)
             c_rows.append({
@@ -971,6 +978,7 @@ def generate_recnacc_list(request):
                 'link':[]})
         amount = (len(id_list))*400
         c_rows.append({'data':['Total', '','','','','','',amount]})
+        
         table = {
             'title':'Participant list for RecNAcc from ' + part.college.name,
             'headings':['Name', 'College', 'Gender', 'CR Name', 'Event(s)', 'Room','Bhavan', 'Caution Deposit'],
@@ -1792,6 +1800,52 @@ def excel(request):
             inventory.item5
         ]
         ws.append(items)
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=mydata.xlsx'
+
+    wb.save(response)
+
+    return response
+
+def excel2(request):
+    from shop.models.item import Tickets
+    from openpyxl import Workbook
+    wb = Workbook(write_only = True)
+    ws = wb.create_sheet()
+    headings = [
+        'Name',
+        'EMail',
+        'College',
+        'No. of Tickets',
+        'Qr code number',
+        'link'
+        ]
+    ws.append(headings)
+
+    prof_show = MainProfShow.objects.get(name__icontains='Guthrie')
+    tickets = Tickets.objects.filter(prof_show=prof_show)
+    users = [ticket.user for ticket in tickets]
+    a=1
+
+    for user,ticket in zip(users,tickets):
+        try:
+            p=Bitsian.objects.get(user = user)
+            bitsian = True
+        except:
+            p=Participant.objects.get(user=user)
+            bitsian=False
+        if bitsian:
+            college = "BITS"
+        else:
+            college = p.college.name
+        try:
+            link = 'https://bits-oasis.org/2018/storewebapp/qr/'+str(user.wallet.uuid)
+        except:
+            link=''
+        li=[p.name,p.email,college,ticket.count,a,link]
+        a+=ticket.count
+        ws.append(li)
 
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=mydata.xlsx'
