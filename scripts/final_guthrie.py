@@ -48,7 +48,7 @@ for t in a.tickets.all():
     from_email = Email('controls@bits-oasis.org')
     to_email = Email(send_to)
     u_uid = p.user.wallet.uuid
-    subject = "QR Code for Hindi Prof Show OASIS 2018"
+    subject = "QR Code for EDM NITE OASIS 2018"
     url = 'https://bits-oasis.org/2018/storewebapp/qr/'+str(u_uid)
     body1 = body.format(p.name,str(t.count),url)
     content = Content('text/html', body1)
