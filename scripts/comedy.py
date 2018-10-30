@@ -33,5 +33,5 @@ for i in range(3,4656):
         except Exception as e:
             print(e,i)
 
-
+print(cnt)
 # profshow=MainProfShow.objects.get(id=7)
