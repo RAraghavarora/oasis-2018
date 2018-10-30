@@ -5,9 +5,7 @@ import sendgrid
 from sendgrid.helpers.mail import *
 import uuid
 
-# API_KEY='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' #partho's api
-
-API_KEY = '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' #nayan's new api
+API_KEY='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' #partho's api
 sg = sendgrid.SendGridAPIClient(apikey=API_KEY) #
 
 
@@ -15,14 +13,13 @@ body='''
 <pre>
 <samp>Hello {0}!
 
-This mail is regarding your signing for The EDM NITE.
+This mail is regarding your signing for The EDM Nite.
 
 You have been signed {1} time(s).
 
 Make sure to take a screenshot of your QR which will be necessary at the entrance.
 
 You can get your qr code and profile details on the official OASIS 2018 android and iOS application by using your BITS Mail.
-Please make sure you are using the latest version of the app.
 
 Below is an image of your qrcode which will be required at the entrance.
 You can get your qr code here: {2}.
@@ -34,6 +31,7 @@ BITS OASIS 2018</samp>
 
 
 a = MainProfShow.objects.get(name__icontains = 'edm')
+# k = MainProfShow.objects.get(name__icontains = 'edm')
 c = 1
 b = 1
 
@@ -41,16 +39,19 @@ for t in a.tickets.all():
     try:
         p = Participant.objects.get(user = t.user)
     except:
-        p = Bitsian.objects.get(user = t.user)
+        continue
+        # p = Bitsian.objects.get(user = t.user)
+    if p.long_id[3] == '7' or p.long_id[3] == '8':
+        continue
+    else:
+        pass
     send_to=p.email
     from_email = Email('controls@bits-oasis.org')
     to_email = Email(send_to)
     u_uid = p.user.wallet.uuid
-    subject = "QR Code for EDM NITE OASIS 2018"
+    subject = "QR Code for Hindi Prof Show OASIS 2018"
     url = 'https://bits-oasis.org/2018/storewebapp/qr/'+str(u_uid)
     body1 = body.format(p.name,str(t.count),url)
-    # t.qr_no = c
-    # t.save()
     content = Content('text/html', body1)
     c+=t.count
     b+=1
