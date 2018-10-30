@@ -1,14 +1,14 @@
 from openpyxl import *
-# from oasis2018.settings import BASE_DIR
-# from registrations.models import Bitsian
-# from django.contrib.auth.models import User
-# from shop.models.item import *
-# from events.models import *
-# from shop.models.transaction import *
-# from random import *
-# filename = BASE_DIR + "/scripts/IndoSoul DVM.xlsx"
-filename2='/home/sanchit/DVM_SHIT/oasis-2018/scripts/N2O Signings Final.xlsx'
-wb = load_workbook(filename=filename2,data_only=True)
+from oasis2018.settings import BASE_DIR
+from registrations.models import Bitsian
+from django.contrib.auth.models import User
+from shop.models.item import *
+from events.models import *
+from shop.models.transaction import *
+from random import *
+filename = BASE_DIR + "/scripts/N20 Signings Final.xlsx
+#filename2='/home/sanchit/DVM_SHIT/oasis-2018/scripts/N2O Signings Final.xlsx'
+wb = load_workbook(filename=filename,data_only=True)
 sheet1=wb['MASTERSHEET']
 # length1 = len(tuple(sheet1.rows))
 
