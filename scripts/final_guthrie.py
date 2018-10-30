@@ -5,9 +5,8 @@ import sendgrid
 from sendgrid.helpers.mail import *
 import uuid
 
-# API_KEY='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' #partho's api
 
-API_KEY = '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' #nayan's new api
+API_KEY='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' #paid key
 sg = sendgrid.SendGridAPIClient(apikey=API_KEY) #
 
 
