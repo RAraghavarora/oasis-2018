@@ -37,5 +37,4 @@ class TicketTransaction(models.Model):
 	num = models.PositiveIntegerField(default=0)
 
 	def __str__(self):
-		return "x"
-		#return "User: {}; Timestamp: {}".format(self.tickets.user.username, self.timestamp)
+		return "User: {}; Timestamp: {}".format(self.tickets.user.username, self.timestamp)
