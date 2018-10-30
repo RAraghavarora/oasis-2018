@@ -6,14 +6,14 @@ from shop.models.item import *
 from events.models import *
 from shop.models.transaction import *
 from random import *
-filename = BASE_DIR + "/scripts/N20 Signings Final.xlsx
+filename = BASE_DIR + "/scripts/N2O Signings Final.xlsx"
 #filename2='/home/sanchit/DVM_SHIT/oasis-2018/scripts/N2O Signings Final.xlsx'
 wb = load_workbook(filename=filename,data_only=True)
 sheet1=wb['MASTERSHEET']
 # length1 = len(tuple(sheet1.rows))
 
 cnt=0
-for i in range(3,4656):
+for i in range(3,905):
     bitsmail_id1=sheet1.cell(row=i,column=7).value #mailid1
     if sheet1.cell(row=i,column=6).value:
         count=int(sheet1.cell(row=i,column=6).value)
