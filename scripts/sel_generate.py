@@ -31,16 +31,19 @@ for i in range(2, length+1):
         fin.append([email, sheet.cell(row=i, column=8).value, sheet.cell(row=i, column=9).value, sheet.cell(row=i, column=10).value])
         lit+=2
     except Exception as e:
-        print (3)
-        print(i, e)
+        #print (3)
+        #print(i, e)
         pass
+
 import csv
-with open('eggs.csv', 'w') as f:
+with open('eggs2.csv', 'w') as f:
     w = csv.writer(f)
     for i in fin:
         w.writerow(i)
-print(len(long_list))
+#print(len(long_list))
 
+for i in fin:
+    print(i)
 
 
 
