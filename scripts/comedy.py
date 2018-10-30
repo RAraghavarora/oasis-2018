@@ -13,6 +13,7 @@ sheet1=wb['MASTERSHEET']
 # length1 = len(tuple(sheet1.rows))
 
 cnt=0
+non_bitsians=[]
 for i in range(3,4656):
     bitsmail_id1=sheet1.cell(row=i,column=7).value #mailid1
     if sheet1.cell(row=i,column=6).value:
@@ -20,7 +21,7 @@ for i in range(3,4656):
          
         try:
             bitsian=Bitsian.objects.get(email=bitsmail_id1)
-            profshow=MainProfShow.objects.get(name="N20")
+            profshow=MainProfShow.objects.get(name__icontains="N2O")
             try:
                 t = Tickets.objects.get(prof_show=profshow,user=bitsian.user)
                 t.count+=count
@@ -32,6 +33,7 @@ for i in range(3,4656):
         
         except Exception as e:
             print(e,i)
+            non_bitsians.append(bitsian.name)
 
 print(cnt)
 # profshow=MainProfShow.objects.get(id=7)
