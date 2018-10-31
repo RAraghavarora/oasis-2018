@@ -14,9 +14,10 @@ body='''
 <pre>
 <samp>Hello {0}!
 
-This mail is regarding your signing for The EDM NITE.
+This mail is regarding your signing for N2O.
 
 You have been signed {1} time(s).
+Also, your QR code number is {2}.
 
 Make sure to take a screenshot of your QR which will be necessary at the entrance.
 
@@ -24,7 +25,7 @@ You can get your qr code and profile details on the official OASIS 2018 android 
 Please make sure you are using the latest version of the app.
 
 Below is an image of your qrcode which will be required at the entrance.
-You can get your qr code here: {2}.
+You can get your qr code here: {3}.
 
 Controls,
 BITS OASIS 2018</samp>
@@ -32,7 +33,7 @@ BITS OASIS 2018</samp>
 '''
 
 
-a = MainProfShow.objects.get(name__icontains = 'edm')
+a = MainProfShow.objects.get(name__icontains = 'n2o')
 c = 1
 b = 1
 
@@ -45,9 +46,9 @@ for t in a.tickets.all():
     from_email = Email('controls@bits-oasis.org')
     to_email = Email(send_to)
     u_uid = p.user.wallet.uuid
-    subject = "QR Code for EDM NITE OASIS 2018"
+    subject = "QR Code for N2O OASIS 2018"
     url = 'https://bits-oasis.org/2018/storewebapp/qr/'+str(u_uid)
-    body1 = body.format(p.name,str(t.count),url)
+    body1 = body.format(p.name,str(t.count),str(c),url)
     # t.qr_no = c
     # t.save()
     content = Content('text/html', body1)
