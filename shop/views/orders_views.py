@@ -451,7 +451,10 @@ class RefundTickets(APIView):
             if request.user.username != "crc":
                 return Response({"message": "Only the CRC is allowed to perform this action. Please sign in with the CRC's account."}, status=403)
             qr_code = request.data["qr_code"]
-            refund_user = get_object_or_404(Bitsian, barcode=qr_code)
+            try:
+                refund_user = Wallet.objects.get(uuid=qr_code).user.bitsian
+            except:
+                return Response({"message": "invalid QR code, no such Bitsian"}, status=404)
             if not refund_user.wants_refund:
                 refund_user.wants_refund = True
                 refund_user.save(update_fields=['wants_refund'])
