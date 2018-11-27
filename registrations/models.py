@@ -128,5 +128,8 @@ class Bitsian(models.Model):
 	room_no = models.IntegerField(default=0)
 	user = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
 
+	# added after the fest:
+	wants_refund = models.BooleanField(default=False, blank=True)
+
 	def __str__(self):
 		return self.long_id + ' - '+ self.name

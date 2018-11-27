@@ -19,6 +19,7 @@ from shop.models.transaction import Transaction, TicketTransaction
 from shop.permissions import TokenVerification
 # from utils.wallet_qrcode import decString
 from events.models import MainProfShow, Organization
+from registrations.models import Bitsian
 
 from random import randint
 
@@ -381,7 +382,7 @@ class N2OTickets(APIView):
 
         resp = {"count" : count}
         return Response(resp, status=status.HTTP_200_OK)
-        
+
 
     def post(self, request):
         ticket_count = 0
@@ -432,3 +433,29 @@ class N2OTickets(APIView):
         msg = {"message" : "Request Successful!"}
         return Response(msg, status=status.HTTP_200_OK)
 
+
+class RefundTickets(APIView):
+    """
+        This endpoint was made after the fest for refunding prof show tickets after
+        requesting the CRC to do so. It is not a main part of the codebase.
+            {
+                "qr_code": "a8a2c8c8-d8ba-432f-ba67-fc946cf0536a",
+            }
+    """
+
+    permission_classes = (TokenVerification, IsAuthenticated,)
+
+    @csrf_exempt
+    def post(self, request):
+        try:
+            if request.user.username != "crc":
+                return Response({"message": "Only the CRC is allowed to perform this action. Please sign in with the CRC's account."}, status=403)
+            qr_code = request.data["qr_code"]
+            refund_user = get_object_or_404(Bitsian, barcode=qr_code)
+            if not refund_user.wants_refund:
+                refund_user.wants_refund = True
+                refund_user.save(update_fields=['wants_refund'])
+                return Response({"message": "Successful!"}, status=200)
+            return Response({"message": "Already done!"}, status=200)
+        except KeyError as key:
+            return Response({"message": "missing key: {}".format(key)}, status=400)
