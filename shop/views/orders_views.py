@@ -461,8 +461,8 @@ class RefundTickets(APIView):
             if not refund_user.wants_refund:
                 refund_user.wants_refund = True
                 refund_user.save(update_fields=['wants_refund'])
-                return Response({"message": "Successful!"}, status=200)
-            return Response({"message": "Already done!"}, status=200)
+                return Response({"message": "Successful!", "success": True, "x-status": 0}, status=200)
+            return Response({"message": "Already done!", "success": True, "x-status": 1}, status=200)
         except KeyError as key:
             return Response({"message": "missing key: {}".format(key)}, status=400)
 
