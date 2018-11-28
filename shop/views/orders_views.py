@@ -23,6 +23,9 @@ from registrations.models import Bitsian
 
 from random import randint
 
+from openpyxl import Workbook
+from tempfile import NamedTemporaryFile
+
 class PlaceOrder(APIView):
     """ The main view to handle orders. For the structure expected from the
         app/front-end teams, see the below """
@@ -462,3 +465,28 @@ class RefundTickets(APIView):
             return Response({"message": "Already done!"}, status=200)
         except KeyError as key:
             return Response({"message": "missing key: {}".format(key)}, status=400)
+
+
+# Again, a small temporary view for post-fest data collection.
+# class RefundTicketsData(APIView):
+#
+#     permission_classes = (TokenVerification, IsAuthenticated,)
+#
+#     @csrf_exempt
+#     def get(self, request):
+#         wb = Workbook
+#         ws = wb.active
+#
+#         ws["A1"] = "Bitsian Name"
+#
+#         for bitsian in Bitsian.objects.filter(wants_refund=True):
+#
+#
+#         with NamedTemporaryFile() as tmp:
+#             wb.save(tmp.name)
+#             tmp.seek(0)
+#             stream = tmp.read()
+#
+#             response = HttpResponse(stream, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+#             response['Content-Disposition'] = 'attachment; filename=TicketRefunds.xlsx'
+#             return response
