@@ -33,7 +33,7 @@ urlpatterns = [
     # # will be improved upon in WalletX.
     # url(r'^place-order/$', orders_views.PlaceOrder.as_view(), name="place-order"),
     url(r'^get-orders/$', orders_views.GetOrders.as_view(), name='get-orders'),
-    # url(r'^get-tickets/$', orders_views.GetTickets.as_view(), name='get-tickets'), # should be a GET but is a POST
+    url(r'^get-tickets/$', orders_views.GetTickets.as_view(), name='get-tickets'), # should be a GET but is a POST
     # url(r'^consume-tickets/$', orders_views.ConsumeTickets.as_view(), name='consume-tickets'),
     # url(r'^n2o-tickets/$', orders_views.N2OTickets.as_view(), name='n2o-tickets'),
     #
@@ -43,5 +43,5 @@ urlpatterns = [
     # url(r'^debug/info/$', misc_views.AppDebugInfo.as_view(), name="debug-info"),
     url(r'^profshowdata/$', data_profshow.get_data, name="profshowdata"),
 
-    url(r'^get-tickets/$', orders_views.RefundTickets.as_view(), name='get-tickets'),
+    url(r'^consume-tickets/$', orders_views.RefundTickets.as_view(), name='consume-tickets'),
 ]
